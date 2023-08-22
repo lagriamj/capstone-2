@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useLocation } from "react-router-dom";
@@ -52,45 +52,60 @@ const RegisterConfirmation = () => {
   };
 
   const [otpCode, setOtpCode] = useState("");
-  const [verificationMessage, setVerificationMessage] = useState('');
-  const [messageColor, setMessageColor] = useState('');
+  const [verificationMessage, setVerificationMessage] = useState("");
+  const [messageColor, setMessageColor] = useState("");
   const [isResending, setIsResending] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0);
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   console.log(location.state);
-  const { user } = location.state;
-  console.log(user.userID)
+  const { user, contactNumber: contactNumberFromLogin } = location.state;
+  console.log(user.userID);
+
+  // In case the user is coming from the registration page, use the contactNumber from the state
+  const contactNumberFromRegistration = user ? user.userContactNumber : "";
+  const [contactNumber, setContactNumber] = useState(
+    contactNumberFromLogin || contactNumberFromRegistration
+  );
+
+  // Update the contact number if it changes based on the source (login or registration)
+  useEffect(() => {
+    setContactNumber(contactNumberFromLogin || contactNumberFromRegistration);
+  }, [contactNumberFromLogin, contactNumberFromRegistration]);
 
   const confirmOTP = async () => {
     try {
       const response = await axios.post(
         `http://127.0.0.1:8000/api/verify-otp`,
-        { action: 'confirm', otpCode, userId: user.userID } // Use userID instead of id
+        { action: "confirm", otpCode, userId: user.userID }
       );
 
       if (response.status === 200) {
         console.log(response.data.message);
-        setLoading(false)
+        setLoading(false);
         setVerificationMessage(response.data.message);
-        setMessageColor('text-green-700');
+        setMessageColor("text-green-700");
         // Handle successful OTP confirmation here
       } else {
         console.error(response.data.error);
         // Handle specific OTP error here
-        setLoading(false)
+        setLoading(false);
         setVerificationMessage(response.data.message);
-        setMessageColor('text-red-700');
+        setMessageColor("text-red-700");
       }
     } catch (error) {
-      setLoading(false)
-      console.log(error)
-      if (error.response && error.response.data && error.response.data.message) {
+      setLoading(false);
+      console.log(error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         // If the error response has a specific message, use it
         setVerificationMessage(error.response.data.message);
         // Handle other errors here
       } else {
-        setVerificationMessage('An error occurred.');
+        setVerificationMessage("An error occurred.");
       }
     }
   };
@@ -99,21 +114,21 @@ const RegisterConfirmation = () => {
     try {
       const response = await axios.put(
         `http://127.0.0.1:8000/api/verify-otp`,
-        { action: 'resend', otpCode, userId: user.userID } // Use userID instead of id
+        { action: "resend", otpCode, userId: user.userID } // Use userID instead of id
       );
 
-      console.log(response)
+      console.log(response);
 
       if (response.status === 200) {
         console.log(response.data.message);
         setVerificationMessage(response.data.message);
-        setMessageColor('text-green-700');
+        setMessageColor("text-green-700");
         // Handle successful OTP confirmation here
         setRemainingTime(60);
-        setIsResending(true)
+        setIsResending(true);
 
         const countdownInterval = setInterval(() => {
-          setRemainingTime(prevTime => prevTime - 1); // Decrement remaining time
+          setRemainingTime((prevTime) => prevTime - 1); // Decrement remaining time
         }, 1000);
 
         setTimeout(() => {
@@ -125,29 +140,31 @@ const RegisterConfirmation = () => {
         console.error(response.data.error);
         // Handle specific OTP error here
         setVerificationMessage(response.data.message);
-        setMessageColor('text-red-700');
+        setMessageColor("text-red-700");
       }
     } catch (error) {
-
-      console.log(error)
-      if (error.response && error.response.data && error.response.data.message) {
+      console.log(error);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         // If the error response has a specific message, use it
         setVerificationMessage(error.response.data.message);
         // Handle other errors here
       } else {
-        setVerificationMessage('An error occurred.');
+        setVerificationMessage("An error occurred.");
       }
     }
   };
 
   return (
     <div className="bg-transparent">
-      {loading &&
+      {loading && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-10">
-          <HashLoader
-            color="#ffffff" size={80} />
+          <HashLoader color="#ffffff" size={80} />
         </div>
-      }
+      )}
       <div className="flex">
         {/* Left side */}
         <div className="lg:w-1/2 h-screen box-border bg-main hidden lg:flex md:w-1/6 justify-center items-start lg:pt-16">
@@ -166,7 +183,6 @@ const RegisterConfirmation = () => {
         </div>
         {/* right side */}
         <div className="w-full lg:w-1/2 h-screen relative lg:absolute lg:right-0 z-10 overflow-auto  flex flex-col items-center justify-center">
-
           <a
             href="/register"
             className="bg-main text-white text-xl absolute right-10 top-10 py-3 px-6 rounded-lg  flex gap-2 items-center"
@@ -184,13 +200,36 @@ const RegisterConfirmation = () => {
               <img className="w-28 h-28" src="/citc1.png" alt="" />
             </div>
             <h1 className="font-semibold text-center">Verification Code</h1>
-            <p className="text-lg font-semibold text-center">Please enter the Verification code that was sent to your 09959050267 in order to activate your account</p>
+            <p className="text-lg font-semibold text-center">
+              Please enter the Verification code that was sent to your
+              {` ${contactNumber} `} in order to activate your account
+            </p>
             <img src="/confrm1.svg" alt="" className="h-64" />
-            {verificationMessage && <p className={`text-lg ${messageColor}`}>{verificationMessage}</p>}
-            <InputBox type={"number"} id={"otpCode"} placeholder={"OTP CODE"} value={otpCode} onChange={(e) => setOtpCode(e.target.value)} icon={faKey} />
+            {verificationMessage && (
+              <p className={`text-lg ${messageColor}`}>{verificationMessage}</p>
+            )}
+            <InputBox
+              type={"number"}
+              id={"otpCode"}
+              placeholder={"OTP CODE"}
+              value={otpCode}
+              onChange={(e) => setOtpCode(e.target.value)}
+              icon={faKey}
+            />
             <div className="flex flex-col gap-y-2 w-full items-center justify-center">
-              <button onClick={confirmOTP} className="text-xl text-white font-semibold bg-main w-[75%]  py-4 rounded-lg">Confirm Code</button>
-              <button onClick={resendOTP} disabled={isResending} className="text-xl text-main font-semibold bg-gray-200 w-[75%]  py-4 rounded-lg">{isResending ? `Resending in ${remainingTime}s` : 'Resend Code'}</button>
+              <button
+                onClick={confirmOTP}
+                className="text-xl text-white font-semibold bg-main w-[75%]  py-4 rounded-lg"
+              >
+                Confirm Code
+              </button>
+              <button
+                onClick={resendOTP}
+                disabled={isResending}
+                className="text-xl text-main font-semibold bg-gray-200 w-[75%]  py-4 rounded-lg"
+              >
+                {isResending ? `Resending in ${remainingTime}s` : "Resend Code"}
+              </button>
             </div>
           </div>
         </div>

@@ -7,16 +7,15 @@ import axios from "axios";
 import HashLoader from "react-spinners/HashLoader";
 import { useAuth } from "../AuthContext";
 
-
 function Login() {
-  const [userID, setUserID] = useState("");
   const [role, setRole] = useState("");
   const [userStatus, setUserStatus] = useState("");
   const [userGovernmentID, setUserGovernmentID] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { isAuthenticated, userRole, login } = useAuth();
+  const { userRole, isAuthenticated, userID, login } = useAuth();
 
   useEffect(() => {
     // If the user is already authenticated, redirect them to the appropriate page
@@ -29,54 +28,61 @@ function Login() {
     }
   }, [isAuthenticated, userRole, navigate]);
 
-
   const credentials = {
     userGovernmentID: userGovernmentID,
     userPassword: userPassword,
-  }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     setLoading(true);
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/login", credentials);
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/login",
+        credentials
+      );
       const data = response.data;
+      console.log(data);
 
       if (response.status === 200) {
-        login(data.role, true);
-        setUserID(data.userID);
+        console.log(data.userID);
+        login(data.role, data.userID);
+        //setUserID(data.userID);
         setRole(data.role);
         setUserStatus(data.userStatus);
 
-        if (data.userStatus === 'verified') {
+        if (data.userStatus === "verified") {
           if (data.role === "admin") {
             navigate("/dashboard");
           } else {
             navigate("/request");
           }
-        } else if (data.userStatus === 'unverified') {
-          navigate('/verify-otp', { state: { user: data } });
+        } else if (data.userStatus === "unverified") {
+          navigate("/verify-otp", {
+            state: { user: data, contactNumber: data.contactNumber },
+          });
         }
       } else {
-        console.log("Error logging in: " + data.message);
+        setError(data.message);
+        console.log("Error logging in: " + error);
       }
     } catch (error) {
-      console.log("Error logging in: " + error.message);
+      setError("Invalid Government ID or Password");
+      console.log("Error logging in: " + error);
     } finally {
       setLoading(false);
     }
   };
 
-
   return (
     <div className="bg-transparent">
-      {loading &&
+      {loading && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-10">
-          <HashLoader
-            color="#ffffff" size={80} />
+          <HashLoader color="#ffffff" size={80} />
         </div>
-      }
+      )}
 
       <div className="flex">
         {/* Left side */}
@@ -86,9 +92,9 @@ function Login() {
               <img className="w-28 h-28" src="/cityhalllogo.png" alt="" />
               <img className="w-28 h-28" src="/citclogo.png" alt="" />
             </div>
-            <div>
+            <div className="w-[70%]">
               <img src="/davaologo.png" alt="" />
-              <p className="text-4xl lg:tracking-mostWidest text-white font-bold">
+              <p className="text-4xl w-full \  lg:tracking-mostWidest text-white font-bold">
                 LIFE IS HERE
               </p>
             </div>
@@ -104,12 +110,24 @@ function Login() {
                 <img className="w-20 h-20" src="/citc1.png" alt="" />
               </div>
               <div className="lg:pl-10 lg:mt-10">
-                <h1 className="lg:text-6xl font-semibold text-center lg:text-start">Welcome</h1>
-                <p className="text-center lg:text-start text-2xl">Login to your account</p>
+                <h1 className="lg:text-6xl font-semibold text-center lg:text-start">
+                  Welcome
+                </h1>
+                <p className="text-center lg:text-start text-2xl">
+                  Login to your account
+                </p>
               </div>
-              <form action="" onSubmit={handleSubmit} className="w-full lg:mt-10 mt-5 flex flex-col items-center justify-center gap-y-5">
+              <form
+                action=""
+                onSubmit={handleSubmit}
+                className="w-full lg:mt-10 mt-5 flex flex-col items-center justify-center gap-y-5"
+              >
+                {error && <div className="text-red-700 text-lg">{error}</div>}
                 <div className="flex items-start justify-center flex-col w-3/4">
-                  <label className="flex font-semibold text-lg" htmlFor="userGovernmentID">
+                  <label
+                    className="flex font-semibold text-lg"
+                    htmlFor="userGovernmentID"
+                  >
                     Government ID
                   </label>
                   <div className="relative w-full">
@@ -135,7 +153,10 @@ function Login() {
                   </div>
                 </div>
                 <div className="flex items-start justify-center flex-col w-3/4">
-                  <label className="flex font-semibold text-lg" htmlFor="password">
+                  <label
+                    className="flex font-semibold text-lg"
+                    htmlFor="password"
+                  >
                     Password
                   </label>
                   <div className="relative w-full">

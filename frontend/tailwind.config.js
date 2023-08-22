@@ -19,7 +19,7 @@ export default {
       wide: '.025em',
       wider: '.05em',
       widest: '.1em',
-      mostWidest: '.90em',
+      mostWidest: '.50em',
     },
     extend: {
       colors: {

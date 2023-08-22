@@ -14,8 +14,7 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('userGovernmentID', 'userPassword');
-        
-        // Retrieve the user based on government ID
+
         $user = User::where('userGovernmentID', $credentials['userGovernmentID'])->first();
 
         if ($user) {
@@ -27,13 +26,14 @@ class LoginController extends Controller
                     return response()->json([
                         'success' => true,
                         'userID' => $user->userID,
-                        'role' => $user->role, // Replace 'role' with your actual column name
+                        'role' => $user->role,
                         'userStatus' => 'verified',
                     ]);
                 } else {
                     return response()->json([
                         'success' => true,
-                        'userID' => $user->userID, // Use the appropriate field, such as 'userGovernmentID'
+                        'userID' => $user->userID,
+                        'contactNumber' => $user->userContactNumber,
                         'userStatus' => 'unverified',
                     ]);
                 }
