@@ -68,7 +68,7 @@ const RegisterConfirmation = () => {
     contactNumberFromLogin || contactNumberFromRegistration
   );
 
-  // Update the contact number if it changes based on the source (login or registration)
+ 
   useEffect(() => {
     setContactNumber(contactNumberFromLogin || contactNumberFromRegistration);
   }, [contactNumberFromLogin, contactNumberFromRegistration]);

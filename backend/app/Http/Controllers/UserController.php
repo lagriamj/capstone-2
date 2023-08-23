@@ -11,53 +11,55 @@ use Illuminate\Database\Eloquent\Model;
 class UserController extends Controller
 {
     //
-        public function register(Request $request)
-        {
-            $request->validate([
-                'userFirstName' => 'required',
-                'userLastName' => 'required',
-                'userGovernmentID' => 'required',
-                'userEmail' => 'required|email',
-                'userContactNumber' => 'required|min:11',
-                'userPassword' => 'required|min:6',
-            ]);
+    public function register(Request $request)
+    {
+        $request->validate([
+            'userFirstName' => 'required',
+            'userLastName' => 'required',
+            'userGovernmentID' => 'required|unique:users',
+            'userEmail' => 'required|email',
+            'userContactNumber' => 'required|min:11',
+            'userPassword' => 'required|min:6',
+        ]);
 
-            $otpCode = mt_rand(100000, 999999);
-            $otpExpiration = now()->addMinutes(15);
-            $maxPasswordLength = 50;
+        $otpCode = mt_rand(100000, 999999);
+        $otpExpiration = now()->addMinutes(15);
+        $maxPasswordLength = 50;
 
-            $user = new User();
-            $user->userFirstName = $request->userFirstName;
-            $user->userLastName = $request->userLastName;
-            $user->userGovernmentID = $request->userGovernmentID;
-            $user->userEmail = $request->userEmail;
-            $user->userContactNumber = $request->userContactNumber;
-
-
-            $truncatedPassword = Str::limit($request->userPassword, $maxPasswordLength);
-            $user->userPassword = bcrypt($truncatedPassword); // Hash the truncated password
+        $user = new User();
+        $user->userFirstName = $request->userFirstName;
+        $user->userLastName = $request->userLastName;
+        $user->userGovernmentID = $request->userGovernmentID;
+        $user->userEmail = $request->userEmail;
+        $user->userContactNumber = $request->userContactNumber;
 
 
-            $user->userStatus = 'unverified'; // Set user status
-            $user->dateRegistered = now();
-            $user->role = "user";
-            $user->otpCode = $otpCode;
-            $user->otpExpiration = $otpExpiration;
+        $truncatedPassword = Str::limit($request->userPassword, $maxPasswordLength);
+        $user->userPassword = bcrypt($truncatedPassword); // Hash the truncated password
 
-            /*$sendingSuccess = $this->sendVerificationCode($user, $otpCode);
+
+        $user->userStatus = 'unverified'; // Set user status
+        $user->dateRegistered = now();
+        $user->role = "user";
+        $user->otpCode = $otpCode;
+        $user->otpExpiration = $otpExpiration;
+
+        /*$sendingSuccess = $this->sendVerificationCode($user, $otpCode);
 
             if (!$sendingSuccess) {
                 return response()->json(['message' => 'SMS sending failed'], 500);
             }*/
 
-            $user->save();
-            $user->userID = $user->userID;
+        $user->save();
+        $user->userID = $user->userID;
 
 
-
-
+        if ($user->save()) {
             return response()->json(['message' => 'User registered succesfully', 'userID' => $user->userID, 'userContactNumber' => $user->userContactNumber], 201);
+        } else {
+            return response()->json(['message' => 'The government ID is already taken.'], 422);
         }
+    }
 
     private function sendVerificationCode(User $user, $otpCode)
     {

@@ -10,14 +10,22 @@ export function AuthProvider({ children }) {
     localStorage.getItem("isAuthenticated") === "true"
   );
   const [userID, setUserID] = useState(localStorage.getItem("userID"));
+  const [userStatus, setUserStatus] = useState(
+    localStorage.getItem("userStatus") || ""
+  );
 
-  const login = (role, userID) => {
+  const login = (role, userID, status) => {
     setUserRole(role);
-    setIsAuthenticated(true);
-    setUserID(userID);
-    localStorage.setItem("userRole", role);
-    localStorage.setItem("isAuthenticated", true);
-    localStorage.setItem("userID", userID);
+
+    if (status === "verified") {
+      setIsAuthenticated(true);
+      setUserID(userID);
+      setUserStatus(status);
+      localStorage.setItem("userRole", role);
+      localStorage.setItem("isAuthenticated", true);
+      localStorage.setItem("userID", userID);
+      localStorage.setItem("userStatus", status);
+    }
   };
   console.log(userRole);
   console.log("userID:", userID);
@@ -26,14 +34,16 @@ export function AuthProvider({ children }) {
     setUserRole("");
     setIsAuthenticated(false);
     setUserID("");
+    setUserStatus("");
     localStorage.removeItem("userRole");
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("userID");
+    localStorage.removeItem("userStatus");
   };
 
   return (
     <AuthContext.Provider
-      value={{ userRole, isAuthenticated, userID, login, logout }}
+      value={{ userRole, isAuthenticated, userID, userStatus, login, logout }}
     >
       {children}
     </AuthContext.Provider>

@@ -28,6 +28,10 @@ function Login() {
     }
   }, [isAuthenticated, userRole, navigate]);
 
+  if (isAuthenticated) {
+    return null; // or return a loading message, or redirect immediately
+  }
+
   const credentials = {
     userGovernmentID: userGovernmentID,
     userPassword: userPassword,
@@ -48,7 +52,7 @@ function Login() {
 
       if (response.status === 200) {
         console.log(data.userID);
-        login(data.role, data.userID);
+        login(data.role, data.userID, data.userStatus);
         //setUserID(data.userID);
         setRole(data.role);
         setUserStatus(data.userStatus);
