@@ -74,7 +74,6 @@ class UserController extends Controller
                 ]
             );
         } catch (\Exception $e) {
-            // Handle exception if SMS sending fails
             return response()->json([
                 'message' => 'Failed sending verification code',
             ]); // Indicate that sending failed
@@ -150,5 +149,25 @@ class UserController extends Controller
         } else {
             return response()->json(['message' => 'Invalid action'], 400);
         }
+    }
+
+    public function updatePhoneNumber(Request $request)
+    {
+        $userID = $request->userID;
+
+        $user = User::find($userID);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $newContactNumber = $request->input('newContactNumber');
+
+        // Validate the new contact number if needed
+
+        $user->userContactNumber = $newContactNumber;
+        $user->save();
+
+        return response()->json(['message' => 'Contact number updated successfully']);
     }
 }

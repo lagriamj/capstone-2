@@ -2,10 +2,12 @@ import "../index.css";
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faIdCard, faLock } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import HashLoader from "react-spinners/HashLoader";
 import { useAuth } from "../AuthContext";
+import { message } from "antd";
+import { Snackbar } from "@mui/material";
 
 function Login() {
   const [role, setRole] = useState("");
@@ -16,6 +18,8 @@ function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { userRole, isAuthenticated, userID, login } = useAuth();
+  const location = useLocation();
+  const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
 
   useEffect(() => {
     // If the user is already authenticated, redirect them to the appropriate page
@@ -31,6 +35,30 @@ function Login() {
   if (isAuthenticated) {
     return null; // or return a loading message, or redirect immediately
   }
+
+
+  useEffect(() => {
+    const locationState = location.state;
+
+    if (locationState && locationState.successMessage) {
+      setDisplaySuccessMessage(true);
+      navigate("/login"); // Clear the location state from the URL
+    }
+  }, []);
+
+  useEffect(() => {
+    if (displaySuccessMessage) {
+      // Display the success message using Ant Design message component
+      const successMessage = message.success(
+        "Registered successfully. You can now log in."
+      );
+
+      // Close the message after a certain duration
+      setTimeout(() => {
+        successMessage(); // Close the message
+      }, 5000); // Duration of 5 seconds
+    }
+  }, [displaySuccessMessage]);
 
   const credentials = {
     userGovernmentID: userGovernmentID,

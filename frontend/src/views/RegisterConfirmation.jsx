@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKey, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthContext";
 import axios from "axios";
 import HashLoader from "react-spinners/HashLoader";
+import { message } from "antd";
 
 const RegisterConfirmation = () => {
   const InputBox = ({
@@ -58,17 +60,74 @@ const RegisterConfirmation = () => {
   const [remainingTime, setRemainingTime] = useState(0);
   const [loading, setLoading] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   console.log(location.state);
-  const { user, contactNumber: contactNumberFromLogin } = location.state;
-  console.log(user.userID);
+  const { userRole, isAuthenticated, userID } = useAuth();
+  const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
+
+  useEffect(() => {
+    const locationState = location.state;
+
+    if (locationState && locationState.successMessage) {
+      setDisplaySuccessMessage(true);
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    if (displaySuccessMessage) {
+      // Display the success message using Ant Design message component
+      const successMessage = message.success(location.state.successMessage);
+
+      // Close the message after a certain duration
+      setTimeout(() => {
+        successMessage(); // Close the message
+      }, 5000); // Duration of 5 seconds
+    }
+  }, [displaySuccessMessage, navigate]);
+
+  useEffect(() => {
+    // If the user is already authenticated, redirect them to the appropriate page
+    if (isAuthenticated) {
+      if (userRole === "admin") {
+        navigate("/dashboard");
+      } else if (userRole === "user") {
+        navigate("/request");
+      }
+    }
+  }, [isAuthenticated, userRole, navigate]);
+
+  if (isAuthenticated) {
+    return null; // or return a loading message, or redirect immediately
+  }
+
+  useEffect(() => {
+    // If the user is coming from the update-phone page (using userID), proceed to verification
+    if (!location.state || (!location.state.user && !location.state.userID)) {
+      navigate("/login"); // Redirect to login if not coming from login, register, or update-phone page
+    }
+  }, [navigate, location.state]);
+
+  if (!location.state || (!location.state.user && !location.state.userID)) {
+    return null; // Return null if not coming from login, register, or update-phone page
+  }
+
+  const {
+    user,
+    contactNumber: contactNumberFromLogin,
+    newPhoneNumber,
+  } = location.state;
+  const userId = user ? user.userID : userID;
 
   // In case the user is coming from the registration page, use the contactNumber from the state
   const contactNumberFromRegistration = user ? user.userContactNumber : "";
+  const contactNumberFromUpdatePage = newPhoneNumber || "";
+
   const [contactNumber, setContactNumber] = useState(
-    contactNumberFromLogin || contactNumberFromRegistration
+    contactNumberFromLogin ||
+      contactNumberFromRegistration ||
+      contactNumberFromUpdatePage
   );
 
- 
   useEffect(() => {
     setContactNumber(contactNumberFromLogin || contactNumberFromRegistration);
   }, [contactNumberFromLogin, contactNumberFromRegistration]);
@@ -77,7 +136,7 @@ const RegisterConfirmation = () => {
     try {
       const response = await axios.post(
         `http://127.0.0.1:8000/api/verify-otp`,
-        { action: "confirm", otpCode, userId: user.userID }
+        { action: "confirm", otpCode, userId: location.state.userID }
       );
 
       if (response.status === 200) {
@@ -86,6 +145,11 @@ const RegisterConfirmation = () => {
         setVerificationMessage(response.data.message);
         setMessageColor("text-green-700");
         // Handle successful OTP confirmation here
+        navigate("/login", {
+          state: {
+            successMessage: "Registered successfully. You can now log in.",
+          },
+        });
       } else {
         console.error(response.data.error);
         // Handle specific OTP error here
@@ -112,10 +176,11 @@ const RegisterConfirmation = () => {
 
   const resendOTP = async () => {
     try {
-      const response = await axios.put(
-        `http://127.0.0.1:8000/api/verify-otp`,
-        { action: "resend", otpCode, userId: user.userID } // Use userID instead of id
-      );
+      const response = await axios.put(`http://127.0.0.1:8000/api/verify-otp`, {
+        action: "resend",
+        otpCode,
+        userId: location.state.userID,
+      });
 
       console.log(response);
 
@@ -149,9 +214,7 @@ const RegisterConfirmation = () => {
         error.response.data &&
         error.response.data.message
       ) {
-        // If the error response has a specific message, use it
         setVerificationMessage(error.response.data.message);
-        // Handle other errors here
       } else {
         setVerificationMessage("An error occurred.");
       }
@@ -230,6 +293,23 @@ const RegisterConfirmation = () => {
               >
                 {isResending ? `Resending in ${remainingTime}s` : "Resend Code"}
               </button>
+              <div className="mt-3 font-semibold">
+                <p className="text-lg">
+                  Wrong number?{" "}
+                  <a
+                    className="underline text-main"
+                    onClick={() =>
+                      navigate("/update-phone", {
+                        state: {
+                          userID: !userId ? location.state.userID : userId,
+                        },
+                      })
+                    }
+                  >
+                    Click here
+                  </a>
+                </p>
+              </div>
             </div>
           </div>
         </div>

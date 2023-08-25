@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Drawer } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCodePullRequest,
@@ -14,6 +14,7 @@ import {
 const AdminDrawer = () => {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(null);
+  const navigate = useNavigate();
   const { logout } = useAuth();
 
   const handleLogout = () => {

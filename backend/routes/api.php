@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RequestsController;
 use App\Http\Middleware\CheckAdminRole;
 use App\Http\Middleware\CheckUserRole;
 use App\Http\Middleware\RedirectGuest;
@@ -31,17 +32,10 @@ Route::put('/verify-otp', [UserController::class, 'resendOTP']);
 
 Route::post('/login', [LoginController::class, 'login']);
 
+Route::put('/update-phone', [UserController::class, 'updatePhoneNumber']);
 
-
-Route::middleware([CheckAdminRole::class])->group(function () {
-    // Admin-only routes
-    Route::get('/dashboard');
-});
-
-Route::middleware([CheckUserRole::class])->group(function () {
-    // Admin-only routes
-    Route::get('/request');
-    Route::get('/current-requests');
-    Route::get('/transactions');
-    Route::get('/account');
-});
+Route::get('current-request', [RequestsController::class, 'index']);
+Route::get('users/{id}', [RequestsController::class, 'show']);
+Route::post('service-request', [RequestsController::class, 'store']);
+Route::put('requestupdate/{id}', [RequestsController::class, 'update']);
+Route::delete('requestdelete/{id}', [RequestsController::class, 'destroy']);

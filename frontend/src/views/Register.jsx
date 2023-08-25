@@ -13,6 +13,7 @@ import HashLoader from "react-spinners/HashLoader";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useUser } from "../UserContext";
+import { useAuth } from "../AuthContext";
 
 const InputBox = ({
   value,
@@ -76,6 +77,22 @@ const Register = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const { setUser } = useUser();
+  const { userRole, isAuthenticated, userID } = useAuth();
+
+  useEffect(() => {
+    // If the user is already authenticated, redirect them to the appropriate page
+    if (isAuthenticated) {
+      if (userRole === "admin") {
+        navigate("/dashboard");
+      } else if (userRole === "user") {
+        navigate("/request");
+      }
+    }
+  }, [isAuthenticated, userRole, navigate]);
+
+  if (isAuthenticated) {
+    return null; // or return a loading message, or redirect immediately
+  }
 
   const registerUser = async (e) => {
     e.preventDefault();
@@ -282,7 +299,7 @@ const Register = () => {
                     onInvalid={(e) => {
                       if (e.target.validity.valueMissing) {
                         e.target.setCustomValidity(
-                          "Contact Number is requiredx."
+                          "Contact Number is required."
                         );
                       } else if (e.target.validity.patternMismatch) {
                         e.target.setCustomValidity(
