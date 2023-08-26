@@ -144,10 +144,10 @@ const CurrentRequests = () => {
     const selectedStatus = e.target.value;
 
     setSelectedStatusFilters((prevFilters) => {
-      if (prevFilters.includes(selectedStatus)) {
-        return prevFilters.filter((status) => status !== selectedStatus);
+      if (prevFilters.length === 1 && prevFilters[0] === selectedStatus) {
+        return []; // Unselect if the same option is clicked
       } else {
-        return [...prevFilters, selectedStatus];
+        return [selectedStatus];
       }
     });
   };
@@ -160,10 +160,10 @@ const CurrentRequests = () => {
     const selectedMode = e.target.value;
 
     setSelectedModeFilters((prevFilters) => {
-      if (prevFilters.includes(selectedMode)) {
-        return prevFilters.filter((mode) => mode !== selectedMode);
+      if (prevFilters.length === 1 && prevFilters[0] === selectedMode) {
+        return []; // Unselect if the same option is clicked
       } else {
-        return [...prevFilters, selectedMode];
+        return [selectedMode];
       }
     });
   };
@@ -306,9 +306,12 @@ const CurrentRequests = () => {
             </thead>
             <tbody>
               {data.length === 0 && (
-                <tr>
-                  <td colSpan="8">
-                    <Skeleton active />
+                <tr className="h-[50vh]">
+                  <td
+                    colSpan="8"
+                    className="p-3 text-lg text-gray-700 text-center"
+                  >
+                    No Records Yet.
                   </td>
                 </tr>
               )}
@@ -379,10 +382,10 @@ const CurrentRequests = () => {
                           <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
                             {item.dateUpdated}
                           </td>
-                          <td className="p-3 text-lg text-gray-700 flex gap-1">
+                          <td className="p-2 text-lg text-gray-700 flex gap-1 items-center justify-center">
                             <button
                               onClick={() => handleOpenModalClick(item.id)}
-                              className="text-white bg-blue-600 py-3 px-4 rounded-lg"
+                              className="text-white text-base bg-blue-600 py-2 px-4 rounded-lg"
                             >
                               View
                             </button>
@@ -409,7 +412,7 @@ const CurrentRequests = () => {
                             >
                               <button
                                 onClick={() => showPopconfirm(item.id)}
-                                className="text-white bg-red-700 py-3 px-4 rounded-lg"
+                                className="text-white text-base bg-red-700 py-2 px-4 rounded-lg"
                               >
                                 Delete
                               </button>
@@ -420,34 +423,23 @@ const CurrentRequests = () => {
                     }
                     return null;
                   })}
-              {records.length === 0 && (
-                <tr className="h-[50vh]">
-                  <td
-                    colSpan="8"
-                    className="p-3 text-lg text-gray-700 text-center"
-                  >
-                    No matching records found.
-                  </td>
-                </tr>
-              )}
+              {selectedModeFilters.length > 0 &&
+                !selectedModeFilters.some((selectedMode) =>
+                  records.some((item) => item.modeOfRequest === selectedMode)
+                ) && (
+                  <tr className="h-[50vh]">
+                    <td
+                      colSpan="8"
+                      className="p-3 text-lg text-gray-700 text-center"
+                    >
+                      No records found matching the selected filter.
+                    </td>
+                  </tr>
+                )}
               {selectedStatusFilters.length > 0 &&
-                records.filter(
-                  (item) =>
-                    (item.natureOfRequest
-                      .toLowerCase()
-                      .includes(searchQuery.toLowerCase()) ||
-                      item.assignedTo
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase()) ||
-                      item.modeOfRequest
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase()) ||
-                      item.dateRequested
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase())) &&
-                    selectedStatusFilters.includes(item.status) &&
-                    selectedModeFilters.includes(item.modeOfRequest)
-                ).length === 0 && (
+                !selectedStatusFilters.some((selectedStatus) =>
+                  records.some((item) => item.status === selectedStatus)
+                ) && (
                   <tr className="h-[50vh]">
                     <td
                       colSpan="8"
