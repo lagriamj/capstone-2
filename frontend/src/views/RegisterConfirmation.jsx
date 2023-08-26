@@ -297,7 +297,7 @@ const RegisterConfirmation = () => {
                 <p className="text-lg">
                   Wrong number?{" "}
                   <a
-                    className="underline text-main"
+                    className="underline text-main cursor-pointer"
                     onClick={() =>
                       navigate("/update-phone", {
                         state: {

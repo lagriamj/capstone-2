@@ -30,13 +30,13 @@ export default function CurrentRequestModal({ display, itemData, onClose }) {
   return (
     <>
       {display && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none landscape-modal">
-          <div className="relative w-auto max-w-screen-lg mx-auto my-6">
-            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-              <div className="bg-main p-3 rounded-t">
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-30 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none landscape-modal">
+          <div className="relative lg:w-[70%] w-[90%]  max-w-screen-lg mx-auto my-6">
+            <div className="border-0 rounded-2xl shadow-lg relative flex flex-col w-full h-[65vh] bg-white outline-none focus:outline-none">
+              <div className="bg-main p-3 flex items-center justify-center py-7 rounded-t-2xl">
                 {" "}
                 {/* Reduced padding */}
-                <h3 className="text-2xl font-semibold text-white">
+                <h3 className="text-2xl font-semibold ml-4  text-white">
                   Request Details
                 </h3>
                 <button
@@ -46,7 +46,7 @@ export default function CurrentRequestModal({ display, itemData, onClose }) {
                   {/* Button content */}
                 </button>
               </div>
-              <div className="p-3 flex-auto landscape-content grid grid-cols-3 gap-3">
+              <div className="p-3 flex-auto landscape-content lg:pl-20 place-content-center grid grid-cols-3 gap-3">
                 {" "}
                 {/* Reduced padding */}
                 {data

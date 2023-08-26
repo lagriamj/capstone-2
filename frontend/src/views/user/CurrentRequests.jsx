@@ -7,12 +7,43 @@ import { faSearch, faFilter } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
 import CurrentRequestModal from "../../components/CurrentRequestModal";
+import { Popconfirm } from "antd";
+import { QuestionCircleOutlined } from "@ant-design/icons";
+import { message } from "antd";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const CurrentRequests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { userID } = useAuth();
   console.log("userID:", userID);
   const [selectedItemId, setSelectedItemId] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [popconfirmVisible, setPopconfirmVisible] = useState([]);
+  const location = useLocation();
+  const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const locationState = location.state;
+
+    if (locationState && locationState.successMessage) {
+      setDisplaySuccessMessage(true);
+      navigate("/current-requests"); // Clear the location state from the URL
+    }
+  }, []);
+
+  useEffect(() => {
+    if (displaySuccessMessage) {
+      // Display the success message using Ant Design message component
+      const successMessage = message.success("Requested Successfully");
+
+      // Close the message after a certain duration
+      setTimeout(() => {
+        successMessage(); // Close the message
+      }, 5000); // Duration of 5 seconds
+    }
+  }, [displaySuccessMessage]);
 
   const handleOpenModalClick = (id) => {
     setSelectedItemId(id);
@@ -55,6 +86,40 @@ const CurrentRequests = () => {
     } catch (err) {
       console.log("Something went wrong:", err);
     }
+  };
+
+  useEffect(() => {
+    // Initialize popconfirmVisible state with false for each row
+    setPopconfirmVisible(new Array(data.length).fill(false));
+  }, [data]);
+
+  const showPopconfirm = (id) => {
+    setOpen(true);
+    const popconfirmVisibleCopy = [...popconfirmVisible];
+    popconfirmVisibleCopy[id] = true;
+    setPopconfirmVisible(popconfirmVisibleCopy);
+    setTimeout(() => {
+      setOpen(false);
+      setConfirmLoading(false);
+      setPopconfirmVisible(false);
+    }, 5000);
+  };
+
+  const handleOk = (item) => {
+    setConfirmLoading(true);
+    handleDelete(item);
+    handleCancel(item);
+    setTimeout(() => {
+      setOpen(false);
+      setConfirmLoading(false);
+    }, 2000);
+  };
+
+  const handleCancel = (index) => {
+    setOpen(false);
+    const popconfirmVisibleCopy = [...popconfirmVisible];
+    popconfirmVisibleCopy[index] = false;
+    setPopconfirmVisible(popconfirmVisibleCopy);
   };
 
   const handleDelete = async (id) => {
@@ -120,7 +185,7 @@ const CurrentRequests = () => {
   return (
     <div className="flex flex-col lg:flex-row bg-gray-200 h-screen lg:pl-20 lg:items-start items-center">
       {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
-      <div className=" overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] mt-28 lg:mt-10 h-4/5 pb-10 bg-white shadow-xl  lg:ml-80  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
+      <div className=" overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] relative mt-28 lg:mt-10 h-4/5 pb-10 bg-white shadow-xl  lg:ml-80  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
         <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
           <h1 className="font-sans lg:text-3xl text-xl mt-8 ml-5 mr-auto tracking-wide">
             Request
@@ -157,19 +222,20 @@ const CurrentRequests = () => {
                   <div className="relative inline-block">
                     <button
                       onClick={toggleModeDropdown}
-                      className="text-blue-500 focus:outline-none ml-2"
+                      className="text-main focus:outline-none ml-2"
                       style={{ backgroundColor: "transparent", border: "none" }}
                     >
                       <FontAwesomeIcon icon={faFilter} className="h-4 w-4" />
                     </button>
                     {isModeDropdownOpen && (
-                      <div className="absolute right-0 bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
+                      <div className="absolute right-0 overflow-auto bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
                         <label className="block px-4 py-2">
                           <input
                             type="checkbox"
                             value="Walk-In"
                             checked={selectedModeFilters.includes("Walk-In")}
                             onChange={handleModeCheckboxChange}
+                            className="mr-2"
                           />
                           Walk-In
                         </label>
@@ -179,6 +245,7 @@ const CurrentRequests = () => {
                             value="Online"
                             checked={selectedModeFilters.includes("Online")}
                             onChange={handleModeCheckboxChange}
+                            className="mr-2"
                           />
                           Online
                         </label>
@@ -192,19 +259,20 @@ const CurrentRequests = () => {
                   <div className="relative inline-block">
                     <button
                       onClick={toggleStatusDropdown}
-                      className="text-blue-500 focus:outline-none ml-2"
+                      className="text-main focus:outline-none ml-2"
                       style={{ backgroundColor: "transparent", border: "none" }}
                     >
                       <FontAwesomeIcon icon={faFilter} className="h-4 w-4" />
                     </button>
                     {isStatusDropdownOpen && (
-                      <div className="absolute right-0 bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
+                      <div className="absolute right-0 bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg text-start">
                         <label className="block px-4 py-2">
                           <input
                             type="checkbox"
                             value="Pending"
                             checked={selectedStatusFilters.includes("Pending")}
                             onChange={handleStatusCheckboxChange}
+                            className="mr-2"
                           />
                           Pending
                         </label>
@@ -216,6 +284,7 @@ const CurrentRequests = () => {
                               "On Process"
                             )}
                             onChange={handleStatusCheckboxChange}
+                            className="mr-2"
                           />
                           On Process
                         </label>
@@ -276,10 +345,10 @@ const CurrentRequests = () => {
                           {item.modeOfRequest}
                         </td>
                         <td
-                          className={`px-4 py-2 text-lg text-center whitespace-nowrap cursor-pointer`}
+                          className={`px-4 py-2 text-base text-center whitespace-nowrap`}
                         >
                           <p
-                            className={` rounded-lg py-3 ${
+                            className={` rounded-xl py-2 ${
                               item.status === "Pending"
                                 ? "bg-red-500 text-white" // Apply red background and white text for Pending
                                 : item.status === "On Process"
@@ -306,18 +375,76 @@ const CurrentRequests = () => {
                             View
                           </button>
 
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            className="text-white bg-red-700 py-3 px-4 rounded-lg"
+                          <Popconfirm
+                            placement="left"
+                            title="Delete the request"
+                            description="Are you sure to delete this request?"
+                            open={popconfirmVisible[item.id]}
+                            icon={
+                              <QuestionCircleOutlined
+                                style={{ color: "red" }}
+                              />
+                            }
+                            onConfirm={() => handleOk(item.id)}
+                            okButtonProps={{
+                              loading: confirmLoading,
+                              color: "red",
+                              className: "text-black border-1 border-gray-300",
+                            }}
+                            onCancel={() => handleCancel(item.id)}
+                            okText="Yes"
                           >
-                            Delete
-                          </button>
+                            <button
+                              onClick={() => showPopconfirm(item.id)}
+                              className="text-white bg-red-700 py-3 px-4 rounded-lg"
+                            >
+                              Delete
+                            </button>
+                          </Popconfirm>
                         </td>
                       </tr>
                     );
                   }
                   return null;
                 })}
+              {records.length === 0 && (
+                <tr className="h-[50vh]">
+                  <td
+                    colSpan="8"
+                    className="p-3 text-lg text-gray-700 text-center"
+                  >
+                    No matching records found.
+                  </td>
+                </tr>
+              )}
+              {selectedStatusFilters.length > 0 &&
+                records.filter(
+                  (item) =>
+                    (item.natureOfRequest
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase()) ||
+                      item.assignedTo
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase()) ||
+                      item.modeOfRequest
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase()) ||
+                      item.dateRequested
+                        .toLowerCase()
+                        .includes(searchQuery.toLowerCase())) &&
+                    selectedStatusFilters.includes(item.status) &&
+                    (selectedModeFilters.length === 0 ||
+                      selectedModeFilters.includes(item.modeOfRequest))
+                ).length === 0 && (
+                  <tr className="h-[50vh]">
+                    <td
+                      colSpan="8"
+                      className="p-3 text-lg text-gray-700 text-center"
+                    >
+                      No records found matching the selected filter.
+                    </td>
+                  </tr>
+                )}
             </tbody>
             {selectedItemId && (
               <CurrentRequestModal
@@ -327,13 +454,13 @@ const CurrentRequests = () => {
               />
             )}
           </table>
-          <nav className="absolute bottom-20 right-16">
+          <nav className="absolute bottom-10 right-10">
             <ul className="flex gap-2">
               <li>
                 <a
                   href="#"
                   onClick={prePage}
-                  className="pagination-link bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
                 >
                   Previous
                 </a>
@@ -343,7 +470,7 @@ const CurrentRequests = () => {
                   <a
                     href="#"
                     onClick={() => changeCPage(n)}
-                    className="pagination-link bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
                   >
                     {n}
                   </a>
@@ -353,7 +480,7 @@ const CurrentRequests = () => {
                 <a
                   href="#"
                   onClick={nextPage}
-                  className="pagination-link bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
                 >
                   Next
                 </a>
