@@ -9,7 +9,7 @@ import { useAuth } from "../../AuthContext";
 import CurrentRequestModal from "../../components/CurrentRequestModal";
 import { Popconfirm } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
-import { message } from "antd";
+import { message, Skeleton, Table } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const CurrentRequests = () => {
@@ -23,6 +23,7 @@ const CurrentRequests = () => {
   const location = useLocation();
   const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const locationState = location.state;
@@ -304,109 +305,121 @@ const CurrentRequests = () => {
               </tr>
             </thead>
             <tbody>
-              {records
-                .filter(
-                  (item) =>
-                    (item.natureOfRequest
-                      .toLowerCase()
-                      .includes(searchQuery.toLowerCase()) ||
-                      item.assignedTo
+              {data.length === 0 && (
+                <tr>
+                  <td colSpan="8">
+                    <Skeleton active />
+                  </td>
+                </tr>
+              )}
+              {data.length > 0 &&
+                records
+                  .filter(
+                    (item) =>
+                      (item.natureOfRequest
                         .toLowerCase()
                         .includes(searchQuery.toLowerCase()) ||
-                      item.modeOfRequest
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase()) ||
-                      item.dateRequested
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase())) &&
-                    (selectedStatusFilters.length === 0 ||
-                      selectedStatusFilters.includes(item.status)) &&
-                    (selectedModeFilters.length === 0 ||
-                      selectedModeFilters.includes(item.modeOfRequest))
-                )
-                .map((item, index) => {
-                  const rowIndex = firstIndex + index + 1;
-                  if (
-                    selectedStatusFilters.length === 0 ||
-                    selectedStatusFilters.includes(item.status)
-                  ) {
-                    return (
-                      <tr className="border-b-2 border-gray-200" key={item.id}>
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                          {rowIndex}
-                        </td>
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                          {item.natureOfRequest}
-                        </td>
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                          {item.assignedTo}
-                        </td>
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                          {item.modeOfRequest}
-                        </td>
-                        <td
-                          className={`px-4 py-2 text-base text-center whitespace-nowrap`}
+                        item.assignedTo
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase()) ||
+                        item.modeOfRequest
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase()) ||
+                        item.dateRequested
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase())) &&
+                      (selectedStatusFilters.length === 0 ||
+                        selectedStatusFilters.includes(item.status)) &&
+                      (selectedModeFilters.length === 0 ||
+                        selectedModeFilters.includes(item.modeOfRequest))
+                  )
+                  .map((item, index) => {
+                    const rowIndex = firstIndex + index + 1;
+                    if (
+                      selectedStatusFilters.length === 0 ||
+                      selectedStatusFilters.includes(item.status)
+                    ) {
+                      return (
+                        <tr
+                          className="border-b-2 border-gray-200"
+                          key={item.id}
                         >
-                          <p
-                            className={` rounded-xl py-2 ${
-                              item.status === "Pending"
-                                ? "bg-red-500 text-white" // Apply red background and white text for Pending
-                                : item.status === "On Process"
-                                ? "bg-yellow-500 text-white" // Apply yellow background and white text for Process
-                                : item.status === "Fixed"
-                                ? "bg-green-500 text-white" // Apply green background and white text for Done
-                                : "bg-gray-200 text-gray-700" // Default background and text color (if none of the conditions match)
-                            }`}
+                          <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                            {rowIndex}
+                          </td>
+                          <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                            {item.natureOfRequest}
+                          </td>
+                          <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                            {item.assignedTo}
+                          </td>
+                          <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                            {item.modeOfRequest}
+                          </td>
+                          <td
+                            className={`px-4 py-2 text-base text-center whitespace-nowrap`}
                           >
-                            {item.status}
-                          </p>
-                        </td>
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                          {item.dateRequested}
-                        </td>
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                          {item.dateUpdated}
-                        </td>
-                        <td className="p-3 text-lg text-gray-700 flex gap-1">
-                          <button
-                            onClick={() => handleOpenModalClick(item.id)}
-                            className="text-white bg-blue-600 py-3 px-4 rounded-lg"
-                          >
-                            View
-                          </button>
-
-                          <Popconfirm
-                            placement="left"
-                            title="Delete the request"
-                            description="Are you sure to delete this request?"
-                            open={popconfirmVisible[item.id]}
-                            icon={
-                              <QuestionCircleOutlined
-                                style={{ color: "red" }}
-                              />
-                            }
-                            onConfirm={() => handleOk(item.id)}
-                            okButtonProps={{
-                              loading: confirmLoading,
-                              color: "red",
-                              className: "text-black border-1 border-gray-300",
-                            }}
-                            onCancel={() => handleCancel(item.id)}
-                            okText="Yes"
-                          >
-                            <button
-                              onClick={() => showPopconfirm(item.id)}
-                              className="text-white bg-red-700 py-3 px-4 rounded-lg"
+                            <p
+                              className={` rounded-xl py-2 ${
+                                item.status === "Pending"
+                                  ? "bg-red-500 text-white" // Apply red background and white text for Pending
+                                  : item.status === "On Process"
+                                  ? "bg-yellow-500 text-white" // Apply yellow background and white text for Process
+                                  : item.status === "Fixed"
+                                  ? "bg-green-500 text-white" // Apply green background and white text for Done
+                                  : "bg-gray-200 text-gray-700" // Default background and text color (if none of the conditions match)
+                              }`}
                             >
-                              Delete
+                              {item.status}
+                            </p>
+                          </td>
+                          <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                            {item.dateRequested}
+                          </td>
+                          <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                            {item.dateUpdated}
+                          </td>
+                          <td className="p-3 text-lg text-gray-700 flex gap-1">
+                            <button
+                              onClick={() => handleOpenModalClick(item.id)}
+                              className="text-white bg-blue-600 py-3 px-4 rounded-lg"
+                            >
+                              View
                             </button>
-                          </Popconfirm>
-                        </td>
-                      </tr>
-                    );
-                  }
-                  return null;
-                })}
+
+                            <Popconfirm
+                              placement="left"
+                              title="Delete the request"
+                              description="Are you sure to delete this request?"
+                              open={popconfirmVisible[item.id]}
+                              icon={
+                                <QuestionCircleOutlined
+                                  style={{ color: "red" }}
+                                />
+                              }
+                              onConfirm={() => handleOk(item.id)}
+                              okButtonProps={{
+                                loading: confirmLoading,
+                                color: "red",
+                                className:
+                                  "text-black border-1 border-gray-300",
+                              }}
+                              onCancel={() => handleCancel(item.id)}
+                              okText="Yes"
+                            >
+                              <button
+                                onClick={() => showPopconfirm(item.id)}
+                                className="text-white bg-red-700 py-3 px-4 rounded-lg"
+                              >
+                                Delete
+                              </button>
+                            </Popconfirm>
+                          </td>
+                        </tr>
+                      );
+                    }
+                    return null;
+                  })}
               {records.length === 0 && (
                 <tr className="h-[50vh]">
                   <td
@@ -433,8 +446,7 @@ const CurrentRequests = () => {
                         .toLowerCase()
                         .includes(searchQuery.toLowerCase())) &&
                     selectedStatusFilters.includes(item.status) &&
-                    (selectedModeFilters.length === 0 ||
-                      selectedModeFilters.includes(item.modeOfRequest))
+                    selectedModeFilters.includes(item.modeOfRequest)
                 ).length === 0 && (
                   <tr className="h-[50vh]">
                     <td
