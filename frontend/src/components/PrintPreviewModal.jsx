@@ -19,38 +19,8 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
     }
   };
 
-  const checkboxes = [
-    {
-      label: "System/Prog. Revision/update",
-      value: "System/Prog. Revision/update",
-    },
-    { label: "Recompile", value: "Recompile" },
-    { label: "New/Update System User", value: "New/Update System User" },
-    { label: "Data/Record Update", value: "Data/Record Update" },
-    { label: "Data/Record Encoding", value: "Data/Record Encoding" },
-    { label: "Data/Record Printing", value: "Data/Record Printing" },
-    { label: "Check-up & Repair", value: "Data/Record Printing" },
-    { label: "Preventive Maintenance", value: "Preventive Maintenance" },
-    { label: "HW Installation", value: "HW Installation" },
-    { label: "HW Relocation", value: "HW Relocation" },
-    { label: "Cable Installation/Maint.", value: "Cable Installation/Maint." },
-    {
-      label: "SW Installation/Maintenance",
-      value: "SW Installation/Maintenance",
-    },
-    { label: "Technical Evaluation", value: "Technical Evaluation" },
-    { label: "Technical Specs", value: "Technical Specs" },
-    { label: "Technical Assist.", value: "Technical Assist." },
-    {
-      label: "Internet Connection/Config.",
-      value: "Internet Connection/Config.",
-    },
-    { label: "LAN Connection/Config.", value: "LAN Connection/Config." },
-    { label: "IP PBX / Phone", value: "IP PBX / Phone" },
-    { label: "Email", value: "Email" },
-    { label: "Back-up", value: "Back-up" },
-    { label: "IP Address Request", value: "IP Address Request" },
-  ];
+  const natureOfRerquest = itemData.natureOfRequest;
+  console.log(natureOfRerquest);
 
   return (
     <Modal
@@ -175,27 +145,57 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
             <div className="text-lg font-medium p-2">NATURE OF REQUEST:</div>
             <div className="font-medium text-base">
               <label className="block px-4 ">
-                <input type="checkbox" value="Online" className="mr-2" />
+                <input
+                  type="checkbox"
+                  value="System/Prog. Revision/update"
+                  className="mr-2"
+                  checked={natureOfRerquest === "System/Prog. Revision/update"}
+                />
                 System/Prog. Revision/update
               </label>
               <label className="block px-4 ">
-                <input type="checkbox" value="Online" className="mr-2" />
+                <input
+                  type="checkbox"
+                  value="Recompile"
+                  className="mr-2"
+                  checked={natureOfRerquest === "Recompile"}
+                />
                 Recompile
               </label>
               <label className="block px-4 ">
-                <input type="checkbox" value="Online" className="mr-2" />
+                <input
+                  type="checkbox"
+                  value="New/Update System User"
+                  className="mr-2"
+                  checked={natureOfRerquest === "New/Update System User"}
+                />
                 New/Update System User
               </label>
               <label className="block px-4 ">
-                <input type="checkbox" value="Online" className="mr-2" />
+                <input
+                  type="checkbox"
+                  value="Data/Record Update"
+                  className="mr-2"
+                  checked={natureOfRerquest === "Data/Record Update"}
+                />
                 Data/Record Update
               </label>
               <label className="block px-4 ">
-                <input type="checkbox" value="Online" className="mr-2" />
+                <input
+                  type="checkbox"
+                  value="Data/Record Encoding"
+                  className="mr-2"
+                  checked={natureOfRerquest === "Data/Record Encoding"}
+                />
                 Data/Record Encoding
               </label>
               <label className="block px-4 ">
-                <input type="checkbox" value="Online" className="mr-2" />
+                <input
+                  type="checkbox"
+                  value="Data/Record Printing"
+                  className="mr-2"
+                  checked={natureOfRerquest === "Data/Record Printing"}
+                />
                 Data/Record Printing
               </label>
               <div className="flex pb-1 mr-2 px-4">
@@ -209,68 +209,143 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
             <div className="font-medium text-base">
               <div className="flex">
                 <label className="block px-4 ">
-                  <input type="checkbox" value="Online" className="mr-2" />
+                  <input
+                    type="checkbox"
+                    value="Check-Up & Repair"
+                    className="mr-2"
+                    checked={natureOfRerquest === "Check-Up & Repair"}
+                  />
                   Check-up & Repair
                 </label>
                 <label className="block  ">
-                  <input type="checkbox" value="Online" className="mr-2" />
+                  <input
+                    type="checkbox"
+                    value="Technical Specs"
+                    className="mr-2"
+                    checked={natureOfRerquest === "Technical Specs"}
+                  />
                   Technical Specs
                 </label>
               </div>
               <div className="flex">
                 <label className="block px-4 ">
-                  <input type="checkbox" value="Online" className="mr-2" />
+                  <input
+                    type="checkbox"
+                    value="Preventive Maintenance"
+                    className="mr-2"
+                    checked={natureOfRerquest === "Preventive Maintenance"}
+                  />
                   Preventive Maintenance
                 </label>
                 <label className="block  ">
-                  <input type="checkbox" value="Online" className="mr-2" />
+                  <input
+                    type="checkbox"
+                    value="Technical Assist."
+                    className="mr-2"
+                    checked={natureOfRerquest === "Technical Assist."}
+                  />
                   Technical Assist.
                 </label>
               </div>
               <label className="block px-4 ">
-                <input type="checkbox" value="Online" className="mr-2" />
+                <input
+                  type="checkbox"
+                  value="HW Installation"
+                  className="mr-2"
+                  checked={natureOfRerquest === "HW Installation"}
+                />
                 HW Installation
               </label>
               <label className="block px-4 ">
-                <input type="checkbox" value="Online" className="mr-2" />
+                <input
+                  type="checkbox"
+                  value="HW Relocation"
+                  className="mr-2"
+                  checked={natureOfRerquest === "HW Relocation"}
+                />
                 HW Relocation
               </label>
               <label className="block px-4">
-                <input type="checkbox" value="Online" className="mr-2" />
+                <input
+                  type="checkbox"
+                  value="Cable Installation/Maint."
+                  className="mr-2"
+                  checked={natureOfRerquest === "Cable Installation/Maint."}
+                />
                 Cable Installation/Maint.
               </label>
               <label className="block px-4 ">
-                <input type="checkbox" value="Online" className="mr-2" />
+                <input
+                  type="checkbox"
+                  value="SW Installation/Maintenance"
+                  className="mr-2"
+                  checked={natureOfRerquest === "SW Installation/Maintenance"}
+                />
                 SW Installation/Maintenance
               </label>
               <label className="block px-4 ">
-                <input type="checkbox" value="Online" className="mr-2" />
+                <input
+                  type="checkbox"
+                  value="Technical Evaluation"
+                  className="mr-2"
+                  checked={natureOfRerquest === "Technical Evaluation"}
+                />
                 Technical Evaluation
               </label>
             </div>
             <div className="font-medium text-base">
               <label className="block px-4 ">
-                <input type="checkbox" value="Online" className="mr-2" />
+                <input
+                  type="checkbox"
+                  value="Internet Connection/Config."
+                  className="mr-2"
+                  checked={natureOfRerquest === "Internet Connection/Config."}
+                />
                 Internet Connection/Config.
               </label>
               <label className="block px-4 ">
-                <input type="checkbox" value="Online" className="mr-2" />
+                <input
+                  type="checkbox"
+                  value="LAN Connection/Config."
+                  className="mr-2"
+                  checked={natureOfRerquest === "LAN Connection/Config."}
+                />
                 LAN Connection/Config.
               </label>
               <label className="block px-4 ">
-                <input type="checkbox" value="Online" className="mr-2" />
+                <input
+                  type="checkbox"
+                  value="IP PBX / Phone"
+                  className="mr-2"
+                  checked={natureOfRerquest === "IP PBX / Phone"}
+                />
                 IP PBX / Phone
               </label>
               <label className="block px-4 ">
-                <input type="checkbox" value="Online" className="mr-2" />
+                <input
+                  type="checkbox"
+                  value="Email"
+                  className="mr-2"
+                  checked={natureOfRerquest === "Email"}
+                />
                 Email
               </label>
               <label className="block px-4 ">
-                <input type="checkbox" value="Online" className="mr-2" />
+                <input
+                  type="checkbox"
+                  value="Back-up"
+                  className="mr-2"
+                  checked={natureOfRerquest === "Back-up"}
+                />
                 Back-up
               </label>
               <label className="block px-4 ">
-                <input type="checkbox" value="Online" className="mr-2" />
+                <input
+                  type="checkbox"
+                  value="Online"
+                  className="mr-2"
+                  checked={natureOfRerquest === "IP Address Request"}
+                />
                 IP Address Request
               </label>
               <div className="flex pb-1 mr-2 px-4">
@@ -318,7 +393,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                 <div className="w-[60%] flex flex-col border-2 border-black">
                   <div className="text-center border-b-2  border-black text-black w-full">
                     <label htmlFor="" className=" w-full">
-                      Data here
+                      {itemData.authorizedBy}
                     </label>
                   </div>
                   <div className="text-center ">
