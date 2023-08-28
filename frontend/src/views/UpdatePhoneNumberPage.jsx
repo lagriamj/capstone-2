@@ -1,24 +1,51 @@
-// Inside UpdatePhoneNumberPage component
 import { faPhone, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import HashLoader from "react-spinners/HashLoader";
 import axios from "axios";
+import { useAuth } from "../AuthContext";
 
 const UpdatePhoneNumberPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
-  const userID = location.state?.userID;
+  const userId = location.state?.userID;
   const [loading, setLoading] = useState(false);
-  console.log(userID);
+  const { userRole, isAuthenticated, userID, login } = useAuth();
+  console.log(userId);
+
+  useEffect(() => {
+    // If the user is already authenticated, redirect them to the appropriate page
+    if (isAuthenticated) {
+      if (userRole === "admin") {
+        navigate("/dashboard");
+      } else if (userRole === "user") {
+        navigate("/request");
+      }
+    }
+  }, [isAuthenticated, userRole, navigate]);
+
+  if (isAuthenticated) {
+    return null; // or return a loading message, or redirect immediately
+  }
+
+  useEffect(() => {
+    // If the user is coming from the update-phone page (using userID), proceed to verification
+    if (!location.state || (!location.state.user && !location.state.userID)) {
+      navigate("/login"); // Redirect to login if not coming from login, register, or update-phone page
+    }
+  }, [navigate, location.state]);
+
+  if (!location.state || (!location.state.user && !location.state.userID)) {
+    return null; // Return null if not coming from login, register, or update-phone page
+  }
 
   const handleUpdatePhoneNumber = async (e) => {
     e.preventDefault();
 
     const response = await axios.put(`http://127.0.0.1:8000/api/update-phone`, {
-      userID: !userID ? location.state.userID : userID,
+      userID: !userId ? location.state.userID : userId,
       newContactNumber: newPhoneNumber,
     });
     console.log(response);
@@ -26,7 +53,7 @@ const UpdatePhoneNumberPage = () => {
     if (response.status === 200) {
       navigate("/verify-otp", {
         state: {
-          userID: !userID ? location.state.userID : userID,
+          userID: !userId ? location.state.userID : userId,
           contactNumber: newPhoneNumber,
           successMessage: "Updated Successfully!",
         },
@@ -64,7 +91,7 @@ const UpdatePhoneNumberPage = () => {
             onClick={() =>
               navigate("/verify-otp", {
                 state: {
-                  userID: userID,
+                  userID: userId,
                 },
               })
             }

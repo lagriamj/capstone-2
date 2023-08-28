@@ -27,6 +27,8 @@ class LoginController extends Controller
                         'success' => true,
                         'userID' => $user->userID,
                         'role' => $user->role,
+                        'firstName' => $user->userFirstName,
+                        'lastName' => $user->userLastName,
                         'userStatus' => 'verified',
                     ]);
                 } else {

@@ -136,7 +136,11 @@ const RegisterConfirmation = () => {
     try {
       const response = await axios.post(
         `http://127.0.0.1:8000/api/verify-otp`,
-        { action: "confirm", otpCode, userId: location.state.userID }
+        {
+          action: "confirm",
+          otpCode,
+          userId: !userId ? location.state.userID : userId,
+        }
       );
 
       if (response.status === 200) {
@@ -151,6 +155,7 @@ const RegisterConfirmation = () => {
           },
         });
       } else {
+        console.log(response);
         console.error(response.data.error);
         // Handle specific OTP error here
         setLoading(false);
@@ -179,7 +184,7 @@ const RegisterConfirmation = () => {
       const response = await axios.put(`http://127.0.0.1:8000/api/verify-otp`, {
         action: "resend",
         otpCode,
-        userId: location.state.userID,
+        userId: !userId ? location.state.userID : userId,
       });
 
       console.log(response);

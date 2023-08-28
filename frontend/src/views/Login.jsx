@@ -36,7 +36,6 @@ function Login() {
     return null; // or return a loading message, or redirect immediately
   }
 
-
   useEffect(() => {
     const locationState = location.state;
 
@@ -80,7 +79,13 @@ function Login() {
 
       if (response.status === 200) {
         console.log(data.userID);
-        login(data.role, data.userID, data.userStatus);
+        login(
+          data.role,
+          data.userID,
+          data.userStatus,
+          data.firstName,
+          data.lastName
+        );
         //setUserID(data.userID);
         setRole(data.role);
         setUserStatus(data.userStatus);

@@ -24,6 +24,7 @@ const CurrentRequests = () => {
   const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [isSingleRequest, setIsSingleRequest] = useState(false);
 
   useEffect(() => {
     const locationState = location.state;
@@ -74,6 +75,7 @@ const CurrentRequests = () => {
 
   const fetchData = async () => {
     try {
+      setLoading(true);
       const result = await axios.get(
         "http://127.0.0.1:8000/api/current-request",
         {
@@ -84,8 +86,13 @@ const CurrentRequests = () => {
       );
 
       setData(result.data.results);
+      setIsSingleRequest(result.data.results.length === 1);
+      setLoading(false);
     } catch (err) {
       console.log("Something went wrong:", err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -205,7 +212,11 @@ const CurrentRequests = () => {
             />
           </div>
         </div>
-        <div className="overflow-auto rounded-lg w-full">
+        <div
+          className={`overflow-auto ${
+            isSingleRequest ? "min-h-[20vh]" : ""
+          } rounded-lg w-full`}
+        >
           <table className="w-full ">
             <thead className="bg-gray-50 border-b-2 border-gray-200">
               <tr className="border-b-2 border-gray-100">
@@ -255,7 +266,9 @@ const CurrentRequests = () => {
                   </div>
                 </th>
 
-                <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                <th
+                  className={`px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap`}
+                >
                   Status
                   <div className="relative inline-block">
                     <button
@@ -305,7 +318,13 @@ const CurrentRequests = () => {
               </tr>
             </thead>
             <tbody>
-              {data.length === 0 && (
+              {loading ? (
+                <tr className="">
+                  <td colSpan="8">
+                    <Skeleton active />
+                  </td>
+                </tr>
+              ) : data.length === 0 ? (
                 <tr className="h-[50vh]">
                   <td
                     colSpan="8"
@@ -314,8 +333,7 @@ const CurrentRequests = () => {
                     No Records Yet.
                   </td>
                 </tr>
-              )}
-              {data.length > 0 &&
+              ) : (
                 records
                   .filter(
                     (item) =>
@@ -406,6 +424,10 @@ const CurrentRequests = () => {
                                 color: "red",
                                 className:
                                   "text-black border-1 border-gray-300",
+                                size: "large",
+                              }}
+                              cancelButtonProps={{
+                                size: "large",
                               }}
                               onCancel={() => handleCancel(item.id)}
                               okText="Yes"
@@ -422,7 +444,8 @@ const CurrentRequests = () => {
                       );
                     }
                     return null;
-                  })}
+                  })
+              )}
               {selectedModeFilters.length > 0 &&
                 !selectedModeFilters.some((selectedMode) =>
                   records.some((item) => item.modeOfRequest === selectedMode)
@@ -450,6 +473,7 @@ const CurrentRequests = () => {
                   </tr>
                 )}
             </tbody>
+
             {selectedItemId && (
               <CurrentRequestModal
                 display={true}

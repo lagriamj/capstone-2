@@ -1,6 +1,12 @@
 import React from "react";
+import PrintPreviewModal from "./PrintPreviewModal";
+import { useState } from "react";
+import Modal from "antd/es/modal/Modal";
 
 export default function CurrentRequestModal({ display, itemData, onClose }) {
+  const [isPrintPreviewModalVisible, setIsPrintPreviewModalVisible] =
+    useState(false);
+
   const renderDataRow = (label, value) => (
     <div className="mb-3">
       {" "}
@@ -27,53 +33,53 @@ export default function CurrentRequestModal({ display, itemData, onClose }) {
   const numRows = 3;
   const numCols = 4;
 
+  const footerContent = (
+    <div>
+      <button
+        className="bg-red-800 text-white rounded-lg px-4 py-2"
+        onClick={onClose}
+      >
+        Close
+      </button>
+    </div>
+  );
+
   return (
     <>
-      {display && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-30 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none landscape-modal">
-          <div className="relative lg:w-[70%] w-[90%]  max-w-screen-lg mx-auto my-6">
-            <div className="border-0 rounded-2xl shadow-lg relative flex flex-col w-full h-[65vh] bg-white outline-none focus:outline-none">
-              <div className="bg-main p-3 flex items-center justify-center py-7 rounded-t-2xl">
-                {" "}
-                {/* Reduced padding */}
-                <h3 className="text-2xl font-semibold ml-4  text-white">
-                  Request Details
-                </h3>
-                <button
-                  className="p-2 ml-auto bg-transparent border-0 text-gray-700 opacity-5 float-right text-2xl leading-none font-semibold outline-none focus:outline-none"
-                  onClick={onClose}
-                >
-                  {/* Button content */}
-                </button>
-              </div>
-              <div className="p-3 flex-auto landscape-content lg:pl-20 place-content-center grid grid-cols-3 gap-3">
-                {" "}
-                {/* Reduced padding */}
-                {data
-                  .slice(0, numRows * numCols)
-                  .map(({ label, value }, index) => (
-                    <div key={index}>{renderDataRow(label, value)}</div>
-                  ))}
-              </div>
-              <div className="flex items-center justify-end p-3 border-t border-solid border-gray-300 rounded-b">
-                {" "}
-                {/* Reduced padding */}
-                <button
-                  className="text-red-500 background-transparent font-bold uppercase px-3 py-2 text-sm outline-none focus:outline-none mr-2 mb-2 ease-linear transition-all duration-150"
-                  type="button"
-                  onClick={onClose}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
+      <Modal
+        open={display}
+        onCancel={onClose}
+        width="50%"
+        footer={footerContent}
+      >
+        <div className="border-0 rounded-2xl shadow-lg relative flex flex-col w-full h-[65vh] bg-white outline-none focus:outline-none">
+          <div className="bg-main p-3 flex items-center justify-center py-7 rounded-t-2xl">
+            {" "}
+            {/* Reduced padding */}
+            <h3 className="text-2xl font-semibold ml-4  text-white">
+              Request Details
+            </h3>
+            <button
+              onClick={() => setIsPrintPreviewModalVisible(true)}
+              className="text-main bg-white rounded-lg  hover:bg-opacity-95 font-bold uppercase px-3 flex ml-auto py-4 mr-4 text-sm outline-none focus:outline-none ease-linear transition-all duration-150"
+            >
+              Print Preview
+            </button>
+            <PrintPreviewModal
+              visible={isPrintPreviewModalVisible}
+              onClose={() => setIsPrintPreviewModalVisible(false)}
+              itemData={itemData}
+            />
+          </div>
+          <div className="p-3 flex-auto landscape-content lg:pl-20 place-content-center grid grid-cols-3 gap-3">
+            {" "}
+            {/* Reduced padding */}
+            {data.slice(0, numRows * numCols).map(({ label, value }, index) => (
+              <div key={index}>{renderDataRow(label, value)}</div>
+            ))}
           </div>
         </div>
-      )}
-      <div
-        className={`fixed inset-0 z-40 ${display ? "block" : "hidden"}`}
-        onClick={onClose}
-      ></div>
+      </Modal>
     </>
   );
 }

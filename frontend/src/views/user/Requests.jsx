@@ -165,8 +165,10 @@ const Requests = () => {
                 defaultValue={""}
               >
                 <option value="">Select an option...</option>
-                <option value="Check-Up">Check Up</option>
-                <option value="Repair">Repair</option>
+                <option value="Check-Up & Repair">Check Up & Repair</option>
+                <option value="Preventive Maintenance">
+                  Preventive Maintenance
+                </option>
               </select>
             </div>
             <div className="flex flex-col w-full lg:w-1/4">

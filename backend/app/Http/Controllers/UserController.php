@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Twilio\Rest\Client;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -23,7 +24,7 @@ class UserController extends Controller
         ]);
 
         $otpCode = mt_rand(100000, 999999);
-        $otpExpiration = now()->addMinutes(15);
+        $otpExpiration = now()->addMinutes(10);
         $maxPasswordLength = 50;
 
         $user = new User();
@@ -169,5 +170,49 @@ class UserController extends Controller
         $user->save();
 
         return response()->json(['message' => 'Contact number updated successfully']);
+    }
+
+    public function accountDetails(Request $request)
+    {
+        $userID = $request->input('userID');
+        $query = User::query();
+
+        if ($userID) {
+            $query->where('userID', $userID);
+        }
+
+        $requests = $query->get();
+
+        return response()->json([
+            'results' => $requests
+        ], 200);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $currentPassword = $request->input('userPassword');
+        $newPassword = $request->input('newPassword');
+        $newFirstName = $request->input('userFirstName');
+        $newLastName = $request->input('userLastName');
+        $newEmail = $request->input('userEmail');
+        $userID = $request->input('userID');
+        $user = User::find($userID);
+
+        if (!empty($currentPassword)) {
+            if (!Hash::check($currentPassword, $user->userPassword)) {
+                return response()->json(['message' => 'Current password is incorrect'], 401);
+            }
+        }
+
+        $user->userFirstName = $newFirstName;
+        $user->userLastName = $newLastName;
+        $user->userEmail = $newEmail;
+
+        if (!empty($newPassword)) {
+            $user->userPassword = Hash::make($newPassword);
+        }
+
+        $user->save();
+        return response()->json(['message' => 'Password, FirstName, LastName, and Email changed successfully']);
     }
 }

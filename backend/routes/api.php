@@ -39,3 +39,5 @@ Route::get('users/{id}', [RequestsController::class, 'show']);
 Route::post('service-request', [RequestsController::class, 'store']);
 Route::put('requestupdate/{id}', [RequestsController::class, 'update']);
 Route::delete('requestdelete/{id}', [RequestsController::class, 'destroy']);
+Route::get('/account', [UserController::class, 'accountDetails']);
+Route::post('/change-password', [UserController::class, 'changePassword']);

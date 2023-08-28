@@ -21,14 +21,6 @@ function App() {
   function ProtectedRoute({ element, requiredRole }) {
     const { userRole, isAuthenticated } = useAuth();
 
-    /*if (!isAuthenticated) {
-      return <Navigate to="/login" />;
-    }
-  
-    if (userRole !== requiredRole) {
-      return <Navigate to="/unauthorized" />;
-    }*/
-
     if (!isAuthenticated) {
       return <Navigate to="/login" />;
     }
