@@ -8,7 +8,7 @@ export default function CurrentRequestModal({ display, itemData, onClose }) {
     useState(false);
 
   const renderDataRow = (label, value) => (
-    <div className="mb-3">
+    <div className="mb-3 font-sans">
       {" "}
       {/* Reduced margin-bottom */}
       <div className="text-lg font-semibold">{label}:</div>
@@ -53,7 +53,7 @@ export default function CurrentRequestModal({ display, itemData, onClose }) {
         footer={footerContent}
       >
         <div className="border-0 rounded-2xl shadow-lg relative flex flex-col w-full h-[65vh] bg-white outline-none focus:outline-none">
-          <div className="bg-main p-3 flex items-center justify-center py-7 rounded-t-2xl">
+          <div className="bg-main p-3 flex items-center justify-center py-7 rounded-t-2xl font-sans">
             {" "}
             {/* Reduced padding */}
             <h3 className="text-2xl font-semibold ml-4  text-white">

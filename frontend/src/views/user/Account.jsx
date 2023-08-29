@@ -4,7 +4,6 @@ import Sidebar from "../../components/Sidebar";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
-import Spinner from "react-bootstrap/Spinner";
 import { message, Modal, Spin } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
@@ -67,11 +66,6 @@ const Account = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-  const savingChanges = <Spinner animation="border" variant="primary" />;
-  const defaultChange = () => (
-    <FontAwesomeIcon icon={faFloppyDisk} className="mr-2" />
-  );
 
   const handlePasswordChange = async (e) => {
     e.preventDefault();
