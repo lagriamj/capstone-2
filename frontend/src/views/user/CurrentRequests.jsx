@@ -3,7 +3,7 @@ import Sidebar from "../../components/Sidebar";
 import DrawerComponent from "../../components/DrawerComponent";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faFilter, faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
 import CurrentRequestModal from "../../components/CurrentRequestModal";
@@ -213,7 +213,7 @@ const CurrentRequests = () => {
           </div>
         </div>
         <div
-          className={`overflow-auto min-h-[70vh] ${
+          className={`overflow-auto min-h-[50vh] ${
             isSingleRequest ? "min-h-min" : ""
           } rounded-lg w-full`}
         >
@@ -403,7 +403,7 @@ const CurrentRequests = () => {
                           <td className="p-2 text-lg text-gray-700 flex gap-1 items-center justify-center">
                             <button
                               onClick={() => handleOpenModalClick(item.id)}
-                              className="text-white text-base bg-blue-600 py-2 px-4 rounded-lg"
+                              className="text-white text-base font-medium bg-blue-600 py-2 px-4 rounded-lg"
                             >
                               View
                             </button>
@@ -436,7 +436,7 @@ const CurrentRequests = () => {
                                 onClick={() => showPopconfirm(item.id)}
                                 className="text-white text-base bg-red-700 py-2 px-4 rounded-lg"
                               >
-                                Delete
+                                <FontAwesomeIcon icon={faTrash} />
                               </button>
                             </Popconfirm>
                           </td>

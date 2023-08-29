@@ -4,8 +4,11 @@ import Sidebar from "../../components/Sidebar";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
-
-import { message, Modal } from "antd";
+import Spinner from "react-bootstrap/Spinner";
+import { message, Modal, Spin } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFloppyDisk } from "@fortawesome/free-solid-svg-icons";
+import PropagateLoader from "react-spinners/PropagateLoader";
 
 const Account = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -18,6 +21,7 @@ const Account = () => {
   const { userID } = useAuth();
   const [userData, setUserData] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isSavingChanges, setIsSavingChange] = useState(false);
 
   const showModal = () => {
     setCurrentPassword("");
@@ -64,8 +68,15 @@ const Account = () => {
     };
   }, []);
 
+  const savingChanges = <Spinner animation="border" variant="primary" />;
+  const defaultChange = () => (
+    <FontAwesomeIcon icon={faFloppyDisk} className="mr-2" />
+  );
+
   const handlePasswordChange = async (e) => {
     e.preventDefault();
+
+    setIsSavingChange(true);
 
     const userPassword = e.target.userCurrentPassword.value;
     const newPassword = e.target.userNewPassword.value;
@@ -97,7 +108,9 @@ const Account = () => {
       setLastName("");
       setEmail("");
       fetchData();
+      setIsSavingChange(false);
     } catch (err) {
+      setIsSavingChange(false);
       console.error("Password change failed:", err);
       message.error(
         "Password change failed. Please check your current password."
@@ -106,7 +119,7 @@ const Account = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row bg-gray-200 h-screen lg:pl-16 lg:pb-10">
+    <div className="flex flex-col lg:flex-row bg-gray-200 h-screen lg:pl-16 lg:pb-10 ">
       {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
       <div className="lg:w-[80%] w-[90%] min-h-[90vh]  mt-10 lg:mt-10 h-4/5 pb-10 bg-white shadow-xl self-center lg:ml-80 border-0 border-gray-400   rounded-3xl flex flex-col items-center font-sans">
         <h1 className=" text-3xl text-center my-10 font-bold ">
@@ -217,10 +230,10 @@ const Account = () => {
         >
           <form
             action=""
-            className=" w-11/12 h-auto  justify-center"
+            className=" w-full h-auto  justify-center font-sans"
             onSubmit={handlePasswordChange}
           >
-            <div className="flex lg:gap-10 gap-4 items-center my-4 flex-col lg:flex-row">
+            <div className="flex lg:gap-10 gap-4 items-center my-4 flex-col lg:flex-row font-sans">
               <div className="lg:w-1/2 w-[80%]">
                 <div className="flex flex-col">
                   <label className="font-semibold text-lg ">
@@ -349,9 +362,13 @@ const Account = () => {
             </div>
             <button
               type="submit"
-              className="bg-main text-white px-4 py-3 rounded-lg text-xl mt-4"
+              className="bg-main text-white  py-3 rounded-lg text-lg mt-4 w-40 h-18 "
             >
-              Save Changes
+              {isSavingChanges ? (
+                <PropagateLoader color="#FFFFFF" className="mb-3" />
+              ) : (
+                "Save Changes"
+              )}
             </button>
           </form>
         </Modal>
