@@ -13,48 +13,40 @@ export function AuthProvider({ children }) {
   const [userStatus, setUserStatus] = useState(
     localStorage.getItem("userStatus") || ""
   );
-  const [firstName, setUserFirstName] = useState(
-    localStorage.getItem("userFistName") || ""
-  );
-  const [lastName, setUserLastName] = useState(
-    localStorage.getItem("userLastName") || ""
+  const [fullName, setUserFullName] = useState(
+    localStorage.getItem("userFullName") || ""
   );
 
-  const login = (role, userID, status, firstName, lastName) => {
+  const login = (role, userID, status, fullName) => {
     setUserRole(role);
 
     if (status === "verified") {
       setIsAuthenticated(true);
       setUserID(userID);
       setUserStatus(status);
-      setUserFirstName(firstName);
-      setUserLastName(lastName);
+      setUserFullName(fullName);
       localStorage.setItem("userRole", role);
       localStorage.setItem("isAuthenticated", true);
       localStorage.setItem("userID", userID);
       localStorage.setItem("userStatus", status);
-      localStorage.setItem("userFirstName", firstName);
-      localStorage.setItem("userLastName", lastName);
+      localStorage.setItem("userFullName", fullName);
     }
   };
   console.log(userRole);
   console.log("userID:", userID);
   console.log(isAuthenticated);
-  console.log(firstName);
-  console.log(lastName);
+  console.log(fullName);
   const logout = () => {
     setUserRole("");
     setIsAuthenticated(false);
     setUserID("");
     setUserStatus("");
-    setUserFirstName("");
-    setUserLastName("");
+    setUserFullName("");
     localStorage.removeItem("userRole");
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("userID");
     localStorage.removeItem("userStatus");
-    localStorage.removeItem("userFirstName");
-    localStorage.removeItem("userLastName");
+    localStorage.removeItem("userFullName");
   };
 
   return (
@@ -64,8 +56,7 @@ export function AuthProvider({ children }) {
         isAuthenticated,
         userID,
         userStatus,
-        firstName,
-        lastName,
+        fullName,
         login,
         logout,
       }}

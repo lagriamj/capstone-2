@@ -213,8 +213,8 @@ const CurrentRequests = () => {
           </div>
         </div>
         <div
-          className={`overflow-auto ${
-            isSingleRequest ? "min-h-[20vh]" : ""
+          className={`overflow-auto min-h-[70vh] ${
+            isSingleRequest ? "min-h-min" : ""
           } rounded-lg w-full`}
         >
           <table className="w-full ">
@@ -362,7 +362,7 @@ const CurrentRequests = () => {
                     ) {
                       return (
                         <tr
-                          className="border-b-2 border-gray-200"
+                          className="border-b-2 border-gray-200 h-auto overflow-auto"
                           key={item.id}
                         >
                           <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
@@ -450,7 +450,7 @@ const CurrentRequests = () => {
                 !selectedModeFilters.some((selectedMode) =>
                   records.some((item) => item.modeOfRequest === selectedMode)
                 ) && (
-                  <tr className="h-[50vh]">
+                  <tr className="">
                     <td
                       colSpan="8"
                       className="p-3 text-lg text-gray-700 text-center"

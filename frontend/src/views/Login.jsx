@@ -76,16 +76,11 @@ function Login() {
       );
       const data = response.data;
       console.log(data);
+      const fullName = `${data.firstName} ${data.lastName}`;
 
       if (response.status === 200) {
         console.log(data.userID);
-        login(
-          data.role,
-          data.userID,
-          data.userStatus,
-          data.firstName,
-          data.lastName
-        );
+        login(data.role, data.userID, data.userStatus, fullName);
         //setUserID(data.userID);
         setRole(data.role);
         setUserStatus(data.userStatus);

@@ -9,9 +9,8 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
 
   const printRef = useRef(); // Ref for ReactToPrint component
 
-  const { firstName, lastName } = useAuth();
-  console.log(firstName);
-  console.log(lastName);
+  const { fullName } = useAuth();
+  console.log(fullName);
 
   const handlePrint = () => {
     if (printRef.current) {
@@ -150,6 +149,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   value="System/Prog. Revision/update"
                   className="mr-2"
                   checked={natureOfRerquest === "System/Prog. Revision/update"}
+                  onChange={() => {}}
                 />
                 System/Prog. Revision/update
               </label>
@@ -159,6 +159,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   value="Recompile"
                   className="mr-2"
                   checked={natureOfRerquest === "Recompile"}
+                  onChange={() => {}}
                 />
                 Recompile
               </label>
@@ -168,6 +169,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   value="New/Update System User"
                   className="mr-2"
                   checked={natureOfRerquest === "New/Update System User"}
+                  onChange={() => {}}
                 />
                 New/Update System User
               </label>
@@ -177,6 +179,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   value="Data/Record Update"
                   className="mr-2"
                   checked={natureOfRerquest === "Data/Record Update"}
+                  onChange={() => {}}
                 />
                 Data/Record Update
               </label>
@@ -186,6 +189,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   value="Data/Record Encoding"
                   className="mr-2"
                   checked={natureOfRerquest === "Data/Record Encoding"}
+                  onChange={() => {}}
                 />
                 Data/Record Encoding
               </label>
@@ -195,6 +199,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   value="Data/Record Printing"
                   className="mr-2"
                   checked={natureOfRerquest === "Data/Record Printing"}
+                  onChange={() => {}}
                 />
                 Data/Record Printing
               </label>
@@ -214,6 +219,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                     value="Check-Up & Repair"
                     className="mr-2"
                     checked={natureOfRerquest === "Check-Up & Repair"}
+                    onChange={() => {}}
                   />
                   Check-up & Repair
                 </label>
@@ -223,6 +229,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                     value="Technical Specs"
                     className="mr-2"
                     checked={natureOfRerquest === "Technical Specs"}
+                    onChange={() => {}}
                   />
                   Technical Specs
                 </label>
@@ -234,6 +241,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                     value="Preventive Maintenance"
                     className="mr-2"
                     checked={natureOfRerquest === "Preventive Maintenance"}
+                    onChange={() => {}}
                   />
                   Preventive Maintenance
                 </label>
@@ -243,6 +251,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                     value="Technical Assist."
                     className="mr-2"
                     checked={natureOfRerquest === "Technical Assist."}
+                    onChange={() => {}}
                   />
                   Technical Assist.
                 </label>
@@ -253,6 +262,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   value="HW Installation"
                   className="mr-2"
                   checked={natureOfRerquest === "HW Installation"}
+                  onChange={() => {}}
                 />
                 HW Installation
               </label>
@@ -262,6 +272,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   value="HW Relocation"
                   className="mr-2"
                   checked={natureOfRerquest === "HW Relocation"}
+                  onChange={() => {}}
                 />
                 HW Relocation
               </label>
@@ -271,6 +282,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   value="Cable Installation/Maint."
                   className="mr-2"
                   checked={natureOfRerquest === "Cable Installation/Maint."}
+                  onChange={() => {}}
                 />
                 Cable Installation/Maint.
               </label>
@@ -280,6 +292,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   value="SW Installation/Maintenance"
                   className="mr-2"
                   checked={natureOfRerquest === "SW Installation/Maintenance"}
+                  onChange={() => {}}
                 />
                 SW Installation/Maintenance
               </label>
@@ -289,6 +302,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   value="Technical Evaluation"
                   className="mr-2"
                   checked={natureOfRerquest === "Technical Evaluation"}
+                  onChange={() => {}}
                 />
                 Technical Evaluation
               </label>
@@ -300,6 +314,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   value="Internet Connection/Config."
                   className="mr-2"
                   checked={natureOfRerquest === "Internet Connection/Config."}
+                  onChange={() => {}}
                 />
                 Internet Connection/Config.
               </label>
@@ -309,6 +324,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   value="LAN Connection/Config."
                   className="mr-2"
                   checked={natureOfRerquest === "LAN Connection/Config."}
+                  onChange={() => {}}
                 />
                 LAN Connection/Config.
               </label>
@@ -318,6 +334,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   value="IP PBX / Phone"
                   className="mr-2"
                   checked={natureOfRerquest === "IP PBX / Phone"}
+                  onChange={() => {}}
                 />
                 IP PBX / Phone
               </label>
@@ -327,6 +344,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   value="Email"
                   className="mr-2"
                   checked={natureOfRerquest === "Email"}
+                  onChange={() => {}}
                 />
                 Email
               </label>
@@ -336,6 +354,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   value="Back-up"
                   className="mr-2"
                   checked={natureOfRerquest === "Back-up"}
+                  onChange={() => {}}
                 />
                 Back-up
               </label>
@@ -345,6 +364,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   value="Online"
                   className="mr-2"
                   checked={natureOfRerquest === "IP Address Request"}
+                  onChange={() => {}}
                 />
                 IP Address Request
               </label>
@@ -373,8 +393,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                 <div className="w-[60%] flex flex-col border-2 border-black">
                   <div className="text-center border-b-2  border-black text-black w-full">
                     <label htmlFor="" className=" w-full">
-                      {`${firstName} `}
-                      {lastName}
+                      {fullName}
                     </label>
                   </div>
                   <div className="text-center ">
