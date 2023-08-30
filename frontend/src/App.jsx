@@ -16,6 +16,13 @@ import Account from "./views/user/Account";
 import Dashboard from "./views/admin/Dashboard";
 import Unauthorized from "./views/Unauthorized";
 import UpdatePhoneNumberPage from "./views/UpdatePhoneNumberPage";
+import ServiceRequest from "./views/admin/ServiceRequest";
+import ReceiveService from "./views/admin/ReceiveService";
+import ServiceTask from "./views/admin/ServiceTask";
+import ServiceTransaction from "./views/admin/ServiceTransaction";
+import Recommendation from "./views/admin/Recommendation";
+import UtilitySettings from "./views/admin/UtilitySettings";
+import AdminAccount from "./views/admin/AdminAccount";
 
 function App() {
   function ProtectedRoute({ element, requiredRole }) {
@@ -51,13 +58,42 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/verify-otp" element={<RegisterConfirmation />} />
           <Route path="/update-phone" element={<UpdatePhoneNumberPage />} />
-          {/*<Route path="/request" element={<Requests />} />*/}
-          <Route path="/current-requests" element={<CurrentRequests />} />
-          <Route path="/transactions" element={<Transactions />} />
-          <Route path="/account" element={<Account />} />
           <Route path="/page-not-found" element={<NotFound />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
-          {/*<Route path="/dashboard" element={<Dashboard/>}/>*/}
+
+          {/* User Routes */}
+          <Route
+            path="/request"
+            element={
+              <ProtectedRoute element={<Requests />} requiredRole={"user"} />
+            }
+          />
+          <Route
+            path="/current-requests"
+            element={
+              <ProtectedRoute
+                element={<CurrentRequests />}
+                requiredRole={"user"}
+              />
+            }
+          />
+          <Route
+            path="/transactions"
+            element={
+              <ProtectedRoute
+                element={<Transactions />}
+                requiredRole={"user"}
+              />
+            }
+          />
+          <Route
+            path="/account"
+            element={
+              <ProtectedRoute element={<Account />} requiredRole={"user"} />
+            }
+          />
+
+          {/* Admin Routes */}
           <Route
             path="/dashboard"
             element={
@@ -65,12 +101,68 @@ function App() {
             }
           />
           <Route
-            path="/request"
+            path="/service-request"
             element={
-              <ProtectedRoute element={<Requests />} requiredRole={"user"} />
+              <ProtectedRoute
+                element={<ServiceRequest />}
+                requiredRole={"admin"}
+              />
             }
           />
-          {/*<Route path="/dashboard" element={<ProtectedRoute element={Dashboard} requiredRoles={["admin"]} userRole={userRole} />} />*/}
+          <Route
+            path="/receive-service"
+            element={
+              <ProtectedRoute
+                element={<ReceiveService />}
+                requiredRole={"admin"}
+              />
+            }
+          />
+          <Route
+            path="/service-task"
+            element={
+              <ProtectedRoute
+                element={<ServiceTask />}
+                requiredRole={"admin"}
+              />
+            }
+          />
+          <Route
+            path="/service-transaction"
+            element={
+              <ProtectedRoute
+                element={<ServiceTransaction />}
+                requiredRole={"admin"}
+              />
+            }
+          />
+          <Route
+            path="/recommendation"
+            element={
+              <ProtectedRoute
+                element={<Recommendation />}
+                requiredRole={"admin"}
+              />
+            }
+          />
+          <Route
+            path="/utility-settings"
+            element={
+              <ProtectedRoute
+                element={<UtilitySettings />}
+                requiredRole={"admin"}
+              />
+            }
+          />
+          <Route
+            path="/admin/account"
+            element={
+              <ProtectedRoute
+                element={<AdminAccount />}
+                requiredRole={"admin"}
+              />
+            }
+          />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

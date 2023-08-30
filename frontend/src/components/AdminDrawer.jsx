@@ -3,13 +3,18 @@ import { Drawer } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCodePullRequest,
-  faList,
-  faClipboard,
+  faGear,
   faUser,
   faRightFromBracket,
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import HandymanIcon from "@mui/icons-material/Handyman";
+import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
+import RecommendIcon from "@mui/icons-material/Recommend";
+import { useAuth } from "../AuthContext";
 
 const AdminDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -20,7 +25,7 @@ const AdminDrawer = () => {
   const handleLogout = () => {
     logout();
     navigate("/login");
-  }
+  };
 
   const handleItemClick = (item) => {
     setOpen((prevOpen) => (prevOpen ? false : true));
@@ -49,38 +54,84 @@ const AdminDrawer = () => {
           <div className="w-full flex gap-4 items-center justify-center py-4 px-3 mb-5">
             <img className="w-1/3 h-[95%]" src="/cityhalllogo.png" alt="" />
             <img className="w-1/3 h-[95%]" src="/citclogo.png" alt="" />
-
           </div>
 
           <hr className="mx-7 mb-8" />
           <ul className="flex flex-col justify-center items-start gap-4 px-5">
             <li
-              className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${active === "request" ? "bg-white text-main font-semibold" : ""
-                }`}
-              onClick={() => handleItemClick("request")}
+              className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
+                active === "dashboard" ? "bg-white text-main font-semibold" : ""
+              }`}
+              onClick={() => handleItemClick("dashboard")}
             >
-              <FontAwesomeIcon icon={faCodePullRequest} className="h-5" />
-              <Link to={"/request"}>Request Services</Link>
+              <DashboardIcon></DashboardIcon>
+              <Link to={"/dashboard"}>Dashboard</Link>
             </li>
             <li
-              className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${active === "current-requests"
-                ? "bg-white text-main font-semibold"
-                : ""
-                }`}
-              onClick={() => handleItemClick("current-requests")}
+              className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
+                active === "service-request"
+                  ? "bg-white text-main font-semibold"
+                  : ""
+              }`}
+              onClick={() => handleItemClick("service-request")}
             >
-              <FontAwesomeIcon icon={faList} className="h-5" />
-              <Link to={"/current-requests"}>Current Requests</Link>
+              <HandymanIcon></HandymanIcon>
+              <Link to={"/service-request"}>Service Request</Link>
             </li>
             <li
-              className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${active === "transactions"
-                ? "bg-white text-main font-semibold"
-                : ""
-                }`}
-              onClick={() => handleItemClick("transactions")}
+              className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
+                active === "receive-service"
+                  ? "bg-white text-main font-semibold"
+                  : ""
+              }`}
+              onClick={() => handleItemClick("receive-service")}
             >
-              <FontAwesomeIcon icon={faClipboard} className="h-5" />
-              <Link to={"/transactions"}>Service Transaction</Link>
+              <MarkAsUnreadIcon></MarkAsUnreadIcon>
+              <Link to={"/receive-service"}>Receive Service</Link>
+            </li>
+            <li
+              className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
+                active === "service-task"
+                  ? "bg-white text-main font-semibold"
+                  : ""
+              }`}
+              onClick={() => handleItemClick("service-task")}
+            >
+              <AssignmentIcon></AssignmentIcon>
+              <Link to={"/service-task"}>Service Task</Link>
+            </li>
+            <li
+              className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
+                active === "service-transaction"
+                  ? "bg-white text-main font-semibold"
+                  : ""
+              }`}
+              onClick={() => handleItemClick("service-transaction")}
+            >
+              <WorkHistoryIcon></WorkHistoryIcon>
+              <Link to={"/service-transaction"}>Service Transaction</Link>
+            </li>
+            <li
+              className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
+                active === "recommendation"
+                  ? "bg-white text-main font-semibold"
+                  : ""
+              }`}
+              onClick={() => handleItemClick("recommendation")}
+            >
+              <RecommendIcon></RecommendIcon>
+              <Link to={"/recommendation"}>Recommendation</Link>
+            </li>
+            <li
+              className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
+                active === "utility-settings"
+                  ? "bg-white text-main font-semibold"
+                  : ""
+              }`}
+              onClick={() => handleItemClick("utility-settings")}
+            >
+              <FontAwesomeIcon icon={faGear} className="h-5" />
+              <Link to={"/utility-settings"}>Utility Settings</Link>
             </li>
           </ul>
 
@@ -89,16 +140,20 @@ const AdminDrawer = () => {
             <div className="flex flex-col">
               <ul className="flex flex-col justify-center items-start gap-3 px-5">
                 <li
-                  className={`flex gap-3 w-full items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${active === "account"
-                    ? "bg-white text-main font-semibold"
-                    : ""
-                    }`}
+                  className={`flex gap-3 w-full items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
+                    active === "account"
+                      ? "bg-white text-main font-semibold"
+                      : ""
+                  }`}
                   onClick={() => handleItemClick("account")}
                 >
                   <FontAwesomeIcon icon={faUser} className="h-5" />
-                  <Link to={"/account"}>Account</Link>
+                  <Link to={"/admin/account"}>Account</Link>
                 </li>
-                <li onClick={handleLogout} className="flex gap-3 items-center py-3 px-4 rounded-lg w-full hover:bg-white hover:text-main hover:font-semibold">
+                <li
+                  onClick={handleLogout}
+                  className="flex gap-3 items-center py-3 px-4 rounded-lg w-full hover:bg-white hover:text-main hover:font-semibold"
+                >
                   <FontAwesomeIcon icon={faRightFromBracket} className="h-5" />
                   <Link>Logout</Link>
                 </li>

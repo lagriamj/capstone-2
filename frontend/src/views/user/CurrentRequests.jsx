@@ -11,6 +11,7 @@ import { Popconfirm } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { message, Skeleton, Table } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const CurrentRequests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -192,6 +193,9 @@ const CurrentRequests = () => {
   const [searchQuery, setSearchQuery] = useState("");
   return (
     <div className="flex flex-col lg:flex-row bg-gray-200 h-screen lg:pl-20 lg:items-start items-center">
+      <Helmet>
+        <title>Current Requests</title>
+      </Helmet>
       {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
       <div className=" overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] relative mt-28 lg:mt-10 h-4/5 pb-10 bg-white shadow-xl  lg:ml-80  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
         <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
@@ -214,7 +218,7 @@ const CurrentRequests = () => {
         </div>
         <div
           className={`overflow-auto min-h-[50vh] ${
-            isSingleRequest ? "min-h-min" : ""
+            isSingleRequest ? "min-h-[50vh]" : ""
           } rounded-lg w-full`}
         >
           <table className="w-full ">
@@ -446,32 +450,23 @@ const CurrentRequests = () => {
                     return null;
                   })
               )}
-              {selectedModeFilters.length > 0 &&
+              {((selectedModeFilters.length > 0 &&
                 !selectedModeFilters.some((selectedMode) =>
                   records.some((item) => item.modeOfRequest === selectedMode)
-                ) && (
-                  <tr className="">
-                    <td
-                      colSpan="8"
-                      className="p-3 text-lg text-gray-700 text-center"
-                    >
-                      No records found matching the selected filter.
-                    </td>
-                  </tr>
-                )}
-              {selectedStatusFilters.length > 0 &&
-                !selectedStatusFilters.some((selectedStatus) =>
-                  records.some((item) => item.status === selectedStatus)
-                ) && (
-                  <tr className="h-[50vh]">
-                    <td
-                      colSpan="8"
-                      className="p-3 text-lg text-gray-700 text-center"
-                    >
-                      No records found matching the selected filter.
-                    </td>
-                  </tr>
-                )}
+                )) ||
+                (selectedStatusFilters.length > 0 &&
+                  !selectedStatusFilters.some((selectedStatus) =>
+                    records.some((item) => item.status === selectedStatus)
+                  ))) && (
+                <tr className="h-[50vh]">
+                  <td
+                    colSpan="8"
+                    className="p-3 text-lg text-gray-700 text-center"
+                  >
+                    No records found matching the selected filter.
+                  </td>
+                </tr>
+              )}
             </tbody>
 
             {selectedItemId && (

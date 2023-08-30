@@ -10,13 +10,21 @@ import axios from "axios";
 import { useAuth } from "../../AuthContext";
 import HashLoader from "react-spinners/HashLoader";
 import { message } from "antd";
+import Select from "react-select";
+import { Helmet } from "react-helmet";
 
 const Requests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const isLargeScreen = windowWidth >= 1024;
   const { userID } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [selectedNatureOfRequest, setSelectedNatureOfRequest] = useState(null);
   console.log("userID:", userID);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleInputChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -89,6 +97,24 @@ const Requests = () => {
     }
   };
 
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const result = await axios.get(
+        "http://127.0.0.1:8000/api/nature-request"
+      );
+
+      setData(result.data.results);
+    } catch (err) {
+      console.log("Something went wrong:", err);
+    }
+  };
+
   return (
     <div className="bg-transparent">
       {loading && (
@@ -97,6 +123,9 @@ const Requests = () => {
         </div>
       )}
       <div className="flex flex-col lg:flex-row bg-gray-200 overflow-auto lg:pl-24 lg:py-10 h-screen">
+        <Helmet>
+          <title>Request</title>
+        </Helmet>
         {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
         <div className="w-[80%] pb-10 mt-28 lg:mt-0 bg-white shadow-xl h-auto lg:ml-72 border-0 border-gray-400  self-center rounded-lg flex flex-col items-center font-sans">
           <h1 className=" text-3xl text-center my-10 font-bold ">
@@ -155,21 +184,28 @@ const Requests = () => {
               <label className="font-semibold text-lg">
                 Nature of Request:
               </label>
-              <select
-                required
-                name="natureOfRequest"
-                className="w-full h-3/4  border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                onChange={(e) => {
-                  changeUserFieldHandler(e);
-                }}
-                defaultValue={""}
-              >
-                <option value="">Select an option...</option>
-                <option value="Check-Up & Repair">Check Up & Repair</option>
-                <option value="Preventive Maintenance">
-                  Preventive Maintenance
-                </option>
-              </select>
+              <div className="relative">
+                <Select // Use react-select
+                  required
+                  name="natureOfRequest"
+                  className="w-full border-2 border-gray-400 rounded-lg outline-none h-12"
+                  value={selectedNatureOfRequest} // Set selected value
+                  onChange={(selectedOption) => {
+                    setSelectedNatureOfRequest(selectedOption); // Update selected option
+                    changeUserFieldHandler({
+                      target: {
+                        name: "natureOfRequest",
+                        value: selectedOption ? selectedOption.value : "",
+                      },
+                    });
+                  }}
+                  options={data.map((option, index) => ({
+                    value: option.natureRequest,
+                    label: option.natureRequest,
+                  }))}
+                  placeholder="Select an option..."
+                />
+              </div>
             </div>
             <div className="flex flex-col w-full lg:w-1/4">
               <label className="font-semibold text-lg">Mode of Request:</label>

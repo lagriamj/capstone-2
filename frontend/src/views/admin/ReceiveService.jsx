@@ -4,7 +4,7 @@ import AdminSidebar from "../../components/AdminSidebar";
 import AdminDrawer from "../../components/AdminDrawer";
 import { Helmet } from "react-helmet";
 
-const Dashboard = () => {
+const ReceiveService = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -24,14 +24,14 @@ const Dashboard = () => {
   return (
     <div className='className="flex flex-col lg:flex-row bg-gray-200 lg:pl-24 lg:py-10 h-screen"'>
       <Helmet>
-        <title>Dashboard</title>
+        <title>Receive Service</title>
       </Helmet>
       {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
       <div className="overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] mt-28 lg:mt-10 h-4/5 pb-10 bg-white shadow-xl  lg:ml-80  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
-        <h1 className="text-3xl">Admin Dashboard</h1>
+        <h1 className="text-3xl">Receive Service</h1>
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default ReceiveService;

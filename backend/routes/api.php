@@ -6,6 +6,7 @@ use App\Http\Controllers\RequestsController;
 use App\Http\Middleware\CheckAdminRole;
 use App\Http\Middleware\CheckUserRole;
 use App\Http\Middleware\RedirectGuest;
+use App\Http\Controllers\NatureRequestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,10 +35,14 @@ Route::post('/login', [LoginController::class, 'login']);
 
 Route::put('/update-phone', [UserController::class, 'updatePhoneNumber']);
 
+// user 
 Route::get('current-request', [RequestsController::class, 'index']);
 Route::get('users/{id}', [RequestsController::class, 'show']);
 Route::post('service-request', [RequestsController::class, 'store']);
 Route::put('requestupdate/{id}', [RequestsController::class, 'update']);
 Route::delete('requestdelete/{id}', [RequestsController::class, 'destroy']);
+
+
+Route::get('nature-request', [NatureRequestController::class, 'index']);
 Route::get('/account', [UserController::class, 'accountDetails']);
 Route::post('/change-password', [UserController::class, 'changePassword']);
