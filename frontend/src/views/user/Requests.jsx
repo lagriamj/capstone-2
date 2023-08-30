@@ -185,26 +185,22 @@ const Requests = () => {
                 Nature of Request:
               </label>
               <div className="relative">
-                <Select // Use react-select
+                <select
                   required
                   name="natureOfRequest"
-                  className="w-full border-2 border-gray-400 rounded-lg outline-none h-12"
-                  value={selectedNatureOfRequest} // Set selected value
-                  onChange={(selectedOption) => {
-                    setSelectedNatureOfRequest(selectedOption); // Update selected option
-                    changeUserFieldHandler({
-                      target: {
-                        name: "natureOfRequest",
-                        value: selectedOption ? selectedOption.value : "",
-                      },
-                    });
+                  className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none appearance-none"
+                  onChange={(e) => {
+                    changeUserFieldHandler(e);
                   }}
-                  options={data.map((option, index) => ({
-                    value: option.natureRequest,
-                    label: option.natureRequest,
-                  }))}
-                  placeholder="Select an option..."
-                />
+                  defaultValue={""}
+                >
+                  <option value="">Select an option...</option>
+                  {data.map((option, index) => (
+                    <option key={index} value={option.natureRequest}>
+                      {option.natureRequest}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
             <div className="flex flex-col w-full lg:w-1/4">
