@@ -215,4 +215,33 @@ class UserController extends Controller
         $user->save();
         return response()->json(['message' => 'Password, FirstName, LastName, and Email changed successfully']);
     }
+
+    public function checkPassword(Request $request)
+    {
+        $password = $request->password;
+        $userID = $request->userID;
+
+        $user = User::find($userID);
+
+
+        if (!Hash::check($password, $user->userPassword)) {
+            return response()->json(['message' => 'Password is incorrect'], 401);
+        } else {
+            return response()->json(['message' => 'Password is correct'], 200);
+        }
+    }
+
+    public function updateContactNumber(Request $request)
+    {
+
+        $newContactNumber = $request->newContactNumber;
+        $userID = $request->userID;
+
+        $user = User::find($userID);
+
+        $user->userContactNumber = $newContactNumber;
+        $user->save();
+
+        return response()->json(['message' => 'Updated Successfully'], 200);
+    }
 }

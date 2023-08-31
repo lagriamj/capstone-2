@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import AdminSidebar from "../../components/AdminSidebar";
 import AdminDrawer from "../../components/AdminDrawer";
-import { Helmet } from "react-helmet";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const ReceiveService = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -22,15 +22,17 @@ const ReceiveService = () => {
   const isLargeScreen = windowWidth >= 1024;
 
   return (
-    <div className='className="flex flex-col lg:flex-row bg-gray-200 lg:pl-24 lg:py-10 h-screen"'>
+    <HelmetProvider>
       <Helmet>
         <title>Receive Service</title>
       </Helmet>
-      {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
-      <div className="overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] mt-28 lg:mt-10 h-4/5 pb-10 bg-white shadow-xl  lg:ml-80  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
-        <h1 className="text-3xl">Receive Service</h1>
+      <div className='className="flex flex-col lg:flex-row bg-gray-200 lg:pl-24 lg:py-10 h-screen"'>
+        {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
+        <div className="overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] mt-28 lg:mt-10 h-4/5 pb-10 bg-white shadow-xl  lg:ml-80  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
+          <h1 className="text-3xl">Receive Service</h1>
+        </div>
       </div>
-    </div>
+    </HelmetProvider>
   );
 };
 

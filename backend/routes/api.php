@@ -41,6 +41,8 @@ Route::get('users/{id}', [RequestsController::class, 'show']);
 Route::post('service-request', [RequestsController::class, 'store']);
 Route::put('requestupdate/{id}', [RequestsController::class, 'update']);
 Route::delete('requestdelete/{id}', [RequestsController::class, 'destroy']);
+Route::post('/check-password', [UserController::class, 'checkPassword']);
+Route::put('/update-contact', [UserController::class, 'updateContactNumber']);
 
 
 Route::get('nature-request', [NatureRequestController::class, 'index']);

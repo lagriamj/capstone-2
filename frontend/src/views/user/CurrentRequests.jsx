@@ -11,7 +11,7 @@ import { Popconfirm } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import { message, Skeleton, Table } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const CurrentRequests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -210,278 +210,291 @@ const CurrentRequests = () => {
     return matchesSearchQuery && matchesStatusFilter && matchesModeFilter;
   });
   return (
-    <div className="flex flex-col lg:flex-row bg-gray-200 h-screen lg:pl-20 lg:items-start items-center">
+    <HelmetProvider>
       <Helmet>
         <title>Current Requests</title>
       </Helmet>
-      {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
-      <div className=" overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] relative mt-28 lg:mt-10 h-4/5 pb-10 bg-white shadow-xl  lg:ml-80  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
-        <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
-          <h1 className="font-sans lg:text-3xl text-xl mt-8 ml-5 mr-auto tracking-wide">
-            Request
-          </h1>
-          <div className="relative flex items-center lg:mr-10 ">
-            <FontAwesomeIcon
-              icon={faSearch}
-              className="h-6 w-6 absolute ml-3 text-main"
-            />
-            <input
-              type="text"
-              placeholder="Search"
-              className="border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 h-14 lg:w-full w-[90%] focus:outline-none text-xl"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+      <div className="flex flex-col lg:flex-row bg-gray-200 h-screen lg:pl-20 lg:items-start items-center">
+        {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
+        <div className=" overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] relative mt-28 lg:mt-10 h-4/5 pb-10 bg-white shadow-xl  lg:ml-80  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
+          <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
+            <h1 className="font-sans lg:text-3xl text-xl mt-8 ml-5 mr-auto tracking-wide">
+              Request
+            </h1>
+            <div className="relative flex items-center lg:mr-10 ">
+              <FontAwesomeIcon
+                icon={faSearch}
+                className="h-6 w-6 absolute ml-3 text-main"
+              />
+              <input
+                type="text"
+                placeholder="Search"
+                className="border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 h-14 lg:w-full w-[90%] focus:outline-none text-xl"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
           </div>
-        </div>
-        <div
-          className={`overflow-auto min-h-[50vh] ${
-            isSingleRequest ? "min-h-[50vh]" : ""
-          } rounded-lg w-full`}
-        >
-          <table className="w-full ">
-            <thead className="bg-gray-50 border-b-2 border-gray-200">
-              <tr className="border-b-2 border-gray-100">
-                <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
-                  #
-                </th>
-                <th className="px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
-                  Nature of Request
-                </th>
-                <th className=" px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
-                  Assigned To
-                </th>
-                <th className="px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
-                  Mode
-                  <div className="relative inline-block">
-                    <button
-                      onClick={toggleModeDropdown}
-                      className="text-main focus:outline-none ml-2"
-                      style={{ backgroundColor: "transparent", border: "none" }}
-                    >
-                      <FontAwesomeIcon icon={faFilter} className="h-4 w-4" />
-                    </button>
-                    {isModeDropdownOpen && (
-                      <div className="absolute right-0 overflow-auto bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
-                        <label className="block px-4 py-2">
-                          <input
-                            type="checkbox"
-                            value="Walk-In"
-                            checked={selectedModeFilters.includes("Walk-In")}
-                            onChange={handleModeCheckboxChange}
-                            className="mr-2"
-                          />
-                          Walk-In
-                        </label>
-                        <label className="block px-4 py-2">
-                          <input
-                            type="checkbox"
-                            value="Online"
-                            checked={selectedModeFilters.includes("Online")}
-                            onChange={handleModeCheckboxChange}
-                            className="mr-2"
-                          />
-                          Online
-                        </label>
-                      </div>
-                    )}
-                  </div>
-                </th>
-
-                <th
-                  className={`px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap`}
-                >
-                  Status
-                  <div className="relative inline-block">
-                    <button
-                      onClick={toggleStatusDropdown}
-                      className="text-main focus:outline-none ml-2"
-                      style={{ backgroundColor: "transparent", border: "none" }}
-                    >
-                      <FontAwesomeIcon icon={faFilter} className="h-4 w-4" />
-                    </button>
-                    {isStatusDropdownOpen && (
-                      <div className="absolute right-0 bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg text-start">
-                        <label className="block px-4 py-2">
-                          <input
-                            type="checkbox"
-                            value="Pending"
-                            checked={selectedStatusFilters.includes("Pending")}
-                            onChange={handleStatusCheckboxChange}
-                            className="mr-2"
-                          />
-                          Pending
-                        </label>
-                        <label className="block px-4 py-2">
-                          <input
-                            type="checkbox"
-                            value="On Process"
-                            checked={selectedStatusFilters.includes(
-                              "On Process"
-                            )}
-                            onChange={handleStatusCheckboxChange}
-                            className="mr-2"
-                          />
-                          On Process
-                        </label>
-                      </div>
-                    )}
-                  </div>
-                </th>
-                <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
-                  Date of Request
-                </th>
-                <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
-                  Date Updated
-                </th>
-                <th className="w-56 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr className="">
-                  <td colSpan="8">
-                    <Skeleton active />
-                  </td>
-                </tr>
-              ) : filteredRecords.length === 0 ? (
-                <tr className="h-[50vh]">
-                  <td
-                    colSpan="8"
-                    className="p-3 text-lg text-gray-700 text-center"
-                  >
-                    No records found matching the selected filter.
-                  </td>
-                </tr>
-              ) : (
-                filteredRecords.map((item, rowIndex) => (
-                  <tr
-                    className="border-b-2 border-gray-200 h-auto overflow-auto"
-                    key={item.id}
-                  >
-                    <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                      {rowIndex + 1} {/* Add 1 to rowIndex to start from 1 */}
-                    </td>
-                    <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                      {item.natureOfRequest}
-                    </td>
-                    <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                      {item.assignedTo}
-                    </td>
-                    <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                      {item.modeOfRequest}
-                    </td>
-                    <td
-                      className={`px-4 py-2 text-base text-center whitespace-nowrap`}
-                    >
-                      <p
-                        className={` rounded-xl py-2 ${
-                          item.status === "Pending"
-                            ? "bg-red-500 text-white" // Apply red background and white text for Pending
-                            : item.status === "On Process"
-                            ? "bg-yellow-500 text-white" // Apply yellow background and white text for Process
-                            : item.status === "Fixed"
-                            ? "bg-green-500 text-white" // Apply green background and white text for Done
-                            : "bg-gray-200 text-gray-700" // Default background and text color (if none of the conditions match)
-                        }`}
-                      >
-                        {item.status}
-                      </p>
-                    </td>
-                    <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                      {item.dateRequested}
-                    </td>
-                    <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                      {item.dateUpdated}
-                    </td>
-                    <td className="p-2 text-lg text-gray-700 flex gap-1 items-center justify-center">
+          <div
+            className={`overflow-auto min-h-[50vh] ${
+              isSingleRequest ? "min-h-[50vh]" : ""
+            } rounded-lg w-full`}
+          >
+            <table className="w-full ">
+              <thead className="bg-gray-50 border-b-2 border-gray-200">
+                <tr className="border-b-2 border-gray-100">
+                  <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    #
+                  </th>
+                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    Nature of Request
+                  </th>
+                  <th className=" px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    Assigned To
+                  </th>
+                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    Mode
+                    <div className="relative inline-block">
                       <button
-                        onClick={() => handleOpenModalClick(item.id)}
-                        className="text-white text-base font-medium bg-blue-600 py-2 px-4 rounded-lg"
+                        onClick={toggleModeDropdown}
+                        className="text-main focus:outline-none ml-2"
+                        style={{
+                          backgroundColor: "transparent",
+                          border: "none",
+                        }}
                       >
-                        View
+                        <FontAwesomeIcon icon={faFilter} className="h-4 w-4" />
                       </button>
+                      {isModeDropdownOpen && (
+                        <div className="absolute right-0 overflow-auto bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
+                          <label className="block px-4 py-2">
+                            <input
+                              type="checkbox"
+                              value="Walk-In"
+                              checked={selectedModeFilters.includes("Walk-In")}
+                              onChange={handleModeCheckboxChange}
+                              className="mr-2"
+                            />
+                            Walk-In
+                          </label>
+                          <label className="block px-4 py-2">
+                            <input
+                              type="checkbox"
+                              value="Online"
+                              checked={selectedModeFilters.includes("Online")}
+                              onChange={handleModeCheckboxChange}
+                              className="mr-2"
+                            />
+                            Online
+                          </label>
+                        </div>
+                      )}
+                    </div>
+                  </th>
 
-                      <Popconfirm
-                        placement="left"
-                        title="Delete the request"
-                        description="Are you sure to delete this request?"
-                        open={popconfirmVisible[item.id]}
-                        icon={
-                          <QuestionCircleOutlined style={{ color: "red" }} />
-                        }
-                        onConfirm={() => handleOk(item.id)}
-                        okButtonProps={{
-                          loading: confirmLoading,
-                          color: "red",
-                          className: "text-black border-1 border-gray-300",
-                          size: "large",
+                  <th
+                    className={`px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap`}
+                  >
+                    Status
+                    <div className="relative inline-block">
+                      <button
+                        onClick={toggleStatusDropdown}
+                        className="text-main focus:outline-none ml-2"
+                        style={{
+                          backgroundColor: "transparent",
+                          border: "none",
                         }}
-                        cancelButtonProps={{
-                          size: "large",
-                        }}
-                        onCancel={() => handleCancel(item.id)}
-                        okText="Yes"
                       >
-                        <button
-                          onClick={() => showPopconfirm(item.id)}
-                          className="text-white text-base bg-red-700 py-2 px-4 rounded-lg"
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
-                      </Popconfirm>
+                        <FontAwesomeIcon icon={faFilter} className="h-4 w-4" />
+                      </button>
+                      {isStatusDropdownOpen && (
+                        <div className="absolute right-0 bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg text-start">
+                          <label className="block px-4 py-2">
+                            <input
+                              type="checkbox"
+                              value="Pending"
+                              checked={selectedStatusFilters.includes(
+                                "Pending"
+                              )}
+                              onChange={handleStatusCheckboxChange}
+                              className="mr-2"
+                            />
+                            Pending
+                          </label>
+                          <label className="block px-4 py-2">
+                            <input
+                              type="checkbox"
+                              value="On Process"
+                              checked={selectedStatusFilters.includes(
+                                "On Process"
+                              )}
+                              onChange={handleStatusCheckboxChange}
+                              className="mr-2"
+                            />
+                            On Process
+                          </label>
+                        </div>
+                      )}
+                    </div>
+                  </th>
+                  <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    Date of Request
+                  </th>
+                  <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    Date Updated
+                  </th>
+                  <th className="w-56 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr className="">
+                    <td colSpan="8">
+                      <Skeleton active />
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
+                ) : filteredRecords.length === 0 ? (
+                  <tr className="h-[50vh]">
+                    <td
+                      colSpan="8"
+                      className="p-3 text-lg text-gray-700 text-center"
+                    >
+                      No records found matching the selected filter.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredRecords.map((item, rowIndex) => (
+                    <tr
+                      className="border-b-2 border-gray-200 h-auto overflow-auto"
+                      key={item.id}
+                    >
+                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                        {rowIndex + 1} {/* Add 1 to rowIndex to start from 1 */}
+                      </td>
+                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                        {item.natureOfRequest}
+                      </td>
+                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                        {item.assignedTo}
+                      </td>
+                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                        {item.modeOfRequest}
+                      </td>
+                      <td
+                        className={`px-4 py-2 text-base text-center whitespace-nowrap`}
+                      >
+                        <p
+                          className={` rounded-xl py-2 ${
+                            item.status === "Pending"
+                              ? "bg-red-500 text-white" // Apply red background and white text for Pending
+                              : item.status === "On Process"
+                              ? "bg-yellow-500 text-white" // Apply yellow background and white text for Process
+                              : item.status === "Fixed"
+                              ? "bg-green-500 text-white" // Apply green background and white text for Done
+                              : "bg-gray-200 text-gray-700" // Default background and text color (if none of the conditions match)
+                          }`}
+                        >
+                          {item.status}
+                        </p>
+                      </td>
+                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                        {item.dateRequested}
+                      </td>
+                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                        {item.dateUpdated}
+                      </td>
+                      <td className="p-2 text-lg text-gray-700 flex gap-1 items-center justify-center">
+                        <button
+                          onClick={() => handleOpenModalClick(item.id)}
+                          className="text-white text-base font-medium bg-blue-600 py-2 px-4 rounded-lg"
+                        >
+                          View
+                        </button>
 
-            {selectedItemId && (
-              <CurrentRequestModal
-                display={true}
-                itemData={data.find((item) => item.id === selectedItemId)}
-                onClose={handleCloseModalClick} // Pass the callback here
-              />
-            )}
-          </table>
-          <nav className="absolute bottom-10 right-10">
-            <ul className="flex gap-2">
-              <li>
-                <a
-                  href="#"
-                  onClick={prePage}
-                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
-                >
-                  Previous
-                </a>
-              </li>
-              {numbers.map((n, i) => (
-                <li className={`${currentPage === n ? "active" : ""}`} key={i}>
+                        <Popconfirm
+                          placement="left"
+                          title="Delete the request"
+                          description="Are you sure to delete this request?"
+                          open={popconfirmVisible[item.id]}
+                          icon={
+                            <QuestionCircleOutlined style={{ color: "red" }} />
+                          }
+                          onConfirm={() => handleOk(item.id)}
+                          okButtonProps={{
+                            loading: confirmLoading,
+                            color: "red",
+                            className: "text-black border-1 border-gray-300",
+                            size: "large",
+                          }}
+                          cancelButtonProps={{
+                            size: "large",
+                          }}
+                          onCancel={() => handleCancel(item.id)}
+                          okText="Yes"
+                        >
+                          <button
+                            onClick={() => showPopconfirm(item.id)}
+                            className="text-white text-base bg-red-700 py-2 px-4 rounded-lg"
+                          >
+                            <FontAwesomeIcon icon={faTrash} />
+                          </button>
+                        </Popconfirm>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+
+              {selectedItemId && (
+                <CurrentRequestModal
+                  display={true}
+                  itemData={data.find((item) => item.id === selectedItemId)}
+                  onClose={handleCloseModalClick} // Pass the callback here
+                />
+              )}
+            </table>
+            <nav className="absolute bottom-10 right-10">
+              <ul className="flex gap-2">
+                <li>
                   <a
                     href="#"
-                    onClick={() => changeCPage(n)}
+                    onClick={prePage}
                     className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
                   >
-                    {n}
+                    Previous
                   </a>
                 </li>
-              ))}
-              <li>
-                <a
-                  href="#"
-                  onClick={nextPage}
-                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
-                >
-                  Next
-                </a>
-              </li>
-            </ul>
-          </nav>
+                {numbers.map((n, i) => (
+                  <li
+                    className={`${currentPage === n ? "active" : ""}`}
+                    key={i}
+                  >
+                    <a
+                      href="#"
+                      onClick={() => changeCPage(n)}
+                      className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                    >
+                      {n}
+                    </a>
+                  </li>
+                ))}
+                <li>
+                  <a
+                    href="#"
+                    onClick={nextPage}
+                    className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                  >
+                    Next
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
       </div>
-    </div>
+    </HelmetProvider>
   );
 
   function prePage() {
