@@ -19,6 +19,7 @@ const Requests = () => {
   const { userID } = useAuth();
   const [loading, setLoading] = useState(false);
   const [selectedNatureOfRequest, setSelectedNatureOfRequest] = useState(null);
+  const [selectedModeOfRequest, setSelectedModeOfRequest] = useState(null);
   console.log("userID:", userID);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -115,6 +116,29 @@ const Requests = () => {
     }
   };
 
+  const [val, setVal] = useState("");
+
+  const customStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      border: state.isFocused ? "2px solid #cbd5e0" : "2px solid #cbd5e0",
+      backgroundColor: "#f9fafb",
+      boxShadow: "none",
+      height: "47px",
+      outline: "none",
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? "#343467" : "white",
+      color: state.isSelected ? "white" : "black",
+    }),
+  };
+
+  const optionsModeOfRequest = [
+    { value: "Walk-In", label: "Walk-In" },
+    { value: "Online", label: "Online" },
+  ];
+
   return (
     <div className="bg-transparent">
       {loading && (
@@ -185,38 +209,51 @@ const Requests = () => {
                 Nature of Request:
               </label>
               <div className="relative">
-                <select
+                <Select // Use react-select
                   required
                   name="natureOfRequest"
-                  className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none appearance-none"
-                  onChange={(e) => {
-                    changeUserFieldHandler(e);
+                  className="w-full  border-2 border-gray-400 bg-gray-50 rounded-md focus:outline-none"
+                  value={selectedNatureOfRequest} // Set selected value
+                  onChange={(selectedOption) => {
+                    setSelectedNatureOfRequest(selectedOption); // Update selected option
+                    changeUserFieldHandler({
+                      target: {
+                        name: "natureOfRequest",
+                        value: selectedOption ? selectedOption.value : "",
+                      },
+                    });
                   }}
-                  defaultValue={""}
-                >
-                  <option value="">Select an option...</option>
-                  {data.map((option, index) => (
-                    <option key={index} value={option.natureRequest}>
-                      {option.natureRequest}
-                    </option>
-                  ))}
-                </select>
+                  options={data.map((option, index) => ({
+                    value: option.natureRequest,
+                    label: option.natureRequest,
+                  }))}
+                  placeholder="Select an option..."
+                  styles={customStyles}
+                />
               </div>
             </div>
             <div className="flex flex-col w-full lg:w-1/4">
-              <label className="font-semibold text-lg">Mode of Request:</label>
-              <select
-                name="modeOfRequest"
-                className="w-full h-3/4  border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                onChange={(e) => {
-                  changeUserFieldHandler(e);
-                }}
-                defaultValue={""}
-              >
-                <option value="">Select an option...</option>
-                <option value="Walk-In">Walk-In</option>
-                <option value="Online">Online</option>
-              </select>
+              <label className="font-semibold text-lg">Mode of Request</label>
+              <div className="relative">
+                <Select // Use react-select
+                  required
+                  name="modeOfRequest"
+                  className="w-full   border-2 border-gray-400 bg-gray-50 rounded-md focus:outline-none"
+                  value={selectedModeOfRequest} // Set selected value
+                  onChange={(selectedOption) => {
+                    setSelectedModeOfRequest(selectedOption); // Update selected option
+                    changeUserFieldHandler({
+                      target: {
+                        name: "modeOfRequest",
+                        value: selectedOption ? selectedOption.value : "",
+                      },
+                    });
+                  }}
+                  options={optionsModeOfRequest}
+                  placeholder="Select an option..."
+                  styles={customStyles}
+                />
+              </div>
             </div>
             <div className="flex flex-col lg:w-1/4 ">
               <label htmlFor="unit" className="font-semibold text-lg ">
