@@ -7,6 +7,7 @@ use App\Http\Middleware\CheckAdminRole;
 use App\Http\Middleware\CheckUserRole;
 use App\Http\Middleware\RedirectGuest;
 use App\Http\Controllers\NatureRequestController;
+use App\Http\Controllers\UtilitySettingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -48,3 +49,10 @@ Route::put('/update-contact', [UserController::class, 'updateContactNumber']);
 Route::get('nature-request', [NatureRequestController::class, 'index']);
 Route::get('/account', [UserController::class, 'accountDetails']);
 Route::post('/change-password', [UserController::class, 'changePassword']);
+
+// admin 
+
+Route::get('categories', [UtilitySettingController::class, 'index']);
+Route::post('add-category', [UtilitySettingController::class, 'store']);
+Route::put('category/{id}', [UtilitySettingController::class, 'update']);
+Route::delete('categorydelete/{id}', [UtilitySettingController::class, 'destroy']);

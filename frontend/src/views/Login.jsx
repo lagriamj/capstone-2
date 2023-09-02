@@ -1,5 +1,8 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable no-unused-vars */
 import "../index.css";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faIdCard, faLock } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -7,7 +10,6 @@ import axios from "axios";
 import HashLoader from "react-spinners/HashLoader";
 import { useAuth } from "../AuthContext";
 import { message } from "antd";
-import { Snackbar } from "@mui/material";
 
 function Login() {
   const [role, setRole] = useState("");
@@ -17,7 +19,7 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { userRole, isAuthenticated, userID, login } = useAuth();
+  const { userRole, isAuthenticated, login } = useAuth();
   const location = useLocation();
   const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
 

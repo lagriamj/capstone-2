@@ -190,7 +190,7 @@ class UserController extends Controller
 
     public function changePassword(Request $request)
     {
-        $currentPassword = $request->input('userPassword');
+        $currentPassword = $request->input('currentPassword');
         $newPassword = $request->input('newPassword');
         $newFirstName = $request->input('userFirstName');
         $newLastName = $request->input('userLastName');

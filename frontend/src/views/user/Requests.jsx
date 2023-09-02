@@ -1,15 +1,13 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar";
 import DrawerComponent from "../../components/DrawerComponent";
 import { useState, useEffect } from "react";
-import { faCheck, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NoteModal from "../../components/NoteModal";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
 import HashLoader from "react-spinners/HashLoader";
-import { message } from "antd";
 import Select from "react-select";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 
@@ -21,11 +19,6 @@ const Requests = () => {
   const [selectedNatureOfRequest, setSelectedNatureOfRequest] = useState(null);
   const [selectedModeOfRequest, setSelectedModeOfRequest] = useState(null);
   console.log("userID:", userID);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleInputChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -115,8 +108,6 @@ const Requests = () => {
       console.log("Something went wrong:", err);
     }
   };
-
-  const [val, setVal] = useState("");
 
   const customStyles = {
     control: (provided, state) => ({
@@ -227,7 +218,7 @@ const Requests = () => {
                         },
                       });
                     }}
-                    options={data.map((option, index) => ({
+                    options={data.map((option) => ({
                       value: option.natureRequest,
                       label: option.natureRequest,
                     }))}
@@ -239,7 +230,7 @@ const Requests = () => {
               <div className="flex flex-col w-full lg:w-1/4">
                 <label className="font-semibold text-lg">Mode of Request</label>
                 <div className="relative">
-                  <Select // Use react-select
+                  <Select
                     required
                     name="modeOfRequest"
                     className="w-full   border-2 border-gray-400 bg-gray-50 rounded-md focus:outline-none"

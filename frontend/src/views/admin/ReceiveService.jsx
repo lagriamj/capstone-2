@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, useEffect } from "react";
 import AdminSidebar from "../../components/AdminSidebar";
 import AdminDrawer from "../../components/AdminDrawer";

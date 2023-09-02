@@ -1,6 +1,6 @@
-import React from "react";
 import Modal from "antd/es/modal/Modal";
 import PropagateLoader from "react-spinners/PropagateLoader";
+import PropTypes from "prop-types";
 
 const UpdateContactNumModal = ({
   onOpen,
@@ -25,25 +25,28 @@ const UpdateContactNumModal = ({
     >
       {modalMode === "password" ? (
         // Password input
-        <div>
-          <label className="font-semibold text-lg" htmlFor="passwordChecker">
+        <div className="font-sans">
+          <label
+            className="font-semibold text-lg"
+            htmlFor="userPasswordChecker"
+          >
             Password:
           </label>
           <input
             type="password"
-            name="userCurrentPassword"
-            id="passwordChecker"
+            name="userPasswordChecker"
+            id="userPasswordChecker"
             value={userPasswordChecker}
             onChange={(e) => setUserPasswordChecker(e.target.value)}
             className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
           />
           <button
             type="button"
-            className="bg-main text-white px-4 py-3 rounded-lg w-40 text-lg mt-4"
+            className="bg-main text-white px-2 py-3 rounded-lg w-44 text-lg mt-4"
             onClick={handlePasswordCheck}
           >
             {isSavingChanges ? (
-              <PropagateLoader color="#FFFFFF" className="mb-3" />
+              <PropagateLoader size={10} color="#FFFFFF" className="mb-3" />
             ) : (
               "Check Password"
             )}
@@ -51,7 +54,7 @@ const UpdateContactNumModal = ({
         </div>
       ) : (
         // Contact number input
-        <div>
+        <div className="font-sans">
           <label
             className="font-semibold text-lg"
             htmlFor="userContactNumberUpdate"
@@ -83,12 +86,12 @@ const UpdateContactNumModal = ({
             />
             <button
               type="submit"
-              className="bg-main text-white px-4 py-3 rounded-lg text-lg mt-4 w-60"
+              className="bg-main text-white px-4 py-3 rounded-lg text-lg mt-4 w-32"
             >
               {isSavingChanges ? (
-                <PropagateLoader color="#FFFFFF" className="mb-3" />
+                <PropagateLoader size={10} color="#FFFFFF" className="mb-3" />
               ) : (
-                "Update Contact Number"
+                "Update"
               )}
             </button>
           </form>
@@ -96,6 +99,19 @@ const UpdateContactNumModal = ({
       )}
     </Modal>
   );
+};
+
+UpdateContactNumModal.propTypes = {
+  onOpen: PropTypes.bool.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  modalMode: PropTypes.string.isRequired,
+  handlePasswordCheck: PropTypes.func.isRequired,
+  userPasswordChecker: PropTypes.string.isRequired,
+  setUserPasswordChecker: PropTypes.func.isRequired,
+  userNewContactNumber: PropTypes.string.isRequired,
+  setUserNewContactNumber: PropTypes.func.isRequired,
+  handleContactNumberUpdate: PropTypes.func.isRequired,
+  isSavingChanges: PropTypes.bool.isRequired,
 };
 
 export default UpdateContactNumModal;

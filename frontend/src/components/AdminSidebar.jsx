@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,19 +12,21 @@ import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import RecommendIcon from "@mui/icons-material/Recommend";
+import { useActiveTab } from "../ActiveTabContext";
 
 const AdminSidebar = () => {
-  const [active, setActive] = useState(null);
+  const { activeTab, setActive } = useActiveTab();
   const { logout } = useAuth();
-  const navigate = useNavigate;
+  const navigate = useNavigate();
 
   const handleItemClick = (item) => {
-    setActive((prevActive) => (prevActive === item ? null : item));
+    setActive(item);
   };
 
   const handleLogout = () => {
     logout();
     navigate("/login");
+    setActive("dashboard");
   };
 
   return (
@@ -39,7 +40,7 @@ const AdminSidebar = () => {
       <ul className="flex flex-col justify-center items-start gap-4 px-5 lg:ml-5">
         <li
           className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-            active === "dashboard" ? "bg-white text-main font-semibold" : ""
+            activeTab === "dashboard" ? "bg-white text-main font-semibold" : ""
           }`}
           onClick={() => handleItemClick("dashboard")}
         >
@@ -48,7 +49,7 @@ const AdminSidebar = () => {
         </li>
         <li
           className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-            active === "service-request"
+            activeTab === "service-request"
               ? "bg-white text-main font-semibold"
               : ""
           }`}
@@ -59,7 +60,7 @@ const AdminSidebar = () => {
         </li>
         <li
           className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-            active === "receive-service"
+            activeTab === "receive-service"
               ? "bg-white text-main font-semibold"
               : ""
           }`}
@@ -70,7 +71,9 @@ const AdminSidebar = () => {
         </li>
         <li
           className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-            active === "service-task" ? "bg-white text-main font-semibold" : ""
+            activeTab === "service-task"
+              ? "bg-white text-main font-semibold"
+              : ""
           }`}
           onClick={() => handleItemClick("service-task")}
         >
@@ -79,7 +82,7 @@ const AdminSidebar = () => {
         </li>
         <li
           className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-            active === "service-transaction"
+            activeTab === "service-transaction"
               ? "bg-white text-main font-semibold"
               : ""
           }`}
@@ -90,7 +93,7 @@ const AdminSidebar = () => {
         </li>
         <li
           className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-            active === "recommendation"
+            activeTab === "recommendation"
               ? "bg-white text-main font-semibold"
               : ""
           }`}
@@ -101,7 +104,7 @@ const AdminSidebar = () => {
         </li>
         <li
           className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-            active === "utility-settings"
+            activeTab === "utility-settings"
               ? "bg-white text-main font-semibold"
               : ""
           }`}
@@ -118,7 +121,9 @@ const AdminSidebar = () => {
           <ul className="flex flex-col justify-center items-start gap-3 px-5">
             <li
               className={`flex gap-3 w-full items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-                active === "account" ? "bg-white text-main font-semibold" : ""
+                activeTab === "account"
+                  ? "bg-white text-main font-semibold"
+                  : ""
               }`}
               onClick={() => handleItemClick("account")}
             >

@@ -1,6 +1,6 @@
 import { faPhone, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import HashLoader from "react-spinners/HashLoader";
 import axios from "axios";
@@ -12,7 +12,7 @@ const UpdatePhoneNumberPage = () => {
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
   const userId = location.state?.userID;
   const [loading, setLoading] = useState(false);
-  const { userRole, isAuthenticated, userID, login } = useAuth();
+  const { userRole, isAuthenticated } = useAuth();
   console.log(userId);
 
   useEffect(() => {
@@ -30,12 +30,9 @@ const UpdatePhoneNumberPage = () => {
     return null; // or return a loading message, or redirect immediately
   }
 
-  useEffect(() => {
-    // If the user is coming from the update-phone page (using userID), proceed to verification
-    if (!location.state || (!location.state.user && !location.state.userID)) {
-      navigate("/login"); // Redirect to login if not coming from login, register, or update-phone page
-    }
-  }, [navigate, location.state]);
+  if (!location.state || (!location.state.user && !location.state.userID)) {
+    navigate("/login"); // Redirect to login if not coming from login, register, or update-phone page
+  }
 
   if (!location.state || (!location.state.user && !location.state.userID)) {
     return null; // Return null if not coming from login, register, or update-phone page
@@ -59,6 +56,7 @@ const UpdatePhoneNumberPage = () => {
         },
       });
     } else if (response.status === 404) {
+      console.log(response.status);
     }
   };
 

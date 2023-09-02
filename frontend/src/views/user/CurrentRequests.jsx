@@ -1,4 +1,3 @@
-import React from "react";
 import Sidebar from "../../components/Sidebar";
 import DrawerComponent from "../../components/DrawerComponent";
 import { useState, useEffect } from "react";
@@ -9,7 +8,7 @@ import { useAuth } from "../../AuthContext";
 import CurrentRequestModal from "../../components/CurrentRequestModal";
 import { Popconfirm } from "antd";
 import { QuestionCircleOutlined } from "@ant-design/icons";
-import { message, Skeleton, Table } from "antd";
+import { message, Skeleton } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 
@@ -18,6 +17,7 @@ const CurrentRequests = () => {
   const { userID } = useAuth();
   console.log("userID:", userID);
   const [selectedItemId, setSelectedItemId] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [popconfirmVisible, setPopconfirmVisible] = useState([]);
@@ -141,8 +141,8 @@ const CurrentRequests = () => {
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const [selectedStatusFilters, setSelectedStatusFilters] = useState([]);
 
-  const [isModeDropdownOpen, setIsModeDropdownOpen] = useState(false); // Move this line up
-  const [selectedModeFilters, setSelectedModeFilters] = useState([]); // Move this line up
+  const [isModeDropdownOpen, setIsModeDropdownOpen] = useState(false);
+  const [selectedModeFilters, setSelectedModeFilters] = useState([]);
 
   const toggleStatusDropdown = () => {
     setIsStatusDropdownOpen(!isStatusDropdownOpen);
@@ -176,9 +176,7 @@ const CurrentRequests = () => {
     });
   };
 
-  // Rest of your component code...
-
-  const [currentPage, setCurrentPage] = useState(1); // Start from page 0
+  const [currentPage, setCurrentPage] = useState(1);
   const recordsPage = 10;
 
   const lastIndex = currentPage * recordsPage;
@@ -355,6 +353,15 @@ const CurrentRequests = () => {
                       <Skeleton active />
                     </td>
                   </tr>
+                ) : data.length === 0 ? (
+                  <tr className="h-[50vh]">
+                    <td
+                      colSpan="8"
+                      className="p-3 text-lg text-gray-700 text-center"
+                    >
+                      No Records Yet.
+                    </td>
+                  </tr>
                 ) : filteredRecords.length === 0 ? (
                   <tr className="h-[50vh]">
                     <td
@@ -365,13 +372,13 @@ const CurrentRequests = () => {
                     </td>
                   </tr>
                 ) : (
-                  filteredRecords.map((item, rowIndex) => (
+                  filteredRecords.map((item) => (
                     <tr
                       className="border-b-2 border-gray-200 h-auto overflow-auto"
                       key={item.id}
                     >
                       <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                        {rowIndex + 1} {/* Add 1 to rowIndex to start from 1 */}
+                        {item.id}
                       </td>
                       <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
                         {item.natureOfRequest}

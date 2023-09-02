@@ -1,8 +1,8 @@
-// PrintPreviewModal.js
-import React, { useRef } from "react";
-import { Modal, Button } from "antd";
+import { useRef } from "react";
+import { Modal } from "antd";
 import ReactToPrint from "react-to-print";
 import { useAuth } from "../AuthContext";
+import PropTypes from "prop-types";
 
 const PrintPreviewModal = ({ visible, onClose, itemData }) => {
   const contentRef = useRef();
@@ -716,6 +716,12 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
       </div>
     </Modal>
   );
+};
+
+PrintPreviewModal.propTypes = {
+  visible: PropTypes.bool.isRequired, // Ensure that 'visible' is a required boolean prop
+  onClose: PropTypes.func.isRequired, // Ensure that 'onClose' is a required function prop
+  itemData: PropTypes.object.isRequired, // Ensure that 'itemData' is a required object prop
 };
 
 export default PrintPreviewModal;

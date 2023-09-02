@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -9,19 +8,21 @@ import {
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../AuthContext";
+import { useActiveTab } from "../ActiveTabContext";
 
 const Sidebar = () => {
-  const [active, setActive] = useState(null);
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const { activeTab, setActive } = useActiveTab();
 
   const handleLogout = () => {
     logout();
     navigate("/login");
+    setActive("request");
   };
 
   const handleItemClick = (item) => {
-    setActive((prevActive) => (prevActive === item ? null : item));
+    setActive(item);
   };
 
   return (
@@ -35,7 +36,7 @@ const Sidebar = () => {
       <ul className="flex flex-col justify-center items-start gap-4 px-5 lg:ml-5">
         <li
           className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-            active === "request" ? "bg-white text-main font-semibold" : ""
+            activeTab === "request" ? "bg-white text-main font-semibold" : ""
           }`}
           onClick={() => handleItemClick("request")}
         >
@@ -44,7 +45,7 @@ const Sidebar = () => {
         </li>
         <li
           className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-            active === "current-requests"
+            activeTab === "current-requests"
               ? "bg-white text-main font-semibold"
               : ""
           }`}
@@ -55,7 +56,9 @@ const Sidebar = () => {
         </li>
         <li
           className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-            active === "transactions" ? "bg-white text-main font-semibold" : ""
+            activeTab === "transactions"
+              ? "bg-white text-main font-semibold"
+              : ""
           }`}
           onClick={() => handleItemClick("transactions")}
         >
@@ -70,7 +73,9 @@ const Sidebar = () => {
           <ul className="flex flex-col justify-center items-start gap-3 px-5">
             <li
               className={`flex gap-3 w-full items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-                active === "account" ? "bg-white text-main font-semibold" : ""
+                activeTab === "account"
+                  ? "bg-white text-main font-semibold"
+                  : ""
               }`}
               onClick={() => handleItemClick("account")}
             >

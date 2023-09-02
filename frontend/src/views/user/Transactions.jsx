@@ -1,11 +1,8 @@
-import React from "react";
 import Sidebar from "../../components/Sidebar";
-
 import DrawerComponent from "../../components/DrawerComponent";
 import { useState, useEffect } from "react";
-import InputBox from "../../components/InputBox";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faEye } from "@fortawesome/free-solid-svg-icons";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const Transactions = () => {

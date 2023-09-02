@@ -1,7 +1,7 @@
-import React from "react";
 import PrintPreviewModal from "./PrintPreviewModal";
 import { useState } from "react";
-import Modal from "antd/es/modal/Modal";
+import { Modal } from "antd";
+import PropTypes from "prop-types";
 
 export default function CurrentRequestModal({ display, itemData, onClose }) {
   const [isPrintPreviewModalVisible, setIsPrintPreviewModalVisible] =
@@ -83,3 +83,9 @@ export default function CurrentRequestModal({ display, itemData, onClose }) {
     </>
   );
 }
+
+CurrentRequestModal.propTypes = {
+  display: PropTypes.bool.isRequired, // Ensure that 'visible' is a required boolean prop
+  onClose: PropTypes.func.isRequired, // Ensure that 'onClose' is a required function prop
+  itemData: PropTypes.object.isRequired, // Ensure that 'itemData' is a required object prop
+};

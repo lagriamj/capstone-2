@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Drawer } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,20 +11,22 @@ import {
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../AuthContext";
+import { useActiveTab } from "../ActiveTabContext";
 
 const DrawerComponent = () => {
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState(null);
+  const { activeTab, setActive } = useActiveTab();
   const navigate = useNavigate();
   const { logout } = useAuth();
 
   const handleItemClick = (item) => {
-    setOpen((prevOpen) => (prevOpen ? false : true));
+    setActive(item);
   };
 
   const handleLogout = () => {
     logout();
     navigate("/login");
+    setActive("request");
   };
 
   return (
@@ -56,7 +58,9 @@ const DrawerComponent = () => {
           <ul className="flex flex-col justify-center items-start gap-4 px-5">
             <li
               className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-                active === "request" ? "bg-white text-main font-semibold" : ""
+                activeTab === "request"
+                  ? "bg-white text-main font-semibold"
+                  : ""
               }`}
               onClick={() => handleItemClick("request")}
             >
@@ -65,7 +69,7 @@ const DrawerComponent = () => {
             </li>
             <li
               className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-                active === "current-requests"
+                activeTab === "current-requests"
                   ? "bg-white text-main font-semibold"
                   : ""
               }`}
@@ -76,7 +80,7 @@ const DrawerComponent = () => {
             </li>
             <li
               className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-                active === "transactions"
+                activeTab === "transactions"
                   ? "bg-white text-main font-semibold"
                   : ""
               }`}
@@ -93,7 +97,7 @@ const DrawerComponent = () => {
               <ul className="flex flex-col justify-center items-start gap-3 px-5">
                 <li
                   className={`flex gap-3 w-full items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-                    active === "account"
+                    activeTab === "account"
                       ? "bg-white text-main font-semibold"
                       : ""
                   }`}

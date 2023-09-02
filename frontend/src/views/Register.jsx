@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import {
@@ -8,9 +9,8 @@ import {
   faLock,
   faPhone,
 } from "@fortawesome/free-solid-svg-icons";
-import { Backdrop, CircularProgress } from "@mui/material";
 import HashLoader from "react-spinners/HashLoader";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useUser } from "../UserContext";
 import { useAuth } from "../AuthContext";
@@ -28,9 +28,7 @@ const InputBox = ({
   iconColor,
   min,
   minLength,
-  error,
 }) => {
-  const isNumber = value && !isNaN(value);
   return (
     <div className="flex items-start justify-center text-lg flex-col w-3/4">
       <label className="font-semibold" htmlFor={htmlFor}>
@@ -77,7 +75,7 @@ const Register = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const { setUser } = useUser();
-  const { userRole, isAuthenticated, userID } = useAuth();
+  const { userRole, isAuthenticated } = useAuth();
 
   useEffect(() => {
     // If the user is already authenticated, redirect them to the appropriate page

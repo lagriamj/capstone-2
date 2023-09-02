@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Drawer } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,20 +15,22 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import RecommendIcon from "@mui/icons-material/Recommend";
 import { useAuth } from "../AuthContext";
+import { useActiveTab } from "../ActiveTabContext";
 
 const AdminDrawer = () => {
   const [open, setOpen] = useState(false);
-  const [active, setActive] = useState(null);
+  const { activeTab, setActive } = useActiveTab();
   const navigate = useNavigate();
   const { logout } = useAuth();
 
   const handleLogout = () => {
     logout();
     navigate("/login");
+    setActive("dashboard");
   };
 
   const handleItemClick = (item) => {
-    setOpen((prevOpen) => (prevOpen ? false : true));
+    setActive(item);
   };
 
   return (
@@ -60,7 +62,9 @@ const AdminDrawer = () => {
           <ul className="flex flex-col justify-center items-start gap-4 px-5">
             <li
               className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-                active === "dashboard" ? "bg-white text-main font-semibold" : ""
+                activeTab === "dashboard"
+                  ? "bg-white text-main font-semibold"
+                  : ""
               }`}
               onClick={() => handleItemClick("dashboard")}
             >
@@ -69,7 +73,7 @@ const AdminDrawer = () => {
             </li>
             <li
               className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-                active === "service-request"
+                activeTab === "service-request"
                   ? "bg-white text-main font-semibold"
                   : ""
               }`}
@@ -80,7 +84,7 @@ const AdminDrawer = () => {
             </li>
             <li
               className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-                active === "receive-service"
+                activeTab === "receive-service"
                   ? "bg-white text-main font-semibold"
                   : ""
               }`}
@@ -91,7 +95,7 @@ const AdminDrawer = () => {
             </li>
             <li
               className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-                active === "service-task"
+                activeTab === "service-task"
                   ? "bg-white text-main font-semibold"
                   : ""
               }`}
@@ -102,7 +106,7 @@ const AdminDrawer = () => {
             </li>
             <li
               className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-                active === "service-transaction"
+                activeTab === "service-transaction"
                   ? "bg-white text-main font-semibold"
                   : ""
               }`}
@@ -113,7 +117,7 @@ const AdminDrawer = () => {
             </li>
             <li
               className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-                active === "recommendation"
+                activeTab === "recommendation"
                   ? "bg-white text-main font-semibold"
                   : ""
               }`}
@@ -124,7 +128,7 @@ const AdminDrawer = () => {
             </li>
             <li
               className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-                active === "utility-settings"
+                activeTab === "utility-settings"
                   ? "bg-white text-main font-semibold"
                   : ""
               }`}
@@ -141,7 +145,7 @@ const AdminDrawer = () => {
               <ul className="flex flex-col justify-center items-start gap-3 px-5">
                 <li
                   className={`flex gap-3 w-full items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
-                    active === "account"
+                    activeTab === "account"
                       ? "bg-white text-main font-semibold"
                       : ""
                   }`}

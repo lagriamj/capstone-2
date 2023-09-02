@@ -1,4 +1,3 @@
-import React from "react";
 import DrawerComponent from "../../components/DrawerComponent";
 import Sidebar from "../../components/Sidebar";
 import { useState, useEffect } from "react";
@@ -74,18 +73,12 @@ const Account = () => {
 
     setIsSavingChange(true);
 
-    const userPassword = e.target.userCurrentPassword.value;
-    const newPassword = e.target.userNewPassword.value;
-    const userFirstName = e.target.EditedUserFirstName.value;
-    const userLastName = e.target.EditedUserLastName.value;
-    const userEmail = e.target.EditedUserEmail.value;
-
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/api/change-password",
         {
           userID, // You need to pass the user ID here if required by your API
-          userPassword,
+          currentPassword,
           newPassword,
           userFirstName,
           userLastName,
@@ -150,7 +143,9 @@ const Account = () => {
     }
   };
 
-  const handleContactNumberUpdate = async () => {
+  const handleContactNumberUpdate = async (e) => {
+    e.preventDefault();
+
     setIsSavingChange(true);
     try {
       const response = await axios.put(
@@ -163,13 +158,13 @@ const Account = () => {
 
       if (response.status === 200) {
         setModalUpdateContact(false);
-        message.success("Contact number updated successfully");
-
-        setUserNewContactNumber(""); // Clear the new contact number input
+        message.success("Contact Number Updated Successfully");
+        fetchData();
+        setUserNewContactNumber("");
         setIsSavingChange(false);
       } else {
         setIsSavingChange(false);
-        message.error("Contact number update failed");
+        message.error("Contact Number Update Failed");
       }
     } catch (error) {
       setIsSavingChange(false);
