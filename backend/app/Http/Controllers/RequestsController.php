@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Models\Requests;
 use App\Models\User;
 use Carbon\Carbon;
-
 
 class RequestsController extends Controller
 {
@@ -16,7 +16,7 @@ class RequestsController extends Controller
         $query = Requests::query();
 
         $startDateTime = Carbon::now();
-        $startDateTime->setTime(8, 5, 0);
+        $startDateTime->setTime(0, 5, 0);
 
         $endDateTime = Carbon::now();
         $endDateTime->setTime(23, 59, 0);
@@ -45,6 +45,7 @@ class RequestsController extends Controller
     {
         $validatedData = $request->validate([
             'user_id' => 'required',
+            'fullName' => 'required',
             'reqOffice' => 'required',
             'division' => 'required',
             'natureOfRequest' => 'required',
@@ -87,6 +88,7 @@ class RequestsController extends Controller
     {
         $validatedData = $request->validate([
             'user_id' => 'required',
+            'fullName' => 'required',
             'reqOffice' => 'required',
             'division' => 'required',
             'natureOfRequest' => 'required',

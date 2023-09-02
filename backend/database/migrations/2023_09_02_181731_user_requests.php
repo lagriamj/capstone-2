@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id'); // Foreign key column
             $table->foreign('user_id')->references('userID')->on('users'); // Use 'userID' as the reference column
+            $table->string('fullName');
             $table->string('reqOffice');
             $table->string('division');
             $table->string('natureOfRequest');
@@ -26,7 +27,6 @@ return new class extends Migration
             $table->string('status');
             $table->string('assignedTo');
             $table->datetime('dateUpdated');
-
             $table->timestamps();
         });
     }

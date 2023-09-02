@@ -3,9 +3,7 @@
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RequestsController;
-use App\Http\Middleware\CheckAdminRole;
-use App\Http\Middleware\CheckUserRole;
-use App\Http\Middleware\RedirectGuest;
+use App\Http\Controllers\ReceiveServiceController;
 use App\Http\Controllers\NatureRequestController;
 use App\Http\Controllers\UtilitySettingController;
 use Illuminate\Http\Request;
@@ -56,3 +54,8 @@ Route::get('categories', [UtilitySettingController::class, 'index']);
 Route::post('add-category', [UtilitySettingController::class, 'store']);
 Route::put('category/{id}', [UtilitySettingController::class, 'update']);
 Route::delete('categorydelete/{id}', [UtilitySettingController::class, 'destroy']);
+
+Route::get('all-request', [ReceiveServiceController::class, 'allRequest']);
+Route::get('service-task', [ReceiveServiceController::class, 'index']);
+Route::post('received-request', [ReceiveServiceController::class, 'store']);
+Route::put('serviced/{id}', [ReceiveServiceController::class, 'updateReceiveService']);

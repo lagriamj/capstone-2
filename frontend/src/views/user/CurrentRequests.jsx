@@ -322,6 +322,18 @@ const CurrentRequests = () => {
                           <label className="block px-4 py-2">
                             <input
                               type="checkbox"
+                              value="Received"
+                              checked={selectedStatusFilters.includes(
+                                "Received"
+                              )}
+                              onChange={handleStatusCheckboxChange}
+                              className="mr-2"
+                            />
+                            Received
+                          </label>
+                          <label className="block px-4 py-2">
+                            <input
+                              type="checkbox"
                               value="On Process"
                               checked={selectedStatusFilters.includes(
                                 "On Process"
@@ -330,6 +342,18 @@ const CurrentRequests = () => {
                               className="mr-2"
                             />
                             On Process
+                          </label>
+                          <label className="block px-4 py-2">
+                            <input
+                              type="checkbox"
+                              value="toRelease"
+                              checked={selectedStatusFilters.includes(
+                                "toRelease"
+                              )}
+                              onChange={handleStatusCheckboxChange}
+                              className="mr-2"
+                            />
+                            To Release
                           </label>
                         </div>
                       )}
@@ -396,9 +420,11 @@ const CurrentRequests = () => {
                           className={` rounded-xl py-2 ${
                             item.status === "Pending"
                               ? "bg-red-500 text-white" // Apply red background and white text for Pending
+                              : item.status === "Received"
+                              ? "bg-orange-500 text-white"
                               : item.status === "On Process"
                               ? "bg-yellow-500 text-white" // Apply yellow background and white text for Process
-                              : item.status === "Fixed"
+                              : item.status === "To Release"
                               ? "bg-green-500 text-white" // Apply green background and white text for Done
                               : "bg-gray-200 text-gray-700" // Default background and text color (if none of the conditions match)
                           }`}

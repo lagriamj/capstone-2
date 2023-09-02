@@ -19,6 +19,7 @@ const Requests = () => {
   const [selectedNatureOfRequest, setSelectedNatureOfRequest] = useState(null);
   const [selectedModeOfRequest, setSelectedModeOfRequest] = useState(null);
   console.log("userID:", userID);
+  const { fullName } = useAuth();
 
   useEffect(() => {
     const handleResize = () => {
@@ -46,6 +47,7 @@ const Requests = () => {
 
   const [formData, setFormData] = useState({
     user_id: userID,
+    fullName: fullName,
     reqOffice: "",
     division: "",
     natureOfRequest: "",
@@ -230,7 +232,7 @@ const Requests = () => {
               <div className="flex flex-col w-full lg:w-1/4">
                 <label className="font-semibold text-lg">Mode of Request</label>
                 <div className="relative">
-                  <Select
+                  <Select // Use react-select
                     required
                     name="modeOfRequest"
                     className="w-full   border-2 border-gray-400 bg-gray-50 rounded-md focus:outline-none"

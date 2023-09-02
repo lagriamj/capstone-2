@@ -1,0 +1,15 @@
+.ant-modal-content {
+    background-color: rgb(31 41 55) !important;
+    border-radius: '0.5rem' ;
+    color: white !important;
+}
+
+
+.ant-modal-title {
+    background-color: rgb(31 41 55) !important;
+    color: white !important;
+}
+
+.ant-modal-content svg{
+    color: white !important;
+}
