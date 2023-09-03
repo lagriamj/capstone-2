@@ -6,6 +6,7 @@ import axios from "axios";
 import ReceiveServiceModal from "../../components/ReceiveServiceModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Skeleton } from "antd";
 
 const ReceiveService = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -13,6 +14,7 @@ const ReceiveService = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
   const [isSingleRequest, setIsSingleRequest] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const openModal = (data) => {
     setSelectedData(data);
@@ -43,18 +45,44 @@ const ReceiveService = () => {
   }, []);
 
   const fetchData = async () => {
+    setLoading(true);
     try {
       const response = await axios.get("http://127.0.0.1:8000/api/all-request");
       if (response.status === 200) {
+        setLoading(false);
         setData(response.data.results);
         setIsSingleRequest(response.data.results.length === 1);
       } else {
+        setLoading(false);
         console.error("Failed to fetch utility settings. Response:", response);
       }
     } catch (error) {
+      setLoading(false);
       console.error("Error fetching utility settings:", error);
     }
   };
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPage = 10;
+
+  const lastIndex = currentPage * recordsPage;
+  const firstIndex = lastIndex - recordsPage;
+  const records = data.slice(firstIndex, lastIndex);
+
+  const npage = Math.ceil(data.length / recordsPage);
+  const numbers = [...Array(npage + 1).keys()].slice(1);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredRecords = records.filter((item) => {
+    const matchesSearchQuery =
+      item.natureOfRequest.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.assignedTo.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.modeOfRequest.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.dateRequested.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesSearchQuery;
+  });
 
   return (
     <HelmetProvider>
@@ -63,7 +91,7 @@ const ReceiveService = () => {
       </Helmet>
       <div className='className="flex flex-col lg:flex-row bg-gray-200 lg:pl-24 lg:py-10 h-screen"'>
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
-        <div className="overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh]  h-4/5 pb-10 bg-white shadow-xl  lg:ml-72  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
+        <div className="overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] relative h-4/5 pb-10 bg-white shadow-xl  lg:ml-72  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
           <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
             <h1 className="font-sans lg:text-3xl text-xl mt-8 ml-5 mr-auto tracking-wide">
               Receive
@@ -77,8 +105,8 @@ const ReceiveService = () => {
                 type="text"
                 placeholder="Search"
                 className="border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 h-14 lg:w-full w-[90%] focus:outline-none text-xl"
-                //value={searchQuery}
-                //onChange={(e) => setSearchQuery(e.target.value)}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
           </div>
@@ -104,42 +132,101 @@ const ReceiveService = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.map((setting) => (
-                  <tr key={setting.id}>
-                    <td className="border-b-2 py-3 border-gray-200 text-center">
-                      {setting.id}
-                    </td>
-                    <td className="border-b-2 py-3 border-gray-200 text-center">
-                      {setting.propertyNo}
-                    </td>
-                    <td className="border-b-2 py-3 border-gray-200 text-center">
-                      {setting.reqOffice}
-                    </td>
-                    <td className="border-b-2 py-3 border-gray-200 text-center">
-                      {setting.dateRequested}
-                    </td>
-                    <td className="border-b-2 py-3 border-gray-200 text-center">
-                      {setting.natureOfRequest}
-                    </td>
-                    <td className="border-b-2 py-3 border-gray-200 text-center">
-                      {setting.fullName}
-                    </td>
-                    <td className="border-b-2 py-3 border-gray-200 text-center">
-                      <button
-                        className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
-                        onClick={() => openModal(setting)}
-                      >
-                        View
-                      </button>
-                      <button className="ml-1 text-white bg-red-700 rounded-lg px-3 py-2 text-lg font-medium">
-                        <FontAwesomeIcon icon={faTrash} />
-                      </button>
+                {loading ? (
+                  <tr className="">
+                    <td colSpan="8">
+                      <Skeleton active />
                     </td>
                   </tr>
-                ))}
+                ) : data.length === 0 ? (
+                  <tr className="h-[50vh]">
+                    <td
+                      colSpan="8"
+                      className="p-3 text-lg text-gray-700 text-center"
+                    >
+                      No Records Yet.
+                    </td>
+                  </tr>
+                ) : filteredRecords.length === 0 ? (
+                  <tr className="h-[50vh]">
+                    <td
+                      colSpan="8"
+                      className="p-3 text-lg text-gray-700 text-center"
+                    >
+                      No records found matching the selected filter.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredRecords.map((setting) => (
+                    <tr key={setting.id}>
+                      <td className="border-b-2 py-3 border-gray-200 text-center">
+                        {setting.id}
+                      </td>
+                      <td className="border-b-2 py-3 border-gray-200 text-center">
+                        {setting.propertyNo}
+                      </td>
+                      <td className="border-b-2 py-3 border-gray-200 text-center">
+                        {setting.reqOffice}
+                      </td>
+                      <td className="border-b-2 py-3 border-gray-200 text-center">
+                        {setting.dateRequested}
+                      </td>
+                      <td className="border-b-2 py-3 border-gray-200 text-center">
+                        {setting.natureOfRequest}
+                      </td>
+                      <td className="border-b-2 py-3 border-gray-200 text-center">
+                        {setting.fullName}
+                      </td>
+                      <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <button
+                          className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
+                          onClick={() => openModal(setting)}
+                        >
+                          View
+                        </button>
+                        <button className="ml-1 text-white bg-red-700 rounded-lg px-3 py-2 text-lg font-medium">
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
+          <nav className="absolute bottom-10 right-10">
+            <ul className="flex gap-2">
+              <li>
+                <a
+                  href="#"
+                  onClick={prePage}
+                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                >
+                  Previous
+                </a>
+              </li>
+              {numbers.map((n, i) => (
+                <li className={`${currentPage === n ? "active" : ""}`} key={i}>
+                  <a
+                    href="#"
+                    onClick={() => changeCPage(n)}
+                    className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                  >
+                    {n}
+                  </a>
+                </li>
+              ))}
+              <li>
+                <a
+                  href="#"
+                  onClick={nextPage}
+                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                >
+                  Next
+                </a>
+              </li>
+            </ul>
+          </nav>
           <ReceiveServiceModal
             isOpen={isModalOpen}
             onClose={closeModal}
@@ -149,6 +236,20 @@ const ReceiveService = () => {
       </div>
     </HelmetProvider>
   );
+
+  function prePage() {
+    if (currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  }
+  function changeCPage(id) {
+    setCurrentPage(id);
+  }
+  function nextPage() {
+    if (currentPage !== npage) {
+      setCurrentPage(currentPage + 1);
+    }
+  }
 };
 
 export default ReceiveService;
