@@ -28,7 +28,8 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
       onCancel={onClose}
       onOk={handlePrint}
       width="65%" // Set a custom width
-      style={{ height: "60vh" }} // Set a custom height // No footer in the print preview modal
+      style={{ height: "60vh" }}
+      className="ant-modal-content-custom "
       okButtonProps={{
         color: "red",
         className: "text-black border-1 border-gray-300",
@@ -45,7 +46,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
         ref={printRef} // Assign the ref for the ReactToPrint component
         content={() => contentRef.current} // No need for an additional trigger element
       />
-      <div className="text-black w-full overflow-auto" ref={contentRef}>
+      <div className="text-black w-full overflow-auto " ref={contentRef}>
         <div className="flex">
           <div className="flex flex-col">
             <input

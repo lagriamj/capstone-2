@@ -4,7 +4,6 @@ import { useState } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { Modal } from "antd";
-import "./ServiceTaskModal.css";
 import { message } from "antd";
 import PropagateLoader from "react-spinners/PropagateLoader";
 
@@ -90,13 +89,13 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
           <div className="grid grid-cols-4 gap-4">
             <div className="col-span-1">
               <label
-                className="block text-sm font-bold mb-2 text-white"
+                className="block text-sm font-bold mb-2 text-black"
                 htmlFor="propertyNo"
               >
                 Requesting Office
               </label>
               <input
-                className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md appearance-none border-2  rounded-lg w-full py-2 px-3 bg-gray-200  text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="reqOffice"
                 name="reqOffice"
@@ -112,7 +111,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
                 Division
               </label>
               <input
-                className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="division"
                 name="division"
@@ -128,7 +127,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
                 Date Request
               </label>
               <input
-                className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="dateRequested"
                 name="dateRequested"
@@ -144,7 +143,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
                 Mode Request
               </label>
               <input
-                className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="modeOfRequest"
                 name="modeOfRequest"
@@ -160,7 +159,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
                 Nature Request
               </label>
               <input
-                className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="natureOfRequest"
                 name="natureOfRequest"
@@ -176,7 +175,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
                 Requested By
               </label>
               <input
-                className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="fullName"
                 name="fullName"
@@ -192,7 +191,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
                 Authorized By
               </label>
               <input
-                className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="authorizedBy"
                 name="authorizedBy"
@@ -209,7 +208,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
               </label>
 
               <textarea
-                className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 name="SpecialIns"
                 id="SpecialIns"
                 cols="10"
@@ -226,7 +225,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
                 Unit
               </label>
               <input
-                className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="unit"
                 name="unit"
@@ -242,7 +241,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
                 Property No
               </label>
               <input
-                className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="propertyNo"
                 name="propertyNo"
@@ -258,7 +257,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
                 Serial No
               </label>
               <input
-                className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="serialNo"
                 name="serialNo"
@@ -284,7 +283,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
                   Received By
                 </label>
                 <input
-                  className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="text"
                   id="receivedBy"
                   name="receivedBy"
@@ -300,7 +299,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
                   Date Received
                 </label>
                 <input
-                  className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="dateReceived"
                   name="dateReceived"
                   value={data.dateReceived}
@@ -315,7 +314,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
                   Assigned To
                 </label>
                 <input
-                  className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="text"
                   id="assignedTo"
                   name="assignedTo"
@@ -331,7 +330,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
                   Date Procured
                 </label>
                 <input
-                  className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="date"
                   id="dateProcured"
                   name="dateProcured"
@@ -347,7 +346,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
                   Serviced By
                 </label>
                 <input
-                  className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-md appearance-none border-2 border-gray-800 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="text"
                   id="serviceBy"
                   name="serviceBy"
@@ -365,7 +364,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
                   Date Service
                 </label>
                 <input
-                  className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="text"
                   id="dateServiced"
                   name="dateServiced"
@@ -378,14 +377,14 @@ const ServiceTaskModal = ({ isOpen, onClose, data }) => {
         </div>
         <div className="flex ml-auto w-full  gap-2 justify-end border-t-2 pt-5 pr-6">
           <button
-            className="bg-white text-black font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-gray-800 hover:text-white hover:border-2 hover:border-white"
+            className="bg-gray-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
             type="submit"
             onClick={onClose}
           >
             Cancel
           </button>
           <button
-            className="bg-white text-black font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-gray-800 hover:text-white hover:border-2 hover:border-white"
+            className="bg-gray-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
             type="submit"
           >
             {isSubmitting ? (

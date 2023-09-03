@@ -87,7 +87,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
       width="70%"
       footer={null}
     >
-      <div className="relative p-6">
+      <div className="relative p-6 text-lg">
         {/* Display your data in a 4x5 grid */}
         {data && (
           <div className="grid lg:grid-cols-4 gap-4 grid-cols-1">
@@ -99,7 +99,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Requesting Office
               </label>
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="reqOffice"
                 name="reqOffice"
@@ -115,7 +115,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Division
               </label>
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="division"
                 name="division"
@@ -131,7 +131,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Date Request
               </label>
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="dateRequested"
                 name="dateRequested"
@@ -147,7 +147,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Mode Request
               </label>
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="modeOfRequest"
                 name="modeOfRequest"
@@ -163,7 +163,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Nature Request
               </label>
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="natureOfRequest"
                 name="natureOfRequest"
@@ -179,7 +179,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Requested By
               </label>
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="fullName"
                 name="fullName"
@@ -195,7 +195,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Authorized By
               </label>
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="authorizedBy"
                 name="authorizedBy"
@@ -211,7 +211,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Special Ins
               </label>
               <textarea
-                className="shadow appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 name="SpecialIns"
                 id="SpecialIns"
                 cols="10"
@@ -225,7 +225,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Unit
               </label>
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="unit"
                 name="unit"
@@ -241,7 +241,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Property No
               </label>
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="propertyNo"
                 name="propertyNo"
@@ -257,7 +257,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Serial No
               </label>
               <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 type="text"
                 id="serialNo"
                 name="serialNo"
@@ -271,7 +271,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
         )}
       </div>
       <form onSubmit={handleSubmit}>
-        <div className="relative p-6 mb-10">
+        <div className="relative p-6 mb-10 text-lg">
           {/* ADMIN SIDE */}
           {data && (
             <div className="grid grid-cols-4 gap-4">
@@ -283,7 +283,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                   Received By
                 </label>
                 <input
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-md  appearance-none border-2 border-gray-800 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="text"
                   id="receivedBy"
                   name="receivedBy"
@@ -300,7 +300,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                   Date Received
                 </label>
                 <input
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="dateReceived"
                   name="dateReceived"
                   value={daytime}
@@ -318,7 +318,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                   Assigned To
                 </label>
                 <input
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-md appearance-none border-2 border-gray-800 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="text"
                   id="assignedTo"
                   name="assignedTo"
@@ -336,7 +336,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                   Date Procured
                 </label>
                 <input
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="date"
                   id="dateProcured"
                   name="dateProcured"
@@ -349,14 +349,14 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
         </div>
         <div className="flex ml-auto w-full  gap-2 justify-end border-t-2 pt-5 pr-6">
           <button
-            className="bg-white text-black font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-gray-800 hover:text-white hover:border-2 hover:border-white"
+            className="bg-gray-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
             type="submit"
             onClick={onClose}
           >
             Cancel
           </button>
           <button
-            className="bg-white text-black font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-gray-800 hover:text-white hover:border-2 hover:border-white"
+            className="bg-gray-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out "
             type="submit"
           >
             {isSubmitting ? (
