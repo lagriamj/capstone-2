@@ -439,7 +439,7 @@ const CurrentRequests = () => {
                         className={`px-4 py-2 text-base whitespace-nowrap text-center`}
                       >
                         <p
-                          className={` rounded-xl py-2 ${
+                          className={` rounded-xl py-2 w-32 ${
                             item.status === "Pending"
                               ? "bg-red-500 text-white" // Apply red background and white text for Pending
                               : item.status === "Received"
