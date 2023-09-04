@@ -199,7 +199,7 @@ const ServiceTask = () => {
       </Helmet>
       <div className='className="flex flex-col lg:flex-row bg-gray-200 lg:pl-24 lg:py-10 h-screen"'>
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
-        <div className="overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] relative  h-4/5 pb-10 bg-white shadow-xl  lg:ml-72  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
+        <div className="overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] relative mt-20 lg:mt-0 ml-5  h-4/5 pb-10 bg-white shadow-xl  lg:ml-72  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
           <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
             <h1 className="font-sans lg:text-3xl text-xl mt-8 ml-5 mr-auto tracking-wide">
               Tasks
@@ -226,12 +226,16 @@ const ServiceTask = () => {
             <table className="w-full">
               <thead className="bg-gray-50 border-b-2 border-gray-200">
                 <tr className="bg-gray-200">
-                  <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                  <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                     #
                   </th>
-                  <th className="text-center">Request ID</th>
-                  <th className="text-center">Date of Request</th>
-                  <th className="text-center">Nature of Request</th>
+                  <th className="text-center  whitespace-nowrap">Request ID</th>
+                  <th className="text-center  whitespace-nowrap">
+                    Date of Request
+                  </th>
+                  <th className="text-center  whitespace-nowrap">
+                    Nature of Request
+                  </th>
                   <th className="px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
                     Mode
                     <div className="relative inline-block">
@@ -271,7 +275,9 @@ const ServiceTask = () => {
                       )}
                     </div>
                   </th>
-                  <th className="">Assigned To</th>
+                  <th className=" whitespace-nowrap text-center">
+                    Assigned To
+                  </th>
                   <th
                     className={`px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center`}
                   >
@@ -341,7 +347,9 @@ const ServiceTask = () => {
                       )}
                     </div>
                   </th>
-                  <th className="text-center">Date Updated</th>
+                  <th className="text-center  whitespace-nowrap">
+                    Date Updated
+                  </th>
                   <th className="w-56 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                     Action
                   </th>
@@ -414,42 +422,46 @@ const ServiceTask = () => {
                         {setting.dateUpdated}
                       </td>
                       <td className="border-b-2 py-3 border-gray-200 text-center">
-                        <button
-                          className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
-                          onClick={() => openModal(setting)}
-                        >
-                          Update
-                        </button>
-                        <Popconfirm
-                          placement="left"
-                          title="Delete the request"
-                          description="Are you sure to delete this request?"
-                          open={popconfirmVisible[setting.id]}
-                          icon={
-                            <QuestionCircleOutlined style={{ color: "red" }} />
-                          }
-                          onConfirm={() =>
-                            handleOk(setting.id, setting.request_id)
-                          }
-                          okButtonProps={{
-                            loading: confirmLoading,
-                            color: "red",
-                            className: "text-black border-1 border-gray-300",
-                            size: "large",
-                          }}
-                          cancelButtonProps={{
-                            size: "large",
-                          }}
-                          onCancel={() => handleCancel(setting.id)}
-                          okText="Yes"
-                        >
+                        <div className="flex gap-1">
                           <button
-                            onClick={() => showPopconfirm(setting.id)}
-                            className="text-white text-base bg-red-700 py-2 px-4 rounded-lg ml-1"
+                            className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
+                            onClick={() => openModal(setting)}
                           >
-                            <FontAwesomeIcon icon={faTrash} />
+                            Update
                           </button>
-                        </Popconfirm>
+                          <Popconfirm
+                            placement="left"
+                            title="Delete the request"
+                            description="Are you sure to delete this request?"
+                            open={popconfirmVisible[setting.id]}
+                            icon={
+                              <QuestionCircleOutlined
+                                style={{ color: "red" }}
+                              />
+                            }
+                            onConfirm={() =>
+                              handleOk(setting.id, setting.request_id)
+                            }
+                            okButtonProps={{
+                              loading: confirmLoading,
+                              color: "red",
+                              className: "text-black border-1 border-gray-300",
+                              size: "large",
+                            }}
+                            cancelButtonProps={{
+                              size: "large",
+                            }}
+                            onCancel={() => handleCancel(setting.id)}
+                            okText="Yes"
+                          >
+                            <button
+                              onClick={() => showPopconfirm(setting.id)}
+                              className="text-white text-base bg-red-700 py-2 px-4 rounded-lg"
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                          </Popconfirm>
+                        </div>
                       </td>
                     </tr>
                   ))

@@ -92,7 +92,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
     >
       <div className="relative p-6 text-lg">
         {data && (
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
             <div className="col-span-1">
               <label
                 className="block text-sm font-bold mb-2 text-black"
@@ -280,7 +280,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
         <div className="relative p-6 text-lg">
           {/* ADMIN SIDE */}
           {data && (
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
               <div className="col-span-1">
                 <label
                   className="block text-sm font-bold mb-2"

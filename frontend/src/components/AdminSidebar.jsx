@@ -45,15 +45,15 @@ const AdminSidebar = () => {
 
   return (
     <div className="sidebar flex flex-col bg-main h-screen w-[17%] font-sans overflow-auto text-white text-lg fixed top-0 left-0">
-      <div className="w-full flex gap-4 items-center justify-center py-4 px-3 mb-5">
+      <div className="w-full flex gap-4 items-center justify-center py-4 px-3 my-2">
         <img className="w-1/3 h-[95%]" src="/cityhalllogo.png" alt="" />
         <img className="w-1/3 h-[95%]" src="/citclogo.png" alt="" />
       </div>
 
       <hr className="mx-7 mb-8" />
-      <ul className="flex flex-col justify-center items-start gap-4 px-5 lg:ml-5">
+      <ul className="flex flex-col justify-center items-start gap-4 px-5 lg:ml-4">
         <li
-          className={`flex gap-3 items-center py-3 px-4 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
+          className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "dashboard" ? "bg-white text-main font-semibold" : ""
           }`}
           onClick={() => handleItemClick("dashboard")}
@@ -62,7 +62,7 @@ const AdminSidebar = () => {
           <Link to={"/dashboard"}>Dashboard</Link>
         </li>
         <li
-          className={`flex gap-3 items-center py-3 px-4 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
+          className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "service-request"
               ? "bg-white text-main font-semibold"
               : ""
@@ -73,7 +73,7 @@ const AdminSidebar = () => {
           <Link to={"/service-request"}>Service Request</Link>
         </li>
         <li
-          className={`flex gap-3 items-center py-3 px-4 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
+          className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "receive-service"
               ? "bg-white text-main font-semibold"
               : ""
@@ -84,7 +84,7 @@ const AdminSidebar = () => {
           <Link to={"/receive-service"}>Receive Service</Link>
         </li>
         <li
-          className={`flex gap-3 items-center py-3 px-4 rounded-lg transition duration-300 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
+          className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-300 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "service-task"
               ? "bg-white text-main font-semibold"
               : ""
@@ -95,7 +95,7 @@ const AdminSidebar = () => {
           <Link to={"/service-task"}>Service Task</Link>
         </li>
         <li
-          className={`flex gap-3 items-center py-3 px-4 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
+          className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:text-lg hover:font-semibold ${
             activeTab === "service-transaction"
               ? "bg-white text-main font-semibold"
               : ""
@@ -106,7 +106,7 @@ const AdminSidebar = () => {
           <Link to={"/service-transaction"}>Service Transaction</Link>
         </li>
         <li
-          className={`flex gap-3 items-center py-3 px-4 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
+          className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "recommendation"
               ? "bg-white text-main font-semibold"
               : ""
@@ -117,7 +117,7 @@ const AdminSidebar = () => {
           <Link to={"/recommendation"}>Recommendation</Link>
         </li>
         <li
-          className={`flex gap-3 items-center py-3 px-4 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
+          className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "utility-settings"
               ? "bg-white text-main font-semibold"
               : ""
@@ -131,7 +131,7 @@ const AdminSidebar = () => {
 
       <div className="flex flex-col mt-auto mb-10">
         <hr className="mx-7 mb-5" />
-        <div className="flex flex-col  lg:mx-5 ">
+        <div className="flex flex-col  lg:mx-2 ">
           <ul className="flex flex-col justify-center items-start gap-3 px-5">
             <li
               className={`flex gap-3 w-full cursor-pointer items-center relative py-3 px-4 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${

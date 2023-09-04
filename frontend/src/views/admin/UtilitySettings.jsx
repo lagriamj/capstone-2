@@ -145,8 +145,8 @@ const UtilitySettings = () => {
           <div className="w-full text-center bg-main text-white py-4">
             <h1 className="text-3xl">Utility Settings</h1>
           </div>
-          <div className="flex gap-20 ml-10  p-4">
-            <div className="mt-4 w-[25%]">
+          <div className="flex flex-col lg:flex-row gap-20 ml-10  p-4">
+            <div className="mt-4 w-[80%] lg:w-[25%]">
               <form
                 onSubmit={handleSubmit}
                 className="flex flex-col border-2 shadow-lg rounded-lg p-6 w-full bg-main"
@@ -176,7 +176,7 @@ const UtilitySettings = () => {
               </form>
             </div>
 
-            <div className="w-1/2 h-auto shadow-lg overflow-auto rounded-xl">
+            <div className="lg:w-1/2 w-[90%] h-auto shadow-lg overflow-auto rounded-xl">
               <table className="mt-4 border-2 rounded-lg w-full ">
                 <thead className="bg-gray-50 border-b-2 border-gray-200 ">
                   <tr className="border-b-2 border-gray-200 bg-main text-white rounded-t-xl">

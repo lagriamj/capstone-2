@@ -84,7 +84,7 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
     >
       <div className="relative p-6 text-lg">
         {data && (
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
             <div className="col-span-1">
               <label
                 className="block text-sm font-bold mb-2 text-black"
@@ -272,7 +272,7 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
         <div className="relative p-6 text-lg">
           {/* ADMIN SIDE */}
           {data && (
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
               <div className="col-span-1">
                 <label
                   className="block text-sm font-bold mb-2"
@@ -376,7 +376,7 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
                   Findings/Particulars
                 </label>
                 <select
-                  className="shadow-md appearance-none border-2 border-gray-800 rounded-lg w-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-md appearance-none border-2 border-gray-800 mb-2 lg:mb-0 rounded-lg w-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="findings"
                   name="findings"
                   required
@@ -390,7 +390,7 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
                   <option value="MONITOR">MONITOR</option>
                 </select>
                 <input
-                  className="shadow-md appearance-none border-2 border-gray-800 rounded-lg py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-md appearance-none border-2 border-gray-800 rounded-lg  py-2 px-3 lg:ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="text"
                   id="rootCause"
                   name="rootCause"
@@ -400,7 +400,7 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
                   }}
                 />
               </div>
-              <div className="col-span-1">
+              <div className="col-span-1 ">
                 <label
                   className="block text-sm font-bold mb-2"
                   htmlFor="propertyNo"
@@ -408,7 +408,7 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
                   Action Taken
                 </label>
                 <select
-                  className="shadow-md appearance-none border-2 border-gray-800 rounded-lg w-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-md appearance-none border-2 border-gray-800 rounded-lg w-20 mb-2 lg:mb-0 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="actionTaken"
                   name="actionTaken"
                   required
@@ -422,7 +422,7 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
                   <option value="MONITOR">MONITOR</option>
                 </select>
                 <input
-                  className="shadow-md appearance-none border-2 border-gray-800 rounded-lg py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-md appearance-none border-2 border-gray-800 rounded-lg py-2 px-3 lg:ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="text"
                   id="remarks"
                   name="remarks"
