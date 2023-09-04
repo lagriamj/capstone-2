@@ -22,6 +22,8 @@ import Recommendation from "./views/admin/Recommendation";
 import UtilitySettings from "./views/admin/UtilitySettings";
 import AdminAccount from "./views/admin/AdminAccount";
 import { ActiveTabProvider } from "./ActiveTabContext";
+import UsersList from "./views/admin/UsersList";
+import { ActiveSubTabProvider } from "./ActiveSubTabContext";
 
 function App() {
   function ProtectedRoute({ element, requiredRole }) {
@@ -52,121 +54,135 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <ActiveTabProvider>
-          <Routes>
-            <Route index element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/verify-otp" element={<RegisterConfirmation />} />
-            <Route path="/update-phone" element={<UpdatePhoneNumberPage />} />
-            <Route path="/page-not-found" element={<NotFound />} />
-            <Route path="/unauthorized" element={<Unauthorized />} />
+          <ActiveSubTabProvider>
+            <Routes>
+              <Route index element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/verify-otp" element={<RegisterConfirmation />} />
+              <Route path="/update-phone" element={<UpdatePhoneNumberPage />} />
+              <Route path="/page-not-found" element={<NotFound />} />
+              <Route path="/unauthorized" element={<Unauthorized />} />
 
-            {/* User Routes */}
-            <Route
-              path="/request"
-              element={
-                <ProtectedRoute element={<Requests />} requiredRole={"user"} />
-              }
-            />
-            <Route
-              path="/current-requests"
-              element={
-                <ProtectedRoute
-                  element={<CurrentRequests />}
-                  requiredRole={"user"}
-                />
-              }
-            />
-            <Route
-              path="/transactions"
-              element={
-                <ProtectedRoute
-                  element={<Transactions />}
-                  requiredRole={"user"}
-                />
-              }
-            />
-            <Route
-              path="/account"
-              element={
-                <ProtectedRoute element={<Account />} requiredRole={"user"} />
-              }
-            />
+              {/* User Routes */}
+              <Route
+                path="/request"
+                element={
+                  <ProtectedRoute
+                    element={<Requests />}
+                    requiredRole={"user"}
+                  />
+                }
+              />
+              <Route
+                path="/current-requests"
+                element={
+                  <ProtectedRoute
+                    element={<CurrentRequests />}
+                    requiredRole={"user"}
+                  />
+                }
+              />
+              <Route
+                path="/transactions"
+                element={
+                  <ProtectedRoute
+                    element={<Transactions />}
+                    requiredRole={"user"}
+                  />
+                }
+              />
+              <Route
+                path="/account"
+                element={
+                  <ProtectedRoute element={<Account />} requiredRole={"user"} />
+                }
+              />
 
-            {/* Admin Routes */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute
-                  element={<Dashboard />}
-                  requiredRole={"admin"}
-                />
-              }
-            />
-            <Route
-              path="/service-request"
-              element={
-                <ProtectedRoute
-                  element={<ServiceRequest />}
-                  requiredRole={"admin"}
-                />
-              }
-            />
-            <Route
-              path="/receive-service"
-              element={
-                <ProtectedRoute
-                  element={<ReceiveService />}
-                  requiredRole={"admin"}
-                />
-              }
-            />
-            <Route
-              path="/service-task"
-              element={
-                <ProtectedRoute
-                  element={<ServiceTask />}
-                  requiredRole={"admin"}
-                />
-              }
-            />
-            <Route
-              path="/service-transaction"
-              element={
-                <ProtectedRoute
-                  element={<ServiceTransaction />}
-                  requiredRole={"admin"}
-                />
-              }
-            />
-            <Route
-              path="/recommendation"
-              element={
-                <ProtectedRoute
-                  element={<Recommendation />}
-                  requiredRole={"admin"}
-                />
-              }
-            />
-            <Route
-              path="/utility-settings"
-              element={
-                <ProtectedRoute
-                  element={<UtilitySettings />}
-                  requiredRole={"admin"}
-                />
-              }
-            />
-            <Route
-              path="/admin/account"
-              element={
-                <ProtectedRoute
-                  element={<AdminAccount />}
-                  requiredRole={"admin"}
-                />
-              }
-            />
-          </Routes>
+              {/* Admin Routes */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute
+                    element={<Dashboard />}
+                    requiredRole={"admin"}
+                  />
+                }
+              />
+              <Route
+                path="/service-request"
+                element={
+                  <ProtectedRoute
+                    element={<ServiceRequest />}
+                    requiredRole={"admin"}
+                  />
+                }
+              />
+              <Route
+                path="/receive-service"
+                element={
+                  <ProtectedRoute
+                    element={<ReceiveService />}
+                    requiredRole={"admin"}
+                  />
+                }
+              />
+              <Route
+                path="/service-task"
+                element={
+                  <ProtectedRoute
+                    element={<ServiceTask />}
+                    requiredRole={"admin"}
+                  />
+                }
+              />
+              <Route
+                path="/service-transaction"
+                element={
+                  <ProtectedRoute
+                    element={<ServiceTransaction />}
+                    requiredRole={"admin"}
+                  />
+                }
+              />
+              <Route
+                path="/recommendation"
+                element={
+                  <ProtectedRoute
+                    element={<Recommendation />}
+                    requiredRole={"admin"}
+                  />
+                }
+              />
+              <Route
+                path="/utility-settings"
+                element={
+                  <ProtectedRoute
+                    element={<UtilitySettings />}
+                    requiredRole={"admin"}
+                  />
+                }
+              />
+              <Route
+                path="/admin/account"
+                element={
+                  <ProtectedRoute
+                    element={<AdminAccount />}
+                    requiredRole={"admin"}
+                  />
+                }
+              />
+              <Route
+                path="/users-list"
+                element={
+                  <ProtectedRoute
+                    element={<UsersList />}
+                    requiredRole={"admin"}
+                  />
+                }
+              />
+            </Routes>
+          </ActiveSubTabProvider>
         </ActiveTabProvider>
       </BrowserRouter>
     </AuthProvider>

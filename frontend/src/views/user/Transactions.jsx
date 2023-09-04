@@ -4,9 +4,15 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import axios from "axios";
+import { Skeleton } from "antd";
 
 const Transactions = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  const [utilitySettings, setUtilitySettings] = useState([]);
+
+  const [isFetchingData, setIsFetchingData] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -21,6 +27,30 @@ const Transactions = () => {
   }, []);
 
   const isLargeScreen = windowWidth >= 1024;
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setIsFetchingData(true);
+    try {
+      const response = await axios.get(
+        "http://127.0.0.1:8000/api/closed-transaction"
+      );
+      if (response.status === 200) {
+        setUtilitySettings(response.data.results);
+        console.log(response.data.results);
+        setIsFetchingData(false);
+      } else {
+        console.error("Failed to fetch utility settings. Response:", response);
+        setIsFetchingData(false);
+      }
+    } catch (error) {
+      console.error("Error fetching utility settings:", error);
+      setIsFetchingData(false);
+    }
+  };
   return (
     <HelmetProvider>
       <Helmet>
@@ -76,43 +106,56 @@ const Transactions = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b-2 border-gray-200">
-                  <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                    1
-                  </td>
-                  <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                    Maintenance
-                  </td>
-                  <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                    Ken Mar Lisondra
-                  </td>
-                  <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                    Online
-                  </td>
-                  <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                    On Process
-                  </td>
-                  <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                    04/18/2022
-                  </td>
-                  <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
-                    04/18/2023
-                  </td>
-                  <td className="p-3 text-lg text-gray-700 flex gap-1">
-                    <a
-                      href=""
-                      className="text-white bg-blue-600 py-3 px-4 rounded-lg"
+                {isFetchingData ? (
+                  <tr>
+                    <td colSpan="3">
+                      <Skeleton active />
+                    </td>
+                  </tr>
+                ) : utilitySettings.length === 0 ? (
+                  <tr className="h-[20vh]">
+                    <td
+                      colSpan="8"
+                      className="p-3 text-lg text-gray-700 text-center"
                     >
-                      View
-                    </a>
-                    <a
-                      href=""
-                      className="text-white bg-red-700 py-3 px-4 rounded-lg"
-                    >
-                      Delete
-                    </a>
-                  </td>
-                </tr>
+                      No Category Yet.
+                    </td>
+                  </tr>
+                ) : (
+                  utilitySettings.map((setting, index) => (
+                    <tr key={setting.id} className="border-y-2 border-gray-200">
+                      <td className="w-20 text-center text-lg font-medium">
+                        {index + 1}
+                      </td>
+                      <td className="text-center text-lg font-medium">
+                        {setting.natureOfRequest}
+                      </td>
+                      <td className="text-center text-lg font-medium">
+                        {setting.assignedTo}
+                      </td>
+                      <td className="text-center text-lg font-medium">
+                        {setting.modeOfRequest}
+                      </td>
+                      <td className="text-center text-lg font-medium">
+                        {setting.status}
+                      </td>
+                      <td className="text-center text-lg font-medium">
+                        {setting.dateRequested}
+                      </td>
+                      <td className="text-center text-lg font-medium">
+                        {setting.dateUpdated}
+                      </td>
+                      <td className="p-3 text-lg text-gray-700 flex items-center justify-center gap-1">
+                        <a
+                          href=""
+                          className="text-white bg-blue-600 py-3 px-4 rounded-lg"
+                        >
+                          View
+                        </a>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

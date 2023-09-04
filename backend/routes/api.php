@@ -6,6 +6,7 @@ use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\ReceiveServiceController;
 use App\Http\Controllers\NatureRequestController;
 use App\Http\Controllers\UtilitySettingController;
+use App\Http\Controllers\RatingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -59,3 +60,13 @@ Route::get('all-request', [ReceiveServiceController::class, 'allRequest']);
 Route::get('service-task', [ReceiveServiceController::class, 'index']);
 Route::post('received-request', [ReceiveServiceController::class, 'store']);
 Route::put('serviced/{id}', [ReceiveServiceController::class, 'updateReceiveService']);
+Route::delete('delete-received/{id}', [ReceiveServiceController::class, 'destroyReceiveService']);
+Route::delete('delete-serviced/{id}/{reqID}', [ReceiveServiceController::class, 'destroySeviceTask']);
+
+Route::get('closed-transaction', [RatingController::class, 'indexClosed']);
+Route::post('service-rating', [RatingController::class, 'serviceRatings']);
+
+Route::get('/users-list', [UserController::class, 'showUsersList']);
+Route::post('/admin/register', [UserController::class, 'register']);
+Route::put('/admin/updateUser', [UserController::class, 'update']);
+Route::delete('/delete-user/{id}', [UserController::class, 'deleteUser']);

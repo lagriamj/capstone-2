@@ -3,8 +3,7 @@ import Sidebar from "../../components/Sidebar";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
-import { message, Modal } from "antd";
-import PropagateLoader from "react-spinners/PropagateLoader";
+import { Button, message, Modal } from "antd";
 import UpdateContactNumModal from "../../components/UpdateContactNumModal";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 
@@ -499,16 +498,14 @@ const Account = () => {
                   </div>
                 </div>
               </div>
-              <button
-                type="submit"
-                className="bg-main text-white  py-3 rounded-lg text-lg mt-4 w-40 h-18 "
+              <Button
+                loading={isSavingChanges}
+                type="primary"
+                htmlType="submit"
+                className="bg-main pt-5 w-40 rounded-lg h-14  pb-6 px-8 text-lg font-semibold mt-4 flex items-center justify-center"
               >
-                {isSavingChanges ? (
-                  <PropagateLoader color="#FFFFFF" className="mb-3" />
-                ) : (
-                  "Save Changes"
-                )}
-              </button>
+                {isSavingChanges ? "Saving Changes" : "Save Changes"}
+              </Button>
             </form>
           </Modal>
         </div>

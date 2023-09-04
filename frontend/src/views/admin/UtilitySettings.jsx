@@ -170,7 +170,7 @@ const UtilitySettings = () => {
                       className="mb-3"
                     />
                   ) : (
-                    "Save Changes"
+                    "Add Category"
                   )}
                 </button>
               </form>
@@ -198,14 +198,23 @@ const UtilitySettings = () => {
                         <Skeleton active />
                       </td>
                     </tr>
+                  ) : utilitySettings.length === 0 ? (
+                    <tr className="h-[20vh]">
+                      <td
+                        colSpan="8"
+                        className="p-3 text-lg text-gray-700 text-center"
+                      >
+                        No Category Yet.
+                      </td>
+                    </tr>
                   ) : (
-                    utilitySettings.map((setting) => (
+                    utilitySettings.map((setting, index) => (
                       <tr
                         key={setting.id}
                         className="border-y-2 border-gray-200"
                       >
                         <td className="w-20 text-center text-lg font-medium">
-                          {setting.id}
+                          {index + 1}
                         </td>
                         <td className="text-center text-lg font-medium">
                           {setting.utilityCategory}

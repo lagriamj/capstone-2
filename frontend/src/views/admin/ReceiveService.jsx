@@ -7,6 +7,8 @@ import ReceiveServiceModal from "../../components/ReceiveServiceModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Skeleton } from "antd";
+import { Popconfirm } from "antd";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 const ReceiveService = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -15,6 +17,8 @@ const ReceiveService = () => {
   const [selectedData, setSelectedData] = useState(null);
   const [isSingleRequest, setIsSingleRequest] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [popconfirmVisible, setPopconfirmVisible] = useState([]);
+  const [confirmLoading, setConfirmLoading] = useState(false);
 
   const openModal = (data) => {
     setSelectedData(data);
@@ -39,6 +43,50 @@ const ReceiveService = () => {
   }, []);
 
   const isLargeScreen = windowWidth >= 1024;
+
+  useEffect(() => {
+    // Initialize popconfirmVisible state with false for each row
+    setPopconfirmVisible(new Array(data.length).fill(false));
+  }, [data]);
+
+  const showPopconfirm = (id) => {
+    // Use setPopconfirmVisible instead of setOpen
+    const popconfirmVisibleCopy = [...popconfirmVisible];
+    popconfirmVisibleCopy[id] = true;
+    setPopconfirmVisible(popconfirmVisibleCopy);
+    setTimeout(() => {
+      // Use setPopconfirmVisible instead of setOpen
+      setPopconfirmVisible(false);
+    }, 5000);
+  };
+
+  const handleOk = (item) => {
+    setConfirmLoading(true);
+    handleDelete(item);
+    handleCancel(item);
+    setTimeout(() => {
+      // Use setPopconfirmVisible instead of setOpen
+      setConfirmLoading(false);
+    }, 2000);
+  };
+
+  const handleCancel = (index) => {
+    // Use setPopconfirmVisible instead of setOpen
+    const popconfirmVisibleCopy = [...popconfirmVisible];
+    popconfirmVisibleCopy[index] = false;
+    setPopconfirmVisible(popconfirmVisibleCopy);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://127.0.0.1:8000/api/delete-received/${id}`);
+      const newUserData = data.filter((item) => item.id !== id);
+      setData(newUserData);
+    } catch (error) {
+      console.error("Error deleting request:", error);
+      // Handle the error gracefully, e.g., show an error message to the user
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -121,6 +169,7 @@ const ReceiveService = () => {
                   <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                     #
                   </th>
+                  <th className="">Request ID</th>
                   <th className="">Property No.</th>
                   <th className="">Requesting Office</th>
                   <th className="">Date</th>
@@ -157,8 +206,11 @@ const ReceiveService = () => {
                     </td>
                   </tr>
                 ) : (
-                  filteredRecords.map((setting) => (
+                  filteredRecords.map((setting, index) => (
                     <tr key={setting.id}>
+                      <td className="border-b-2 py-3 border-gray-200 text-center">
+                        {index + 1}
+                      </td>
                       <td className="border-b-2 py-3 border-gray-200 text-center">
                         {setting.id}
                       </td>
@@ -184,9 +236,34 @@ const ReceiveService = () => {
                         >
                           View
                         </button>
-                        <button className="ml-1 text-white bg-red-700 rounded-lg px-3 py-2 text-lg font-medium">
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
+                        <Popconfirm
+                          placement="left"
+                          title="Delete the request"
+                          description="Are you sure to delete this request?"
+                          open={popconfirmVisible[setting.id]}
+                          icon={
+                            <QuestionCircleOutlined style={{ color: "red" }} />
+                          }
+                          onConfirm={() => handleOk(setting.id)}
+                          okButtonProps={{
+                            loading: confirmLoading,
+                            color: "red",
+                            className: "text-black border-1 border-gray-300",
+                            size: "large",
+                          }}
+                          cancelButtonProps={{
+                            size: "large",
+                          }}
+                          onCancel={() => handleCancel(setting.id)}
+                          okText="Yes"
+                        >
+                          <button
+                            onClick={() => showPopconfirm(setting.id)}
+                            className="text-white text-base bg-red-700 py-2 px-4 rounded-lg ml-1"
+                          >
+                            <FontAwesomeIcon icon={faTrash} />
+                          </button>
+                        </Popconfirm>
                       </td>
                     </tr>
                   ))

@@ -8,17 +8,20 @@ use Illuminate\Support\Str;
 use Twilio\Rest\Client;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
 
 class UserController extends Controller
 {
     //
     public function register(Request $request)
     {
+
+
         $request->validate([
             'userFirstName' => 'required',
             'userLastName' => 'required',
             'userGovernmentID' => 'required|unique:users',
-            'userEmail' => 'required|email',
+            'userEmail' => 'required|email|unique:users',
             'userContactNumber' => 'required|min:11',
             'userPassword' => 'required|min:6',
         ]);
@@ -34,16 +37,19 @@ class UserController extends Controller
         $user->userEmail = $request->userEmail;
         $user->userContactNumber = $request->userContactNumber;
 
-
         $truncatedPassword = Str::limit($request->userPassword, $maxPasswordLength);
         $user->userPassword = bcrypt($truncatedPassword); // Hash the truncated password
 
-
-        $user->userStatus = 'unverified'; // Set user status
-        $user->dateRegistered = now();
-        $user->role = "user";
-        $user->otpCode = $otpCode;
-        $user->otpExpiration = $otpExpiration;
+        // Check if the request is coming from an admin
+        if ($request->input('adminUserRole') === 'admin') {
+            // If it's an admin, use the provided role and status
+            $user->userStatus = $request->input('userStatus');
+            $user->role = $request->input('role');
+        } else {
+            // If it's a regular user, set default role and status
+            $user->userStatus = 'unverified';
+            $user->role = 'user';
+        }
 
         /*$sendingSuccess = $this->sendVerificationCode($user, $otpCode);
 
@@ -51,16 +57,20 @@ class UserController extends Controller
                 return response()->json(['message' => 'SMS sending failed'], 500);
             }*/
 
+        $user->dateRegistered = now();
+        $user->otpCode = $otpCode;
+        $user->otpExpiration = $otpExpiration;
+
         $user->save();
         $user->userID = $user->userID;
 
-
         if ($user->save()) {
-            return response()->json(['message' => 'User registered succesfully', 'userID' => $user->userID, 'userContactNumber' => $user->userContactNumber], 201);
+            return response()->json(['message' => 'User registered successfully', 'userID' => $user->userID, 'userContactNumber' => $user->userContactNumber], 201);
         } else {
             return response()->json(['message' => 'The government ID is already taken.'], 422);
         }
     }
+
 
     private function sendVerificationCode(User $user, $otpCode)
     {
@@ -243,5 +253,75 @@ class UserController extends Controller
         $user->save();
 
         return response()->json(['message' => 'Updated Successfully'], 200);
+    }
+
+    public function showUsersList()
+    {
+        $users = User::select([
+            'userID',
+            'userLastName',
+            'userFirstName',
+            'userGovernmentID',
+            'userEmail',
+            'userContactNumber',
+            'userStatus',
+            'dateRegistered',
+            'role',
+            'otpCode',
+            'otpExpiration',
+            'created_at',
+            'updated_at'
+        ])->get();;
+
+
+
+
+
+
+        return response()->json(['result' => $users], 200);
+    }
+
+    public function update(Request $request)
+    {
+        try {
+            // Retrieve the user based on the user ID from the request
+            $user = User::findOrFail($request->input('userID'));
+
+            // Update user data
+            $user->update([
+                'userFirstName' => $request->input('userFirstName'),
+                'userLastName' => $request->input('userLastName'),
+                'userGovernmentID' => $request->input('userGovernmentID'),
+                'userEmail' => $request->input('userEmail'),
+                'userContactNumber' => $request->input('userContactNumber'),
+                'userStatus' => $request->input('userStatus'),
+                'role' => $request->input('role'),
+            ]);
+
+            // Optionally, update the user's password if a new password is provided
+            if ($request->filled('userPassword')) {
+                $user->update(['userPassword' => Hash::make($request->input('userPassword'))]);
+            }
+
+            return response()->json(['message' => 'User data updated successfully'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error updating user data'], 500);
+        }
+    }
+
+    public function deleteUser($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not found.'
+            ], 404);
+        }
+
+        $user->delete();
+        return response()->json([
+            'message' => 'User deleted successfully.'
+        ], 200);
     }
 }

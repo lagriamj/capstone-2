@@ -2,7 +2,12 @@ import Sidebar from "../../components/Sidebar";
 import DrawerComponent from "../../components/DrawerComponent";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faFilter, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faSearch,
+  faFilter,
+  faTrash,
+  faStar,
+} from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
 import CurrentRequestModal from "../../components/CurrentRequestModal";
@@ -11,6 +16,7 @@ import { QuestionCircleOutlined } from "@ant-design/icons";
 import { message, Skeleton } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import RateModal from "../../components/RateModal";
 
 const CurrentRequests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -26,6 +32,16 @@ const CurrentRequests = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [isSingleRequest, setIsSingleRequest] = useState(false);
+  const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
+
+  const [selectedID, setSelectedID] = useState(null);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+
+  const handleStarIconClick = (id, user_id) => {
+    setSelectedID(id);
+    setSelectedUserId(user_id);
+    setUpdateModalVisible(true); // Open the RateModal
+  };
 
   useEffect(() => {
     const locationState = location.state;
@@ -241,16 +257,19 @@ const CurrentRequests = () => {
             <table className="w-full ">
               <thead className="bg-gray-50 border-b-2 border-gray-200">
                 <tr className="border-b-2 border-gray-100">
-                  <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                  <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider  whitespace-nowrap text-center">
                     #
                   </th>
-                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                  <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
+                    Request ID
+                  </th>
+                  <th className="px-3 py-5 text-base font-semibold tracking-wider  whitespace-nowrap text-center">
                     Nature of Request
                   </th>
-                  <th className=" px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                  <th className=" px-3 py-5 text-base font-semibold tracking-wider  whitespace-nowrap text-center">
                     Assigned To
                   </th>
-                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                  <th className="px-3 py-5 text-base font-semibold tracking-wider  whitespace-nowrap text-center">
                     Mode
                     <div className="relative inline-block">
                       <button
@@ -291,7 +310,7 @@ const CurrentRequests = () => {
                   </th>
 
                   <th
-                    className={`px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap`}
+                    className={`px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center`}
                   >
                     Status
                     <div className="relative inline-block">
@@ -359,13 +378,13 @@ const CurrentRequests = () => {
                       )}
                     </div>
                   </th>
-                  <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                  <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider  whitespace-nowrap text-center">
                     Date of Request
                   </th>
-                  <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                  <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider  whitespace-nowrap text-center">
                     Date Updated
                   </th>
-                  <th className="w-56 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                  <th className="w-56 px-3 py-5 text-base font-semibold tracking-wider  whitespace-nowrap text-center">
                     Action
                   </th>
                 </tr>
@@ -378,7 +397,7 @@ const CurrentRequests = () => {
                     </td>
                   </tr>
                 ) : data.length === 0 ? (
-                  <tr className="h-[50vh]">
+                  <tr className="h-[60vh]">
                     <td
                       colSpan="8"
                       className="p-3 text-lg text-gray-700 text-center"
@@ -396,25 +415,28 @@ const CurrentRequests = () => {
                     </td>
                   </tr>
                 ) : (
-                  filteredRecords.map((item) => (
+                  filteredRecords.map((item, index) => (
                     <tr
                       className="border-b-2 border-gray-200 h-auto overflow-auto"
                       key={item.id}
                     >
-                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
+                        {index + 1}
+                      </td>
+                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
                         {item.id}
                       </td>
-                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
                         {item.natureOfRequest}
                       </td>
-                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
                         {item.assignedTo}
                       </td>
-                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
                         {item.modeOfRequest}
                       </td>
                       <td
-                        className={`px-4 py-2 text-base text-center whitespace-nowrap`}
+                        className={`px-4 py-2 text-base whitespace-nowrap text-center`}
                       >
                         <p
                           className={` rounded-xl py-2 ${
@@ -422,20 +444,22 @@ const CurrentRequests = () => {
                               ? "bg-red-500 text-white" // Apply red background and white text for Pending
                               : item.status === "Received"
                               ? "bg-orange-500 text-white"
-                              : item.status === "On Process"
+                              : item.status === "On Progress"
                               ? "bg-yellow-500 text-white" // Apply yellow background and white text for Process
                               : item.status === "To Release"
-                              ? "bg-green-500 text-white" // Apply green background and white text for Done
+                              ? "bg-green-500 text-white"
+                              : item.status === "Closed"
+                              ? "bg-gray-500 text-white" // Apply green background and white text for Done
                               : "bg-gray-200 text-gray-700" // Default background and text color (if none of the conditions match)
                           }`}
                         >
                           {item.status}
                         </p>
                       </td>
-                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
                         {item.dateRequested}
                       </td>
-                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap">
+                      <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
                         {item.dateUpdated}
                       </td>
                       <td className="p-2 text-lg text-gray-700 flex gap-1 items-center justify-center">
@@ -446,34 +470,55 @@ const CurrentRequests = () => {
                           View
                         </button>
 
-                        <Popconfirm
-                          placement="left"
-                          title="Delete the request"
-                          description="Are you sure to delete this request?"
-                          open={popconfirmVisible[item.id]}
-                          icon={
-                            <QuestionCircleOutlined style={{ color: "red" }} />
-                          }
-                          onConfirm={() => handleOk(item.id)}
-                          okButtonProps={{
-                            loading: confirmLoading,
-                            color: "red",
-                            className: "text-black border-1 border-gray-300",
-                            size: "large",
-                          }}
-                          cancelButtonProps={{
-                            size: "large",
-                          }}
-                          onCancel={() => handleCancel(item.id)}
-                          okText="Yes"
-                        >
+                        {item.status === "Received" ||
+                        item.status === "On Process" ? (
                           <button
-                            onClick={() => showPopconfirm(item.id)}
-                            className="text-white text-base bg-red-700 py-2 px-4 rounded-lg"
+                            className="text-white text-base bg-gray-400 cursor-not-allowed py-2 px-4 rounded-lg"
+                            disabled
                           >
                             <FontAwesomeIcon icon={faTrash} />
                           </button>
-                        </Popconfirm>
+                        ) : item.status === "To Release" ? (
+                          <button
+                            onClick={() =>
+                              handleStarIconClick(item.id, item.user_id)
+                            }
+                            className="text-white text-base bg-yellow-500 py-2 px-3 rounded-lg"
+                          >
+                            <FontAwesomeIcon icon={faStar} />
+                          </button>
+                        ) : (
+                          <Popconfirm
+                            placement="left"
+                            title="Delete the request"
+                            description="Are you sure to delete this request?"
+                            open={popconfirmVisible[item.id]}
+                            icon={
+                              <QuestionCircleOutlined
+                                style={{ color: "red" }}
+                              />
+                            }
+                            onConfirm={() => handleOk(item.id)}
+                            okButtonProps={{
+                              loading: confirmLoading,
+                              color: "red",
+                              className: "text-black border-1 border-gray-300",
+                              size: "large",
+                            }}
+                            cancelButtonProps={{
+                              size: "large",
+                            }}
+                            onCancel={() => handleCancel(item.id)}
+                            okText="Yes"
+                          >
+                            <button
+                              onClick={() => showPopconfirm(item.id)}
+                              className="text-white text-base bg-red-700 py-2 px-4 rounded-lg"
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                            </button>
+                          </Popconfirm>
+                        )}
                       </td>
                     </tr>
                   ))
@@ -488,6 +533,16 @@ const CurrentRequests = () => {
                 />
               )}
             </table>
+
+            {isUpdateModalVisible && (
+              <RateModal
+                isOpen={isUpdateModalVisible}
+                onClose={() => setUpdateModalVisible(false)}
+                id={selectedID} // Pass the selectedItemId as a prop
+                user_id={selectedUserId} // Pass the selectedUserId as a prop
+              />
+            )}
+
             <nav className="absolute bottom-10 right-10">
               <ul className="flex gap-2">
                 <li>

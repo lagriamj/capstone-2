@@ -4,9 +4,13 @@ import AdminDrawer from "../../components/AdminDrawer";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import axios from "axios";
 import ServiceTaskModal from "../../components/ServiceTaskModal";
+import ServiceReleaseModal from "../../components/ServiceReleaseModal";
+import ReleasedModal from "../../components/ReleasedModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Skeleton } from "antd";
+import { Popconfirm } from "antd";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 const ServiceTask = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -15,8 +19,19 @@ const ServiceTask = () => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
   const [isSingleRequest, setIsSingleRequest] = useState(false);
+  const [popconfirmVisible, setPopconfirmVisible] = useState([]);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [modalType, setModalType] = useState(null);
+
   const openModal = (data) => {
     setSelectedData(data);
+    if (data.status === "Received") {
+      setModalType("ServiceOnProcess");
+    } else if (data.status === "On Process") {
+      setModalType("ServiceToRelease");
+    } else if (data.status === "To Release") {
+      setModalType("ServiceReleased");
+    }
     setModalOpen(true);
   };
 
@@ -38,6 +53,52 @@ const ServiceTask = () => {
   }, []);
 
   const isLargeScreen = windowWidth >= 1024;
+
+  useEffect(() => {
+    // Initialize popconfirmVisible state with false for each row
+    setPopconfirmVisible(new Array(data.length).fill(false));
+  }, [data]);
+
+  const showPopconfirm = (id) => {
+    // Use setPopconfirmVisible instead of setOpen
+    const popconfirmVisibleCopy = [...popconfirmVisible];
+    popconfirmVisibleCopy[id] = true;
+    setPopconfirmVisible(popconfirmVisibleCopy);
+    setTimeout(() => {
+      // Use setPopconfirmVisible instead of setOpen
+      setPopconfirmVisible(false);
+    }, 5000);
+  };
+
+  const handleOk = (id, reqID) => {
+    setConfirmLoading(true);
+    handleDelete(id, reqID);
+    handleCancel(id);
+    setTimeout(() => {
+      // Use setPopconfirmVisible instead of setOpen
+      setConfirmLoading(false);
+    }, 2000);
+  };
+
+  const handleCancel = (index) => {
+    // Use setPopconfirmVisible instead of setOpen
+    const popconfirmVisibleCopy = [...popconfirmVisible];
+    popconfirmVisibleCopy[index] = false;
+    setPopconfirmVisible(popconfirmVisibleCopy);
+  };
+
+  const handleDelete = async (id, reqID) => {
+    try {
+      await axios.delete(
+        `http://127.0.0.1:8000/api/delete-serviced/${id}/${reqID}`
+      );
+      const newUserData = data.filter((item) => item.id !== id);
+      setData(newUserData);
+    } catch (error) {
+      console.error("Error deleting request:", error);
+      // Handle the error gracefully, e.g., show an error message to the user
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -168,9 +229,10 @@ const ServiceTask = () => {
                   <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                     #
                   </th>
-                  <th className="">Date of Request</th>
-                  <th className="">Nature of Request</th>
-                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                  <th className="text-center">Request ID</th>
+                  <th className="text-center">Date of Request</th>
+                  <th className="text-center">Nature of Request</th>
+                  <th className="px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
                     Mode
                     <div className="relative inline-block">
                       <button
@@ -211,7 +273,7 @@ const ServiceTask = () => {
                   </th>
                   <th className="">Assigned To</th>
                   <th
-                    className={`px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap`}
+                    className={`px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center`}
                   >
                     Status
                     <div className="relative inline-block">
@@ -226,7 +288,7 @@ const ServiceTask = () => {
                         <FontAwesomeIcon icon={faFilter} className="h-4 w-4" />
                       </button>
                       {isStatusDropdownOpen && (
-                        <div className="absolute right-0 bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg text-start">
+                        <div className="absolute right-0 bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg text-center">
                           <label className="block px-4 py-2">
                             <input
                               type="checkbox"
@@ -279,7 +341,7 @@ const ServiceTask = () => {
                       )}
                     </div>
                   </th>
-                  <th className="">Date Updated</th>
+                  <th className="text-center">Date Updated</th>
                   <th className="w-56 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                     Action
                   </th>
@@ -311,10 +373,13 @@ const ServiceTask = () => {
                     </td>
                   </tr>
                 ) : (
-                  filteredRecords.map((setting) => (
+                  filteredRecords.map((setting, index) => (
                     <tr key={setting.id}>
                       <td className="border-b-2 py-3 border-gray-200 text-center">
-                        {setting.id}
+                        {index + 1}
+                      </td>
+                      <td className="border-b-2 py-3 border-gray-200 text-center">
+                        {setting.request_id}
                       </td>
                       <td className="border-b-2 py-3 border-gray-200 text-center">
                         {setting.dateRequested}
@@ -335,7 +400,7 @@ const ServiceTask = () => {
                               ? "bg-red-500 text-white" // Apply red background and white text for Pending
                               : setting.status === "Received"
                               ? "bg-orange-500 text-white"
-                              : setting.status === "On Process"
+                              : setting.status === "On Progress"
                               ? "bg-yellow-500 text-white" // Apply yellow background and white text for Process
                               : setting.status === "To Release"
                               ? "bg-green-500 text-white" // Apply green background and white text for Done
@@ -355,9 +420,36 @@ const ServiceTask = () => {
                         >
                           Update
                         </button>
-                        <button className="ml-1 text-white bg-red-700 rounded-lg px-3 py-2 text-lg font-medium">
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
+                        <Popconfirm
+                          placement="left"
+                          title="Delete the request"
+                          description="Are you sure to delete this request?"
+                          open={popconfirmVisible[setting.id]}
+                          icon={
+                            <QuestionCircleOutlined style={{ color: "red" }} />
+                          }
+                          onConfirm={() =>
+                            handleOk(setting.id, setting.request_id)
+                          }
+                          okButtonProps={{
+                            loading: confirmLoading,
+                            color: "red",
+                            className: "text-black border-1 border-gray-300",
+                            size: "large",
+                          }}
+                          cancelButtonProps={{
+                            size: "large",
+                          }}
+                          onCancel={() => handleCancel(setting.id)}
+                          okText="Yes"
+                        >
+                          <button
+                            onClick={() => showPopconfirm(setting.id)}
+                            className="text-white text-base bg-red-700 py-2 px-4 rounded-lg ml-1"
+                          >
+                            <FontAwesomeIcon icon={faTrash} />
+                          </button>
+                        </Popconfirm>
                       </td>
                     </tr>
                   ))
@@ -400,11 +492,31 @@ const ServiceTask = () => {
                 </li>
               </ul>
             </nav>
-            <ServiceTaskModal
-              isOpen={isModalOpen}
-              onClose={closeModal}
-              data={selectedData}
-            />
+            {modalType === "ServiceOnProcess" && (
+              <ServiceTaskModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                data={selectedData}
+                refreshData={fetchData}
+              />
+            )}
+
+            {modalType === "ServiceToRelease" && (
+              <ServiceReleaseModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                data={selectedData}
+                refreshData={fetchData}
+              />
+            )}
+            {modalType === "ServiceReleased" && (
+              <ReleasedModal
+                isOpen={isModalOpen}
+                onClose={closeModal}
+                data={selectedData}
+                refreshData={fetchData}
+              />
+            )}
           </div>
         </div>
       </div>

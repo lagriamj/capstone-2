@@ -1,11 +1,9 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+
 import PropTypes from "prop-types";
-import { Modal } from "antd";
-import PropagateLoader from "react-spinners/PropagateLoader";
+import { Button, Modal } from "antd";
 import { message } from "antd";
 
 const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
@@ -34,6 +32,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
     actionTaken: "n/a",
     remarks: "n/a",
   });
+  // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState("");
   console.log(data.id);
 
@@ -83,9 +82,16 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
     <Modal
       open={isOpen}
       onCancel={onClose}
-      title="CITC TECHNICAL SERVICE REQUEST SLIP"
-      width="70%"
+      width="75%"
+      title={
+        <div className="flex justify-between items-center">
+          <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
+          <span>REQUEST ID: {data.id}</span>
+        </div>
+      }
+      centered
       footer={null}
+      closable={false}
     >
       <div className="relative p-6 text-lg">
         {/* Display your data in a 4x5 grid */}
@@ -355,16 +361,14 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
           >
             Cancel
           </button>
-          <button
-            className="bg-gray-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out "
-            type="submit"
+          <Button
+            loading={isSubmitting}
+            type="primary"
+            htmlType="submit"
+            className="bg-gray-800  py-7  font-semibold flex items-center justify-center text-white text-base font-sans w-28 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out "
           >
-            {isSubmitting ? (
-              <PropagateLoader color="#FFFFFF" size={5} className="mb-3" />
-            ) : (
-              "Update"
-            )}
-          </button>
+            {isSubmitting ? "Updating" : "Update"}
+          </Button>
         </div>
       </form>
     </Modal>

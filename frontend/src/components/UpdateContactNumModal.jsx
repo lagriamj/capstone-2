@@ -1,6 +1,6 @@
 import Modal from "antd/es/modal/Modal";
-import PropagateLoader from "react-spinners/PropagateLoader";
 import PropTypes from "prop-types";
+import { Button } from "antd";
 
 const UpdateContactNumModal = ({
   onOpen,
@@ -40,17 +40,15 @@ const UpdateContactNumModal = ({
             onChange={(e) => setUserPasswordChecker(e.target.value)}
             className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
           />
-          <button
-            type="button"
-            className="bg-main text-white px-2 py-3 rounded-lg w-44 text-lg mt-4"
+          <Button
+            loading={isSavingChanges}
+            type="primary"
+            htmlType="submit"
+            className="bg-main pt-5 w-32  pb-6 px-8 text-lg font-semibold mt-4 flex items-center justify-center"
             onClick={handlePasswordCheck}
           >
-            {isSavingChanges ? (
-              <PropagateLoader size={10} color="#FFFFFF" className="mb-3" />
-            ) : (
-              "Check Password"
-            )}
-          </button>
+            {isSavingChanges ? "Checking" : "Check"}
+          </Button>
         </div>
       ) : (
         // Contact number input
@@ -84,16 +82,14 @@ const UpdateContactNumModal = ({
                 e.target.setCustomValidity("");
               }}
             />
-            <button
-              type="submit"
-              className="bg-main text-white px-4 py-3 rounded-lg text-lg mt-4 w-32"
+            <Button
+              loading={isSavingChanges}
+              type="primary"
+              htmlType="submit"
+              className="bg-main pt-5 w-32  pb-6 px-8 text-lg font-semibold mt-4 flex items-center justify-center"
             >
-              {isSavingChanges ? (
-                <PropagateLoader size={10} color="#FFFFFF" className="mb-3" />
-              ) : (
-                "Update"
-              )}
-            </button>
+              {isSavingChanges ? "Updating" : "Update"}
+            </Button>
           </form>
         </div>
       )}

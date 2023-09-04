@@ -5,17 +5,8 @@ import PropTypes from "prop-types";
 import { Button, Modal } from "antd";
 import { message } from "antd";
 
-const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
+const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
   if (!isOpen) return null;
-  const options = {
-    year: "numeric",
-    month: "numeric",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  };
-  const daytime = new Date().toLocaleString(undefined, options);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -23,12 +14,13 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
     receivedBy: data.receivedBy,
     dateReceived: data.dateReceived,
     assignedTo: data.assignedTo,
-    serviceBy: "",
-    toRecommend: "n/a",
-    findings: "n/a",
-    rootCause: "n/a",
-    actionTaken: "n/a",
-    remarks: "n/a",
+    serviceBy: data.serviceBy,
+    dateServiced: data.dateServiced,
+    toRecommend: "",
+    findings: "",
+    rootCause: "",
+    actionTaken: "",
+    remarks: "",
   });
   // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState("");
@@ -46,7 +38,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
     setIsSubmitting(true);
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/serviced/${data.id}`,
+        `http://127.0.0.1:8000/api/to-release/${data.id}`,
         formData
       );
 
@@ -349,17 +341,15 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
                   className="block text-sm font-bold mb-2"
                   htmlFor="propertyNo"
                 >
-                  Serviced By
+                  Date Service
                 </label>
                 <input
-                  className="shadow-md appearance-none border-2 border-gray-800 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   type="text"
                   id="serviceBy"
                   name="serviceBy"
-                  required
-                  onChange={(e) => {
-                    changeUserFieldHandler(e);
-                  }}
+                  value={data.serviceBy}
+                  readOnly
                 />
               </div>
               <div className="col-span-1">
@@ -374,8 +364,91 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
                   type="text"
                   id="dateServiced"
                   name="dateServiced"
-                  value={daytime}
+                  value={data.dateServiced}
                   readOnly
+                />
+              </div>
+              <div className="col-span-1">
+                <label
+                  className="block text-sm font-bold mb-2"
+                  htmlFor="propertyNo"
+                >
+                  Findings/Particulars
+                </label>
+                <select
+                  className="shadow-md appearance-none border-2 border-gray-800 rounded-lg w-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="findings"
+                  name="findings"
+                  required
+                  onChange={(e) => {
+                    changeUserFieldHandler(e);
+                  }}
+                >
+                  {/* Add your dropdown options here */}
+                  <option value="CPU">CPU</option>
+                  <option value="RAM">RAM</option>
+                  <option value="MONITOR">MONITOR</option>
+                </select>
+                <input
+                  className="shadow-md appearance-none border-2 border-gray-800 rounded-lg py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  type="text"
+                  id="rootCause"
+                  name="rootCause"
+                  required
+                  onChange={(e) => {
+                    changeUserFieldHandler(e);
+                  }}
+                />
+              </div>
+              <div className="col-span-1">
+                <label
+                  className="block text-sm font-bold mb-2"
+                  htmlFor="propertyNo"
+                >
+                  Action Taken
+                </label>
+                <select
+                  className="shadow-md appearance-none border-2 border-gray-800 rounded-lg w-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  id="actionTaken"
+                  name="actionTaken"
+                  required
+                  onChange={(e) => {
+                    changeUserFieldHandler(e);
+                  }}
+                >
+                  {/* Add your dropdown options here */}
+                  <option value="CPU">CPU</option>
+                  <option value="RAM">RAM</option>
+                  <option value="MONITOR">MONITOR</option>
+                </select>
+                <input
+                  className="shadow-md appearance-none border-2 border-gray-800 rounded-lg py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  type="text"
+                  id="remarks"
+                  name="remarks"
+                  required
+                  onChange={(e) => {
+                    changeUserFieldHandler(e);
+                  }}
+                />
+              </div>
+              <div className="col-span-1">
+                <label
+                  className="block text-sm font-bold mb-2"
+                  htmlFor="propertyNo"
+                >
+                  Recommendation
+                </label>
+
+                <input
+                  className="shadow-md appearance-none border-2 border-gray-800 w-full rounded-lg py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  type="text"
+                  id="toRecommend"
+                  name="toRecommend"
+                  required
+                  onChange={(e) => {
+                    changeUserFieldHandler(e);
+                  }}
                 />
               </div>
             </div>
@@ -404,9 +477,9 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
   );
 };
 
-export default ServiceTaskModal;
+export default ServiceReleaseModal;
 
-ServiceTaskModal.propTypes = {
+ServiceReleaseModal.propTypes = {
   isOpen: PropTypes.bool.isRequired, // Ensure that 'visible' is a required boolean prop
   onClose: PropTypes.func.isRequired, // Ensure that 'onClose' is a required function prop
   data: PropTypes.object, // Ensure that 'itemData' is a required object prop

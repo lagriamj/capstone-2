@@ -1,6 +1,5 @@
-import React from 'react';
-import { Navigate, Route } from 'react-router-dom';
-import { useAuth } from '../AuthContext';
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../AuthContext";
 
 function ProtectedRoute({ element: Element, requiredRole }) {
   const { userRole, isAuthenticated } = useAuth();
@@ -10,12 +9,12 @@ function ProtectedRoute({ element: Element, requiredRole }) {
     return <Navigate to="/login" />;
   }
 
-  if (requiredRole === 'admin' && userRole !== 'admin') {
+  if (requiredRole === "admin" && userRole !== "admin") {
     // Redirect non-admin users from admin-only routes
     return <Navigate to="/unauthorized" />;
   }
 
-  if (requiredRole === 'user' && userRole !== 'user') {
+  if (requiredRole === "user" && userRole !== "user") {
     // Redirect non-user users from user-only routes
     return <Navigate to="/unauthorized" />;
   }
