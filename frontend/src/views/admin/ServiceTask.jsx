@@ -27,7 +27,7 @@ const ServiceTask = () => {
     setSelectedData(data);
     if (data.status === "Received") {
       setModalType("ServiceOnProcess");
-    } else if (data.status === "On Process") {
+    } else if (data.status === "On Progress") {
       setModalType("ServiceToRelease");
     } else if (data.status === "To Release") {
       setModalType("ServiceReleased");

@@ -78,7 +78,7 @@ class ReceiveServiceController extends Controller
             ->update([
                 'assignedTo' => $request->input('assignedTo'),
                 'dateUpdated' => now(),
-                'status' => 'On Process',
+                'status' => 'On Progress',
             ]);
 
         return response()->json(['message' => 'ReceiveService updated successfully', 'data' => $receiveService]);
