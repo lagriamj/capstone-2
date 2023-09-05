@@ -6,6 +6,7 @@ import axios from "axios";
 import ServiceTaskModal from "../../components/ServiceTaskModal";
 import ServiceReleaseModal from "../../components/ServiceReleaseModal";
 import ReleasedModal from "../../components/ReleasedModal";
+//import ClosedModal from "../../components/ClosedModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Skeleton } from "antd";
@@ -26,7 +27,7 @@ const ServiceTask = () => {
   const openModal = (data) => {
     setSelectedData(data);
     if (data.status === "Received") {
-      setModalType("ServiceOnProcess");
+      setModalType("ServiceOnProgress");
     } else if (data.status === "On Progress") {
       setModalType("ServiceToRelease");
     } else if (data.status === "To Release") {
@@ -195,14 +196,14 @@ const ServiceTask = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>Task</title>
+        <title>Service Task</title>
       </Helmet>
       <div className='className="flex flex-col lg:flex-row bg-gray-200 lg:pl-24 lg:py-10 h-screen"'>
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
         <div className="overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] relative mt-20 lg:mt-0 ml-5  h-4/5 pb-10 bg-white shadow-xl  lg:ml-72  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
           <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
             <h1 className="font-sans lg:text-3xl text-xl mt-8 ml-5 mr-auto tracking-wide">
-              Tasks
+              Service Tasks
             </h1>
             <div className="relative flex items-center lg:mr-10 ">
               <FontAwesomeIcon
@@ -229,11 +230,13 @@ const ServiceTask = () => {
                   <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                     #
                   </th>
-                  <th className="text-center  whitespace-nowrap">Request ID</th>
-                  <th className="text-center  whitespace-nowrap">
+                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    Request ID
+                  </th>
+                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                     Date of Request
                   </th>
-                  <th className="text-center  whitespace-nowrap">
+                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                     Nature of Request
                   </th>
                   <th className="px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
@@ -275,7 +278,7 @@ const ServiceTask = () => {
                       )}
                     </div>
                   </th>
-                  <th className=" whitespace-nowrap text-center">
+                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                     Assigned To
                   </th>
                   <th
@@ -322,14 +325,14 @@ const ServiceTask = () => {
                           <label className="block px-4 py-2">
                             <input
                               type="checkbox"
-                              value="On Process"
+                              value="On Progress"
                               checked={selectedStatusFilters.includes(
-                                "On Process"
+                                "On Progress"
                               )}
                               onChange={handleStatusCheckboxChange}
                               className="mr-2"
                             />
-                            On Process
+                            On Progress
                           </label>
                           <label className="block px-4 py-2">
                             <input
@@ -347,7 +350,7 @@ const ServiceTask = () => {
                       )}
                     </div>
                   </th>
-                  <th className="text-center  whitespace-nowrap">
+                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                     Date Updated
                   </th>
                   <th className="w-56 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
@@ -504,7 +507,7 @@ const ServiceTask = () => {
                 </li>
               </ul>
             </nav>
-            {modalType === "ServiceOnProcess" && (
+            {modalType === "ServiceOnProgress" && (
               <ServiceTaskModal
                 isOpen={isModalOpen}
                 onClose={closeModal}

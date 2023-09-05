@@ -3,7 +3,12 @@ import { useState } from "react";
 import { Modal } from "antd";
 import PropTypes from "prop-types";
 
-export default function CurrentRequestModal({ display, itemData, onClose }) {
+export default function CurrentRequestModal({
+  display,
+  itemData,
+  onClose,
+  isLargeScreen,
+}) {
   const [isPrintPreviewModalVisible, setIsPrintPreviewModalVisible] =
     useState(false);
 
@@ -49,13 +54,12 @@ export default function CurrentRequestModal({ display, itemData, onClose }) {
       <Modal
         open={display}
         onCancel={onClose}
-        width="50%"
+        width={isLargeScreen ? "50%" : "80%"}
         footer={footerContent}
       >
-        <div className="border-0 rounded-2xl shadow-lg relative flex flex-col w-full h-[65vh] bg-white outline-none focus:outline-none">
+        <div className="border-0 rounded-2xl shadow-lg relative flex flex-col w-full lg:h-[65vh] h-auto bg-white outline-none focus:outline-none">
           <div className="bg-main p-3 flex items-center justify-center py-7 rounded-t-2xl font-sans">
             {" "}
-            {/* Reduced padding */}
             <h3 className="text-2xl font-semibold ml-4  text-white">
               Request Details
             </h3>
@@ -71,7 +75,7 @@ export default function CurrentRequestModal({ display, itemData, onClose }) {
               itemData={itemData}
             />
           </div>
-          <div className="p-3 flex-auto landscape-content lg:pl-20 place-content-center grid grid-cols-3 gap-3">
+          <div className="p-3 flex-auto landscape-content lg:pl-20 place-content-center grid grid-cols-1 lg:grid-cols-3 gap-3">
             {" "}
             {/* Reduced padding */}
             {data.slice(0, numRows * numCols).map(({ label, value }, index) => (
@@ -88,4 +92,5 @@ CurrentRequestModal.propTypes = {
   display: PropTypes.bool.isRequired, // Ensure that 'visible' is a required boolean prop
   onClose: PropTypes.func.isRequired, // Ensure that 'onClose' is a required function prop
   itemData: PropTypes.object.isRequired, // Ensure that 'itemData' is a required object prop
+  isLargeScreen: PropTypes.bool.isRequired,
 };

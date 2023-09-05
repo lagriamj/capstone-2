@@ -25,7 +25,6 @@ const CurrentRequests = () => {
   const [selectedItemId, setSelectedItemId] = useState(null);
   // eslint-disable-next-line no-unused-vars
   const [open, setOpen] = useState(false);
-  const [confirmLoading, setConfirmLoading] = useState(false);
   const [popconfirmVisible, setPopconfirmVisible] = useState([]);
   const location = useLocation();
   const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
@@ -125,18 +124,15 @@ const CurrentRequests = () => {
     setPopconfirmVisible(popconfirmVisibleCopy);
     setTimeout(() => {
       setOpen(false);
-      setConfirmLoading(false);
       setPopconfirmVisible(false);
     }, 5000);
   };
 
   const handleOk = (item) => {
-    setConfirmLoading(true);
     handleDelete(item);
     handleCancel(item);
     setTimeout(() => {
       setOpen(false);
-      setConfirmLoading(false);
     }, 2000);
   };
 
@@ -228,9 +224,9 @@ const CurrentRequests = () => {
       <Helmet>
         <title>Current Requests</title>
       </Helmet>
-      <div className="flex flex-col lg:flex-row bg-gray-200 h-screen lg:pl-20 lg:items-start items-center">
+      <div className="flex flex-col lg:flex-row bg-gray-200 h-screen lg:pl-20 lg:py-10 lg:items-start items-center">
         {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
-        <div className=" overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] relative mt-28 lg:mt-10 h-4/5 pb-10 bg-white shadow-xl  lg:ml-80  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
+        <div className="overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] relative mt-20 lg:mt-0 mx-5  h-4/5 pb-10 bg-white shadow-xl  lg:ml-72  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
           <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
             <h1 className="font-sans lg:text-3xl text-xl mt-8 ml-5 mr-auto tracking-wide">
               Request
@@ -353,14 +349,14 @@ const CurrentRequests = () => {
                           <label className="block px-4 py-2">
                             <input
                               type="checkbox"
-                              value="On Process"
+                              value="On Progress"
                               checked={selectedStatusFilters.includes(
-                                "On Process"
+                                "On Progress"
                               )}
                               onChange={handleStatusCheckboxChange}
                               className="mr-2"
                             />
-                            On Process
+                            On Progress
                           </label>
                           <label className="block px-4 py-2">
                             <input
@@ -471,7 +467,8 @@ const CurrentRequests = () => {
                         </button>
 
                         {item.status === "Received" ||
-                        item.status === "On Process" ? (
+                        item.status === "On Progress" ||
+                        item.status === "To Release" ? (
                           <button
                             className="text-white text-base bg-gray-400 cursor-not-allowed py-2 px-4 rounded-lg"
                             disabled
@@ -500,7 +497,6 @@ const CurrentRequests = () => {
                             }
                             onConfirm={() => handleOk(item.id)}
                             okButtonProps={{
-                              loading: confirmLoading,
                               color: "red",
                               className: "text-black border-1 border-gray-300",
                               size: "large",
@@ -530,6 +526,7 @@ const CurrentRequests = () => {
                   display={true}
                   itemData={data.find((item) => item.id === selectedItemId)}
                   onClose={handleCloseModalClick} // Pass the callback here
+                  isLargeScreen={isLargeScreen}
                 />
               )}
             </table>

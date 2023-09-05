@@ -16,6 +16,8 @@ import RecommendIcon from "@mui/icons-material/Recommend";
 import { useActiveTab } from "../ActiveTabContext";
 import { useState } from "react";
 import { useActiveSubTab } from "../ActiveSubTabContext";
+import axios from "axios";
+import { message } from "antd";
 
 const AdminSidebar = () => {
   const { activeTab, setActive } = useActiveTab();
@@ -26,10 +28,19 @@ const AdminSidebar = () => {
   const handleItemClickAccount = (item) => {
     setActiveSub(item);
   };
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-    setActive("dashboard");
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/api/logout");
+
+      if (response.status === 200) {
+        message.success("Logout Successfull");
+        logout();
+        navigate("/login");
+        setActive("dashboard");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

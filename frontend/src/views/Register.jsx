@@ -168,8 +168,8 @@ const Register = () => {
         </div>
 
         {/* Right Column */}
-        <div className="w-full lg:w-1/2 h-screen  bg-gray-200  flex flex-col items-center justify-center overflow-auto">
-          <div className="  bg-white w-[80%] py-5 mt-20 mb-20 h-auto rounded-2xl shadow-xl text-4xl">
+        <div className="w-full lg:w-1/2 h-auto  bg-gray-200  flex flex-col items-center justify-center overflow-auto">
+          <div className="  bg-white lg:w-[70%] w-[90%] py-5 mt-20 mb-20 h-auto rounded-2xl shadow-xl text-4xl">
             <div className="w-full  flex flex-col gap-4">
               <div className="lg:hidden flex my-5 gap-4 items-center justify-center">
                 <img className="w-20 h-20" src="/cityhalllogo.png" alt="" />

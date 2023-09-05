@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\LogoutController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\ReceiveServiceController;
@@ -32,6 +33,7 @@ Route::post('/verify-otp', [UserController::class, 'verifyOTP']);
 Route::put('/verify-otp', [UserController::class, 'resendOTP']);
 
 Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LogoutController::class, 'logout']);
 
 Route::put('/update-phone', [UserController::class, 'updatePhoneNumber']);
 
@@ -58,13 +60,18 @@ Route::delete('categorydelete/{id}', [UtilitySettingController::class, 'destroy'
 
 Route::get('all-request', [ReceiveServiceController::class, 'allRequest']);
 Route::get('service-task', [ReceiveServiceController::class, 'index']);
+Route::get('closed-transactions', [ReceiveServiceController::class, 'closedTransaction']);
+Route::get('for-released', [RatingController::class, 'shesh']);
 Route::post('received-request', [ReceiveServiceController::class, 'store']);
 Route::put('serviced/{id}', [ReceiveServiceController::class, 'updateReceiveService']);
 Route::delete('delete-received/{id}', [ReceiveServiceController::class, 'destroyReceiveService']);
 Route::delete('delete-serviced/{id}/{reqID}', [ReceiveServiceController::class, 'destroySeviceTask']);
+Route::put('to-release/{id}', [ReceiveServiceController::class, 'updateReceiveToRelease']);
+Route::post('to-closed', [ReceiveServiceController::class, 'toReleased']);
 
 Route::get('closed-transaction', [RatingController::class, 'indexClosed']);
 Route::post('service-rating', [RatingController::class, 'serviceRatings']);
+Route::get('closed-view/{id}', [RatingController::class, 'closedView']);
 
 Route::get('/users-list', [UserController::class, 'showUsersList']);
 Route::post('/admin/register', [UserController::class, 'register']);

@@ -12,6 +12,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../AuthContext";
 import { useActiveTab } from "../ActiveTabContext";
+import axios from "axios";
+import { message } from "antd";
 
 const DrawerComponent = () => {
   const [open, setOpen] = useState(false);
@@ -23,10 +25,19 @@ const DrawerComponent = () => {
     setActive(item);
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-    setActive("request");
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/api/logout");
+
+      if (response.status === 200) {
+        message.success("Logout Successfull");
+        logout();
+        navigate("/login");
+        setActive("request");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

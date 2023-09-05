@@ -1,46 +1,50 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
-import { Button, Modal } from "antd";
+import { Modal } from "antd";
 import { message } from "antd";
+import PropagateLoader from "react-spinners/PropagateLoader";
 
 const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
   if (!isOpen) return null;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // eslint-disable-next-line no-unused-vars
+  const daytime = new Date().toLocaleString(undefined);
+  console.log("request_id", data.request_id);
+
   const [formData, setFormData] = useState({
     request_id: data.request_id,
-    receivedBy: data.receivedBy,
-    dateReceived: data.dateReceived,
-    assignedTo: data.assignedTo,
-    serviceBy: data.serviceBy,
-    dateServiced: data.dateServiced,
-    toRecommend: data.toRecommend,
-    findings: data.findings,
-    rootCause: data.rootCause,
-    actionTaken: data.actionTaken,
-    remarks: data.remarks,
+    receivedReq_id: data.id,
+    approvedBy: "",
+    noteBy: "",
+    releasedBy: "",
+    received_By: "",
   });
-  // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState("");
   console.log(data.id);
+
+  const changeUserFieldHandler = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const response = await axios.put(
-        `http://127.0.0.1:8000/api/to-release/${data.id}`,
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/to-closed",
         formData
       );
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         setIsSubmitting(false);
         message.success("Updated Successfully");
-        onClose();
-        refreshData();
+        window.location.href = "/service-transaction";
       } else {
         setIsSubmitting(false);
         console.error("Received an unexpected response:", response);
@@ -262,192 +266,336 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
           </div>
         )}
       </div>
-      <form onSubmit={handleSubmit}>
-        <div className="relative p-6 text-lg">
-          {/* ADMIN SIDE */}
-          {data && (
-            <div className="grid grid-cols-4 gap-4">
-              <div className="col-span-1">
-                <label
-                  className="block text-sm font-bold mb-2"
-                  htmlFor="propertyNo"
-                >
-                  Received By
-                </label>
-                <input
-                  className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  type="text"
-                  id="receivedBy"
-                  name="receivedBy"
-                  value={data.receivedBy}
-                  readOnly
-                />
-              </div>
-              <div className="col-span-1">
-                <label
-                  className="block text-sm font-bold mb-2"
-                  htmlFor="propertyNo"
-                >
-                  Date Received
-                </label>
-                <input
-                  className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  id="dateReceived"
-                  name="dateReceived"
-                  value={data.dateReceived}
-                  readOnly
-                />
-              </div>
-              <div className="col-span-1">
-                <label
-                  className="block text-sm font-bold mb-2"
-                  htmlFor="propertyNo"
-                >
-                  Assigned To
-                </label>
-                <input
-                  className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  type="text"
-                  id="assignedTo"
-                  name="assignedTo"
-                  value={data.assignedTo}
-                  readOnly
-                />
-              </div>
-              <div className="col-span-1">
-                <label
-                  className="block text-sm font-bold mb-2"
-                  htmlFor="propertyNo"
-                >
-                  Date Procured
-                </label>
-                <input
-                  className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  type="date"
-                  id="dateProcured"
-                  name="dateProcured"
-                  value={data.dateProcured}
-                  readOnly
-                />
-              </div>
-              <div className="col-span-1">
-                <label
-                  className="block text-sm font-bold mb-2"
-                  htmlFor="propertyNo"
-                >
-                  Date Service
-                </label>
-                <input
-                  className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  type="text"
-                  id="serviceBy"
-                  name="serviceBy"
-                  value={data.serviceBy}
-                  readOnly
-                />
-              </div>
-              <div className="col-span-1">
-                <label
-                  className="block text-sm font-bold mb-2"
-                  htmlFor="propertyNo"
-                >
-                  Date Service
-                </label>
-                <input
-                  className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  type="text"
-                  id="dateServiced"
-                  name="dateServiced"
-                  value={data.dateServiced}
-                  readOnly
-                />
-              </div>
-              <div className="col-span-1">
-                <label
-                  className="block text-sm font-bold mb-2"
-                  htmlFor="propertyNo"
-                >
-                  Findings/Particulars
-                </label>
-                <input
-                  className="shadow-md bg-gray-200 appearance-none border rounded-lg w-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  type="text"
-                  id="findings"
-                  name="findings"
-                  value={data.findings}
-                  readOnly
-                />
-                <input
-                  className="shadow-md bg-gray-200 appearance-none border rounded-lg py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  type="text"
-                  id="rootCause"
-                  name="rootCause"
-                  value={data.rootCause}
-                  readOnly
-                />
-              </div>
-              <div className="col-span-1">
-                <label
-                  className="block text-sm font-bold mb-2"
-                  htmlFor="propertyNo"
-                >
-                  Action Taken
-                </label>
-                <input
-                  className="shadow-md bg-gray-200 appearance-none border rounded-lg w-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  type="text"
-                  id="actionTaken"
-                  name="actionTaken"
-                  value={data.actionTaken}
-                  readOnly
-                />
-                <input
-                  className="shadow-md bg-gray-200 appearance-none border rounded-lg py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  type="text"
-                  id="remarks"
-                  name="remarks"
-                  value={data.remarks}
-                  readOnly
-                />
-              </div>
-              <div className="col-span-1">
-                <label
-                  className="block text-sm font-bold mb-2"
-                  htmlFor="propertyNo"
-                >
-                  Recommendation
-                </label>
-
-                <input
-                  className="shadow-md bg-gray-200 appearance-none border w-full rounded-lg py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  type="text"
-                  id="toRecommend"
-                  name="toRecommend"
-                  value={data.toRecommend}
-                  readOnly
-                />
-              </div>
+      <div className="relative p-6 text-lg">
+        {/* ADMIN SIDE */}
+        {data && (
+          <div className="grid grid-cols-4 gap-4">
+            <div className="col-span-1">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Received By
+              </label>
+              <input
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="receivedBy"
+                name="receivedBy"
+                value={data.receivedBy}
+                readOnly
+              />
             </div>
-          )}
-        </div>
-        <div className="flex ml-auto w-full  gap-2 justify-end border-t-2 pt-5 pr-6">
-          <button
-            className="bg-gray-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
-            type="submit"
-            onClick={onClose}
-          >
-            Cancel
-          </button>
-          <Button
-            loading={isSubmitting}
-            type="primary"
-            htmlType="submit"
-            className="bg-gray-800  py-7  font-semibold flex items-center justify-center text-white text-base font-sans w-28 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out "
-          >
-            {isSubmitting ? "Updating" : "Update"}
-          </Button>
-        </div>
-      </form>
+            <div className="col-span-1">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Date Received
+              </label>
+              <input
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="dateReceived"
+                name="dateReceived"
+                value={data.dateReceived}
+                readOnly
+              />
+            </div>
+            <div className="col-span-1">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Assigned To
+              </label>
+              <input
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="assignedTo"
+                name="assignedTo"
+                value={data.assignedTo}
+                readOnly
+              />
+            </div>
+            <div className="col-span-1">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Date Procured
+              </label>
+              <input
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="date"
+                id="dateProcured"
+                name="dateProcured"
+                value={data.dateProcured}
+                readOnly
+              />
+            </div>
+            <div className="col-span-1">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Date Service
+              </label>
+              <input
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="serviceBy"
+                name="serviceBy"
+                value={data.serviceBy}
+                readOnly
+              />
+            </div>
+            <div className="col-span-1">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Date Service
+              </label>
+              <input
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="dateServiced"
+                name="dateServiced"
+                value={data.dateServiced}
+                readOnly
+              />
+            </div>
+            <div className="col-span-1">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Findings/Particulars
+              </label>
+              <input
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="findings"
+                name="findings"
+                value={data.findings}
+                readOnly
+              />
+              <input
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="rootCause"
+                name="rootCause"
+                value={data.rootCause}
+                readOnly
+              />
+            </div>
+            <div className="col-span-1">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Action Taken
+              </label>
+              <input
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="actionTaken"
+                name="actionTaken"
+                value={data.actionTaken}
+                readOnly
+              />
+              <input
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="remarks"
+                name="remarks"
+                value={data.remarks}
+                readOnly
+              />
+            </div>
+            <div className="col-span-1">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Recommendation
+              </label>
+
+              <input
+                className="shadow-md bg-gray-200 appearance-none border w-full rounded-lg py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="toRecommend"
+                name="toRecommend"
+                value={data.toRecommend}
+                readOnly
+              />
+            </div>
+          </div>
+        )}
+        <form onSubmit={handleSubmit}>
+          <div className="mt-10 grid grid-cols-4 gap-4">
+            <div className="col-span-1">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Approved By
+              </label>
+              <input
+                className="shadow-md border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="approvedBy"
+                name="approvedBy"
+                defaultValue={data.approvedBy}
+                required
+                onChange={(e) => {
+                  changeUserFieldHandler(e);
+                }}
+              />
+            </div>
+            <div className="col-span-1">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Date Approved
+              </label>
+              <input
+                className="shadow-md border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="dateApproved"
+                name="dateApproved"
+                value={daytime}
+                disabled
+              />
+            </div>
+            <div className="col-span-1">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Released By
+              </label>
+              <input
+                className="shadow-md border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="releasedBy"
+                name="releasedBy"
+                defaultValue={data.releasedBy}
+                required
+                onChange={(e) => {
+                  changeUserFieldHandler(e);
+                }}
+              />
+            </div>
+            <div className="col-span-1">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Date Released
+              </label>
+              <input
+                className="shadow-md border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="dateReleased"
+                name="dateReleased"
+                value={daytime}
+                disabled
+              />
+            </div>
+            <div className="col-span-1">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Noted By
+              </label>
+              <input
+                className="shadow-md border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="noteBy"
+                name="noteBy"
+                defaultValue={data.noteBy}
+                required
+                onChange={(e) => {
+                  changeUserFieldHandler(e);
+                }}
+              />
+            </div>
+            <div className="col-span-1">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Date Noted
+              </label>
+              <input
+                className="shadow-md border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="dateNoted"
+                name="dateNoted"
+                value={daytime}
+                disabled
+              />
+            </div>
+            <div className="col-span-1">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Received By
+              </label>
+              <input
+                className="shadow-md border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="received_By"
+                name="received_By"
+                defaultValue={data.received_By}
+                required
+                onChange={(e) => {
+                  changeUserFieldHandler(e);
+                }}
+              />
+            </div>
+            <div className="col-span-1">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Date Received
+              </label>
+              <input
+                className="shadow-md border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="date_Received"
+                name="date_Received"
+                value={daytime}
+                disabled
+              />
+            </div>
+          </div>
+          <div className="flex ml-auto w-full  gap-2 justify-end border-t-2 pt-5 pr-6">
+            <button
+              className="bg-gray-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
+              type="submit"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-gray-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
+              type="submit"
+            >
+              {isSubmitting ? (
+                <PropagateLoader color="#FFFFFF" size={10} className="mb-3" />
+              ) : (
+                "Update"
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
       {/* Footer */}
     </Modal>
   );

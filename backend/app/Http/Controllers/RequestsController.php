@@ -13,10 +13,10 @@ class RequestsController extends Controller
     public function index(Request $request)
     {
         $userID = $request->input('user_id');
-        $query = Requests::query();
+        $query = Requests::where('status', '!=', 'Closed');
 
         $startDateTime = Carbon::now();
-        $startDateTime->setTime(0, 5, 0);
+        $startDateTime->setTime(6, 5, 0);
 
         $endDateTime = Carbon::now();
         $endDateTime->setTime(23, 59, 0);
@@ -40,6 +40,7 @@ class RequestsController extends Controller
             'results' => $requests
         ], 200);
     }
+
 
     public function store(Request $request)
     {

@@ -169,12 +169,24 @@ const ReceiveService = () => {
                   <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                     #
                   </th>
-                  <th className="">Request ID</th>
-                  <th className="">Property No.</th>
-                  <th className="">Requesting Office</th>
-                  <th className="">Date</th>
-                  <th className="">Nature Of Request</th>
-                  <th className="">Requested By</th>
+                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    Request ID
+                  </th>
+                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    Property No.
+                  </th>
+                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    Requesting Office
+                  </th>
+                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    Date
+                  </th>
+                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    Nature Of Request
+                  </th>
+                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    Requested By
+                  </th>
                   <th className="w-56 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                     Action
                   </th>

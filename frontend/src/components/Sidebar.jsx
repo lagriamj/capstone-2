@@ -9,16 +9,27 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../AuthContext";
 import { useActiveTab } from "../ActiveTabContext";
+import axios from "axios";
+import { message } from "antd";
 
 const Sidebar = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const { activeTab, setActive } = useActiveTab();
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-    setActive("request");
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/api/logout");
+
+      if (response.status === 200) {
+        message.success("Logout Successfull");
+        logout();
+        navigate("/login");
+        setActive("request");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleItemClick = (item) => {
@@ -27,15 +38,15 @@ const Sidebar = () => {
 
   return (
     <div className="sidebar flex flex-col bg-main h-screen w-[17%] font-sans text-white text-lg fixed top-0 left-0">
-      <div className="w-full flex gap-4 items-center justify-center py-4 px-3 mb-5">
+      <div className="w-full flex gap-4 items-center justify-center py-4 px-3 my-2">
         <img className="w-1/3 h-[95%]" src="/cityhalllogo.png" alt="" />
         <img className="w-1/3 h-[95%]" src="/citclogo.png" alt="" />
       </div>
 
       <hr className="mx-7 mb-8" />
-      <ul className="flex flex-col justify-center items-start gap-4 px-5 lg:ml-5">
+      <ul className="flex flex-col justify-center items-start gap-4 px-4 lg:ml-4">
         <li
-          className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
+          className={`flex gap-3 w-full items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "request" ? "bg-white text-main font-semibold" : ""
           }`}
           onClick={() => handleItemClick("request")}
@@ -44,7 +55,7 @@ const Sidebar = () => {
           <Link to={"/request"}>Request Services</Link>
         </li>
         <li
-          className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
+          className={`flex gap-3 w-full items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "current-requests"
               ? "bg-white text-main font-semibold"
               : ""
@@ -55,7 +66,7 @@ const Sidebar = () => {
           <Link to={"/current-requests"}>Current Requests</Link>
         </li>
         <li
-          className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
+          className={`flex gap-3 w-full items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "transactions"
               ? "bg-white text-main font-semibold"
               : ""
@@ -69,8 +80,8 @@ const Sidebar = () => {
 
       <div className="flex flex-col mt-auto mb-10">
         <hr className="mx-7 mb-5" />
-        <div className="flex flex-col  lg:mx-5 ">
-          <ul className="flex flex-col justify-center items-start gap-3 px-5">
+        <div className="flex flex-col  lg:mx-4 ">
+          <ul className="flex flex-col justify-center items-start gap-3 px-4">
             <li
               className={`flex gap-3 w-full items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
                 activeTab === "account"

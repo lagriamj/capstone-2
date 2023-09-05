@@ -27,7 +27,7 @@ const ServiceRequest = () => {
       </Helmet>
       <div className='className="flex flex-col lg:flex-row bg-gray-200 lg:pl-24 lg:py-10 h-screen"'>
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
-        <div className="overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] mt-28 lg:mt-10 h-4/5 pb-10 bg-white shadow-xl  lg:ml-80  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
+        <div className="overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] mt-20 lg:mt-0 ml-5 h-4/5 pb-10 bg-white shadow-xl  lg:ml-72  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
           <h1 className="text-3xl">Service Request</h1>
         </div>
       </div>

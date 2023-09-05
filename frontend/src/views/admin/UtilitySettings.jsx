@@ -141,7 +141,7 @@ const UtilitySettings = () => {
       </Helmet>
       <div className="flex flex-col lg:flex-row bg-gray-200 lg:pl-24 lg:py-5 h-screen">
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
-        <div className="overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] mt-28 lg:mt-4 `h-4/5 pb-10 bg-white shadow-xl lg:ml-72 border-0 border-gray-400 rounded-3xl flex flex-col font-sans">
+        <div className="overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] mx-5 mt-28 lg:mt-4 `h-4/5 pb-10 bg-white shadow-xl lg:ml-72 border-0 border-gray-400 rounded-3xl flex flex-col font-sans">
           <div className="w-full text-center bg-main text-white py-4">
             <h1 className="text-3xl">Utility Settings</h1>
           </div>

@@ -178,7 +178,7 @@ const Account = () => {
       </Helmet>
       <div className="flex flex-col lg:flex-row bg-gray-200 h-screen lg:pl-16 lg:pb-10 ">
         {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
-        <div className="lg:w-[80%] w-[90%] min-h-[90vh]  mt-10 lg:mt-10 h-4/5 pb-10 bg-white shadow-xl self-center lg:ml-80 border-0 border-gray-400   rounded-3xl flex flex-col items-center font-sans">
+        <div className="lg:w-[80%] w-[90%] min-h-[90vh]  mt-20 lg:mt-0 mx-5 h-4/5 pb-10 bg-white shadow-xl self-center lg:ml-80 border-0 border-gray-400   rounded-3xl flex flex-col items-center font-sans">
           <h1 className=" text-3xl text-center my-10 font-bold ">
             Account Details
           </h1>
