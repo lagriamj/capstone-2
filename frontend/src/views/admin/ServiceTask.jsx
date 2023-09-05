@@ -253,7 +253,7 @@ const ServiceTask = () => {
                         <FontAwesomeIcon icon={faFilter} className="h-4 w-4" />
                       </button>
                       {isModeDropdownOpen && (
-                        <div className="absolute right-0 overflow-auto bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
+                        <div className="absolute right-0 overflow-auto text-start bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
                           <label className="block px-4 py-2">
                             <input
                               type="checkbox"
@@ -297,7 +297,7 @@ const ServiceTask = () => {
                         <FontAwesomeIcon icon={faFilter} className="h-4 w-4" />
                       </button>
                       {isStatusDropdownOpen && (
-                        <div className="absolute right-0 bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg text-center">
+                        <div className="absolute right-0 bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg text-start">
                           <label className="block px-4 py-2">
                             <input
                               type="checkbox"

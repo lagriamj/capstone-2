@@ -68,7 +68,7 @@ const Transactions = () => {
       </Helmet>
       <div className="flex flex-col lg:flex-row bg-gray-200 h-screen lg:pl-20 lg:py-10 lg:items-start items-center">
         {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
-        <div className="overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] relative mt-20 lg:mt-0 mx-5  h-4/5 pb-10 bg-white shadow-xl  lg:ml-[19rem]  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
+        <div className="overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] relative mt-20 lg:mt-0 mx-5  h-4/5 pb-10 bg-white shadow-xl  lg:ml-72  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
           <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
             <h1 className="font-sans lg:text-3xl text-xl mt-8 ml-5 mr-auto tracking-wide">
               Service Transactions
