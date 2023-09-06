@@ -11,7 +11,7 @@ import {
 import { Button, Modal } from "antd";
 import PropTypes from "prop-types";
 
-const RateModal = ({ isOpen, onClose, id, user_id }) => {
+const RateModal = ({ isOpen, onClose, id, user_id, isLargeScreen }) => {
   const [loading, setLoading] = useState(false);
 
   console.log("reqid", id);
@@ -149,12 +149,13 @@ const RateModal = ({ isOpen, onClose, id, user_id }) => {
           />
         </div>
       }
+      width={isLargeScreen ? "50%" : "80%"}
       footer={null}
       centered
     >
       <form onSubmit={onSubmitChange}>
-        <div className="relative p-6 flex-auto grid grid-rows-4 grid-cols-5 gap-4">
-          <div className="col-span-5">
+        <div className="relative p-6 flex-auto grid grid-rows-4 grid-cols-5 lg:grid-rows-2 lg:grid-cols-4 gap-4">
+          {/*<div className="col-span-5">
             <label htmlFor="department" className="text-lg font-semibold">
               Office/Department
             </label>
@@ -166,9 +167,9 @@ const RateModal = ({ isOpen, onClose, id, user_id }) => {
               value={selectedRatings.department}
               onChange={handleInputChange}
             />
-          </div>
-          <div className="col-span-5">
-            <label htmlFor="q1" className="text-lg font-semibold">
+    </div> */}
+          <div className="col-span-5 lg:col-span-2">
+            <label htmlFor="q1" className="text-lg font-semibold ">
               1. Timeless Delivery of Service (Kapaspason sa paghatag og
               serbisyo)
             </label>
@@ -178,7 +179,7 @@ const RateModal = ({ isOpen, onClose, id, user_id }) => {
               ))}
             </div>
           </div>
-          <div className="col-span-5">
+          <div className="col-span-5 lg:col-span-2">
             <label htmlFor="name" className="text-lg font-semibold">
               2. Quality of Service (Kalidad serbisyo)
             </label>
@@ -188,7 +189,7 @@ const RateModal = ({ isOpen, onClose, id, user_id }) => {
               ))}
             </div>
           </div>
-          <div className="col-span-5">
+          <div className="col-span-5 lg:col-span-2">
             <label htmlFor="name" className="text-lg font-semibold">
               3. Access and Facilities (Paagi ug pag-gamit sa pasilidad)
             </label>
@@ -198,7 +199,7 @@ const RateModal = ({ isOpen, onClose, id, user_id }) => {
               ))}
             </div>
           </div>
-          <div className="col-span-5">
+          <div className="col-span-5 lg:col-span-2">
             <label htmlFor="name" className="text-lg font-semibold">
               4. Communication (Kahanas sa pag abi-abi)
             </label>
@@ -208,7 +209,7 @@ const RateModal = ({ isOpen, onClose, id, user_id }) => {
               ))}
             </div>
           </div>
-          <div className="col-span-5">
+          <div className="col-span-5 lg:col-span-2">
             <label htmlFor="name" className="text-lg font-semibold">
               5. Employee Attitude towards Client (Saktong pamatasan sa
               empleyado)
@@ -219,7 +220,7 @@ const RateModal = ({ isOpen, onClose, id, user_id }) => {
               ))}
             </div>
           </div>
-          <div className="col-span-5">
+          <div className="col-span-5 lg:col-span-2">
             <label htmlFor="name" className="text-lg font-semibold">
               6. Integrity (Pagkamatarongon sinsero sa empleyado)
             </label>
@@ -229,7 +230,7 @@ const RateModal = ({ isOpen, onClose, id, user_id }) => {
               ))}
             </div>
           </div>
-          <div className="col-span-5">
+          <div className="col-span-5 lg:col-span-2">
             <label htmlFor="name" className="text-lg font-semibold">
               7. Transaction Costs (Kantidad sa serbisyo)
             </label>
@@ -239,7 +240,7 @@ const RateModal = ({ isOpen, onClose, id, user_id }) => {
               ))}
             </div>
           </div>
-          <div className="col-span-5">
+          <div className="col-span-5 lg:col-span-2">
             <label htmlFor="name" className="text-lg font-semibold">
               8. Overall Experience/Satisfaction (Kinatibuk-ang kasinatian)
             </label>
@@ -249,7 +250,7 @@ const RateModal = ({ isOpen, onClose, id, user_id }) => {
               ))}
             </div>
           </div>
-          <div className="col-span-5">
+          <div className="col-span-5 ">
             <label className="text-lg font-semibold">Commendation</label>
             <input
               className="ml-2 bg-gray-300 w-full h-10 rounded-md outline-none p-2 text-base"
@@ -322,6 +323,7 @@ RateModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
   user_id: PropTypes.number.isRequired,
+  isLargeScreen: PropTypes.bool.isRequired,
 };
 
 export default RateModal;

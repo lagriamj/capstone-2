@@ -43,6 +43,7 @@ const ServiceTransaction = () => {
   }, []);
 
   const isLargeScreen = windowWidth >= 1024;
+  const isWidth1980 = window.innerWidth === 1980;
 
   useEffect(() => {
     fetchData();
@@ -115,7 +116,7 @@ const ServiceTransaction = () => {
   const records = data.slice(firstIndex, lastIndex);
 
   const npage = Math.ceil(data.length / recordsPage);
-  const numbers = [...Array(npage + 1).keys()].slice(1);
+  //const numbers = [...Array(npage + 1).keys()].slice(1);
 
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -142,295 +143,305 @@ const ServiceTransaction = () => {
       <Helmet>
         <title>Service Transaction</title>
       </Helmet>
-      <div className='className="flex flex-col lg:flex-row bg-gray-200 lg:pl-24 lg:py-10 h-screen'>
+      <div
+        className={`className="flex flex-col lg:flex-row bg-gray-200 ${
+          isWidth1980 ? "lg:pl-20" : "lg:pl-[3.0rem]"
+        } lg:py-5 h-screen`}
+      >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
-        <div className="overflow-x-auto lg:w-[80%] w-[90%] lg:min-h-[90vh] mt-20 lg:mt-0 ml-5 h-4/5 pb-10 bg-white shadow-xl  lg:ml-72  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans">
-          <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
-            <h1 className="font-sans lg:text-3xl text-xl mt-8 ml-5 mr-auto tracking-wide">
-              Service Transaction
-            </h1>
-            <div className="relative flex items-center lg:mr-10 ">
-              <FontAwesomeIcon
-                icon={faSearch}
-                className="h-6 w-6 absolute ml-3 text-main"
-              />
-              <input
-                type="text"
-                placeholder="Search"
-                className="border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 h-14 lg:w-full w-[90%] focus:outline-none text-xl"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-          </div>
+        <div className="flex flex-col lg:pb-10 bg-gray-200 gap-5 lg:w-full">
           <div
-            className={`overflow-auto min-h-[50vh] ${
-              isSingleRequest ? "min-h-[50vh]" : ""
-            } rounded-lg w-full`}
+            className={`overflow-x-auto ${
+              isWidth1980 ? "lg:w-[83%]" : "lg:w-[82%]"
+            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-4/5 pb-10 bg-white shadow-xl  lg:ml-72  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
           >
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b-2 border-gray-200">
-                <tr className="bg-gray-200">
-                  <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
-                    #
-                  </th>
-                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
-                    Request ID
-                  </th>
-                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
-                    Date of Request
-                  </th>
-                  <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
-                    Nature of Request
-                  </th>
-                  <th className="px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
-                    Mode
-                    <div className="relative inline-block">
-                      <button
-                        onClick={toggleModeDropdown}
-                        className="text-main focus:outline-none ml-2"
-                        style={{
-                          backgroundColor: "transparent",
-                          border: "none",
-                        }}
-                      >
-                        <FontAwesomeIcon icon={faFilter} className="h-4 w-4" />
-                      </button>
-                      {isModeDropdownOpen && (
-                        <div className="absolute right-0 overflow-auto bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
-                          <label className="block px-4 py-2">
-                            <input
-                              type="checkbox"
-                              value="Walk-In"
-                              checked={selectedModeFilters.includes("Walk-In")}
-                              onChange={handleModeCheckboxChange}
-                              className="mr-2"
-                            />
-                            Walk-In
-                          </label>
-                          <label className="block px-4 py-2">
-                            <input
-                              type="checkbox"
-                              value="Online"
-                              checked={selectedModeFilters.includes("Online")}
-                              onChange={handleModeCheckboxChange}
-                              className="mr-2"
-                            />
-                            Online
-                          </label>
-                        </div>
-                      )}
-                    </div>
-                  </th>
-                  <th className="w-52 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
-                    Assigned To
-                  </th>
-                  <th
-                    className={`px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center`}
-                  >
-                    Status
-                    <div className="relative inline-block">
-                      <button
-                        onClick={toggleStatusDropdown}
-                        className="text-main focus:outline-none ml-2"
-                        style={{
-                          backgroundColor: "transparent",
-                          border: "none",
-                        }}
-                      >
-                        <FontAwesomeIcon icon={faFilter} className="h-4 w-4" />
-                      </button>
-                      {isStatusDropdownOpen && (
-                        <div className="absolute right-0 bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg text-center">
-                          <label className="block px-4 py-2">
-                            <input
-                              type="checkbox"
-                              value="Pending"
-                              checked={selectedStatusFilters.includes(
-                                "Pending"
-                              )}
-                              onChange={handleStatusCheckboxChange}
-                              className="mr-2"
-                            />
-                            Pending
-                          </label>
-                          <label className="block px-4 py-2">
-                            <input
-                              type="checkbox"
-                              value="Received"
-                              checked={selectedStatusFilters.includes(
-                                "Received"
-                              )}
-                              onChange={handleStatusCheckboxChange}
-                              className="mr-2"
-                            />
-                            Received
-                          </label>
-                          <label className="block px-4 py-2">
-                            <input
-                              type="checkbox"
-                              value="On Progress"
-                              checked={selectedStatusFilters.includes(
-                                "On Progress"
-                              )}
-                              onChange={handleStatusCheckboxChange}
-                              className="mr-2"
-                            />
-                            On Progress
-                          </label>
-                          <label className="block px-4 py-2">
-                            <input
-                              type="checkbox"
-                              value="toRelease"
-                              checked={selectedStatusFilters.includes(
-                                "toRelease"
-                              )}
-                              onChange={handleStatusCheckboxChange}
-                              className="mr-2"
-                            />
-                            To Release
-                          </label>
-                        </div>
-                      )}
-                    </div>
-                  </th>
-                  <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
-                    Date Updated
-                  </th>
-                  <th className="w-56 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr className="">
-                    <td colSpan="8">
-                      <Skeleton active />
-                    </td>
-                  </tr>
-                ) : data.length === 0 ? (
-                  <tr className="h-[50vh]">
-                    <td
-                      colSpan="8"
-                      className="p-3 text-lg text-gray-700 text-center"
-                    >
-                      No Records Yet.
-                    </td>
-                  </tr>
-                ) : filteredRecords.length === 0 ? (
-                  <tr className="h-[50vh]">
-                    <td
-                      colSpan="8"
-                      className="p-3 text-lg text-gray-700 text-center"
-                    >
-                      No records found matching the selected filter.
-                    </td>
-                  </tr>
-                ) : (
-                  filteredRecords.map((setting, index) => (
-                    <tr key={setting.id}>
-                      <td className="border-b-2 py-3 border-gray-200 text-center">
-                        {index + 1}
-                      </td>
-                      <td className="border-b-2 py-3 border-gray-200 text-center">
-                        {setting.id}
-                      </td>
-                      <td className="border-b-2 py-3 border-gray-200 text-center">
-                        {setting.dateRequested}
-                      </td>
-                      <td className="border-b-2 py-3 border-gray-200 text-center">
-                        {setting.natureOfRequest}
-                      </td>
-                      <td className="border-b-2 py-3 border-gray-200 text-center">
-                        {setting.modeOfRequest}
-                      </td>
-                      <td className="border-b-2 py-3 border-gray-200 text-center">
-                        {setting.assignedTo}
-                      </td>
-                      <td className="border-b-2 py-3 border-gray-200 text-center">
-                        <p
-                          className={` rounded-xl py-2 ${
-                            setting.status === "Pending"
-                              ? "bg-red-500 text-white" // Apply red background and white text for Pending
-                              : setting.status === "Received"
-                              ? "bg-orange-500 text-white"
-                              : setting.status === "On Progress"
-                              ? "bg-yellow-500 text-white" // Apply yellow background and white text for Process
-                              : setting.status === "To Release"
-                              ? "bg-green-500 text-white" // Apply green background and white text for Done
-                              : "bg-main text-white" // Default background and text color (if none of the conditions match)
-                          }`}
+            <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
+              <h1 className="font-sans lg:text-3xl text-xl mt-8 ml-5 mr-auto tracking-wide">
+                Service Transaction
+              </h1>
+              <div className="relative flex items-center lg:mr-10 ">
+                <FontAwesomeIcon
+                  icon={faSearch}
+                  className="h-6 w-6 absolute ml-3 text-main"
+                />
+                <input
+                  type="text"
+                  placeholder="Search"
+                  className="border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 h-14 lg:w-full w-[90%] focus:outline-none text-xl"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            </div>
+            <div
+              className={`overflow-auto min-h-[50vh] ${
+                isSingleRequest ? "min-h-[50vh]" : ""
+              } rounded-lg w-full`}
+            >
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b-2 border-gray-200">
+                  <tr className="bg-gray-200">
+                    <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                      #
+                    </th>
+                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                      Request ID
+                    </th>
+                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                      Date of Request
+                    </th>
+                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                      Nature of Request
+                    </th>
+                    <th className="px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
+                      Mode
+                      <div className="relative inline-block">
+                        <button
+                          onClick={toggleModeDropdown}
+                          className="text-main focus:outline-none ml-2"
+                          style={{
+                            backgroundColor: "transparent",
+                            border: "none",
+                          }}
                         >
-                          {setting.status}
-                        </p>
-                      </td>
-                      <td className="border-b-2 py-3 border-gray-200 text-center">
-                        {setting.dateUpdated}
-                      </td>
-                      <td className="border-b-2 py-3 border-gray-200 text-center">
-                        <div className="flex items-center justify-center gap-1">
-                          <button
-                            onClick={() => openModal(setting)}
-                            className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
-                          >
-                            View
-                          </button>
-                          <button className="text-white text-base bg-yellow-500 py-2 px-4 rounded-lg">
-                            <FontAwesomeIcon icon={faStar} />
-                          </button>
-                        </div>
+                          <FontAwesomeIcon
+                            icon={faFilter}
+                            className="h-4 w-4"
+                          />
+                        </button>
+                        {isModeDropdownOpen && (
+                          <div className="absolute right-0 overflow-auto bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
+                            <label className="block px-4 py-2">
+                              <input
+                                type="checkbox"
+                                value="Walk-In"
+                                checked={selectedModeFilters.includes(
+                                  "Walk-In"
+                                )}
+                                onChange={handleModeCheckboxChange}
+                                className="mr-2"
+                              />
+                              Walk-In
+                            </label>
+                            <label className="block px-4 py-2">
+                              <input
+                                type="checkbox"
+                                value="Online"
+                                checked={selectedModeFilters.includes("Online")}
+                                onChange={handleModeCheckboxChange}
+                                className="mr-2"
+                              />
+                              Online
+                            </label>
+                          </div>
+                        )}
+                      </div>
+                    </th>
+                    <th className="w-52 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                      Assigned To
+                    </th>
+                    <th
+                      className={`px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center`}
+                    >
+                      Status
+                      <div className="relative inline-block">
+                        <button
+                          onClick={toggleStatusDropdown}
+                          className="text-main focus:outline-none ml-2"
+                          style={{
+                            backgroundColor: "transparent",
+                            border: "none",
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            icon={faFilter}
+                            className="h-4 w-4"
+                          />
+                        </button>
+                        {isStatusDropdownOpen && (
+                          <div className="absolute right-0 bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg text-center">
+                            <label className="block px-4 py-2">
+                              <input
+                                type="checkbox"
+                                value="Pending"
+                                checked={selectedStatusFilters.includes(
+                                  "Pending"
+                                )}
+                                onChange={handleStatusCheckboxChange}
+                                className="mr-2"
+                              />
+                              Pending
+                            </label>
+                            <label className="block px-4 py-2">
+                              <input
+                                type="checkbox"
+                                value="Received"
+                                checked={selectedStatusFilters.includes(
+                                  "Received"
+                                )}
+                                onChange={handleStatusCheckboxChange}
+                                className="mr-2"
+                              />
+                              Received
+                            </label>
+                            <label className="block px-4 py-2">
+                              <input
+                                type="checkbox"
+                                value="On Progress"
+                                checked={selectedStatusFilters.includes(
+                                  "On Progress"
+                                )}
+                                onChange={handleStatusCheckboxChange}
+                                className="mr-2"
+                              />
+                              On Progress
+                            </label>
+                            <label className="block px-4 py-2">
+                              <input
+                                type="checkbox"
+                                value="toRelease"
+                                checked={selectedStatusFilters.includes(
+                                  "toRelease"
+                                )}
+                                onChange={handleStatusCheckboxChange}
+                                className="mr-2"
+                              />
+                              To Release
+                            </label>
+                          </div>
+                        )}
+                      </div>
+                    </th>
+                    <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                      Date Updated
+                    </th>
+                    <th className="w-56 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr className="">
+                      <td colSpan="8">
+                        <Skeleton active />
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-            <nav className="absolute bottom-10 right-10">
-              <ul className="flex gap-2">
-                <li>
-                  <a
-                    href="#"
-                    onClick={prePage}
-                    className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
-                  >
-                    Previous
-                  </a>
-                </li>
-                {numbers.map((n, i) => (
-                  <li
-                    className={`${currentPage === n ? "active" : ""}`}
-                    key={i}
-                  >
-                    <a
-                      href="#"
-                      onClick={() => changeCPage(n)}
-                      className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
-                    >
-                      {n}
-                    </a>
-                  </li>
-                ))}
-                <li>
-                  <a
-                    href="#"
-                    onClick={nextPage}
-                    className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
-                  >
-                    Next
-                  </a>
-                </li>
-              </ul>
-            </nav>
-            {modalType === "ServiceClosed" && (
-              <ClosedModal
-                isOpen={isModalOpen}
-                onClose={closeModal}
-                datas={selectedData}
-                refreshData={fetchData}
-              />
-            )}
+                  ) : data.length === 0 ? (
+                    <tr className="h-[50vh]">
+                      <td
+                        colSpan="8"
+                        className="p-3 text-lg text-gray-700 text-center"
+                      >
+                        No Records Yet.
+                      </td>
+                    </tr>
+                  ) : filteredRecords.length === 0 ? (
+                    <tr className="h-[50vh]">
+                      <td
+                        colSpan="8"
+                        className="p-3 text-lg text-gray-700 text-center"
+                      >
+                        No records found matching the selected filter.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredRecords.map((setting, index) => (
+                      <tr key={setting.id}>
+                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                          {index + 1}
+                        </td>
+                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                          {setting.id}
+                        </td>
+                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                          {setting.dateRequested}
+                        </td>
+                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                          {setting.natureOfRequest}
+                        </td>
+                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                          {setting.modeOfRequest}
+                        </td>
+                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                          {setting.assignedTo}
+                        </td>
+                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                          <p
+                            className={` rounded-xl py-2 ${
+                              setting.status === "Pending"
+                                ? "bg-red-500 text-white" // Apply red background and white text for Pending
+                                : setting.status === "Received"
+                                ? "bg-orange-500 text-white"
+                                : setting.status === "On Progress"
+                                ? "bg-yellow-500 text-white" // Apply yellow background and white text for Process
+                                : setting.status === "To Release"
+                                ? "bg-green-500 text-white" // Apply green background and white text for Done
+                                : "bg-main text-white" // Default background and text color (if none of the conditions match)
+                            }`}
+                          >
+                            {setting.status}
+                          </p>
+                        </td>
+                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                          {setting.dateUpdated}
+                        </td>
+                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                          <div className="flex items-center justify-center gap-1">
+                            <button
+                              onClick={() => openModal(setting)}
+                              className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
+                            >
+                              View
+                            </button>
+                            <button className="text-white text-base bg-yellow-500 py-2 px-4 rounded-lg">
+                              <FontAwesomeIcon icon={faStar} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+
+              {modalType === "ServiceClosed" && (
+                <ClosedModal
+                  isOpen={isModalOpen}
+                  onClose={closeModal}
+                  datas={selectedData}
+                  refreshData={fetchData}
+                />
+              )}
+            </div>
           </div>
+          <nav
+            className={`lg:ml-56 mr-6  ${isWidth1980 ? "lg:mr-10" : "lg:mr-8"}`}
+          >
+            <ul className="flex gap-2">
+              <li className="flex-auto ml-10 lg:ml-20 mr-5 text-base font-bold">
+                Page {currentPage} of {npage}
+              </li>
+              <li>
+                <a
+                  href="#"
+                  onClick={prePage}
+                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                >
+                  Previous
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  onClick={nextPage}
+                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                >
+                  Next
+                </a>
+              </li>
+            </ul>
+          </nav>
         </div>
       </div>
     </HelmetProvider>
@@ -441,9 +452,9 @@ const ServiceTransaction = () => {
       setCurrentPage(currentPage - 1);
     }
   }
-  function changeCPage(id) {
-    setCurrentPage(id);
-  }
+  //function changeCPage(id) {
+  //setCurrentPage(id);
+  //}
   function nextPage() {
     if (currentPage !== npage) {
       setCurrentPage(currentPage + 1);

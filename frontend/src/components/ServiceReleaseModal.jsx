@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { Button, Modal } from "antd";
@@ -31,6 +31,21 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const [utility, setUtility] = useState([]);
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const result = await axios.get("http://127.0.0.1:8000/api/categories");
+
+      setUtility(result.data.results);
+    } catch (err) {
+      console.log("Something went wrong:", err);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -383,11 +398,14 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
                   onChange={(e) => {
                     changeUserFieldHandler(e);
                   }}
+                  defaultValue={""}
                 >
-                  {/* Add your dropdown options here */}
-                  <option value="CPU">CPU</option>
-                  <option value="RAM">RAM</option>
-                  <option value="MONITOR">MONITOR</option>
+                  <option value="">Select an option...</option>
+                  {utility.map((option, index) => (
+                    <option key={index} value={option.utilityCategory}>
+                      {option.utilityCategory}
+                    </option>
+                  ))}
                 </select>
                 <input
                   className="shadow-md appearance-none border-2 border-gray-800 rounded-lg  py-2 px-3 lg:ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -415,11 +433,14 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
                   onChange={(e) => {
                     changeUserFieldHandler(e);
                   }}
+                  defaultValue={""}
                 >
-                  {/* Add your dropdown options here */}
-                  <option value="CPU">CPU</option>
-                  <option value="RAM">RAM</option>
-                  <option value="MONITOR">MONITOR</option>
+                  <option value="">Select an option...</option>
+                  {utility.map((option, index) => (
+                    <option key={index} value={option.utilityCategory}>
+                      {option.utilityCategory}
+                    </option>
+                  ))}
                 </select>
                 <input
                   className="shadow-md appearance-none border-2 border-gray-800 rounded-lg py-2 px-3 lg:ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
