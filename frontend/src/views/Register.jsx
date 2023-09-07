@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +15,8 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useUser } from "../UserContext";
 import { useAuth } from "../AuthContext";
+import { Checkbox } from "antd";
+import TermsAndConditionsModal from "../components/TermsAndConditionsModal";
 
 const InputBox = ({
   value,
@@ -143,6 +146,21 @@ const Register = () => {
     }
   };
 
+  const [showModal, setShowModal] = useState(false);
+  const [termsAgreed, setTermsAgreed] = useState(false);
+
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const handleCheckboxChange = (e) => {
+    setTermsAgreed(e.target.checked); // Update the termsAgreed state when checkbox changes
+  };
+
   return (
     <div className="bg-transparent">
       {loading && (
@@ -150,9 +168,9 @@ const Register = () => {
           <HashLoader color="#ffffff" size={80} />
         </div>
       )}
-      <div className="flex">
+      <div className="flex overflow-auto">
         {/* Left Column */}
-        <div className="lg:w-1/2 h-screen box-border bg-main hidden lg:flex md:w-1/6 justify-center items-start lg:pt-16">
+        <div className="lg:w-1/2 h-screen box-border bg-main hidden lg:flex md:w-1/6 justify-center items-start lg:pt-16 fixed">
           <div className=" w-full flex flex-col items-center text-center gap-3">
             <div className="flex mb-32 gap-4">
               <img className="w-28 h-28" src="/cityhalllogo.png" alt="" />
@@ -168,7 +186,7 @@ const Register = () => {
         </div>
 
         {/* Right Column */}
-        <div className="w-full lg:w-1/2 h-auto  bg-gray-200  flex flex-col items-center justify-center overflow-auto">
+        <div className="w-full lg:w-1/2 h-auto  bg-gray-200  flex flex-col items-center justify-center overflow-auto ml-auto">
           <div className="  bg-white lg:w-[70%] w-[90%] py-5 mt-20 mb-20 h-auto rounded-2xl shadow-xl text-4xl">
             <div className="w-full  flex flex-col gap-4">
               <div className="lg:hidden flex my-5 gap-4 items-center justify-center">
@@ -371,12 +389,39 @@ const Register = () => {
 
               <div className="flex items-start justify-center flex-col w-3/4">
                 <button
-                  className="w-full h-14 text-lg font-medium border-2 rounded-lg pl-2 bg-main text-white"
+                  className={`w-full h-14 text-lg font-medium border-2 rounded-lg pl-2 transition duration-300 ease-in-out  ${
+                    termsAgreed
+                      ? "bg-main text-white"
+                      : "bg-gray-400 text-black cursor-not-allowed"
+                  }`}
                   type="submit"
+                  disabled={!termsAgreed}
                 >
                   Next
                 </button>
               </div>
+              <div className="flex items-center justify-center flex-col w-3/4">
+                <p className="text-sm">
+                  <Checkbox
+                    id="termsCheckBox"
+                    name="termsCheckBox"
+                    checked={termsAgreed}
+                    onChange={handleCheckboxChange}
+                  >
+                    I agree to the{" "}
+                    <button
+                      onClick={handleShowModal}
+                      className="text-blue-500 underline"
+                    >
+                      Terms and Conditions
+                    </button>
+                  </Checkbox>
+                </p>
+              </div>
+              <TermsAndConditionsModal
+                isOpen={showModal}
+                onClose={handleCloseModal}
+              />
               <div className="flex items-center justify-center flex-col w-3/4">
                 <p className="font-medium text-lg">
                   Already have an account?{" "}

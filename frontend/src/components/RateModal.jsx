@@ -11,7 +11,7 @@ import {
 import { Button, Modal } from "antd";
 import PropTypes from "prop-types";
 
-const RateModal = ({ isOpen, onClose, id, user_id, isLargeScreen }) => {
+const RateModal = ({ isOpen, onClose, id, user_id, office, isLargeScreen }) => {
   const [loading, setLoading] = useState(false);
 
   console.log("reqid", id);
@@ -34,7 +34,7 @@ const RateModal = ({ isOpen, onClose, id, user_id, isLargeScreen }) => {
   const [selectedRatings, setSelectedRatings] = useState({
     user_id: user_id,
     request_id: id,
-    department: "",
+    department: office,
     q1: "",
     q2: "",
     q3: "",
@@ -138,15 +138,30 @@ const RateModal = ({ isOpen, onClose, id, user_id, isLargeScreen }) => {
       onCancel={onClose}
       title={
         <div className="flex">
-          <label htmlFor="dateRate">Date Rate</label>
-          <input
-            className="ml-2"
-            id="dateRate"
-            name="dateRate"
-            type="text"
-            value={daytime}
-            readOnly
-          />
+          <div className="flex-auto">
+            <label htmlFor="dateRate">Date Rate:</label>
+            <input
+              className="ml-2"
+              id="dateRate"
+              name="dateRate"
+              type="text"
+              value={daytime}
+              readOnly
+            />
+          </div>
+          <div className="ml-2">
+            {" "}
+            {/* Add margin to create space between the two sections */}
+            <label htmlFor="dateRate">Office/Department:</label>
+            <input
+              className="ml-2"
+              id="department"
+              name="department"
+              type="text"
+              value={office}
+              readOnly
+            />
+          </div>
         </div>
       }
       width={isLargeScreen ? "50%" : "80%"}
@@ -155,19 +170,6 @@ const RateModal = ({ isOpen, onClose, id, user_id, isLargeScreen }) => {
     >
       <form onSubmit={onSubmitChange}>
         <div className="relative p-6 flex-auto grid grid-rows-4 grid-cols-5 lg:grid-rows-2 lg:grid-cols-4 gap-4">
-          {/*<div className="col-span-5">
-            <label htmlFor="department" className="text-lg font-semibold">
-              Office/Department
-            </label>
-            <input
-              className="ml-2 bg-gray-300 w-[75%] h-10 rounded-md outline-none p-2 text-base"
-              id="department"
-              name="department"
-              type="text"
-              value={selectedRatings.department}
-              onChange={handleInputChange}
-            />
-    </div> */}
           <div className="col-span-5 lg:col-span-2">
             <label htmlFor="q1" className="text-lg font-semibold ">
               1. Timeless Delivery of Service (Kapaspason sa paghatag og
@@ -323,7 +325,8 @@ RateModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
   user_id: PropTypes.number.isRequired,
-  isLargeScreen: PropTypes.bool.isRequired,
+  isLargeScreen: PropTypes.bool,
+  office: PropTypes.string.isRequired,
 };
 
 export default RateModal;
