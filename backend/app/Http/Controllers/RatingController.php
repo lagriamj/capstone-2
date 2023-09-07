@@ -14,8 +14,11 @@ class RatingController extends Controller
 
     public function indexClosed()
     {
-        $closedRequests = Requests::where('status', 'Closed')->get();
-        return response()->json(['results' => $closedRequests]);
+        $data = DB::table('user_requests')
+            ->select('user_requests.*')
+            ->whereNotIn('status', ['Pending', 'Received', 'On Progress', 'To Release'])
+            ->get();
+        return response()->json(['results' => $data]);
     }
 
     public function closedView($id)

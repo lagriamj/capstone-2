@@ -174,8 +174,8 @@ const ServiceTransaction = () => {
               </div>
             </div>
             <div
-              className={`overflow-auto min-h-[50vh] ${
-                isSingleRequest ? "min-h-[50vh]" : ""
+              className={`overflow-auto h-screen ${
+                isSingleRequest ? "h-screen" : ""
               } rounded-lg w-full`}
             >
               <table className="w-full">
@@ -376,7 +376,11 @@ const ServiceTransaction = () => {
                                 : setting.status === "On Progress"
                                 ? "bg-yellow-500 text-white" // Apply yellow background and white text for Process
                                 : setting.status === "To Release"
-                                ? "bg-green-500 text-white" // Apply green background and white text for Done
+                                ? "bg-green-500 text-white"
+                                : setting.status === "Closed"
+                                ? "bg-gray-800 text-white"
+                                : setting.status === "Cancelled"
+                                ? "bg-red-700 text-white" // Apply green background and white text for Done
                                 : "bg-main text-white" // Default background and text color (if none of the conditions match)
                             }`}
                           >
@@ -388,15 +392,33 @@ const ServiceTransaction = () => {
                         </td>
                         <td className="border-b-2 py-3 border-gray-200 text-center">
                           <div className="flex items-center justify-center gap-1">
-                            <button
-                              onClick={() => openModal(setting)}
-                              className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
-                            >
-                              View
-                            </button>
-                            <button className="text-white text-base bg-yellow-500 py-2 px-4 rounded-lg">
-                              <FontAwesomeIcon icon={faStar} />
-                            </button>
+                            {setting.status === "Cancelled" ? (
+                              <button
+                                className="text-white text-base bg-gray-400 cursor-not-allowed py-2 px-4 rounded-lg"
+                                disabled
+                              >
+                                View
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => openModal(setting)}
+                                className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
+                              >
+                                View
+                              </button>
+                            )}
+                            {setting.status === "Cancelled" ? (
+                              <button
+                                className="text-white text-base bg-gray-400 cursor-not-allowed py-2 px-4 rounded-lg"
+                                disabled
+                              >
+                                <FontAwesomeIcon icon={faStar} />
+                              </button>
+                            ) : (
+                              <button className="text-white text-base bg-yellow-500 py-2 px-4 rounded-lg">
+                                <FontAwesomeIcon icon={faStar} />
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>

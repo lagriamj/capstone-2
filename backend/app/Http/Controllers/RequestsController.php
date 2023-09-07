@@ -13,7 +13,10 @@ class RequestsController extends Controller
     public function index(Request $request)
     {
         $userID = $request->input('user_id');
-        $query = Requests::where('status', '!=', 'Closed');
+        $query = Requests::where('status', '!=', 'Cancelled')
+            ->where('status', '!=', 'Closed');
+
+        
 
         $startDateTime = Carbon::now();
         $startDateTime->setTime(6, 5, 0);
@@ -114,18 +117,21 @@ class RequestsController extends Controller
 
     public function destroy($id)
     {
-        $user = Requests::find($id);
+        $userRequest = Requests::find($id);
 
-        if (!$user) {
+        if (!$userRequest) {
             return response()->json([
-                'message' => 'User not found.'
+                'message' => 'User request not found.'
             ], 404);
         }
 
-        $user->delete();
+        // Update the status to "Cancel"
+        $userRequest->status = 'Cancelled';
+        $userRequest->save();
 
         return response()->json([
-            'message' => 'User deleted successfully.'
+            'message' => 'User request status updated to Cancel successfully.'
         ], 200);
     }
+
 }

@@ -16,7 +16,7 @@ class ReceiveServiceController extends Controller
         $data = DB::table('user_requests')
             ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
             ->select('user_requests.*', 'receive_service.*')
-            ->whereNotIn('user_requests.status', ['Pending', 'Closed'])
+            ->whereNotIn('user_requests.status', ['Pending', 'Closed', 'Cancelled'])
             ->get();
 
         return response()->json(['results' => $data]);

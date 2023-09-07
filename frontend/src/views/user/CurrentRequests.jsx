@@ -2,6 +2,7 @@ import Sidebar from "../../components/Sidebar";
 import DrawerComponent from "../../components/DrawerComponent";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
   faSearch,
   faFilter,
@@ -196,7 +197,7 @@ const CurrentRequests = () => {
   const records = data.slice(firstIndex, lastIndex);
 
   const npage = Math.ceil(data.length / recordsPage);
-  // const numbers = [...Array(npage + 1).keys()].slice(1);
+  //const numbers = [...Array(npage + 1).keys()].slice(1);
 
   const isLargeScreen = windowWidth >= 1024;
   const isWidth1980 = window.innerWidth === 1980;
@@ -435,7 +436,7 @@ const CurrentRequests = () => {
                         key={item.id}
                       >
                         <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
-                          {index + 1}
+                          {firstIndex + index + 1}
                         </td>
                         <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
                           {item.id}
@@ -505,8 +506,8 @@ const CurrentRequests = () => {
                           ) : (
                             <Popconfirm
                               placement="left"
-                              title="Delete the request"
-                              description="Are you sure to delete this request?"
+                              title="Cancel the request"
+                              description="Are you sure to cancel this request?"
                               open={popconfirmVisible[item.id]}
                               icon={
                                 <QuestionCircleOutlined
@@ -530,7 +531,7 @@ const CurrentRequests = () => {
                                 onClick={() => showPopconfirm(item.id)}
                                 className="text-white text-base bg-red-700 py-2 px-4 rounded-lg"
                               >
-                                <FontAwesomeIcon icon={faTrash} />
+                                <FontAwesomeIcon icon={faTimes} />
                               </button>
                             </Popconfirm>
                           )}

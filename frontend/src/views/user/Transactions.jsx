@@ -44,6 +44,9 @@ const Transactions = () => {
     };
   }, []);
 
+  const isLargeScreen = windowWidth >= 1024;
+  const isWidth1980 = window.innerWidth === 1980;
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -119,9 +122,6 @@ const Transactions = () => {
   const npage = Math.ceil(data.length / recordsPage);
   // const numbers = [...Array(npage + 1).keys()].slice(1);
 
-  const isLargeScreen = windowWidth >= 1024;
-  const isWidth1980 = window.innerWidth === 1980;
-
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredRecords = records.filter((item) => {
@@ -143,7 +143,6 @@ const Transactions = () => {
 
     return matchesSearchQuery && matchesModeFilter;
   });
-
   return (
     <HelmetProvider>
       <Helmet>
@@ -193,10 +192,10 @@ const Transactions = () => {
                     <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                       Request ID
                     </th>
-                    <th className="w-28 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-40 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                       Nature of Request
                     </th>
-                    <th className=" w-28 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-40 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                       Assigned To
                     </th>
                     <th className="w-20 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
@@ -246,13 +245,13 @@ const Transactions = () => {
                     <th className="w-20 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                       Status
                     </th>
-                    <th className="lg:w-48 w-36 lg:px-3 px-10 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                       Date of Request
                     </th>
-                    <th className="lg:w-48 w-36 lg:px-3 px-10 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                       Date Updated
                     </th>
-                    <th className="w-56 lg:px-3 px-10 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-56 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                       Action
                     </th>
                   </tr>
@@ -303,8 +302,26 @@ const Transactions = () => {
                         <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
                           {item.modeOfRequest}
                         </td>
-                        <td className="text-center text-lg font-medium whitespace-nowrap">
-                          {item.status}
+                        <td className="text-center text-lg font-medium">
+                          <p
+                            className={` rounded-xl p-2 ${
+                              item.status === "Pending"
+                                ? "bg-red-500 text-white" // Apply red background and white text for Pending
+                                : item.status === "Received"
+                                ? "bg-orange-500 text-white"
+                                : item.status === "On Progress"
+                                ? "bg-yellow-500 text-white" // Apply yellow background and white text for Process
+                                : item.status === "To Release"
+                                ? "bg-green-500 text-white"
+                                : item.status === "Closed"
+                                ? "bg-gray-800 text-white"
+                                : item.status === "Cancelled"
+                                ? "bg-red-700 text-white" // Apply green background and white text for Done
+                                : "bg-main text-white" // Default background and text color (if none of the conditions match)
+                            }`}
+                          >
+                            {item.status}
+                          </p>
                         </td>
                         <td className="text-center text-lg font-medium whitespace-nowrap">
                           {item.dateRequested}
@@ -314,20 +331,38 @@ const Transactions = () => {
                         </td>
                         <td className="border-b-2 py-3 border-gray-200 text-center">
                           <div className="flex items-center justify-center gap-1">
-                            <button
-                              onClick={() => handleViewRequest(item)}
-                              className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
-                            >
-                              View
-                            </button>
-                            <button
-                              onClick={() =>
-                                handleStarIconClick(item.id, item.user_id)
-                              }
-                              className="text-white text-base bg-yellow-500 py-2 px-3 rounded-lg"
-                            >
-                              <FontAwesomeIcon icon={faStar} />
-                            </button>
+                            {item.status === "Cancelled" ? (
+                              <button
+                                className="text-white bg-blue-500 bg-gray-400 cursor-not-allowed font-medium px-3 py-2 rounded-lg"
+                                disabled
+                              >
+                                View
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => handleViewRequest(item)}
+                                className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
+                              >
+                                View
+                              </button>
+                            )}
+                            {item.status === "Cancelled" ? (
+                              <button
+                                className="text-white text-base bg-gray-400 cursor-not-allowed py-2 px-4 rounded-lg"
+                                disabled
+                              >
+                                <FontAwesomeIcon icon={faStar} />
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() =>
+                                  handleStarIconClick(item.id, item.user_id)
+                                }
+                                className="text-white text-base bg-yellow-500 py-2 px-3 rounded-lg"
+                              >
+                                <FontAwesomeIcon icon={faStar} />
+                              </button>
+                            )}
                           </div>
                         </td>
                       </tr>
@@ -341,7 +376,6 @@ const Transactions = () => {
                   onClose={() => setRate(false)}
                   id={selectedID} // Pass the selectedItemId as a prop
                   user_id={selectedUserId} // Pass the selectedUserId as a prop
-                  isLargeScreen={isLargeScreen}
                 />
               )}
 
