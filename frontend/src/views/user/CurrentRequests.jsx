@@ -2,18 +2,21 @@ import Sidebar from "../../components/Sidebar";
 import DrawerComponent from "../../components/DrawerComponent";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import {
   faSearch,
   faFilter,
-  faTrash,
-  faStar,
+  faTimes,
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
 import CurrentRequestModal from "../../components/CurrentRequestModal";
 import { Popconfirm } from "antd";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import {
+  LeftOutlined,
+  QuestionCircleOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 import { message, Skeleton } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
@@ -36,10 +39,12 @@ const CurrentRequests = () => {
 
   const [selectedID, setSelectedID] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedOffice, setSelectedOffice] = useState(null);
 
-  const handleStarIconClick = (id, user_id) => {
+  const handleStarIconClick = (id, user_id, office) => {
     setSelectedID(id);
     setSelectedUserId(user_id);
+    setSelectedOffice(office);
     setUpdateModalVisible(true); // Open the RateModal
   };
 
@@ -137,6 +142,32 @@ const CurrentRequests = () => {
     }, 2000);
   };
 
+  const showPopconfirmInRate = (id) => {
+    setOpen(true);
+    const popconfirmVisibleCopy = [...popconfirmVisible];
+    popconfirmVisibleCopy[id] = true;
+    setPopconfirmVisible(popconfirmVisibleCopy);
+    setTimeout(() => {
+      setOpen(false);
+      setPopconfirmVisible(false);
+    }, 5000);
+  };
+
+  const handleClosed = (item) => {
+    closedRequest(item);
+    handleCancel(item);
+    setTimeout(() => {
+      setOpen(false);
+    }, 2000);
+  };
+
+  const closedRequest = async (id) => {
+    console.log(id);
+    await axios.put(`http://127.0.0.1:8000/api/closedNorate/${id}`);
+    const newUserData = data.filter((item) => item.id !== id);
+    setData(newUserData);
+  };
+
   const handleCancel = (index) => {
     setOpen(false);
     const popconfirmVisibleCopy = [...popconfirmVisible];
@@ -221,6 +252,34 @@ const CurrentRequests = () => {
 
     return matchesSearchQuery && matchesStatusFilter && matchesModeFilter;
   });
+
+  const [pageInput, setPageInput] = useState("");
+
+  const goToPage = () => {
+    const pageNumber = parseInt(pageInput);
+
+    if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= npage) {
+      setCurrentPage(pageNumber);
+      setPageInput(""); // Clear the input field after changing the page
+    } else {
+      // Handle invalid page number input, e.g., show an error message to the user
+      message.error("Invalid page number. Please enter a valid page number.");
+    }
+  };
+
+  const handlePageInputChange = (e) => {
+    setPageInput(e.target.value);
+  };
+
+  const handlePageInputBlur = () => {
+    goToPage(); // Trigger page change when the input field loses focus
+  };
+
+  const handlePageInputKeyPress = (e) => {
+    if (e.key === "Enter") {
+      goToPage(); // Trigger page change when the Enter key is pressed
+    }
+  };
   return (
     <HelmetProvider>
       <Helmet>
@@ -232,7 +291,7 @@ const CurrentRequests = () => {
         } lg:py-5 h-screen`}
       >
         {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
-        <div className="flex flex-col lg:pb-10 bg-gray-200 gap-5 lg:w-full">
+        <div className="flex flex-col lg:pb-10 bg-gray-200 gap-2 lg:w-full">
           <div
             className={`overflow-x-auto ${
               isWidth1980 ? "lg:w-[83%]" : "lg:w-[82%]"
@@ -454,18 +513,22 @@ const CurrentRequests = () => {
                           className={`px-4 py-2 text-base whitespace-nowrap text-center`}
                         >
                           <p
-                            className={` rounded-xl py-2 w-32 ${
+                            className={`rounded-xl py-2 ${
                               item.status === "Pending"
                                 ? "bg-red-500 text-white" // Apply red background and white text for Pending
                                 : item.status === "Received"
-                                ? "bg-orange-500 text-white"
+                                ? "bg-orange-500 text-white" // Apply orange background and white text for Received
                                 : item.status === "On Progress"
-                                ? "bg-yellow-500 text-white" // Apply yellow background and white text for Process
+                                ? "bg-yellow-500 text-white" // Apply yellow background and white text for On Progress
                                 : item.status === "To Release"
-                                ? "bg-green-500 text-white"
+                                ? "bg-green-500 text-white" // Apply green background and white text for To Release
+                                : item.status === "To Rate"
+                                ? "bg-blue-600 text-white" // Apply blue background and white text for To Rate
                                 : item.status === "Closed"
-                                ? "bg-gray-500 text-white" // Apply green background and white text for Done
-                                : "bg-gray-200 text-gray-700" // Default background and text color (if none of the conditions match)
+                                ? "bg-gray-800 text-white" // Apply gray background and white text for Closed
+                                : item.status === "Cancelled"
+                                ? "bg-red-700 text-white" // Apply dark red background and white text for Cancelled
+                                : "bg-main text-white" // Default background and text color (if none of the conditions match)
                             }`}
                           >
                             {item.status}
@@ -478,12 +541,27 @@ const CurrentRequests = () => {
                           {item.dateUpdated}
                         </td>
                         <td className="p-2 text-lg text-gray-700 flex gap-1 items-center justify-center">
-                          <button
-                            onClick={() => handleOpenModalClick(item.id)}
-                            className="text-white text-base font-medium bg-blue-600 py-2 px-4 rounded-lg"
-                          >
-                            View
-                          </button>
+                          {item.status === "To Rate" ? (
+                            <button
+                              className="text-white text-base font-medium bg-gray-800 py-2 px-4 rounded-lg"
+                              onClick={() =>
+                                handleStarIconClick(
+                                  item.id,
+                                  item.user_id,
+                                  item.reqOffice
+                                )
+                              }
+                            >
+                              Rate
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleOpenModalClick(item.id)}
+                              className="text-white text-base font-medium bg-blue-600 py-2 px-4 rounded-lg"
+                            >
+                              View
+                            </button>
+                          )}
 
                           {item.status === "Received" ||
                           item.status === "On Progress" ||
@@ -492,17 +570,39 @@ const CurrentRequests = () => {
                               className="text-white text-base bg-gray-400 cursor-not-allowed py-2 px-4 rounded-lg"
                               disabled
                             >
-                              <FontAwesomeIcon icon={faTrash} />
+                              <FontAwesomeIcon icon={faTimes} />
                             </button>
-                          ) : item.status === "To Release" ? (
-                            <button
-                              onClick={() =>
-                                handleStarIconClick(item.id, item.user_id)
+                          ) : item.status === "To Rate" ? (
+                            <Popconfirm
+                              placement="left"
+                              title="Confirmation"
+                              description="Please confirm this action. This action cannot be undone."
+                              open={popconfirmVisible[item.id]}
+                              icon={
+                                <QuestionCircleOutlined
+                                  style={{ color: "red" }}
+                                />
                               }
-                              className="text-white text-base bg-yellow-500 py-2 px-3 rounded-lg"
+                              onConfirm={() => handleClosed(item.id)}
+                              okButtonProps={{
+                                color: "red",
+                                className:
+                                  "text-black border-1 border-gray-300",
+                                size: "large",
+                              }}
+                              cancelButtonProps={{
+                                size: "large",
+                              }}
+                              onCancel={() => handleCancel(item.id)}
+                              okText="Yes"
                             >
-                              <FontAwesomeIcon icon={faStar} />
-                            </button>
+                              <button
+                                onClick={() => showPopconfirmInRate(item.id)}
+                                className="text-white text-base bg-blue-600 py-2 px-4 rounded-lg"
+                              >
+                                <FontAwesomeIcon icon={faCheck} />
+                              </button>
+                            </Popconfirm>
                           ) : (
                             <Popconfirm
                               placement="left"
@@ -557,6 +657,7 @@ const CurrentRequests = () => {
                   onClose={() => setUpdateModalVisible(false)}
                   id={selectedID} // Pass the selectedItemId as a prop
                   user_id={selectedUserId} // Pass the selectedUserId as a prop
+                  office={selectedOffice}
                 />
               )}
             </div>
@@ -564,7 +665,7 @@ const CurrentRequests = () => {
           <nav
             className={`lg:ml-56 mr-6  ${isWidth1980 ? "lg:mr-10" : "lg:mr-8"}`}
           >
-            <ul className="flex gap-2">
+            <ul className="flex gap-2 items-center">
               <li className="flex-auto ml-10 lg:ml-20 mr-5 text-base font-bold">
                 Page {currentPage} of {npage}
               </li>
@@ -574,8 +675,19 @@ const CurrentRequests = () => {
                   onClick={prePage}
                   className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
                 >
-                  Previous
+                  <LeftOutlined />
                 </a>
+              </li>
+              <li className="flex items-center">
+                <input
+                  type="number"
+                  placeholder="Page"
+                  className="border rounded-lg bg-gray-100 py-2 px-4 text-black w-24  text-center outline-none"
+                  value={pageInput}
+                  onChange={handlePageInputChange}
+                  onBlur={handlePageInputBlur} // Trigger page change when the input field loses focus
+                  onKeyPress={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
+                />
               </li>
               <li>
                 <a
@@ -583,7 +695,7 @@ const CurrentRequests = () => {
                   onClick={nextPage}
                   className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
                 >
-                  Next
+                  <RightOutlined />
                 </a>
               </li>
             </ul>

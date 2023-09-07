@@ -72,6 +72,7 @@ Route::post('to-closed', [ReceiveServiceController::class, 'toReleased']);
 Route::get('closed-transaction', [RatingController::class, 'indexClosed']);
 Route::post('service-rating', [RatingController::class, 'serviceRatings']);
 Route::get('closed-view/{id}', [RatingController::class, 'closedView']);
+Route::put('closedNorate/{id}', [RatingController::class, 'closedNorate']);
 
 Route::get('/users-list', [UserController::class, 'showUsersList']);
 Route::post('/admin/register', [UserController::class, 'register']);

@@ -16,7 +16,7 @@ class RatingController extends Controller
     {
         $data = DB::table('user_requests')
             ->select('user_requests.*')
-            ->whereNotIn('status', ['Pending', 'Received', 'On Progress', 'To Release'])
+            ->whereNotIn('status', ['Pending', 'Received', 'On Progress', 'To Release', 'To Rate'])
             ->get();
         return response()->json(['results' => $data]);
     }
@@ -85,5 +85,19 @@ class RatingController extends Controller
                 'status' => 'Closed',
             ]);
         return response()->json($users, 201);
+    }
+
+    public function closedNorate($id)
+    {
+        $request = Requests::find($id);
+
+        if (!$request) {
+            return response()->json(['error' => 'Request not found'], 404);
+        }
+
+        $request->status = 'Closed';
+        $request->save();
+
+        return response()->json(['message' => 'Request has been closed']);
     }
 }

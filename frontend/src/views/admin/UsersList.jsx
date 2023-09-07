@@ -11,7 +11,11 @@ import Box from "@mui/material/Box";
 import AddIcon from "@mui/icons-material/Add";
 import AddUserModal from "../../components/AddUserModal";
 import UpdateUserModal from "../../components/UpdateUserModal";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import {
+  LeftOutlined,
+  QuestionCircleOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 
 const UsersList = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -175,6 +179,34 @@ const UsersList = () => {
     }
   };
 
+  const [pageInput, setPageInput] = useState("");
+
+  const goToPage = () => {
+    const pageNumber = parseInt(pageInput);
+
+    if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= npage) {
+      setCurrentPage(pageNumber);
+      setPageInput(""); // Clear the input field after changing the page
+    } else {
+      // Handle invalid page number input, e.g., show an error message to the user
+      message.error("Invalid page number. Please enter a valid page number.");
+    }
+  };
+
+  const handlePageInputChange = (e) => {
+    setPageInput(e.target.value);
+  };
+
+  const handlePageInputBlur = () => {
+    goToPage(); // Trigger page change when the input field loses focus
+  };
+
+  const handlePageInputKeyPress = (e) => {
+    if (e.key === "Enter") {
+      goToPage(); // Trigger page change when the Enter key is pressed
+    }
+  };
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -244,9 +276,10 @@ const UsersList = () => {
             onCancel={() => setUpdateUserModalVisible(false)}
             onOk={() => setUpdateUserModalVisible(false)}
             userData={selectedUserForUpdate}
+            isLargeScreen={isLargeScreen}
           />
         )}
-        <div className="flex flex-col lg:pb-10 bg-gray-200 gap-5 lg:w-full">
+        <div className="flex flex-col lg:pb-10 bg-gray-200 gap-2 lg:w-full">
           <div
             className={`overflow-x-auto ${
               isWidth1980 ? "lg:w-[83%]" : "lg:w-[82%]"
@@ -482,8 +515,8 @@ const UsersList = () => {
             </div>
           </div>
           <nav className="mr-auto lg:ml-56">
-            <ul className="flex gap-2">
-              <li className="flex-auto ml-10 lg:ml-20 mr-5">
+            <ul className="flex gap-2 items-center">
+              <li className="flex-auto ml-10 lg:ml-20 mr-2">
                 Page {currentPage} of {npage}
               </li>
               <li>
@@ -492,8 +525,19 @@ const UsersList = () => {
                   onClick={prePage}
                   className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
                 >
-                  Previous
+                  <LeftOutlined />
                 </a>
+              </li>
+              <li className="flex items-center">
+                <input
+                  type="number"
+                  placeholder="Page"
+                  className="border rounded-lg bg-gray-100 py-2 px-4 text-black w-24  text-center outline-none"
+                  value={pageInput}
+                  onChange={handlePageInputChange}
+                  onBlur={handlePageInputBlur} // Trigger page change when the input field loses focus
+                  onKeyPress={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
+                />
               </li>
               <li>
                 <a
@@ -501,7 +545,7 @@ const UsersList = () => {
                   onClick={nextPage}
                   className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
                 >
-                  Next
+                  <RightOutlined />
                 </a>
               </li>
             </ul>

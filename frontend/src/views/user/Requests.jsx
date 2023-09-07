@@ -298,21 +298,7 @@ const Requests = () => {
                 }}
               />
             </div>
-            <div className="flex flex-col lg:w-1/4 ">
-              <label htmlFor="authorizedBy" className="font-semibold text-lg ">
-                Authorized By:
-              </label>
-              <input
-                required
-                type="text"
-                id="authorizedBy"
-                name="authorizedBy"
-                className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                onChange={(e) => {
-                  changeUserFieldHandler(e);
-                }}
-              />
-            </div>
+
             <div className="flex flex-col lg:w-1/4 ">
               <label htmlFor="dateProcured" className="font-semibold text-lg ">
                 Date Procured:
@@ -322,6 +308,21 @@ const Requests = () => {
                 type="date"
                 id="dateProcured"
                 name="dateProcured"
+                className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                onChange={(e) => {
+                  changeUserFieldHandler(e);
+                }}
+              />
+            </div>
+            <div className="flex flex-col lg:w-1/4 ">
+              <label htmlFor="authorizedBy" className="font-semibold text-lg ">
+                Authorized By:
+              </label>
+              <input
+                required
+                type="text"
+                id="authorizedBy"
+                name="authorizedBy"
                 className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
                 onChange={(e) => {
                   changeUserFieldHandler(e);

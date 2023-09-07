@@ -9,9 +9,13 @@ import ReleasedModal from "../../components/ReleasedModal";
 //import ClosedModal from "../../components/ClosedModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Skeleton } from "antd";
+import { Skeleton, message } from "antd";
 import { Popconfirm } from "antd";
-import { QuestionCircleOutlined } from "@ant-design/icons";
+import {
+  LeftOutlined,
+  QuestionCircleOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 
 const ServiceTask = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -194,6 +198,34 @@ const ServiceTask = () => {
     return matchesSearchQuery && matchesStatusFilter && matchesModeFilter;
   });
 
+  const [pageInput, setPageInput] = useState("");
+
+  const goToPage = () => {
+    const pageNumber = parseInt(pageInput);
+
+    if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= npage) {
+      setCurrentPage(pageNumber);
+      setPageInput(""); // Clear the input field after changing the page
+    } else {
+      // Handle invalid page number input, e.g., show an error message to the user
+      message.error("Invalid page number. Please enter a valid page number.");
+    }
+  };
+
+  const handlePageInputChange = (e) => {
+    setPageInput(e.target.value);
+  };
+
+  const handlePageInputBlur = () => {
+    goToPage(); // Trigger page change when the input field loses focus
+  };
+
+  const handlePageInputKeyPress = (e) => {
+    if (e.key === "Enter") {
+      goToPage(); // Trigger page change when the Enter key is pressed
+    }
+  };
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -205,7 +237,7 @@ const ServiceTask = () => {
         } lg:py-5 h-screen`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
-        <div className="flex flex-col lg:pb-10 bg-gray-200 gap-5 lg:w-full">
+        <div className="flex flex-col lg:pb-10 bg-gray-200 gap-2 lg:w-full">
           <div
             className={`overflow-x-auto ${
               isWidth1980 ? "lg:w-[83%]" : "lg:w-[82%]"
@@ -424,16 +456,22 @@ const ServiceTask = () => {
                         </td>
                         <td className="border-b-2 py-3 border-gray-200 text-center">
                           <p
-                            className={` rounded-xl py-2 ${
+                            className={`rounded-xl py-2 ${
                               setting.status === "Pending"
                                 ? "bg-red-500 text-white" // Apply red background and white text for Pending
                                 : setting.status === "Received"
-                                ? "bg-orange-500 text-white"
+                                ? "bg-orange-500 text-white" // Apply orange background and white text for Received
                                 : setting.status === "On Progress"
-                                ? "bg-yellow-500 text-white" // Apply yellow background and white text for Process
+                                ? "bg-yellow-500 text-white" // Apply yellow background and white text for On Progress
                                 : setting.status === "To Release"
-                                ? "bg-green-500 text-white" // Apply green background and white text for Done
-                                : "bg-gray-200 text-gray-700" // Default background and text color (if none of the conditions match)
+                                ? "bg-green-500 text-white" // Apply green background and white text for To Release
+                                : setting.status === "To Rate"
+                                ? "bg-blue-500 text-white" // Apply blue background and white text for To Rate
+                                : setting.status === "Closed"
+                                ? "bg-gray-800 text-white" // Apply gray background and white text for Closed
+                                : setting.status === "Cancelled"
+                                ? "bg-red-700 text-white" // Apply dark red background and white text for Cancelled
+                                : "bg-main text-white" // Default background and text color (if none of the conditions match)
                             }`}
                           >
                             {setting.status}
@@ -521,7 +559,7 @@ const ServiceTask = () => {
           <nav
             className={`lg:ml-56 mr-6  ${isWidth1980 ? "lg:mr-10" : "lg:mr-8"}`}
           >
-            <ul className="flex gap-2">
+            <ul className="flex gap-2 items-center">
               <li className="flex-auto ml-10 lg:ml-20 mr-5 text-base font-bold">
                 Page {currentPage} of {npage}
               </li>
@@ -531,8 +569,19 @@ const ServiceTask = () => {
                   onClick={prePage}
                   className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
                 >
-                  Previous
+                  <LeftOutlined />
                 </a>
+              </li>
+              <li className="flex items-center">
+                <input
+                  type="number"
+                  placeholder="Page"
+                  className="border rounded-lg bg-gray-100 py-2 px-4 text-black w-24  text-center outline-none"
+                  value={pageInput}
+                  onChange={handlePageInputChange}
+                  onBlur={handlePageInputBlur} // Trigger page change when the input field loses focus
+                  onKeyPress={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
+                />
               </li>
               <li>
                 <a
@@ -540,7 +589,7 @@ const ServiceTask = () => {
                   onClick={nextPage}
                   className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
                 >
-                  Next
+                  <RightOutlined />
                 </a>
               </li>
             </ul>

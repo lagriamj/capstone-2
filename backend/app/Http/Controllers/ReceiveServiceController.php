@@ -211,7 +211,7 @@ class ReceiveServiceController extends Controller
             ->where('id', $request->input('request_id'))
             ->update([
                 'dateUpdated' => now(),
-                'status' => 'Closed',
+                'status' => 'To Rate',
             ]);
 
         $data = ReleaseRequests::create($validatedData);

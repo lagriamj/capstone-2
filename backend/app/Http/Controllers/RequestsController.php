@@ -16,7 +16,7 @@ class RequestsController extends Controller
         $query = Requests::where('status', '!=', 'Cancelled')
             ->where('status', '!=', 'Closed');
 
-        
+
 
         $startDateTime = Carbon::now();
         $startDateTime->setTime(6, 5, 0);
@@ -133,5 +133,4 @@ class RequestsController extends Controller
             'message' => 'User request status updated to Cancel successfully.'
         ], 200);
     }
-
 }
