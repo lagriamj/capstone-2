@@ -39,6 +39,7 @@ Route::put('/update-phone', [UserController::class, 'updatePhoneNumber']);
 
 // user 
 Route::get('current-request', [RequestsController::class, 'index']);
+Route::get('/getOfficeAndDivision/{userID}', [RequestsController::class, 'getOfficeAndDivision']);
 Route::get('users/{id}', [RequestsController::class, 'show']);
 Route::post('service-request', [RequestsController::class, 'store']);
 Route::put('requestupdate/{id}', [RequestsController::class, 'update']);
@@ -64,8 +65,11 @@ Route::get('closed-transactions', [ReceiveServiceController::class, 'closedTrans
 Route::get('for-released', [RatingController::class, 'shesh']);
 Route::post('received-request', [ReceiveServiceController::class, 'store']);
 Route::put('serviced/{id}', [ReceiveServiceController::class, 'updateReceiveService']);
-Route::delete('delete-received/{id}', [ReceiveServiceController::class, 'destroyReceiveService']);
-Route::delete('delete-serviced/{id}/{reqID}', [ReceiveServiceController::class, 'destroySeviceTask']);
+
+Route::put('delete-received/{id}', [ReceiveServiceController::class, 'destroyPendingService']);
+Route::put('delete-serviced/{id}/{reqID}', [ReceiveServiceController::class, 'destroyReceiveTask']);
+
+
 Route::put('to-release/{id}', [ReceiveServiceController::class, 'updateReceiveToRelease']);
 Route::post('to-closed', [ReceiveServiceController::class, 'toReleased']);
 

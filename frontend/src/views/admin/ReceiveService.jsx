@@ -84,7 +84,7 @@ const ReceiveService = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/delete-received/${id}`);
+      await axios.put(`http://127.0.0.1:8000/api/delete-received/${id}`);
       const newUserData = data.filter((item) => item.id !== id);
       setData(newUserData);
     } catch (error) {
@@ -292,8 +292,8 @@ const ReceiveService = () => {
                           </button>
                           <Popconfirm
                             placement="left"
-                            title="Delete the request"
-                            description="Are you sure to delete this request?"
+                            title="Confirmation"
+                            description="Please confirm this action. This action cannot be undone."
                             open={popconfirmVisible[setting.id]}
                             icon={
                               <QuestionCircleOutlined

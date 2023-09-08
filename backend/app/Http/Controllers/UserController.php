@@ -20,6 +20,8 @@ class UserController extends Controller
         $request->validate([
             'userFirstName' => 'required',
             'userLastName' => 'required',
+            'office' => 'required',
+            'division' => 'required',
             'userGovernmentID' => 'required|unique:users',
             'userEmail' => 'required|email|unique:users',
             'userContactNumber' => 'required|min:11',
@@ -34,6 +36,8 @@ class UserController extends Controller
         $user->userFirstName = $request->userFirstName;
         $user->userLastName = $request->userLastName;
         $user->userGovernmentID = $request->userGovernmentID;
+        $user->office = $request->office;
+        $user->division = $request->division;
         $user->userEmail = $request->userEmail;
         $user->userContactNumber = $request->userContactNumber;
 

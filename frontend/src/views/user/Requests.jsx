@@ -15,13 +15,14 @@ import { Button } from "antd";
 const Requests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const isLargeScreen = windowWidth >= 1024;
-  const { userID } = useAuth();
   const { setActiveTab } = useActiveTab();
   const [loading, setLoading] = useState(false);
   const [selectedNatureOfRequest, setSelectedNatureOfRequest] = useState(null);
   const [selectedModeOfRequest, setSelectedModeOfRequest] = useState(null);
+  const [office, setOffice] = useState("");
+  const [division, setDivision] = useState("");
+  const { userID, fullName } = useAuth();
   console.log("userID:", userID);
-  const { fullName } = useAuth();
 
   useEffect(() => {
     const handleResize = () => {
@@ -35,6 +36,18 @@ const Requests = () => {
     };
   }, []);
 
+  useEffect(() => {
+    axios
+      .get(`http://127.0.0.1:8000/api/getOfficeAndDivision/${userID}`)
+      .then((response) => {
+        setOffice(response.data.office);
+        setDivision(response.data.division);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [userID]);
+
   const navigate = useNavigate();
   const options = {
     year: "numeric",
@@ -45,8 +58,13 @@ const Requests = () => {
     hour12: true,
   };
 
-  const daytime = new Date().toLocaleString(undefined, options);
+  const formOffice = office;
+  const formDivision = division;
 
+  console.log(`the data: ${formOffice + formDivision}`);
+
+  const daytime = new Date().toLocaleString(undefined, options);
+  console.log(`OFFICE AND DIVISION: ${office + division}`);
   const [formData, setFormData] = useState({
     user_id: userID,
     fullName: fullName,
@@ -71,6 +89,8 @@ const Requests = () => {
     });
     console.log(formData);
   };
+
+  console.log(formData);
 
   const handleNewActiveTab = () => {
     setActiveTab("current-requests");
@@ -140,6 +160,8 @@ const Requests = () => {
     { value: "Online", label: "Online" },
   ];
 
+  console.log(office + division);
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -165,7 +187,8 @@ const Requests = () => {
                 type="text"
                 id="reqOffice"
                 name="reqOffice"
-                required
+                value={office}
+                readOnly
                 className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
                 onChange={(e) => {
                   changeUserFieldHandler(e);
@@ -180,7 +203,8 @@ const Requests = () => {
                 type="text"
                 id="division"
                 name="division"
-                required
+                value={division}
+                readOnly
                 className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
                 onChange={(e) => {
                   changeUserFieldHandler(e);

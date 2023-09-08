@@ -21,6 +21,8 @@ class User extends Authenticatable
         'userFirstName',
         'userLastName',
         'userGovernmentID',
+        'office',
+        'division',
         'userEmail',
         'userContactNumber',
         'userPassword',
@@ -50,7 +52,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'otpExpiration' => 'datetime',
-        'dateRegistered' => 'datetime', 
+        'dateRegistered' => 'datetime',
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];

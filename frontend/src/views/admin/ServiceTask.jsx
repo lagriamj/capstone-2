@@ -6,6 +6,7 @@ import axios from "axios";
 import ServiceTaskModal from "../../components/ServiceTaskModal";
 import ServiceReleaseModal from "../../components/ServiceReleaseModal";
 import ReleasedModal from "../../components/ReleasedModal";
+import ClosedModal from "../../components/ClosedModal";
 //import ClosedModal from "../../components/ClosedModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -36,6 +37,8 @@ const ServiceTask = () => {
       setModalType("ServiceToRelease");
     } else if (data.status === "To Release") {
       setModalType("ServiceReleased");
+    } else if (data.status === "To Rate") {
+      setModalType("ServiceClosed");
     }
     setModalOpen(true);
   };
@@ -95,7 +98,7 @@ const ServiceTask = () => {
 
   const handleDelete = async (id, reqID) => {
     try {
-      await axios.delete(
+      await axios.put(
         `http://127.0.0.1:8000/api/delete-serviced/${id}/${reqID}`
       );
       const newUserData = data.filter((item) => item.id !== id);
@@ -482,16 +485,25 @@ const ServiceTask = () => {
                         </td>
                         <td className="border-b-2 py-3 border-gray-200 text-center">
                           <div className="flex items-center justify-center gap-1">
-                            <button
-                              className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
-                              onClick={() => openModal(setting)}
-                            >
-                              Update
-                            </button>
+                            {setting.status === "To Rate" ? (
+                              <button
+                                className="text-white bg-blue-500 font-medium px-6 py-2 rounded-lg"
+                                onClick={() => openModal(setting)}
+                              >
+                                View
+                              </button>
+                            ) : (
+                              <button
+                                className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
+                                onClick={() => openModal(setting)}
+                              >
+                                Update
+                              </button>
+                            )}
                             <Popconfirm
                               placement="left"
-                              title="Delete the request"
-                              description="Are you sure to delete this request?"
+                              title="Confirmation"
+                              description="Please confirm this action. This action cannot be undone."
                               open={popconfirmVisible[setting.id]}
                               icon={
                                 <QuestionCircleOutlined
@@ -551,6 +563,14 @@ const ServiceTask = () => {
                   isOpen={isModalOpen}
                   onClose={closeModal}
                   data={selectedData}
+                  refreshData={fetchData}
+                />
+              )}
+              {modalType === "ServiceClosed" && (
+                <ClosedModal
+                  isOpen={isModalOpen}
+                  onClose={closeModal}
+                  datas={selectedData}
                   refreshData={fetchData}
                 />
               )}

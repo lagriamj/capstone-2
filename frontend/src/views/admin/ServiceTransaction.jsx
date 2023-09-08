@@ -378,7 +378,7 @@ const ServiceTransaction = () => {
                     filteredRecords.map((setting, index) => (
                       <tr key={setting.id}>
                         <td className="border-b-2 py-3 border-gray-200 text-center">
-                          {index + 1}
+                          {firstIndex + index + 1}
                         </td>
                         <td className="border-b-2 py-3 border-gray-200 text-center">
                           {setting.id}

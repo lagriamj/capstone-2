@@ -152,7 +152,7 @@ class ReceiveServiceController extends Controller
         return response()->json(['data' => $record], 200);
     }
 
-    public function destroyReceiveService($id)
+    public function destroyPendingService($id)
     {
         $user = Requests::find($id);
 
@@ -162,14 +162,16 @@ class ReceiveServiceController extends Controller
             ], 404);
         }
 
-        $user->delete();
+        if ($user) {
+            $user->update(['status' => 'Cancelled']);
+        }
 
         return response()->json([
             'message' => 'User deleted successfully.'
         ], 200);
     }
 
-    public function destroySeviceTask($id, $request_id)
+    public function destroyReceiveTask($id, $request_id)
     {
         $receivedID = ReceiveService::find($id);
         $requestID = Requests::find($request_id);
@@ -180,14 +182,18 @@ class ReceiveServiceController extends Controller
             ], 404);
         }
 
-        $receivedID->delete();
-        $requestID->delete();
-
+        // Update the status of the request to "Cancelled"
+        if ($requestID) {
+            $requestID->update(['status' => 'Cancelled']);
+        }
 
         return response()->json([
             'message' => 'User deleted successfully.'
         ], 200);
     }
+
+
+
 
     public function toReleased(Request $request)
     {

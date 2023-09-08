@@ -18,6 +18,7 @@ const Transactions = () => {
   const [rate, setRate] = useState(false);
   const [selectedID, setSelectedID] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedOffice, setSelectedOffice] = useState(null);
 
   const [view, setView] = useState(false);
   const [viewRequest, seViewRequest] = useState(false);
@@ -27,9 +28,11 @@ const Transactions = () => {
     setView(true);
   };
 
-  const handleStarIconClick = (id, user_id) => {
+  const handleStarIconClick = (id, user_id, office) => {
     setSelectedID(id);
     setSelectedUserId(user_id);
+    setSelectedOffice(office);
+    handleRatings(id);
     setRate(true); // Open the RateModal
   };
 
@@ -71,6 +74,16 @@ const Transactions = () => {
       console.error("Error fetching utility settings:", error);
       setIsFetchingData(false);
     }
+  };
+
+  const [ratings, setRatings] = useState([]);
+
+  const handleRatings = async (id) => {
+    console.log(id);
+    const response = await axios.get(
+      `http://127.0.0.1:8000/api/closed-view/${id}`
+    );
+    setRatings(response.data.results);
   };
 
   //const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
@@ -172,6 +185,20 @@ const Transactions = () => {
       goToPage(); // Trigger page change when the Enter key is pressed
     }
   };
+
+  // eslint-disable-next-line no-unused-vars
+  const [rateView, setRateView] = useState(null);
+
+  useEffect(() => {
+    // Check if any rating in the array has a non-null dateRate
+    const hasNonNullDateRate = ratings.some(
+      (rating) => rating.dateRate !== null
+    );
+
+    // Set the rateView state based on the condition
+    setRateView(hasNonNullDateRate);
+  }, [ratings]); // Make sure to include ratings in the dependency array
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -317,7 +344,7 @@ const Transactions = () => {
                         key={item.id}
                       >
                         <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
-                          {index + 1}
+                          {firstIndex + index + 1}
                         </td>
                         <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
                           {item.id}
@@ -375,6 +402,7 @@ const Transactions = () => {
                                 View
                               </button>
                             )}
+
                             {item.status === "Cancelled" ? (
                               <button
                                 className="text-white text-base bg-gray-400 cursor-not-allowed py-2 px-4 rounded-lg"
@@ -385,7 +413,11 @@ const Transactions = () => {
                             ) : (
                               <button
                                 onClick={() =>
-                                  handleStarIconClick(item.id, item.user_id)
+                                  handleStarIconClick(
+                                    item.id,
+                                    item.user_id,
+                                    item.reqOffice
+                                  )
                                 }
                                 className="text-white text-base bg-yellow-500 py-2 px-3 rounded-lg"
                               >
@@ -405,6 +437,7 @@ const Transactions = () => {
                   onClose={() => setRate(false)}
                   id={selectedID} // Pass the selectedItemId as a prop
                   user_id={selectedUserId} // Pass the selectedUserId as a prop
+                  office={selectedOffice}
                 />
               )}
 

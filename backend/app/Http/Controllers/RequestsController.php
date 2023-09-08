@@ -133,4 +133,22 @@ class RequestsController extends Controller
             'message' => 'User request status updated to Cancel successfully.'
         ], 200);
     }
+
+    public function getOfficeAndDivision($userID)
+    {
+
+        $user = User::find($userID);
+
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $userData = [
+            'office' => $user->office,
+            'division' => $user->division,
+        ];
+
+        return response()->json($userData);
+    }
 }
