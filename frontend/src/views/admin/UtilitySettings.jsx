@@ -80,6 +80,7 @@ const [selectedCategoryId, setSelectedCategoryId] = useState(null); */
               label="Office/Department"
               style={{ fontSize: "0.875rem", lineHeight: "1.25rem" }}
             />
+            <Tab label="Categories" />
             <Tab label="Computer Parts" />
             <Tab label="Technician" />
           </Tabs>

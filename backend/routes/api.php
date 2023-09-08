@@ -82,3 +82,9 @@ Route::get('/users-list', [UserController::class, 'showUsersList']);
 Route::post('/admin/register', [UserController::class, 'register']);
 Route::put('/admin/updateUser', [UserController::class, 'update']);
 Route::delete('/delete-user/{id}', [UserController::class, 'deleteUser']);
+
+//Office or Department in Utility Setting (admin side)
+Route::get('office-list', [UtilitySettingController::class, 'showOffice']);
+Route::post('add-office', [UtilitySettingController::class, 'addOffice']);
+Route::put('update-office', [UtilitySettingController::class, 'updateOffice']);
+Route::delete('delete-office/{id}', [UtilitySettingController::class, 'destroyOffice']);

@@ -2,15 +2,37 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { useState } from "react";
-import { Button, Input, Modal, Form } from "antd";
+import { useState, useEffect } from "react";
+import { Button, Input, Modal, Form, Popconfirm } from "antd";
 import axios from "axios";
+import { QuestionCircleOutlined } from "@ant-design/icons";
+import UpdateDepertmentModal from "./UpdateDepertmentModal";
 
 const OfficeDepartment = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
+  const [departments, setDepartments] = useState([]);
 
+  // start fetch office or deparment
+  useEffect(() => {
+    fetchDepartments();
+  }, []);
+
+  const fetchDepartments = () => {
+    axios
+      .get("http://127.0.0.1:8000/api/office-list")
+      .then((response) => {
+        setDepartments(response.data.results);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  // end fetch office or deparment
+
+  // start add office or deparment
   const showModal = () => {
+    form.resetFields();
     setIsModalVisible(true);
   };
 
@@ -18,16 +40,14 @@ const OfficeDepartment = () => {
     form
       .validateFields()
       .then((values) => {
-        // Send a POST request to your Laravel API
         axios
-          .post("/api/your-endpoint", values)
+          .post("http://127.0.0.1:8000/api/add-office", values)
           .then((response) => {
-            // Handle the response (e.g., show a success message)
             console.log(response.data);
             setIsModalVisible(false);
+            fetchDepartments();
           })
           .catch((error) => {
-            // Handle errors (e.g., show an error message)
             console.error(error);
           });
       })
@@ -37,8 +57,33 @@ const OfficeDepartment = () => {
   };
 
   const handleCancel = () => {
-    form.resetFields(); // Reset the form fields when closing the modal
+    form.resetFields();
     setIsModalVisible(false);
+  };
+  // end add office or deparment
+
+  // start delete office or deparment
+  const handleDelete = (id) => {
+    axios
+      .delete(`http://127.0.0.1:8000/api/delete-office/${id}`)
+      .then((response) => {
+        console.log(response.data);
+        fetchDepartments();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const [isUpdateDepartmentModalVisible, setUpdateDepartmentModalVisible] =
+    useState(false);
+  const [selectedDepartmentForUpdate, setSelectedDepartmentForUpdate] =
+    useState(null);
+
+  const openUpdateDepartmentModal = (department) => {
+    setSelectedDepartmentForUpdate(department);
+    setUpdateDepartmentModalVisible(true);
+    console.log(selectedDepartmentForUpdate);
   };
 
   return (
@@ -82,27 +127,53 @@ const OfficeDepartment = () => {
             </tr>
           </thead>
           <tbody>
-            <tr className="border-b-2 border-gray-200 h-auto overflow-auto">
-              <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
-                1
-              </td>
-              <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
-                CITC
-              </td>
-              <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
-                Charo Santos
-              </td>
-              <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
-                <div className="flex items-center justify-center">
-                  <button className="text-white text-base font-medium bg-blue-600 py-2 px-4 rounded-lg">
-                    View
-                  </button>
-                  <button className="ml-1 text-white bg-red-700 rounded-lg px-3 py-2 text-lg font-medium">
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
-                </div>
-              </td>
-            </tr>
+            {departments.map((department, index) => (
+              <tr
+                key={department.id}
+                className="border-b-2 border-gray-200 h-auto overflow-auto"
+              >
+                <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
+                  {index + 1}
+                </td>
+                <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
+                  {department.office}
+                </td>
+                <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
+                  {department.head}
+                </td>
+                <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
+                  <div className="flex items-center justify-center">
+                    <button
+                      className="text-white text-base font-medium bg-blue-600 py-2 px-4 rounded-lg"
+                      onClick={() => openUpdateDepartmentModal(department)}
+                    >
+                      Update
+                    </button>
+                    <Popconfirm
+                      title="Confirmation"
+                      description="Confirm deleting?. This action cannot be undone."
+                      onConfirm={() => handleDelete(department.id)}
+                      okText="Yes"
+                      cancelText="No"
+                      placement="left"
+                      icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                      okButtonProps={{
+                        className: "border-2 border-gray-200 text-black",
+                        size: "large",
+                      }}
+                      cancelButtonProps={{
+                        className: "border-2 border-gray-200 text-black",
+                        size: "large",
+                      }}
+                    >
+                      <button className="ml-1 text-white bg-red-700 rounded-lg px-3 py-2 text-lg font-medium">
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </Popconfirm>
+                  </div>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -195,6 +266,16 @@ const OfficeDepartment = () => {
           </div>
         </Form>
       </Modal>
+      {/* Update Modal */}
+      {isUpdateDepartmentModalVisible && selectedDepartmentForUpdate && (
+        <UpdateDepertmentModal
+          isOpen={isUpdateDepartmentModalVisible}
+          onCancel={() => setUpdateDepartmentModalVisible(false)}
+          onUpdate={() => setUpdateDepartmentModalVisible(false)}
+          departmentData={selectedDepartmentForUpdate}
+          refreshData={() => fetchDepartments()}
+        />
+      )}
     </div>
   );
 };
