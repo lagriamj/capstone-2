@@ -73,7 +73,7 @@ Route::put('delete-serviced/{id}/{reqID}', [ReceiveServiceController::class, 'de
 Route::put('to-release/{id}', [ReceiveServiceController::class, 'updateReceiveToRelease']);
 Route::post('to-closed', [ReceiveServiceController::class, 'toReleased']);
 
-Route::get('closed-transaction', [RatingController::class, 'indexClosed']);
+Route::get('closed-transaction/{id}', [RatingController::class, 'indexClosed']);
 Route::post('service-rating', [RatingController::class, 'serviceRatings']);
 Route::get('closed-view/{id}', [RatingController::class, 'closedView']);
 Route::put('closedNorate/{id}', [RatingController::class, 'closedNorate']);

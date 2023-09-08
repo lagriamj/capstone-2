@@ -320,6 +320,12 @@ const UsersList = () => {
                     <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                       Name
                     </th>
+                    <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                      Office
+                    </th>
+                    <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                      Division
+                    </th>
                     <th className="w-52 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                       Email
                     </th>
@@ -459,6 +465,12 @@ const UsersList = () => {
                         </td>
                         <td className=" border-b-2 py-3 whitespace-nowrap border-gray-200 text-center">
                           {`${record.userFirstName} ${record.userLastName}`}
+                        </td>
+                        <td className="border-b-2 py-3 whitespace-nowrap border-gray-200 text-center">
+                          {!record.office ? "Null" : record.office}
+                        </td>
+                        <td className="border-b-2 py-3 whitespace-nowrap border-gray-200 text-center">
+                          {!record.division ? "Null" : record.division}
                         </td>
                         <td className="border-b-2 py-3 whitespace-nowrap border-gray-200 text-center">
                           {record.userEmail}

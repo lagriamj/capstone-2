@@ -12,11 +12,12 @@ use Illuminate\Support\Facades\DB;
 class RatingController extends Controller
 {
 
-    public function indexClosed()
+    public function indexClosed($id)
     {
         $data = DB::table('user_requests')
             ->select('user_requests.*')
             ->whereNotIn('status', ['Pending', 'Received', 'On Progress', 'To Release', 'To Rate'])
+            ->where('user_id', $id)
             ->get();
         return response()->json(['results' => $data]);
     }

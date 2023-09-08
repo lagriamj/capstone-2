@@ -9,6 +9,7 @@ import axios from "axios";
 import { Skeleton, message } from "antd";
 import ClosedModal from "../../components/ClosedModal";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { useAuth } from "../../AuthContext";
 
 const Transactions = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -19,7 +20,7 @@ const Transactions = () => {
   const [selectedID, setSelectedID] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedOffice, setSelectedOffice] = useState(null);
-
+  const { userID } = useAuth();
   const [view, setView] = useState(false);
   const [viewRequest, seViewRequest] = useState(false);
 
@@ -59,7 +60,7 @@ const Transactions = () => {
     setIsFetchingData(true);
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/closed-transaction"
+        `http://127.0.0.1:8000/api/closed-transaction/${userID}`
       );
       if (response.status === 200) {
         setData(response.data.results);

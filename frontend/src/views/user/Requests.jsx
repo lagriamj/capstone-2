@@ -42,6 +42,13 @@ const Requests = () => {
       .then((response) => {
         setOffice(response.data.office);
         setDivision(response.data.division);
+
+        // Set the values of formOffice and formDivision in formData
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          reqOffice: response.data.office,
+          division: response.data.division,
+        }));
       })
       .catch((error) => {
         console.log(error);
@@ -61,10 +68,7 @@ const Requests = () => {
   const formOffice = office;
   const formDivision = division;
 
-  console.log(`the data: ${formOffice + formDivision}`);
-
   const daytime = new Date().toLocaleString(undefined, options);
-  console.log(`OFFICE AND DIVISION: ${office + division}`);
   const [formData, setFormData] = useState({
     user_id: userID,
     fullName: fullName,
@@ -89,8 +93,6 @@ const Requests = () => {
     });
     console.log(formData);
   };
-
-  console.log(formData);
 
   const handleNewActiveTab = () => {
     setActiveTab("current-requests");
@@ -120,6 +122,8 @@ const Requests = () => {
       setLoading(false);
     }
   };
+
+  console.log("data", formData);
 
   const [data, setData] = useState([]);
 
@@ -187,28 +191,22 @@ const Requests = () => {
                 type="text"
                 id="reqOffice"
                 name="reqOffice"
-                value={office}
+                value={formOffice}
                 readOnly
                 className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                onChange={(e) => {
-                  changeUserFieldHandler(e);
-                }}
               />
             </div>
             <div className="flex flex-col lg:w-1/4 ">
               <label htmlFor="division" className="font-semibold text-lg ">
-                Division:{" "}
+                Division:
               </label>
               <input
                 type="text"
                 id="division"
                 name="division"
-                value={division}
+                value={formDivision}
                 readOnly
                 className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                onChange={(e) => {
-                  changeUserFieldHandler(e);
-                }}
               />
             </div>
             <div className="flex flex-col lg:w-1/4 ">
@@ -219,9 +217,6 @@ const Requests = () => {
                 required
                 value={daytime}
                 className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                onChange={(e) => {
-                  changeUserFieldHandler(e);
-                }}
                 readOnly
               />
             </div>

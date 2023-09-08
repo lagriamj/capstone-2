@@ -100,6 +100,24 @@ const UpdateUserModal = ({
           </Col>
           <Col span={`${isLargeScreen ? 12 : 24}`}>
             <Form.Item
+              name="office"
+              label="Office"
+              rules={[{ required: true, message: "Please enter the office" }]}
+            >
+              <Input size="large" />
+            </Form.Item>
+          </Col>
+          <Col span={`${isLargeScreen ? 12 : 24}`}>
+            <Form.Item
+              name="division"
+              label="Division"
+              rules={[{ required: true, message: "Please enter the division" }]}
+            >
+              <Input size="large" />
+            </Form.Item>
+          </Col>
+          <Col span={`${isLargeScreen ? 12 : 24}`}>
+            <Form.Item
               name="userContactNumber"
               label="Contact Number"
               rules={[
