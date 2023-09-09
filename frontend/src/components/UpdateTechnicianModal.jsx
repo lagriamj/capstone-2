@@ -28,7 +28,7 @@ const UpdateTechnicianModal = ({
         onUpdate();
         refreshData();
         setIsUpdating(false);
-        message.success("Category Updated successfully");
+        message.success("Technician Updated successfully");
       }
     } catch (error) {
       console.log(error);

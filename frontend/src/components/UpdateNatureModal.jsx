@@ -26,7 +26,7 @@ const UpdateNatureModal = ({
         onUpdate();
         refreshData();
         setIsUpdating(false);
-        message.success("Department Updated successfully");
+        message.success("Nature of Request Updated successfully");
       }
     } catch (error) {
       console.log(error);
