@@ -4,6 +4,9 @@ import AdminDrawer from "../../components/AdminDrawer";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Tab, Tabs, useMediaQuery } from "@mui/material";
 import OfficeDepartment from "../../components/OfficeDepartment";
+import Categories from "../../components/Categories";
+import NatureOfRequest from "../../components/NatureOfRequest";
+import Technicians from "../../components/Technicians";
 {
   /*import axios from "axios";
 import UtilityModal from "../../components/UtilityModal";
@@ -81,12 +84,14 @@ const [selectedCategoryId, setSelectedCategoryId] = useState(null); */
               style={{ fontSize: "0.875rem", lineHeight: "1.25rem" }}
             />
             <Tab label="Categories" />
-            <Tab label="Computer Parts" />
+            <Tab label="Nature of Request" />
             <Tab label="Technician" />
           </Tabs>
           <div className="w-full h-screen  text-center">
             {tabValue === 0 && <OfficeDepartment />}
-            {/* Add content for other tabs similarly */}
+            {tabValue === 1 && <Categories />}
+            {tabValue === 2 && <NatureOfRequest />}
+            {tabValue === 3 && <Technicians />}
           </div>
         </div>
       </div>

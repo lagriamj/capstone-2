@@ -26,15 +26,24 @@ class UtilitySettingController extends Controller
         return response()->json($utility, 201);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $validatedData = $request->validate([
-            'utilityCategory' => 'required',
-        ]);
 
-        $utility = UtilitySetting::findOrFail($id);
-        $utility->update($validatedData);
-        return response()->json($utility, 200);
+        try {
+            $category = UtilitySetting::find($request->input('id'));
+
+            if (!$category) {
+                return response()->json([
+                    'message' => 'Category not found.'
+                ], 404);
+            }
+            $category->update([
+                'utilityCategory' => $request->input('utilityCategory'),
+            ]);
+            return response()->json(['message' => 'Category data updated successfully'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error updating category data'], 500);
+        }
     }
 
     public function destroy($id)

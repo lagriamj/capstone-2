@@ -3,7 +3,7 @@ import AdminSidebar from "../../components/AdminSidebar";
 import AdminDrawer from "../../components/AdminDrawer";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import axios from "axios";
-import UtilityModal from "../../components/UtilityModal";
+import UtilityModal from "../../components/UpdateCategoryModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { message } from "antd";

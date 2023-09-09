@@ -1,51 +1,81 @@
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { useState, useEffect } from "react";
-import { Button, Input, Modal, Form, Popconfirm } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Button, Form, Input, Modal, Popconfirm, message } from "antd";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { QuestionCircleOutlined } from "@ant-design/icons";
-import UpdateDepertmentModal from "./UpdateDepertmentModal";
+import UpdateCategoryModal from "./UpdateCategoryModal";
 
-const OfficeDepartment = () => {
+const Categories = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const [departments, setDepartments] = useState([]);
+  const [categories, setCategories] = useState([]);
 
-  // start fetch office or deparment
-  useEffect(() => {
-    fetchDepartments();
-  }, []);
-
-  const fetchDepartments = () => {
-    axios
-      .get("http://127.0.0.1:8000/api/office-list")
-      .then((response) => {
-        setDepartments(response.data.results);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-  // end fetch office or deparment
-
-  // start add office or deparment
   const showAddNewModal = () => {
     form.resetFields();
     setIsModalVisible(true);
   };
 
-  const handleOk = () => {
+  const handleCancel = () => {
+    form.resetFields();
+    setIsModalVisible(false);
+  };
+
+  useEffect(() => {
+    fetchCategory();
+  }, []);
+
+  const fetchCategory = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/api/categories");
+      if (response.status === 200) {
+        setCategories(response.data.results);
+      } else {
+        console.error("Failed to category. Response:", response);
+      }
+    } catch (error) {
+      console.error("Error fetching category:", error);
+    }
+  };
+
+  const [isUpdateCategoryModalVisible, setUpdateCategoryModalVisible] =
+    useState(false);
+  const [selectedCategoryForUpdate, setSelectedCategoryForUpdate] =
+    useState(null);
+
+  const openUpdateCategoryModal = (category) => {
+    setSelectedCategoryForUpdate(category);
+    setUpdateCategoryModalVisible(true);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await axios.delete(
+        `http://127.0.0.1:8000/api/categorydelete/${id}`
+      );
+      if (response.status === 200) {
+        fetchCategory();
+        message.success("Deleted Successfully");
+      } else {
+        console.error("Failed to delete category");
+      }
+    } catch (error) {
+      console.error("Error deleting category:", error);
+    }
+  };
+
+  const handleSubmit = () => {
     form
       .validateFields()
       .then((values) => {
         axios
-          .post("http://127.0.0.1:8000/api/add-office", values)
+          .post("http://127.0.0.1:8000/api/add-category", values)
           .then((response) => {
             console.log(response.data);
             setIsModalVisible(false);
-            fetchDepartments();
+            fetchCategory();
           })
           .catch((error) => {
             console.error(error);
@@ -56,39 +86,9 @@ const OfficeDepartment = () => {
       });
   };
 
-  const handleCancel = () => {
-    form.resetFields();
-    setIsModalVisible(false);
-  };
-  // end add office or deparment
-
-  // start delete office or deparment
-  const handleDelete = (id) => {
-    axios
-      .delete(`http://127.0.0.1:8000/api/delete-office/${id}`)
-      .then((response) => {
-        console.log(response.data);
-        fetchDepartments();
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const [isUpdateDepartmentModalVisible, setUpdateDepartmentModalVisible] =
-    useState(false);
-  const [selectedDepartmentForUpdate, setSelectedDepartmentForUpdate] =
-    useState(null);
-
-  const openUpdateDepartmentModal = (department) => {
-    setSelectedDepartmentForUpdate(department);
-    setUpdateDepartmentModalVisible(true);
-    console.log(selectedDepartmentForUpdate);
-  };
-
   return (
     <div className="w-full flex flex-col">
-      <div className="w-full overflow-auto ">
+      <div className="w-full overflow-auto">
         <Box
           sx={{
             position: "fixed",
@@ -111,48 +111,42 @@ const OfficeDepartment = () => {
         </Box>
         <table className="w-full">
           <thead>
-            <tr className="bg-main h-[8vh] text-white">
+            <tr className="bg-main text-white h-[8vh]">
               <th className="w-[10%] px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
                 #
               </th>
-              <th className="w-[35%] px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
-                Office/Department
+              <th className="w-[40%] px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
+                Category
               </th>
-              <th className=" px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
-                Head
-              </th>
-              <th className="px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
+              <th className="w-[40%] px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
                 Action
               </th>
             </tr>
           </thead>
           <tbody>
-            {departments.map((department, index) => (
+            {categories.map((category, index) => (
               <tr
-                key={department.id}
+                key={category.id}
                 className="border-b-2 border-gray-200 h-auto overflow-auto"
               >
                 <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
                   {index + 1}
                 </td>
                 <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
-                  {department.office}
+                  {category.utilityCategory}
                 </td>
-                <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
-                  {department.head}
-                </td>
-                <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
+                <td>
                   <div className="flex items-center justify-center">
                     <button
                       className="text-white text-base font-medium bg-blue-600 py-2 px-4 rounded-lg"
-                      onClick={() => openUpdateDepartmentModal(department)}
+                      onClick={() => openUpdateCategoryModal(category)}
                     >
                       Update
                     </button>
                     <Popconfirm
                       title="Confirmation"
                       description="Confirm deleting?. This action cannot be undone."
-                      onConfirm={() => handleDelete(department.id)}
+                      onConfirm={() => handleDelete(category.id)}
                       okText="Yes"
                       cancelText="No"
                       placement="left"
@@ -177,20 +171,19 @@ const OfficeDepartment = () => {
           </tbody>
         </table>
       </div>
-
       <Modal
         open={isModalVisible}
         onClose={handleCancel}
         onCancel={handleCancel}
-        onOk={handleOk}
+        //onOk={handleOk}
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
         footer={null}
-        title="Create New Office/Department"
+        title="Create New Category"
       >
         <Form form={form}>
           <Form.Item
-            name="office"
+            name="utilityCategory"
             label={
               <label
                 style={{
@@ -199,7 +192,7 @@ const OfficeDepartment = () => {
                   fontFamily: "Poppins",
                 }}
               >
-                Office/Department
+                Category
               </label>
             }
             labelAlign="top"
@@ -207,43 +200,14 @@ const OfficeDepartment = () => {
             rules={[
               {
                 required: true,
-                message: "Please enter the office/department name",
+                message: "Please enter the category name",
               },
             ]}
             style={{ height: "8vh" }}
           >
-            <Input
-              className="h-12 text-base"
-              placeholder="Office/Department Name"
-            />
+            <Input className="h-12 text-base" placeholder="Category Name" />
           </Form.Item>
-          <Form.Item
-            name="head"
-            label={
-              <label
-                style={{
-                  fontSize: "16px",
-                  fontWeight: "bold",
-                  fontFamily: "Poppins",
-                }}
-              >
-                Head of the Office
-              </label>
-            }
-            labelAlign="top"
-            labelCol={{ span: 24 }}
-            rules={[
-              {
-                required: true,
-                message: "Please enter the head of the office",
-              },
-            ]}
-          >
-            <Input
-              className="h-12 text-base"
-              placeholder="Head of the Office"
-            />
-          </Form.Item>
+
           <div className="flex justify-end">
             <Button
               variant="outlined"
@@ -258,7 +222,7 @@ const OfficeDepartment = () => {
             </Button>
             <Button
               variant="contained"
-              onClick={handleOk}
+              onClick={handleSubmit}
               color="primary"
               style={{ width: "5rem", height: "2.5rem" }}
             >
@@ -267,18 +231,18 @@ const OfficeDepartment = () => {
           </div>
         </Form>
       </Modal>
-      {/* Update Modal */}
-      {isUpdateDepartmentModalVisible && selectedDepartmentForUpdate && (
-        <UpdateDepertmentModal
-          isOpen={isUpdateDepartmentModalVisible}
-          onCancel={() => setUpdateDepartmentModalVisible(false)}
-          onUpdate={() => setUpdateDepartmentModalVisible(false)}
-          departmentData={selectedDepartmentForUpdate}
-          refreshData={() => fetchDepartments()}
+
+      {isUpdateCategoryModalVisible && selectedCategoryForUpdate && (
+        <UpdateCategoryModal
+          isOpen={isUpdateCategoryModalVisible}
+          onCancel={() => setUpdateCategoryModalVisible(false)}
+          onUpdate={() => setUpdateCategoryModalVisible(false)}
+          categorytData={selectedCategoryForUpdate}
+          refreshData={() => fetchCategory()}
         />
       )}
     </div>
   );
 };
 
-export default OfficeDepartment;
+export default Categories;

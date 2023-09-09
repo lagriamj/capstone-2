@@ -1,15 +1,17 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { Button, Form, Input, Modal, message } from "antd";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { useState } from "react";
 
-const UpdateDepertmentModal = ({
+const UpdateCategoryModal = ({
   isOpen,
   onCancel,
   onUpdate,
-  departmentData,
+  categorytData,
   refreshData,
 }) => {
+  if (!isOpen) return null;
   const [form] = Form.useForm();
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -18,11 +20,11 @@ const UpdateDepertmentModal = ({
     try {
       const newFormData = await form.validateFields();
       const response = await axios.put(
-        "http://127.0.0.1:8000/api/update-office",
+        "http://127.0.0.1:8000/api/category",
         newFormData
       );
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         onUpdate();
         refreshData();
         setIsUpdating(false);
@@ -36,17 +38,16 @@ const UpdateDepertmentModal = ({
 
   return (
     <Modal
-      title="Update Office/Department"
       open={isOpen}
       onCancel={onCancel}
+      title="Update Category"
       onOk={onUpdate}
       footer={null}
     >
-      <Form form={form} initialValues={departmentData}>
+      {/* Content */}
+      <Form form={form} initialValues={categorytData}>
         <Form.Item
-          labelAlign="top"
-          labelCol={{ span: 24 }}
-          name="office"
+          name="utilityCategory"
           label={
             <label
               style={{
@@ -55,53 +56,28 @@ const UpdateDepertmentModal = ({
                 fontFamily: "Poppins",
               }}
             >
-              Office/Department
+              Category
             </label>
           }
+          labelAlign="top"
+          labelCol={{ span: 24 }}
           rules={[
             {
               required: true,
-              message: "Please enter the office/department name",
+              message: "Please enter the category name",
             },
           ]}
           style={{ height: "8vh" }}
         >
-          <Input
-            placeholder="Office/Department Name"
-            className="h-12 text-base"
-          />
-        </Form.Item>
-        <Form.Item
-          labelAlign="top"
-          labelCol={{ span: 24 }}
-          name="head"
-          label={
-            <label
-              style={{
-                fontSize: "16px",
-                fontWeight: "bold",
-                fontFamily: "Poppins",
-              }}
-            >
-              Head of the Office
-            </label>
-          }
-          rules={[
-            {
-              required: true,
-              message: "Please enter the head of the office",
-            },
-          ]}
-        >
-          <Input placeholder="Head of the Office" className="h-12 text-base" />
+          <Input className="h-12 text-base" placeholder="Category Name" />
         </Form.Item>
         <Form.Item name="id" hidden>
           <Input size="large" />
         </Form.Item>
         <div className="flex justify-end">
           <Button
-            onClick={onCancel}
             variant="outlined"
+            onClick={onCancel}
             style={{
               marginRight: "1rem",
               width: "5rem",
@@ -112,11 +88,10 @@ const UpdateDepertmentModal = ({
           </Button>
           <Button
             variant="contained"
+            onClick={handleUpdate}
             color="primary"
             style={{ width: "5rem", height: "2.5rem" }}
             loading={isUpdating}
-            htmlType="submit"
-            onClick={handleUpdate}
           >
             {isUpdating ? "..." : "Update"}
           </Button>
@@ -126,12 +101,12 @@ const UpdateDepertmentModal = ({
   );
 };
 
-UpdateDepertmentModal.propTypes = {
+UpdateCategoryModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onCancel: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
-  departmentData: PropTypes.object,
+  categorytData: PropTypes.object,
   refreshData: PropTypes.func.isRequired,
 };
 
-export default UpdateDepertmentModal;
+export default UpdateCategoryModal;

@@ -56,7 +56,7 @@ Route::post('/change-password', [UserController::class, 'changePassword']);
 
 Route::get('categories', [UtilitySettingController::class, 'index']);
 Route::post('add-category', [UtilitySettingController::class, 'store']);
-Route::put('category/{id}', [UtilitySettingController::class, 'update']);
+Route::put('category', [UtilitySettingController::class, 'update']);
 Route::delete('categorydelete/{id}', [UtilitySettingController::class, 'destroy']);
 
 Route::get('all-request', [ReceiveServiceController::class, 'allRequest']);
