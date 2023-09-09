@@ -8,7 +8,7 @@ const UpdateCategoryModal = ({
   isOpen,
   onCancel,
   onUpdate,
-  categorytData,
+  categoryData,
   refreshData,
 }) => {
   if (!isOpen) return null;
@@ -28,7 +28,7 @@ const UpdateCategoryModal = ({
         onUpdate();
         refreshData();
         setIsUpdating(false);
-        message.success("Department Updated successfully");
+        message.success("Category Updated successfully");
       }
     } catch (error) {
       console.log(error);
@@ -45,7 +45,7 @@ const UpdateCategoryModal = ({
       footer={null}
     >
       {/* Content */}
-      <Form form={form} initialValues={categorytData}>
+      <Form form={form} initialValues={categoryData}>
         <Form.Item
           name="utilityCategory"
           label={
@@ -105,7 +105,7 @@ UpdateCategoryModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onCancel: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
-  categorytData: PropTypes.object,
+  categoryData: PropTypes.object,
   refreshData: PropTypes.func.isRequired,
 };
 

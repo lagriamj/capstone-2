@@ -12,6 +12,7 @@ const Categories = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [categories, setCategories] = useState([]);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const showAddNewModal = () => {
     form.resetFields();
@@ -67,6 +68,7 @@ const Categories = () => {
   };
 
   const handleSubmit = () => {
+    setIsUpdating(true);
     form
       .validateFields()
       .then((values) => {
@@ -76,13 +78,16 @@ const Categories = () => {
             console.log(response.data);
             setIsModalVisible(false);
             fetchCategory();
+            setIsUpdating(false);
           })
           .catch((error) => {
             console.error(error);
+            setIsUpdating(false);
           });
       })
       .catch((errorInfo) => {
         console.log("Validation failed:", errorInfo);
+        setIsUpdating(false);
       });
   };
 
@@ -112,13 +117,13 @@ const Categories = () => {
         <table className="w-full">
           <thead>
             <tr className="bg-main text-white h-[8vh]">
-              <th className="w-[10%] px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
+              <th className="w-[25%] px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
                 #
               </th>
-              <th className="w-[40%] px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
+              <th className="w-[50%] px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
                 Category
               </th>
-              <th className="w-[40%] px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
+              <th className="w-[25%] px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
                 Action
               </th>
             </tr>
@@ -225,8 +230,9 @@ const Categories = () => {
               onClick={handleSubmit}
               color="primary"
               style={{ width: "5rem", height: "2.5rem" }}
+              loading={isUpdating}
             >
-              Add
+              {isUpdating ? "..." : "Add"}
             </Button>
           </div>
         </Form>
@@ -237,7 +243,7 @@ const Categories = () => {
           isOpen={isUpdateCategoryModalVisible}
           onCancel={() => setUpdateCategoryModalVisible(false)}
           onUpdate={() => setUpdateCategoryModalVisible(false)}
-          categorytData={selectedCategoryForUpdate}
+          categoryData={selectedCategoryForUpdate}
           refreshData={() => fetchCategory()}
         />
       )}

@@ -133,9 +133,7 @@ const Requests = () => {
 
   const fetchData = async () => {
     try {
-      const result = await axios.get(
-        "http://127.0.0.1:8000/api/nature-request"
-      );
+      const result = await axios.get("http://127.0.0.1:8000/api/nature-list");
 
       setData(result.data.results);
     } catch (err) {

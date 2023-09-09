@@ -7,6 +7,7 @@ use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\ReceiveServiceController;
 use App\Http\Controllers\NatureRequestController;
 use App\Http\Controllers\UtilitySettingController;
+use App\Http\Controllers\TechnicianController;
 use App\Http\Controllers\RatingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -48,7 +49,7 @@ Route::post('/check-password', [UserController::class, 'checkPassword']);
 Route::put('/update-contact', [UserController::class, 'updateContactNumber']);
 
 
-Route::get('nature-request', [NatureRequestController::class, 'index']);
+
 Route::get('/account', [UserController::class, 'accountDetails']);
 Route::post('/change-password', [UserController::class, 'changePassword']);
 
@@ -88,3 +89,15 @@ Route::get('office-list', [UtilitySettingController::class, 'showOffice']);
 Route::post('add-office', [UtilitySettingController::class, 'addOffice']);
 Route::put('update-office', [UtilitySettingController::class, 'updateOffice']);
 Route::delete('delete-office/{id}', [UtilitySettingController::class, 'destroyOffice']);
+
+//Nature Request in Utility Setting (admin side)
+Route::get('nature-list', [NatureRequestController::class, 'showNature']);
+Route::post('add-nature', [NatureRequestController::class, 'addNature']);
+Route::put('update-nature', [NatureRequestController::class, 'updateNature']);
+Route::delete('delete-nature/{id}', [NatureRequestController::class, 'destroyNature']);
+
+
+Route::get('technician-list', [TechnicianController::class, 'showTechnician']);
+Route::post('add-technician', [TechnicianController::class, 'addTechnician']);
+Route::put('update-technician', [TechnicianController::class, 'updateTechnician']);
+Route::delete('delete-technician/{id}', [TechnicianController::class, 'destroyTechnician']);

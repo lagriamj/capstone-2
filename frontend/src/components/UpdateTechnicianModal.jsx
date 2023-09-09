@@ -1,15 +1,17 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { Button, Form, Input, Modal, message } from "antd";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { useState } from "react";
 
-const UpdateDepertmentModal = ({
+const UpdateTechnicianModal = ({
   isOpen,
   onCancel,
   onUpdate,
-  departmentData,
+  technicianData,
   refreshData,
 }) => {
+  if (!isOpen) return null;
   const [form] = Form.useForm();
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -18,7 +20,7 @@ const UpdateDepertmentModal = ({
     try {
       const newFormData = await form.validateFields();
       const response = await axios.put(
-        "http://127.0.0.1:8000/api/update-office",
+        "http://127.0.0.1:8000/api/update-technician",
         newFormData
       );
 
@@ -26,7 +28,7 @@ const UpdateDepertmentModal = ({
         onUpdate();
         refreshData();
         setIsUpdating(false);
-        message.success("Department Updated successfully");
+        message.success("Category Updated successfully");
       }
     } catch (error) {
       console.log(error);
@@ -36,17 +38,16 @@ const UpdateDepertmentModal = ({
 
   return (
     <Modal
-      title="Update Office/Department"
       open={isOpen}
       onCancel={onCancel}
+      title="Update Technician"
       onOk={onUpdate}
       footer={null}
     >
-      <Form form={form} initialValues={departmentData}>
+      {/* Content */}
+      <Form form={form} initialValues={technicianData}>
         <Form.Item
-          labelAlign="top"
-          labelCol={{ span: 24 }}
-          name="office"
+          name="technician"
           label={
             <label
               style={{
@@ -55,53 +56,28 @@ const UpdateDepertmentModal = ({
                 fontFamily: "Poppins",
               }}
             >
-              Office/Department
+              Technician
             </label>
           }
+          labelAlign="top"
+          labelCol={{ span: 24 }}
           rules={[
             {
               required: true,
-              message: "Please enter the office/department name",
+              message: "Please enter the technician name",
             },
           ]}
           style={{ height: "8vh" }}
         >
-          <Input
-            placeholder="Office/Department Name"
-            className="h-12 text-base"
-          />
-        </Form.Item>
-        <Form.Item
-          labelAlign="top"
-          labelCol={{ span: 24 }}
-          name="head"
-          label={
-            <label
-              style={{
-                fontSize: "16px",
-                fontWeight: "bold",
-                fontFamily: "Poppins",
-              }}
-            >
-              Head of the Office
-            </label>
-          }
-          rules={[
-            {
-              required: true,
-              message: "Please enter the head of the office",
-            },
-          ]}
-        >
-          <Input placeholder="Head of the Office" className="h-12 text-base" />
+          <Input className="h-12 text-base" placeholder="Technician Name" />
         </Form.Item>
         <Form.Item name="id" hidden>
           <Input size="large" />
         </Form.Item>
         <div className="flex justify-end">
           <Button
-            onClick={onCancel}
             variant="outlined"
+            onClick={onCancel}
             style={{
               marginRight: "1rem",
               width: "5rem",
@@ -112,11 +88,10 @@ const UpdateDepertmentModal = ({
           </Button>
           <Button
             variant="contained"
+            onClick={handleUpdate}
             color="primary"
             style={{ width: "5rem", height: "2.5rem" }}
             loading={isUpdating}
-            htmlType="submit"
-            onClick={handleUpdate}
           >
             {isUpdating ? "..." : "Update"}
           </Button>
@@ -126,12 +101,12 @@ const UpdateDepertmentModal = ({
   );
 };
 
-UpdateDepertmentModal.propTypes = {
+UpdateTechnicianModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onCancel: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
-  departmentData: PropTypes.object,
+  technicianData: PropTypes.object,
   refreshData: PropTypes.func.isRequired,
 };
 
-export default UpdateDepertmentModal;
+export default UpdateTechnicianModal;

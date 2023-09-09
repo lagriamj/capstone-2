@@ -2,12 +2,72 @@ import { Box, Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
-import { Button, Form, Input, Modal } from "antd";
+import { Button, Form, Input, Modal, Popconfirm, message } from "antd";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import UpdateNatureModal from "./UpdateNatureModal";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 const NatureOfRequest = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
+  const [natureRequests, setNatureRequests] = useState([]);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const handleOk = () => {
+    setIsUpdating(true);
+    form
+      .validateFields()
+      .then((values) => {
+        axios
+          .post("http://127.0.0.1:8000/api/add-nature", values)
+          .then((response) => {
+            console.log(response.data);
+            setIsModalVisible(false);
+            fetchNature();
+            setIsUpdating(false);
+          })
+          .catch((error) => {
+            console.error(error);
+            setIsUpdating(false);
+          });
+      })
+      .catch((errorInfo) => {
+        console.log("Validation failed:", errorInfo);
+        setIsUpdating(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchNature();
+  }, []);
+
+  const fetchNature = () => {
+    axios
+      .get("http://127.0.0.1:8000/api/nature-list")
+      .then((response) => {
+        setNatureRequests(response.data.results);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleDeleteNature = (natureId) => {
+    axios
+      .delete(`http://127.0.0.1:8000/api/delete-nature/${natureId}`)
+      // eslint-disable-next-line no-unused-vars
+      .then((response) => {
+        const updatedNatureRequests = natureRequests.filter(
+          (nature) => nature.id !== natureId
+        );
+        setNatureRequests(updatedNatureRequests);
+        message.success("Deleted Successfully");
+      })
+      .catch((error) => {
+        console.error("Error deleting nature request:", error);
+      });
+  };
 
   const showAddNewModal = () => {
     form.resetFields();
@@ -18,6 +78,16 @@ const NatureOfRequest = () => {
     form.resetFields();
     setIsModalVisible(false);
   };
+
+  const [isUpdateNatureModalVisible, setUpdateNatureModalVisible] =
+    useState(false);
+  const [selectedNatureForUpdate, setSelectedNatureForUpdate] = useState(null);
+
+  const openUpdateNatureModal = (natureOfRequest) => {
+    setSelectedNatureForUpdate(natureOfRequest);
+    setUpdateNatureModalVisible(true);
+  };
+
   return (
     <div className="w-full flex flex-col">
       <div className="w-full overflow-auto">
@@ -56,27 +126,47 @@ const NatureOfRequest = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
-                1
-              </td>
-              <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
-                hakdog
-              </td>
-              <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
-                <div className="flex items-center justify-center">
-                  <button
-                    className="text-white text-base font-medium bg-blue-600 py-2 px-4 rounded-lg"
-                    //onClick={() => openUpdateDepartmentModal(department)}
-                  >
-                    Update
-                  </button>
-                  <button className="ml-1 text-white bg-red-700 rounded-lg px-3 py-2 text-lg font-medium">
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
-                </div>
-              </td>
-            </tr>
+            {natureRequests.map((nature, index) => (
+              <tr key={index}>
+                <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
+                  {index + 1}
+                </td>
+                <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
+                  {nature.natureRequest}
+                </td>
+                <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center font-medium">
+                  <div className="flex items-center justify-center">
+                    <button
+                      className="text-white text-base font-medium bg-blue-600 py-2 px-4 rounded-lg"
+                      onClick={() => openUpdateNatureModal(nature)}
+                    >
+                      Update
+                    </button>
+                    <Popconfirm
+                      title="Confirmation"
+                      description="Confirm deleting?. This action cannot be undone."
+                      onConfirm={() => handleDeleteNature(nature.id)}
+                      okText="Yes"
+                      cancelText="No"
+                      placement="left"
+                      icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+                      okButtonProps={{
+                        className: "border-2 border-gray-200 text-black",
+                        size: "large",
+                      }}
+                      cancelButtonProps={{
+                        className: "border-2 border-gray-200 text-black",
+                        size: "large",
+                      }}
+                    >
+                      <button className="ml-1 text-white bg-red-700 rounded-lg px-3 py-2 text-lg font-medium">
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </Popconfirm>
+                  </div>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -84,7 +174,7 @@ const NatureOfRequest = () => {
         open={isModalVisible}
         onClose={handleCancel}
         onCancel={handleCancel}
-        //onOk={handleOk}
+        onOk={handleOk}
         aria-labelledby="modal-title"
         aria-describedby="modal-description"
         footer={null}
@@ -92,7 +182,7 @@ const NatureOfRequest = () => {
       >
         <Form form={form}>
           <Form.Item
-            name="office"
+            name="natureRequest"
             label={
               <label
                 style={{
@@ -134,15 +224,26 @@ const NatureOfRequest = () => {
             </Button>
             <Button
               variant="contained"
-              //onClick={handleOk}
+              onClick={handleOk}
               color="primary"
               style={{ width: "5rem", height: "2.5rem" }}
+              loading={isUpdating}
             >
-              Add
+              {isUpdating ? "..." : "Add"}
             </Button>
           </div>
         </Form>
       </Modal>
+
+      {isUpdateNatureModalVisible && selectedNatureForUpdate && (
+        <UpdateNatureModal
+          isOpen={isUpdateNatureModalVisible}
+          onCancel={() => setUpdateNatureModalVisible(false)}
+          onUpdate={() => setUpdateNatureModalVisible(false)}
+          natureData={selectedNatureForUpdate}
+          refreshData={() => fetchNature()}
+        />
+      )}
     </div>
   );
 };

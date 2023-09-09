@@ -468,37 +468,37 @@ const Register = () => {
                   Next
                 </button>
               </div>
-              <div className="flex items-center justify-center flex-col w-3/4">
-                <p className="text-sm">
-                  <Checkbox
-                    id="termsCheckBox"
-                    name="termsCheckBox"
-                    checked={termsAgreed}
-                    onChange={handleCheckboxChange}
-                  >
-                    I agree to the{" "}
-                    <button
-                      onClick={handleShowModal}
-                      className="text-blue-500 underline"
-                    >
-                      Terms and Conditions
-                    </button>
-                  </Checkbox>
-                </p>
-              </div>
-              <TermsAndConditionsModal
-                isOpen={showModal}
-                onClose={handleCloseModal}
-              />
-              <div className="flex items-center justify-center flex-col w-3/4">
-                <p className="font-medium text-lg">
-                  Already have an account?{" "}
-                  <a href="/" className="text-red-600 font-semibold">
-                    Login here
-                  </a>
-                </p>
-              </div>
             </form>
+            <div className="w-full flex items-center justify-center flex-col mt-2">
+              <p className="text-sm">
+                <Checkbox
+                  id="termsCheckBox"
+                  name="termsCheckBox"
+                  checked={termsAgreed}
+                  onChange={handleCheckboxChange}
+                >
+                  I agree to the{" "}
+                  <button
+                    onClick={handleShowModal}
+                    className="text-blue-500 underline"
+                  >
+                    Terms and Conditions
+                  </button>
+                </Checkbox>
+              </p>
+            </div>
+            <TermsAndConditionsModal
+              isOpen={showModal}
+              onClose={handleCloseModal}
+            />
+            <div className="flex items-center justify-center flex-col w-full mt-2">
+              <p className="font-medium text-lg">
+                Already have an account?{" "}
+                <a href="/" className="text-red-600 font-semibold">
+                  Login here
+                </a>
+              </p>
+            </div>
           </div>
         </div>
       </div>

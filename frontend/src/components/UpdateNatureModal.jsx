@@ -3,11 +3,11 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { useState } from "react";
 
-const UpdateDepertmentModal = ({
+const UpdateNatureModal = ({
   isOpen,
   onCancel,
   onUpdate,
-  departmentData,
+  natureData,
   refreshData,
 }) => {
   const [form] = Form.useForm();
@@ -18,7 +18,7 @@ const UpdateDepertmentModal = ({
     try {
       const newFormData = await form.validateFields();
       const response = await axios.put(
-        "http://127.0.0.1:8000/api/update-office",
+        "http://127.0.0.1:8000/api/update-nature",
         newFormData
       );
 
@@ -36,17 +36,17 @@ const UpdateDepertmentModal = ({
 
   return (
     <Modal
-      title="Update Office/Department"
+      title="Update Nature of Request"
       open={isOpen}
       onCancel={onCancel}
       onOk={onUpdate}
       footer={null}
     >
-      <Form form={form} initialValues={departmentData}>
+      <Form form={form} initialValues={natureData}>
         <Form.Item
           labelAlign="top"
           labelCol={{ span: 24 }}
-          name="office"
+          name="natureRequest"
           label={
             <label
               style={{
@@ -55,45 +55,21 @@ const UpdateDepertmentModal = ({
                 fontFamily: "Poppins",
               }}
             >
-              Office/Department
+              Nature of Request
             </label>
           }
           rules={[
             {
               required: true,
-              message: "Please enter the office/department name",
+              message: "Please enter the Nature of Request name",
             },
           ]}
           style={{ height: "8vh" }}
         >
           <Input
-            placeholder="Office/Department Name"
+            placeholder="Nature of Request Name"
             className="h-12 text-base"
           />
-        </Form.Item>
-        <Form.Item
-          labelAlign="top"
-          labelCol={{ span: 24 }}
-          name="head"
-          label={
-            <label
-              style={{
-                fontSize: "16px",
-                fontWeight: "bold",
-                fontFamily: "Poppins",
-              }}
-            >
-              Head of the Office
-            </label>
-          }
-          rules={[
-            {
-              required: true,
-              message: "Please enter the head of the office",
-            },
-          ]}
-        >
-          <Input placeholder="Head of the Office" className="h-12 text-base" />
         </Form.Item>
         <Form.Item name="id" hidden>
           <Input size="large" />
@@ -126,12 +102,12 @@ const UpdateDepertmentModal = ({
   );
 };
 
-UpdateDepertmentModal.propTypes = {
+UpdateNatureModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onCancel: PropTypes.func.isRequired,
   onUpdate: PropTypes.func.isRequired,
-  departmentData: PropTypes.object,
+  natureData: PropTypes.object,
   refreshData: PropTypes.func.isRequired,
 };
 
-export default UpdateDepertmentModal;
+export default UpdateNatureModal;

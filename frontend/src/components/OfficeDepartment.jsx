@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useState, useEffect } from "react";
-import { Button, Input, Modal, Form, Popconfirm } from "antd";
+import { Button, Input, Modal, Form, Popconfirm, message } from "antd";
 import axios from "axios";
 import { QuestionCircleOutlined } from "@ant-design/icons";
 import UpdateDepertmentModal from "./UpdateDepertmentModal";
@@ -12,6 +12,7 @@ const OfficeDepartment = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [departments, setDepartments] = useState([]);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   // start fetch office or deparment
   useEffect(() => {
@@ -37,6 +38,7 @@ const OfficeDepartment = () => {
   };
 
   const handleOk = () => {
+    setIsUpdating(true);
     form
       .validateFields()
       .then((values) => {
@@ -46,13 +48,16 @@ const OfficeDepartment = () => {
             console.log(response.data);
             setIsModalVisible(false);
             fetchDepartments();
+            setIsUpdating(false);
           })
           .catch((error) => {
             console.error(error);
+            setIsUpdating(false);
           });
       })
       .catch((errorInfo) => {
         console.log("Validation failed:", errorInfo);
+        setIsUpdating(false);
       });
   };
 
@@ -69,6 +74,7 @@ const OfficeDepartment = () => {
       .then((response) => {
         console.log(response.data);
         fetchDepartments();
+        message.success("Deleted Successfully");
       })
       .catch((error) => {
         console.error(error);
@@ -261,8 +267,9 @@ const OfficeDepartment = () => {
               onClick={handleOk}
               color="primary"
               style={{ width: "5rem", height: "2.5rem" }}
+              loading={isUpdating}
             >
-              Add
+              {isUpdating ? "..." : "Add"}
             </Button>
           </div>
         </Form>

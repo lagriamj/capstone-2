@@ -12,9 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         //
-        Schema::create('nature_request', function (Blueprint $table) {
+        Schema::create('technicians', function (Blueprint $table) {
             $table->id();
-            $table->string('natureRequest');
+            $table->string('technician');
+            $table->timestamps();
         });
     }
 
@@ -24,6 +25,6 @@ return new class extends Migration
     public function down(): void
     {
         //
-        Schema::dropIfExists('nature_request');
+        Schema::dropIfExists('technicians');
     }
 };
