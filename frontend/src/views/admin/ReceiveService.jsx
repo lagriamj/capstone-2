@@ -84,7 +84,7 @@ const ReceiveService = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.put(`http://127.0.0.1:8000/api/delete-received/${id}`);
+      await axios.put(`http://127.0.0.1:8000/api/delete-receive/${id}`);
       const newUserData = data.filter((item) => item.id !== id);
       setData(newUserData);
     } catch (error) {
@@ -100,7 +100,7 @@ const ReceiveService = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/all-request");
+      const response = await axios.get("http://127.0.0.1:8000/api/pending-request");
       if (response.status === 200) {
         setLoading(false);
         setData(response.data.results);

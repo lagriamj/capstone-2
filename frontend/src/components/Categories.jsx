@@ -30,7 +30,7 @@ const Categories = () => {
 
   const fetchCategory = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/categories");
+      const response = await axios.get("http://127.0.0.1:8000/api/category-list");
       if (response.status === 200) {
         setCategories(response.data.results);
       } else {
@@ -54,7 +54,7 @@ const Categories = () => {
   const handleDelete = async (id) => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/categorydelete/${id}`
+        `http://127.0.0.1:8000/api/delete-category/${id}`
       );
       if (response.status === 200) {
         fetchCategory();

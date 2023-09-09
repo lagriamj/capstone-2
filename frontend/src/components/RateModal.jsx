@@ -64,7 +64,7 @@ const RateModal = ({ isOpen, onClose, id, user_id, office, isLargeScreen }) => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/service-rating",
+        "http://127.0.0.1:8000/api/transanction-rate",
         selectedRatings
       );
       const data = response.data;

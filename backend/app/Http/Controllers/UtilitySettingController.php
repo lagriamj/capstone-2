@@ -8,7 +8,7 @@ use App\Models\Department;
 
 class UtilitySettingController extends Controller
 {
-    public function index()
+    public function showCategory()
     {
         $utility = UtilitySetting::all();
         return response()->json([
@@ -16,7 +16,7 @@ class UtilitySettingController extends Controller
         ], 200);
     }
 
-    public function store(Request $request)
+    public function addCategory(Request $request)
     {
         $validatedData = $request->validate([
             'utilityCategory' => 'required',
@@ -26,7 +26,7 @@ class UtilitySettingController extends Controller
         return response()->json($utility, 201);
     }
 
-    public function update(Request $request)
+    public function updateCategory(Request $request)
     {
 
         try {
@@ -46,7 +46,7 @@ class UtilitySettingController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroyCategoy($id)
     {
         $utility = UtilitySetting::find($id);
 

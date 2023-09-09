@@ -20,7 +20,7 @@ const UpdateCategoryModal = ({
     try {
       const newFormData = await form.validateFields();
       const response = await axios.put(
-        "http://127.0.0.1:8000/api/category",
+        "http://127.0.0.1:8000/api/update-category",
         newFormData
       );
 

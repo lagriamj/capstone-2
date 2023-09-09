@@ -10,7 +10,7 @@ use Carbon\Carbon;
 
 class RequestsController extends Controller
 {
-    public function index(Request $request)
+    public function showRequest(Request $request)
     {
         $userID = $request->input('user_id');
         $query = Requests::where('status', '!=', 'Cancelled')
@@ -44,8 +44,7 @@ class RequestsController extends Controller
         ], 200);
     }
 
-
-    public function store(Request $request)
+    public function addRequest(Request $request)
     {
         $validatedData = $request->validate([
             'user_id' => 'required',
@@ -71,21 +70,6 @@ class RequestsController extends Controller
         $users = Requests::create($validatedData);
 
         return response()->json($users, 201);
-    }
-
-    public function show($id)
-    {
-        $users = Requests::find($id);
-
-        if (!$users) {
-            return response()->json([
-                'message' => 'User not found.'
-            ], 404);
-        }
-
-        return response()->json([
-            'user' => $users
-        ], 200);
     }
 
     public function update(Request $request, $id)
@@ -115,7 +99,7 @@ class RequestsController extends Controller
         return response()->json($users, 200);
     }
 
-    public function destroy($id)
+    public function destroyRequest($id)
     {
         $userRequest = Requests::find($id);
 
@@ -138,7 +122,6 @@ class RequestsController extends Controller
     {
 
         $user = User::find($userID);
-
 
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);

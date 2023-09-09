@@ -105,7 +105,7 @@ const Requests = () => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/service-request",
+        "http://127.0.0.1:8000/api/add-request",
         formData
       );
       const data = response.data;

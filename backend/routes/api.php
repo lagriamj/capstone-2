@@ -27,58 +27,50 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+//Login and Register
 Route::post('/register', [UserController::class, 'register']);
-
 Route::post('/verify-otp', [UserController::class, 'verifyOTP']);
-
 Route::put('/verify-otp', [UserController::class, 'resendOTP']);
-
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LogoutController::class, 'logout']);
-
 Route::put('/update-phone', [UserController::class, 'updatePhoneNumber']);
 
-// user 
-Route::get('current-request', [RequestsController::class, 'index']);
+//Request Services (user side)
 Route::get('/getOfficeAndDivision/{userID}', [RequestsController::class, 'getOfficeAndDivision']);
-Route::get('users/{id}', [RequestsController::class, 'show']);
-Route::post('service-request', [RequestsController::class, 'store']);
-Route::put('requestupdate/{id}', [RequestsController::class, 'update']);
-Route::delete('requestdelete/{id}', [RequestsController::class, 'destroy']);
+Route::post('add-request', [RequestsController::class, 'addRequest']);
+
+//Current Requests (user side)
+Route::get('request-list', [RequestsController::class, 'showRequest']);
+Route::put('closedNorate/{id}', [RatingController::class, 'closedNorate']);
+Route::delete('delete-request/{id}', [RequestsController::class, 'destroyRequest']);
+
+//Transaction (user side)
+Route::get('transaction-list/{id}', [RatingController::class, 'showTransanction']);
+Route::get('closed-view/{id}', [RatingController::class, 'closedView']);
+Route::post('transanction-rate', [RatingController::class, 'rateTransaction']);
+
+//Account (user side)
+Route::get('/account', [UserController::class, 'accountDetails']);
+Route::post('/change-password', [UserController::class, 'changePasswoequestupdaterd']);
 Route::post('/check-password', [UserController::class, 'checkPassword']);
 Route::put('/update-contact', [UserController::class, 'updateContactNumber']);
 
+//Receive Service (admin side)
+Route::put('delete-receive/{id}', [ReceiveServiceController::class, 'destroyService']);
+Route::get('pending-request', [ReceiveServiceController::class, 'pendingRequest']);
+Route::post('received-request', [ReceiveServiceController::class, 'receivedRequest']);
 
+//Service Task (admin side)
+Route::get('service-task-list', [ReceiveServiceController::class, 'showServiceTask']);
+Route::put('onprogress-request/{id}', [ReceiveServiceController::class, 'onprogressRequest']);
+Route::put('torelease-request/{id}', [ReceiveServiceController::class, 'toreleaseRequest']);
+Route::post('torate-request', [ReceiveServiceController::class, 'torateRequest']);
+Route::put('delete-serviced/{id}/{reqID}', [ReceiveServiceController::class, 'destroyServiceTask']);
 
-Route::get('/account', [UserController::class, 'accountDetails']);
-Route::post('/change-password', [UserController::class, 'changePassword']);
+//Service Transaction
+Route::get('closed-transaction', [RatingController::class, 'showServiceTransanction']);
 
-// admin 
-
-Route::get('categories', [UtilitySettingController::class, 'index']);
-Route::post('add-category', [UtilitySettingController::class, 'store']);
-Route::put('category', [UtilitySettingController::class, 'update']);
-Route::delete('categorydelete/{id}', [UtilitySettingController::class, 'destroy']);
-
-Route::get('all-request', [ReceiveServiceController::class, 'allRequest']);
-Route::get('service-task', [ReceiveServiceController::class, 'index']);
-Route::get('closed-transactions', [ReceiveServiceController::class, 'closedTransaction']);
-Route::get('for-released', [RatingController::class, 'shesh']);
-Route::post('received-request', [ReceiveServiceController::class, 'store']);
-Route::put('serviced/{id}', [ReceiveServiceController::class, 'updateReceiveService']);
-
-Route::put('delete-received/{id}', [ReceiveServiceController::class, 'destroyPendingService']);
-Route::put('delete-serviced/{id}/{reqID}', [ReceiveServiceController::class, 'destroyReceiveTask']);
-
-
-Route::put('to-release/{id}', [ReceiveServiceController::class, 'updateReceiveToRelease']);
-Route::post('to-closed', [ReceiveServiceController::class, 'toReleased']);
-
-Route::get('closed-transaction/{id}', [RatingController::class, 'indexClosed']);
-Route::post('service-rating', [RatingController::class, 'serviceRatings']);
-Route::get('closed-view/{id}', [RatingController::class, 'closedView']);
-Route::put('closedNorate/{id}', [RatingController::class, 'closedNorate']);
-
+//Account List in Account (admin side)
 Route::get('/users-list', [UserController::class, 'showUsersList']);
 Route::post('/admin/register', [UserController::class, 'register']);
 Route::put('/admin/updateUser', [UserController::class, 'update']);
@@ -90,13 +82,19 @@ Route::post('add-office', [UtilitySettingController::class, 'addOffice']);
 Route::put('update-office', [UtilitySettingController::class, 'updateOffice']);
 Route::delete('delete-office/{id}', [UtilitySettingController::class, 'destroyOffice']);
 
+//Categories in Utility Setting (admin side)
+Route::get('category-list', [UtilitySettingController::class, 'showCategory']);
+Route::post('add-category', [UtilitySettingController::class, 'addCategory']);
+Route::put('update-category', [UtilitySettingController::class, 'updateCategory']);
+Route::delete('delete-category/{id}', [UtilitySettingController::class, 'destroyCategoy']);
+
 //Nature Request in Utility Setting (admin side)
 Route::get('nature-list', [NatureRequestController::class, 'showNature']);
 Route::post('add-nature', [NatureRequestController::class, 'addNature']);
 Route::put('update-nature', [NatureRequestController::class, 'updateNature']);
 Route::delete('delete-nature/{id}', [NatureRequestController::class, 'destroyNature']);
 
-
+//Technician in Utility Setting (admin side)
 Route::get('technician-list', [TechnicianController::class, 'showTechnician']);
 Route::post('add-technician', [TechnicianController::class, 'addTechnician']);
 Route::put('update-technician', [TechnicianController::class, 'updateTechnician']);

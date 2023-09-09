@@ -37,14 +37,15 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
     setIsSubmitting(true);
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/to-closed",
+        "http://127.0.0.1:8000/api/torate-request",
         formData
       );
 
       if (response.status === 201) {
         setIsSubmitting(false);
         message.success("Updated Successfully");
-        window.location.href = "/service-transaction";
+        onClose();
+        refreshData();
       } else {
         setIsSubmitting(false);
         console.error("Received an unexpected response:", response);

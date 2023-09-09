@@ -40,7 +40,7 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
 
   const fetchData = async () => {
     try {
-      const result = await axios.get("http://127.0.0.1:8000/api/categories");
+      const result = await axios.get("http://127.0.0.1:8000/api/category-list");
 
       setUtility(result.data.results);
     } catch (err) {
@@ -53,7 +53,7 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
     setIsSubmitting(true);
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/to-release/${data.id}`,
+        `http://127.0.0.1:8000/api/torelease-request/${data.id}`,
         formData
       );
 

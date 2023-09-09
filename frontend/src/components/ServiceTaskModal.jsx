@@ -46,7 +46,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
     setIsSubmitting(true);
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/serviced/${data.id}`,
+        `http://127.0.0.1:8000/api/onprogress-request/${data.id}`,
         formData
       );
 

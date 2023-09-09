@@ -11,33 +11,16 @@ use Illuminate\Support\Facades\DB;
 
 class ReceiveServiceController extends Controller
 {
-    public function index()
+    public function pendingRequest()
     {
-        $data = DB::table('user_requests')
-            ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
-            ->select('user_requests.*', 'receive_service.*')
-            ->whereNotIn('user_requests.status', ['Pending', 'Closed', 'Cancelled'])
-            ->get();
+        $pendingRequests = Requests::where('status', 'Pending')->get();
 
-        return response()->json(['results' => $data]);
+        return response()->json([
+            'results' => $pendingRequests
+        ], 200);
     }
 
-
-    public function closedTransaction()
-    {
-        $data = DB::table('user_requests')
-            ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
-            ->join('release_requests', 'receive_service.request_id', '=', 'release_requests.receivedReq_id')
-            ->select('user_requests.*', 'receive_service.*', 'release_requests.*')
-            ->where('user_requests.status', '=', 'Closed')
-            ->get();
-
-        return response()->json(['results' => $data]);
-    }
-
-
-
-    public function store(Request $request)
+    public function receivedRequest(Request $request)
     {
         $validatedData = $request->validate([
             'request_id' => 'required',
@@ -68,9 +51,38 @@ class ReceiveServiceController extends Controller
         return response()->json($data, 201);
     }
 
-    public function updateReceiveService(Request $request, $id)
+    public function destroyService($id)
     {
+        $user = Requests::find($id);
 
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not found.'
+            ], 404);
+        }
+
+        if ($user) {
+            $user->update(['status' => 'Cancelled']);
+        }
+
+        return response()->json([
+            'message' => 'User deleted successfully.'
+        ], 200);
+    }
+
+    public function showServiceTask()
+    {
+        $data = DB::table('user_requests')
+            ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
+            ->select('user_requests.*', 'receive_service.*')
+            ->whereNotIn('user_requests.status', ['Pending', 'Closed', 'Cancelled'])
+            ->get();
+
+        return response()->json(['results' => $data]);
+    }
+
+    public function onprogressRequest(Request $request, $id)
+    {
         $validatedData = $request->validate([
             'request_id' => 'required',
             'receivedBy' => 'required',
@@ -100,7 +112,7 @@ class ReceiveServiceController extends Controller
         return response()->json(['message' => 'ReceiveService updated successfully', 'data' => $receiveService]);
     }
 
-    public function updateReceiveToRelease(Request $request, $id)
+    public function toreleaseRequest(Request $request, $id)
     {
         $validatedData = $request->validate([
             'request_id' => 'required',
@@ -116,7 +128,6 @@ class ReceiveServiceController extends Controller
             'remarks' => 'required',
         ]);
 
-
         $receiveService = ReceiveService::findOrFail($id);
         $receiveService->update($validatedData);
 
@@ -131,71 +142,7 @@ class ReceiveServiceController extends Controller
         return response()->json(['message' => 'ReceiveService updated successfully', 'data' => $receiveService]);
     }
 
-    public function allRequest()
-    {
-        $pendingRequests = Requests::where('status', 'Pending')->get();
-
-        return response()->json([
-            'results' => $pendingRequests
-        ], 200);
-    }
-
-    public function show($id)
-    {
-
-        $record = ReceiveService::find($id);
-
-        if (!$record) {
-            return response()->json(['message' => 'Record not found'], 404);
-        }
-
-        return response()->json(['data' => $record], 200);
-    }
-
-    public function destroyPendingService($id)
-    {
-        $user = Requests::find($id);
-
-        if (!$user) {
-            return response()->json([
-                'message' => 'User not found.'
-            ], 404);
-        }
-
-        if ($user) {
-            $user->update(['status' => 'Cancelled']);
-        }
-
-        return response()->json([
-            'message' => 'User deleted successfully.'
-        ], 200);
-    }
-
-    public function destroyReceiveTask($id, $request_id)
-    {
-        $receivedID = ReceiveService::find($id);
-        $requestID = Requests::find($request_id);
-
-        if (!$receivedID) {
-            return response()->json([
-                'message' => 'User not found.'
-            ], 404);
-        }
-
-        // Update the status of the request to "Cancelled"
-        if ($requestID) {
-            $requestID->update(['status' => 'Cancelled']);
-        }
-
-        return response()->json([
-            'message' => 'User deleted successfully.'
-        ], 200);
-    }
-
-
-
-
-    public function toReleased(Request $request)
+    public function torateRequest(Request $request)
     {
         $validatedData = $request->validate([
             'receivedReq_id' => 'required',
@@ -222,5 +169,26 @@ class ReceiveServiceController extends Controller
 
         $data = ReleaseRequests::create($validatedData);
         return response()->json($data, 201);
+    }
+
+    public function destroyReceiveTask($id, $request_id)
+    {
+        $receivedID = ReceiveService::find($id);
+        $requestID = Requests::find($request_id);
+
+        if (!$receivedID) {
+            return response()->json([
+                'message' => 'User not found.'
+            ], 404);
+        }
+
+        // Update the status of the request to "Cancelled"
+        if ($requestID) {
+            $requestID->update(['status' => 'Cancelled']);
+        }
+
+        return response()->json([
+            'message' => 'User deleted successfully.'
+        ], 200);
     }
 }

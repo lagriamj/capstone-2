@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 class RatingController extends Controller
 {
 
-    public function indexClosed($id)
+    public function showTransanction($id)
     {
         $data = DB::table('user_requests')
             ->select('user_requests.*')
@@ -22,42 +22,28 @@ class RatingController extends Controller
         return response()->json(['results' => $data]);
     }
 
+    public function showServiceTransanction()
+    {
+        $data = DB::table('user_requests')
+            ->select('user_requests.*')
+            ->whereNotIn('status', ['Pending', 'Received', 'On Progress', 'To Release', 'To Rate'])
+            ->get();
+        return response()->json(['results' => $data]);
+    }
+
     public function closedView($id)
     {
         $closedData = DB::table('user_requests')
             ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
             ->join('release_requests', 'receive_service.id', '=', 'release_requests.receivedReq_id')
-            ->where('user_requests.id', $id) // Filter by the specific ID
+            ->where('user_requests.id', $id)
             ->select('user_requests.*', 'receive_service.*', 'release_requests.*')
             ->get();
 
         return response()->json(['results' => $closedData]);
     }
 
-
-
-
-
-
-    public function shesh(Request $request)
-    {
-        $validatedData = $request->validate([
-            'receivedReq_id' => 'required',
-        ]);
-
-        $receivedReqId = $validatedData['receivedReq_id'];
-
-        $data = DB::table('user_requests')
-            ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
-            ->select('user_requests.*', 'receive_service.*')
-            ->where('receive_service.receivedReq_id', '=', $receivedReqId)
-            ->get();
-
-        return response()->json(['results' => $data]);
-    }
-
-
-    public function serviceRatings(Request $request)
+    public function rateTransaction(Request $request)
     {
         $validatedData = $request->validate([
             'user_id' => 'required',

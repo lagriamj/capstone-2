@@ -6,7 +6,7 @@ import axios from "axios";
 import ServiceTaskModal from "../../components/ServiceTaskModal";
 import ServiceReleaseModal from "../../components/ServiceReleaseModal";
 import ReleasedModal from "../../components/ReleasedModal";
-import ClosedModal from "../../components/ClosedModal";
+import ToRateModal from "../../components/ToRateModal";
 //import ClosedModal from "../../components/ClosedModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -117,7 +117,7 @@ const ServiceTask = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/service-task"
+        "http://127.0.0.1:8000/api/service-task-list"
       );
       if (response.status === 200) {
         setLoading(false);
@@ -567,7 +567,7 @@ const ServiceTask = () => {
                 />
               )}
               {modalType === "ServiceClosed" && (
-                <ClosedModal
+                <ToRateModal
                   isOpen={isModalOpen}
                   onClose={closeModal}
                   datas={selectedData}

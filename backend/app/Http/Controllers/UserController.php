@@ -15,8 +15,6 @@ class UserController extends Controller
     //
     public function register(Request $request)
     {
-
-
         $request->validate([
             'userFirstName' => 'required',
             'userLastName' => 'required',
@@ -75,7 +73,6 @@ class UserController extends Controller
         }
     }
 
-
     private function sendVerificationCode(User $user, $otpCode)
     {
         $client = new Client(getenv("TWILIO_SID"), getenv("TWILIO_AUTH_TOKEN"));
@@ -96,7 +93,6 @@ class UserController extends Controller
 
         return true; // Indicate that sending was successful
     }
-
 
     public function verifyOTP(Request $request)
     {

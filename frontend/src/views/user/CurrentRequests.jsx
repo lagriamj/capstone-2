@@ -95,7 +95,7 @@ const CurrentRequests = () => {
     try {
       setLoading(true);
       const result = await axios.get(
-        "http://127.0.0.1:8000/api/current-request",
+        "http://127.0.0.1:8000/api/request-list",
         {
           params: {
             user_id: userID, // Pass the user_id from your component's state
@@ -173,7 +173,7 @@ const CurrentRequests = () => {
 
   const handleDelete = async (id) => {
     console.log(id);
-    await axios.delete(`http://127.0.0.1:8000/api/requestdelete/${id}`);
+    await axios.delete(`http://127.0.0.1:8000/api/delete-request/${id}`);
     const newUserData = data.filter((item) => item.id !== id);
     setData(newUserData);
   };

@@ -60,7 +60,7 @@ const Transactions = () => {
     setIsFetchingData(true);
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/closed-transaction/${userID}`
+        `http://127.0.0.1:8000/api/transaction-list/${userID}`
       );
       if (response.status === 200) {
         setData(response.data.results);
