@@ -17,7 +17,10 @@ import { useState, useEffect } from "react";
 import { useUser } from "../UserContext";
 import { useAuth } from "../AuthContext";
 import { Checkbox } from "antd";
+import Select from "react-select";
 import TermsAndConditionsModal from "../components/TermsAndConditionsModal";
+import "./Register.css";
+//import Select from "react-select";
 
 const InputBox = ({
   value,
@@ -82,6 +85,8 @@ const Register = () => {
   const navigate = useNavigate();
   const { setUser } = useUser();
   const { userRole, isAuthenticated } = useAuth();
+  const [officeOptions, setOfficeOptions] = useState([]);
+  const [selectedOffice, setSelectedOffice] = useState(null);
 
   useEffect(() => {
     // If the user is already authenticated, redirect them to the appropriate page
@@ -98,6 +103,60 @@ const Register = () => {
     return null; // or return a loading message, or redirect immediately
   }
 
+  useEffect(() => {
+    fetchOfficeList();
+  }, []);
+
+  const OfficeValue = selectedOffice;
+
+  useEffect(() => {
+    console.log(`Office Value: ${OfficeValue}`);
+  });
+
+  const fetchOfficeList = async () => {
+    try {
+      const result = await axios.get("http://127.0.0.1:8000/api/office-list");
+      console.log(result.data.results);
+      setOfficeOptions(result.data.results);
+      console.log(officeOptions);
+    } catch (err) {
+      console.log("Something went wrong:", err);
+    }
+  };
+
+  useEffect(() => {
+    console.log(`Selected Office: ${selectedOffice}`);
+  });
+
+  const customStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      border: state.isFocused
+        ? "2px solid #cbd5e0"
+        : "2px solid rgb(148 163 184)",
+      backgroundColor: "#ffffff",
+      borderRadius: "0.5rem",
+      boxShadow: "none",
+      height: "3.5rem",
+      outline: "none",
+      fontSize: "1rem",
+      paddingLeft: "3rem",
+      fontFamily: "Poppins",
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? "#343467" : "white",
+      color: state.isSelected ? "white" : "black",
+      fontSize: "1.125rem",
+      lineHeight: "1.75rem",
+    }),
+  };
+
+  const optionsModeOfRequest = [
+    { value: "Walk-In", label: "Walk-In" },
+    { value: "Online", label: "Online" },
+  ];
+
   const registerUser = async (e) => {
     e.preventDefault();
 
@@ -105,7 +164,7 @@ const Register = () => {
       userFirstName: userFirstName,
       userLastName: userLastName,
       userGovernmentID: userGovernmentID,
-      office: office,
+      office: selectedOffice,
       division: division,
       userEmail: userEmail,
       userContactNumber: userContactNumber,
@@ -192,7 +251,7 @@ const Register = () => {
 
         {/* Right Column */}
         <div className="w-full lg:w-1/2 h-screen  bg-gray-200 py-5 flex flex-col items-center justify-center overflow-auto ml-auto">
-          <div className="  bg-white lg:w-[70%] w-[90%] py-5  h-auto rounded-2xl shadow-xl text-4xl">
+          <div className="  bg-white lg:w-[80%] w-[90%] py-5  h-auto rounded-2xl shadow-xl text-4xl">
             <div className="w-full  flex flex-col gap-4">
               <div className="lg:hidden flex my-5 gap-4 items-center justify-center">
                 <img className="w-20 h-20" src="/cityhalllogo.png" alt="" />
@@ -232,7 +291,7 @@ const Register = () => {
                       required
                       onChange={(e) => setUserFirstName(e.target.value)}
                     />
-                    <div className="absolute inset-y-0 left-0 flex items-center p-3 bg-main rounded-l-lg">
+                    <div className="absolute inset-y-0 left-0 flex items-center p-3 bg-main rounded-l-lg font">
                       <svg
                         className="w-6 h-7 text-white"
                         fill="currentColor"
@@ -284,16 +343,21 @@ const Register = () => {
                   <label className="font-semibold text-lg" htmlFor="office">
                     Office
                   </label>
-                  <div className="relative">
-                    <input
-                      className="w-full h-14 border-2 rounded-lg pl-14 pr-4 text-lg border-slate-400 focus:outline-none"
-                      type="text"
+                  <div className="relative h-14">
+                    <Select
                       name="office"
-                      id="office"
-                      value={office}
-                      placeholder="Office"
-                      required
-                      onChange={(e) => setOffice(e.target.value)}
+                      className="w-full"
+                      value={selectedOffice?.value}
+                      options={officeOptions.map((option) => ({
+                        value: option.office,
+                        label: option.office,
+                      }))}
+                      onChange={(selectedOption) =>
+                        setSelectedOffice(selectedOption.value)
+                      }
+                      isSearchable
+                      placeholder="Select an office..."
+                      styles={customStyles}
                     />
                     <div className="absolute inset-y-0 left-0 flex items-center p-3 bg-main rounded-l-lg">
                       <svg

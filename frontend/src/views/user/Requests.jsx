@@ -19,8 +19,10 @@ const Requests = () => {
   const [loading, setLoading] = useState(false);
   const [selectedNatureOfRequest, setSelectedNatureOfRequest] = useState(null);
   const [selectedModeOfRequest, setSelectedModeOfRequest] = useState(null);
+  const [selectedUnit, setSelectedUnit] = useState(null);
   const [office, setOffice] = useState("");
   const [division, setDivision] = useState("");
+  const [author, setAuthor] = useState("");
   const { userID, fullName } = useAuth();
   console.log("userID:", userID);
 
@@ -86,6 +88,34 @@ const Requests = () => {
     assignedTo: "None",
   });
 
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8000/api/office-list")
+      .then((response) => {
+        const officeList = response.data.results;
+        const matchingNature = officeList.find(
+          (item) => item.office === formOffice
+        );
+
+        // Check if matchingNature is defined before accessing its properties
+        if (matchingNature) {
+          setAuthor(matchingNature.head);
+
+          // Set the 'authorizedBy' property in formData
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            authorizedBy: matchingNature.head,
+          }));
+        } else {
+          // Handle the case where 'matchingNature' is not found
+          console.log("Matching office not found.");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [formOffice]);
+
   const changeUserFieldHandler = (e) => {
     setFormData({
       ...formData,
@@ -128,14 +158,28 @@ const Requests = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetchData();
+    fetchNature();
   }, []);
 
-  const fetchData = async () => {
+  const fetchNature = async () => {
     try {
       const result = await axios.get("http://127.0.0.1:8000/api/nature-list");
-
       setData(result.data.results);
+    } catch (err) {
+      console.log("Something went wrong:", err);
+    }
+  };
+
+  const [units, setUnit] = useState([]);
+
+  useEffect(() => {
+    fetchUnit();
+  }, []);
+
+  const fetchUnit = async () => {
+    try {
+      const result = await axios.get("http://127.0.0.1:8000/api/category-list");
+      setUnit(result.data.results);
     } catch (err) {
       console.log("Something went wrong:", err);
     }
@@ -269,20 +313,31 @@ const Requests = () => {
                 />
               </div>
             </div>
-            <div className="flex flex-col lg:w-1/4 ">
-              <label htmlFor="unit" className="font-semibold text-lg ">
-                Unit:
-              </label>
-              <input
-                required
-                type="text"
-                id="unit"
-                name="unit"
-                className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                onChange={(e) => {
-                  changeUserFieldHandler(e);
-                }}
-              />
+            <div className="flex flex-col w-full lg:w-1/4">
+              <label className="font-semibold text-lg">Unit:</label>
+              <div className="relative">
+                <Select // Use react-select
+                  required
+                  name="unit"
+                  className="w-full  border-2 border-gray-400 bg-gray-50 rounded-md focus:outline-none"
+                  value={selectedUnit} // Set selected value
+                  onChange={(selectedOption) => {
+                    setSelectedUnit(selectedOption); // Update selected option
+                    changeUserFieldHandler({
+                      target: {
+                        name: "unit",
+                        value: selectedOption ? selectedOption.value : "",
+                      },
+                    });
+                  }}
+                  options={units.map((option) => ({
+                    value: option.utilityCategory,
+                    label: option.utilityCategory,
+                  }))}
+                  placeholder="Select an option..."
+                  styles={customStyles}
+                />
+              </div>
             </div>
             <div className="flex flex-col w-full lg:w-1/4 ">
               <div className="flex items-center gap-2">
@@ -340,10 +395,9 @@ const Requests = () => {
                 type="text"
                 id="authorizedBy"
                 name="authorizedBy"
+                value={author}
                 className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                onChange={(e) => {
-                  changeUserFieldHandler(e);
-                }}
+                readOnly
               />
             </div>
             <div className="flex flex-col w-full ">
