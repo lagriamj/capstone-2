@@ -82,7 +82,7 @@ const Requests = () => {
     propertyNo: "",
     serialNo: "",
     authorizedBy: "",
-    dateProcured: "",
+    dateProcured: "1111-11-11",
     specialIns: "",
     status: "Pending",
     assignedTo: "None",
@@ -97,17 +97,14 @@ const Requests = () => {
           (item) => item.office === formOffice
         );
 
-        // Check if matchingNature is defined before accessing its properties
         if (matchingNature) {
           setAuthor(matchingNature.head);
 
-          // Set the 'authorizedBy' property in formData
           setFormData((prevFormData) => ({
             ...prevFormData,
             authorizedBy: matchingNature.head,
           }));
         } else {
-          // Handle the case where 'matchingNature' is not found
           console.log("Matching office not found.");
         }
       })
@@ -117,10 +114,22 @@ const Requests = () => {
   }, [formOffice]);
 
   const changeUserFieldHandler = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    if (name === "dateProcured") {
+      const newValue = value || "1111-11-11";
+
+      setFormData({
+        ...formData,
+        [name]: newValue,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+
     console.log(formData);
   };
 
@@ -376,11 +385,10 @@ const Requests = () => {
                 Date Procured:
               </label>
               <input
-                required
                 type="date"
                 id="dateProcured"
                 name="dateProcured"
-                className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
                 onChange={(e) => {
                   changeUserFieldHandler(e);
                 }}
