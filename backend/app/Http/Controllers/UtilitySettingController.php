@@ -58,7 +58,7 @@ class UtilitySettingController extends Controller
 
         $utility->delete();
         return response()->json([
-            'message' => 'User deleted successfully.'
+            'message' => 'Category deleted successfully.'
         ], 200);
     }
 
@@ -89,13 +89,13 @@ class UtilitySettingController extends Controller
 
         if (!$office) {
             return response()->json([
-                'message' => 'User not found.'
+                'message' => 'Department not found.'
             ], 404);
         }
 
         $office->delete();
         return response()->json([
-            'message' => 'User deleted successfully.'
+            'message' => 'Department deleted successfully.'
         ], 200);
     }
 

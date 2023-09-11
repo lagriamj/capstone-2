@@ -57,7 +57,7 @@ class ReceiveServiceController extends Controller
 
         if (!$user) {
             return response()->json([
-                'message' => 'User not found.'
+                'message' => 'Request not found.'
             ], 404);
         }
 
@@ -66,7 +66,7 @@ class ReceiveServiceController extends Controller
         }
 
         return response()->json([
-            'message' => 'User deleted successfully.'
+            'message' => 'Request deleted successfully.'
         ], 200);
     }
 
@@ -178,7 +178,7 @@ class ReceiveServiceController extends Controller
 
         if (!$receivedID) {
             return response()->json([
-                'message' => 'User not found.'
+                'message' => 'Request not found.'
             ], 404);
         }
 
@@ -188,7 +188,7 @@ class ReceiveServiceController extends Controller
         }
 
         return response()->json([
-            'message' => 'User deleted successfully.'
+            'message' => 'Request deleted successfully.'
         ], 200);
     }
 }
