@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import AdminSidebar from "../../components/AdminSidebar";
 import AdminDrawer from "../../components/AdminDrawer";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { Tab, Tabs, useMediaQuery } from "@mui/material";
 import OfficeDepartment from "../../components/OfficeDepartment";
 import Categories from "../../components/Categories";
 import NatureOfRequest from "../../components/NatureOfRequest";
 import Technicians from "../../components/Technicians";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import "./Select.css";
 {
   /*import axios from "axios";
 import UtilityModal from "../../components/UtilityModal";
@@ -20,6 +22,12 @@ import { QuestionCircleOutlined } from "@ant-design/icons";*/
 
 const UtilitySettings = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [selectedOption, setSelectedOption] = useState("OfficeDepartment");
+
+  const handleOptionChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
+
   //const [utilityCategory, setUtilityCategory] = useState("");
   {
     /* const [utilitySettings, setUtilitySettings] = useState([]);
@@ -45,13 +53,6 @@ const [selectedCategoryId, setSelectedCategoryId] = useState(null); */
 
   const isLargeScreen = windowWidth >= 1024;
   const isWidth1980 = window.innerWidth === 1980;
-  const isMobile = useMediaQuery("(max-width:600px)");
-
-  const [tabValue, setTabValue] = useState(0);
-
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
 
   return (
     <HelmetProvider>
@@ -67,31 +68,47 @@ const [selectedCategoryId, setSelectedCategoryId] = useState(null); */
         <div
           className={`overflow-x-auto ${
             isWidth1980 ? "lg:w-[83%]" : "lg:w-[82%]"
-          } w-full lg:h-[90vh] relative mt-28 lg:mt-0   h-[80vh] pb-10 bg-white shadow-xl  lg:ml-72  border-0 border-gray-400  rounded-lg flex flex-col items-center font-sans`}
+          } w-full lg:h-[90vh] relative mt-28 lg:mt-0 h-[80vh] pb-10 bg-white shadow-xl  lg:ml-72  border-0 border-gray-400  rounded-lg flex flex-col items-center font-sans`}
         >
-          <Tabs
-            value={tabValue}
-            onChange={handleTabChange}
-            indicatorColor="secondary"
-            textColor="secondary"
-            centered={isMobile ? false : true}
-            className="w-full"
-            variant={isMobile ? "scrollable" : "fullWidth"}
-            scrollButtons={isMobile ? "auto" : false}
-          >
-            <Tab
-              label="Office/Department"
-              style={{ fontSize: "0.875rem", lineHeight: "1.25rem" }}
-            />
-            <Tab label="Categories" />
-            <Tab label="Nature of Request" />
-            <Tab label="Technician" />
-          </Tabs>
-          <div className="w-full h-screen  text-center">
-            {tabValue === 0 && <OfficeDepartment />}
-            {tabValue === 1 && <Categories />}
-            {tabValue === 2 && <NatureOfRequest />}
-            {tabValue === 3 && <Technicians />}
+          <div className="h-[12vh] w-full bg-main">
+            <div className="">
+              <div className="flex items-center">
+                <Select
+                  fullWidth
+                  style={{
+                    color: "white",
+                    border: "none",
+                    fontSize: "1.125rem",
+                    lineHeight: "1.75rem",
+                    fontFamily: "Poppins",
+                  }}
+                  value={selectedOption}
+                  onChange={handleOptionChange}
+                  //className="ml-2"
+                >
+                  <MenuItem value="OfficeDepartment">
+                    Office/Department
+                  </MenuItem>
+                  <MenuItem value="Categories">Categories</MenuItem>
+                  <MenuItem value="NatureOfRequest">Nature of Request</MenuItem>
+                  <MenuItem value="Technicians">Technician</MenuItem>
+                </Select>
+              </div>
+            </div>
+            <div className="w-full h-auto text-center">
+              {selectedOption === "OfficeDepartment" && (
+                <OfficeDepartment isLargeScreen={isLargeScreen} />
+              )}
+              {selectedOption === "Categories" && (
+                <Categories isLargeScreen={isLargeScreen} />
+              )}
+              {selectedOption === "NatureOfRequest" && (
+                <NatureOfRequest isLargeScreen={isLargeScreen} />
+              )}
+              {selectedOption === "Technicians" && (
+                <Technicians isLargeScreen={isLargeScreen} />
+              )}
+            </div>
           </div>
         </div>
       </div>

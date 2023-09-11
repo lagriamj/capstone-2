@@ -7,8 +7,9 @@ import { Button, Form, Input, Modal, Popconfirm, message } from "antd";
 import axios from "axios";
 import UpdateTechnicianModal from "./UpdateTechnicianModal";
 import { QuestionCircleOutlined } from "@ant-design/icons";
+import PropTypes from "prop-types";
 
-const Technicians = () => {
+const Technicians = ({ isLargeScreen }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [technicians, setTechnicians] = useState([]);
@@ -92,29 +93,55 @@ const Technicians = () => {
   return (
     <div className="w-full flex flex-col">
       <div className="w-full overflow-auto">
-        <Box
-          sx={{
-            position: "fixed",
-            right: 20,
-            bottom: 20,
-            zIndex: 100,
-          }}
-        >
-          <Fab
-            color="primary"
-            aria-label="add"
+        {isLargeScreen ? (
+          <Box
             sx={{
-              backgroundColor: "#2d3748",
-              fontSize: "large",
+              position: "fixed",
+              right: 20,
+              bottom: 20,
+              zIndex: 100,
             }}
-            onClick={showAddNewModal}
           >
-            <AddIcon />
-          </Fab>
-        </Box>
+            <Fab
+              variant="extended"
+              color="primary"
+              aria-label="add"
+              sx={{
+                paddingX: 3,
+                paddingY: 4,
+                backgroundColor: "#2d3748",
+                fontSize: "large",
+              }}
+              onClick={showAddNewModal}
+            >
+              <AddIcon sx={{ mr: 1 }} /> Add New
+            </Fab>
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              position: "fixed",
+              right: 20,
+              bottom: 20,
+              zIndex: 100,
+            }}
+          >
+            <Fab
+              color="primary"
+              aria-label="add"
+              sx={{
+                backgroundColor: "#2d3748",
+                fontSize: "large",
+              }}
+              onClick={showAddNewModal}
+            >
+              <AddIcon />
+            </Fab>
+          </Box>
+        )}
         <table className="w-full">
           <thead>
-            <tr className="bg-main h-[8vh] text-white">
+            <tr className="bg-gray-200 h-[8vh] text-main">
               <th className="w-[10%] px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
                 #
               </th>
@@ -243,6 +270,10 @@ const Technicians = () => {
       )}
     </div>
   );
+};
+
+Technicians.propTypes = {
+  isLargeScreen: PropTypes.bool.isRequired,
 };
 
 export default Technicians;
