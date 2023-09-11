@@ -94,14 +94,11 @@ const CurrentRequests = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const result = await axios.get(
-        "http://127.0.0.1:8000/api/request-list",
-        {
-          params: {
-            user_id: userID, // Pass the user_id from your component's state
-          },
-        }
-      );
+      const result = await axios.get("http://127.0.0.1:8000/api/request-list", {
+        params: {
+          user_id: userID, // Pass the user_id from your component's state
+        },
+      });
 
       setData(result.data.results);
       setIsSingleRequest(result.data.results.length === 1);
@@ -481,7 +478,7 @@ const CurrentRequests = () => {
                           className={`px-4 py-2 text-base whitespace-nowrap text-center`}
                         >
                           <p
-                            className={`rounded-xl py-2 ${
+                            className={`rounded-xl py-2 px-3 ${
                               item.status === "Pending"
                                 ? "bg-red-500 text-white" // Apply red background and white text for Pending
                                 : item.status === "Received"
