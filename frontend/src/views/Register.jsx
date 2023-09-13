@@ -107,12 +107,6 @@ const Register = () => {
     fetchOfficeList();
   }, []);
 
-  const OfficeValue = selectedOffice;
-
-  useEffect(() => {
-    console.log(`Office Value: ${OfficeValue}`);
-  });
-
   const fetchOfficeList = async () => {
     try {
       const result = await axios.get("http://127.0.0.1:8000/api/office-list");

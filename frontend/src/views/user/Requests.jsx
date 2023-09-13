@@ -18,7 +18,6 @@ const Requests = () => {
   const { setActiveTab } = useActiveTab();
   const [loading, setLoading] = useState(false);
   const [selectedNatureOfRequest, setSelectedNatureOfRequest] = useState(null);
-  const [selectedModeOfRequest, setSelectedModeOfRequest] = useState(null);
   const [selectedUnit, setSelectedUnit] = useState(null);
   const [office, setOffice] = useState("");
   const [division, setDivision] = useState("");
@@ -210,11 +209,6 @@ const Requests = () => {
     }),
   };
 
-  const optionsModeOfRequest = [
-    { value: "Walk-In", label: "Walk-In" },
-    { value: "Online", label: "Online" },
-  ];
-
   console.log(office + division);
 
   return (
@@ -232,7 +226,7 @@ const Requests = () => {
           <form
             action=""
             onSubmit={onSubmitChange}
-            className="w-11/12 h-auto flex lg:flex-wrap  text-xl gap-10 mt-10 flex-col lg:flex-row  "
+            className="w-11/12 h-auto flex lg:flex-wrap items-center justify-between  text-xl gap-10 mt-10 flex-col lg:flex-row  "
           >
             <div className="flex flex-col lg:w-1/4 ">
               <label htmlFor="reqOffice" className="font-semibold text-lg ">
@@ -299,29 +293,7 @@ const Requests = () => {
                 />
               </div>
             </div>
-            <div className="flex flex-col w-full lg:w-1/4">
-              <label className="font-semibold text-lg">Mode of Request</label>
-              <div className="relative">
-                <Select // Use react-select
-                  required
-                  name="modeOfRequest"
-                  className="w-full   border-2 border-gray-400 bg-gray-50 rounded-md focus:outline-none"
-                  value={selectedModeOfRequest} // Set selected value
-                  onChange={(selectedOption) => {
-                    setSelectedModeOfRequest(selectedOption); // Update selected option
-                    changeUserFieldHandler({
-                      target: {
-                        name: "modeOfRequest",
-                        value: selectedOption ? selectedOption.value : "",
-                      },
-                    });
-                  }}
-                  options={optionsModeOfRequest}
-                  placeholder="Select an option..."
-                  styles={customStyles}
-                />
-              </div>
-            </div>
+
             <div className="flex flex-col w-full lg:w-1/4">
               <label className="font-semibold text-lg">Unit:</label>
               <div className="relative">
@@ -364,50 +336,48 @@ const Requests = () => {
                 }}
               />
             </div>
-            <div className="flex flex-col lg:w-1/4 ">
-              <label htmlFor="serialNo" className="font-semibold text-lg ">
-                Serial No:
-              </label>
-              <input
-                required
-                type="text"
-                id="serialNo"
-                name="serialNo"
-                className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                onChange={(e) => {
-                  changeUserFieldHandler(e);
-                }}
-              />
+            <div className="flex lg:flex-row flex-col justify-between  w-full gap-10 ">
+              <div className="flex flex-col lg:w-1/4 ">
+                <label htmlFor="serialNo" className="font-semibold text-lg ">
+                  Serial No:
+                </label>
+                <input
+                  required
+                  type="text"
+                  id="serialNo"
+                  name="serialNo"
+                  className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                  onChange={(e) => {
+                    changeUserFieldHandler(e);
+                  }}
+                />
+              </div>
+
+              <div className="flex flex-col lg:w-1/4 ">
+                <label
+                  htmlFor="dateProcured"
+                  className="font-semibold text-lg "
+                >
+                  Date Procured:
+                </label>
+                <input
+                  type="date"
+                  id="dateProcured"
+                  name="dateProcured"
+                  className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                  onChange={(e) => {
+                    changeUserFieldHandler(e);
+                  }}
+                />
+              </div>
+              <div className="flex flex-col lg:w-1/4 ">
+                <input
+                  hidden
+                  className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                />
+              </div>
             </div>
 
-            <div className="flex flex-col lg:w-1/4 ">
-              <label htmlFor="dateProcured" className="font-semibold text-lg ">
-                Date Procured:
-              </label>
-              <input
-                type="date"
-                id="dateProcured"
-                name="dateProcured"
-                className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                onChange={(e) => {
-                  changeUserFieldHandler(e);
-                }}
-              />
-            </div>
-            <div className="flex flex-col lg:w-1/4 ">
-              <label htmlFor="authorizedBy" className="font-semibold text-lg ">
-                Authorized By:
-              </label>
-              <input
-                required
-                type="text"
-                id="authorizedBy"
-                name="authorizedBy"
-                value={author}
-                className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                readOnly
-              />
-            </div>
             <div className="flex flex-col w-full ">
               <label htmlFor="message" className="font-semibold text-lg">
                 Special Instruction{" "}
@@ -423,6 +393,20 @@ const Requests = () => {
                   changeUserFieldHandler(e);
                 }}
               ></textarea>
+            </div>
+            <div className="flex flex-col lg:w-1/4 ">
+              <label htmlFor="authorizedBy" className="font-semibold text-lg ">
+                Authorized By:
+              </label>
+              <input
+                required
+                type="text"
+                id="authorizedBy"
+                name="authorizedBy"
+                value={author}
+                className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                readOnly
+              />
             </div>
             <Button
               loading={loading}

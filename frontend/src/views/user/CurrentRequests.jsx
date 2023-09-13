@@ -2,12 +2,7 @@ import Sidebar from "../../components/Sidebar";
 import DrawerComponent from "../../components/DrawerComponent";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSearch,
-  faFilter,
-  faTimes,
-  faCheck,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faFilter } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
 import CurrentRequestModal from "../../components/CurrentRequestModal";
@@ -253,7 +248,7 @@ const CurrentRequests = () => {
       <div
         className={`className="flex flex-col lg:flex-row bg-gray-200 ${
           isWidth1980 ? "lg:pl-20" : "lg:pl-[3.0rem]"
-        } lg:py-5 h-screen`}
+        } lg:pt-5 h-screen`}
       >
         {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
         <div className="flex flex-col lg:pb-10 bg-gray-200 gap-5 lg:w-full">
@@ -288,19 +283,16 @@ const CurrentRequests = () => {
               <table className="w-full ">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
                   <tr className="border-b-2 border-gray-100">
-                    <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider  whitespace-nowrap text-center">
+                    <th className="w-20 px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       #
                     </th>
-                    <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
+                    <th className="w-30 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Request ID
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider  whitespace-nowrap text-center">
-                      Nature of Request
+                    <th className="w-40  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                      Date of Request
                     </th>
-                    <th className=" px-3 py-5 text-base font-semibold tracking-wider  whitespace-nowrap text-center">
-                      Assigned To
-                    </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider  whitespace-nowrap text-center">
+                    <th className="w-30  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Mode
                       <div className="relative inline-block">
                         <button
@@ -344,10 +336,16 @@ const CurrentRequests = () => {
                         )}
                       </div>
                     </th>
-
-                    <th
-                      className={`px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center`}
-                    >
+                    <th className="w-40  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                      Nature of Request
+                    </th>
+                    <th className="w-48  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                      Assigned To
+                    </th>
+                    <th className="w-48 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                      Date Updated
+                    </th>
+                    <th className="w-36  pl-5 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Status
                       <div className="relative inline-block">
                         <button
@@ -417,13 +415,7 @@ const CurrentRequests = () => {
                         )}
                       </div>
                     </th>
-                    <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider  whitespace-nowrap text-center">
-                      Date of Request
-                    </th>
-                    <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider  whitespace-nowrap text-center">
-                      Date Updated
-                    </th>
-                    <th className="w-56 px-3 py-5 text-base font-semibold tracking-wider  whitespace-nowrap text-center">
+                    <th className="w-30  py-5 text-base font-semibold tracking-wider  whitespace-nowrap text-left">
                       Action
                     </th>
                   </tr>
@@ -459,23 +451,29 @@ const CurrentRequests = () => {
                         className="border-b-2 border-gray-200 h-auto overflow-auto"
                         key={item.id}
                       >
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
+                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-left">
                           {firstIndex + index + 1}
                         </td>
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
-                          {item.id}
+                        <td className="py-3 pr-3 text-lg text-gray-700 whitespace-nowrap text-left">
+                          E-{item.id}
                         </td>
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
-                          {item.natureOfRequest}
+                        <td className="py-3 pr-5 text-lg text-gray-700 whitespace-nowrap text-left">
+                          {item.dateRequested}
                         </td>
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
-                          {item.assignedTo}
-                        </td>
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
+                        <td className="py-3 text-lg text-gray-700 whitespace-nowrap text-left">
                           {item.modeOfRequest}
                         </td>
+                        <td className="py-3 pr-5 text-lg text-gray-700 whitespace-nowrap text-left">
+                          {item.natureOfRequest}
+                        </td>
+                        <td className="py-3 text-lg text-gray-700 whitespace-nowrap text-left">
+                          {item.assignedTo}
+                        </td>
+                        <td className="py-3 text-lg text-gray-700 whitespace-nowrap text-left">
+                          {item.dateUpdated}
+                        </td>
                         <td
-                          className={`px-4 py-2 text-base whitespace-nowrap text-center`}
+                          className={`px-5 py-2 text-base whitespace-nowrap text-center`}
                         >
                           <p
                             className={`rounded-xl py-2 px-3 ${
@@ -499,13 +497,7 @@ const CurrentRequests = () => {
                             {item.status}
                           </p>
                         </td>
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
-                          {item.dateRequested}
-                        </td>
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
-                          {item.dateUpdated}
-                        </td>
-                        <td className="p-2 text-lg text-gray-700 flex gap-1 items-center justify-center">
+                        <td className="p-2 text-lg text-gray-700 flex gap-1 ">
                           {item.status === "To Rate" ? (
                             <button
                               className="text-white text-base font-medium bg-gray-800 py-2 px-4 rounded-lg"
@@ -535,7 +527,7 @@ const CurrentRequests = () => {
                               className="text-white text-base bg-gray-400 cursor-not-allowed py-2 px-4 rounded-lg"
                               disabled
                             >
-                              <FontAwesomeIcon icon={faTimes} />
+                              Cancel
                             </button>
                           ) : item.status === "To Rate" ? (
                             <Popconfirm
@@ -563,9 +555,9 @@ const CurrentRequests = () => {
                             >
                               <button
                                 onClick={() => showPopconfirmInRate(item.id)}
-                                className="text-white text-base bg-blue-600 py-2 px-4 rounded-lg"
+                                className="text-white text-base font-medium bg-red-600 py-2 px-5 rounded-lg"
                               >
-                                <FontAwesomeIcon icon={faCheck} />
+                                Close
                               </button>
                             </Popconfirm>
                           ) : (
@@ -594,9 +586,9 @@ const CurrentRequests = () => {
                             >
                               <button
                                 onClick={() => showPopconfirm(item.id)}
-                                className="text-white text-base bg-red-700 py-2 px-4 rounded-lg"
+                                className="text-white text-base font-medium bg-red-600 py-2 px-4 rounded-lg"
                               >
-                                <FontAwesomeIcon icon={faTimes} />
+                                Cancel
                               </button>
                             </Popconfirm>
                           )}

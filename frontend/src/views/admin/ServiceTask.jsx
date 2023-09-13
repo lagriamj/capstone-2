@@ -272,19 +272,19 @@ const ServiceTask = () => {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
                   <tr className="bg-gray-200">
-                    <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-20 px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       #
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className=" py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Request ID
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className=" py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Date of Request
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className=" py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Nature of Request
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
+                    <th className=" py-5 text-base font-semibold tracking-wider whitespace-nowrap text-left">
                       Mode
                       <div className="relative inline-block">
                         <button
@@ -328,11 +328,15 @@ const ServiceTask = () => {
                         )}
                       </div>
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Assigned To
                     </th>
+
+                    <th className=" py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                      Date Updated
+                    </th>
                     <th
-                      className={`px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center`}
+                      className={`w-58  py-5 text-base font-semibold tracking-wider whitespace-nowrap text-left`}
                     >
                       Status
                       <div className="relative inline-block">
@@ -403,10 +407,7 @@ const ServiceTask = () => {
                         )}
                       </div>
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
-                      Date Updated
-                    </th>
-                    <th className="w-56 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-42 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Action
                     </th>
                   </tr>
@@ -439,27 +440,31 @@ const ServiceTask = () => {
                   ) : (
                     filteredRecords.map((setting, index) => (
                       <tr key={setting.id}>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 px-3 py-3 border-gray-200 text-left">
                           {index + 1}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
                           {setting.request_id}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
                           {setting.dateRequested}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
                           {setting.natureOfRequest}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
                           {setting.modeOfRequest}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
                           {setting.assignedTo}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
+                          {setting.dateUpdated}
+                        </td>
+                        <td className="border-b-2 py-3 pr-16 border-gray-200 text-left">
                           <p
-                            className={`rounded-xl py-2 ${
+                            className={`rounded-xl py-2 text-center ${
                               setting.status === "Pending"
                                 ? "bg-red-500 text-white" // Apply red background and white text for Pending
                                 : setting.status === "Received"
@@ -481,10 +486,7 @@ const ServiceTask = () => {
                           </p>
                         </td>
                         <td className="border-b-2 py-3 border-gray-200 text-center">
-                          {setting.dateUpdated}
-                        </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
-                          <div className="flex items-center justify-center gap-1">
+                          <div className="flex  gap-1">
                             {setting.status === "To Rate" ? (
                               <button
                                 className="text-white bg-blue-500 font-medium px-6 py-2 rounded-lg"

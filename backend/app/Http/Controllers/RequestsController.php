@@ -52,7 +52,7 @@ class RequestsController extends Controller
             'reqOffice' => 'required',
             'division' => 'required',
             'natureOfRequest' => 'required',
-            'modeOfRequest' => 'required',
+            'modeOfRequest' => '',
             'unit' => 'required',
             'propertyNo' => 'required',
             'serialNo' => 'required',
@@ -66,10 +66,11 @@ class RequestsController extends Controller
 
         $validatedData['dateRequested'] = now();
         $validatedData['dateUpdated'] = now();
+        $validatedData['modeOfRequest'] = "Online";
 
-        $users = Requests::create($validatedData);
+        $request = Requests::create($validatedData);
 
-        return response()->json($users, 201);
+        return response()->json($request, 201);
     }
 
     public function update(Request $request, $id)

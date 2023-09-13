@@ -87,14 +87,13 @@ const Transactions = () => {
     setRatings(response.data.results);
   };
 
-  //const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
-  //const [selectedStatusFilters, setSelectedStatusFilters] = useState([]);
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+  const [selectedStatusFilters, setSelectedStatusFilters] = useState([]);
 
   const [isModeDropdownOpen, setIsModeDropdownOpen] = useState(false);
   const [selectedModeFilters, setSelectedModeFilters] = useState([]);
 
-  {
-    /* const toggleStatusDropdown = () => {
+  const toggleStatusDropdown = () => {
     setIsStatusDropdownOpen(!isStatusDropdownOpen);
   };
 
@@ -108,8 +107,7 @@ const Transactions = () => {
         return [selectedStatus];
       }
     });
-  }; */
-  }
+  };
 
   const toggleModeDropdown = () => {
     setIsModeDropdownOpen(!isModeDropdownOpen);
@@ -146,17 +144,15 @@ const Transactions = () => {
       item.modeOfRequest.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.dateRequested.toLowerCase().includes(searchQuery.toLowerCase());
 
-    {
-      /* const matchesStatusFilter =
+    const matchesStatusFilter =
       selectedStatusFilters.length === 0 ||
-  selectedStatusFilters.includes(item.status);  */
-    }
+      selectedStatusFilters.includes(item.status);
 
     const matchesModeFilter =
       selectedModeFilters.length === 0 ||
       selectedModeFilters.includes(item.modeOfRequest);
 
-    return matchesSearchQuery && matchesModeFilter;
+    return matchesSearchQuery && matchesModeFilter && matchesStatusFilter;
   });
 
   const [pageInput, setPageInput] = useState("");
@@ -243,19 +239,16 @@ const Transactions = () => {
               <table className="w-full ">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
                   <tr className="border-b-2 border-gray-100">
-                    <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-20 px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       #
                     </th>
-                    <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-30 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Request ID
                     </th>
-                    <th className="w-40 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
-                      Nature of Request
+                    <th className="w-40  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                      Date of Request
                     </th>
-                    <th className="w-40 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
-                      Assigned To
-                    </th>
-                    <th className="w-20 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-30  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Mode
                       <div className="relative inline-block">
                         <button
@@ -299,16 +292,86 @@ const Transactions = () => {
                         )}
                       </div>
                     </th>
-                    <th className="w-20 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
-                      Status
+                    <th className="w-40  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                      Nature of Request
                     </th>
-                    <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
-                      Date of Request
+                    <th className="w-48  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                      Assigned To
                     </th>
-                    <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-48 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Date Updated
                     </th>
-                    <th className="w-56 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-36  pl-5 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                      Status
+                      <div className="relative inline-block">
+                        <button
+                          onClick={toggleStatusDropdown}
+                          className="text-main focus:outline-none ml-2"
+                          style={{
+                            backgroundColor: "transparent",
+                            border: "none",
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            icon={faFilter}
+                            className="h-4 w-4"
+                          />
+                        </button>
+                        {isStatusDropdownOpen && (
+                          <div className="absolute right-0 bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg text-start">
+                            <label className="block px-4 py-2">
+                              <input
+                                type="checkbox"
+                                value="Pending"
+                                checked={selectedStatusFilters.includes(
+                                  "Pending"
+                                )}
+                                onChange={handleStatusCheckboxChange}
+                                className="mr-2"
+                              />
+                              Pending
+                            </label>
+                            <label className="block px-4 py-2">
+                              <input
+                                type="checkbox"
+                                value="Received"
+                                checked={selectedStatusFilters.includes(
+                                  "Received"
+                                )}
+                                onChange={handleStatusCheckboxChange}
+                                className="mr-2"
+                              />
+                              Received
+                            </label>
+                            <label className="block px-4 py-2">
+                              <input
+                                type="checkbox"
+                                value="On Progress"
+                                checked={selectedStatusFilters.includes(
+                                  "On Progress"
+                                )}
+                                onChange={handleStatusCheckboxChange}
+                                className="mr-2"
+                              />
+                              On Progress
+                            </label>
+                            <label className="block px-4 py-2">
+                              <input
+                                type="checkbox"
+                                value="toRelease"
+                                checked={selectedStatusFilters.includes(
+                                  "toRelease"
+                                )}
+                                onChange={handleStatusCheckboxChange}
+                                className="mr-2"
+                              />
+                              To Release
+                            </label>
+                          </div>
+                        )}
+                      </div>
+                    </th>
+                    <th className="w-30  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Action
                     </th>
                   </tr>
@@ -344,24 +407,34 @@ const Transactions = () => {
                         className="border-b-2 border-gray-200 h-auto overflow-auto"
                         key={item.id}
                       >
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
+                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-left">
                           {firstIndex + index + 1}
                         </td>
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
-                          {item.id}
+                        <td className="py-3 text-lg text-gray-700 whitespace-nowrap text-left">
+                          E-{item.id}
                         </td>
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
-                          {item.natureOfRequest}
+                        <td className="py-3 pr-5 text-lg text-gray-700 whitespace-nowrap text-left">
+                          {item.dateRequested}
                         </td>
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
-                          {item.assignedTo}
-                        </td>
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-center">
+                        <td className="py-3 text-lg text-gray-700 whitespace-nowrap text-left">
                           {item.modeOfRequest}
                         </td>
-                        <td className="text-center text-lg font-medium">
+                        <td className="py-3 pr-5 text-lg text-gray-700 whitespace-nowrap text-left">
+                          {item.natureOfRequest}
+                        </td>
+                        <td className="py-3 text-left text-lg font-medium whitespace-nowrap ">
+                          {item.assignedTo}
+                        </td>
+                        <td className="py-3 text-left text-lg font-medium whitespace-nowrap">
+                          {item.dateUpdated}
+                        </td>
+                        <td
+                          className={`${
+                            isWidth1980 ? "px-6" : "px-5"
+                          }  py-2 text-base whitespace-nowrap text-center`}
+                        >
                           <p
-                            className={` rounded-xl p-2 ${
+                            className={`rounded-xl py-2  ${
                               item.status === "Pending"
                                 ? "bg-red-500 text-white" // Apply red background and white text for Pending
                                 : item.status === "Received"
@@ -380,17 +453,11 @@ const Transactions = () => {
                             {item.status}
                           </p>
                         </td>
-                        <td className="text-center text-lg font-medium whitespace-nowrap">
-                          {item.dateRequested}
-                        </td>
-                        <td className="text-center text-lg font-medium whitespace-nowrap">
-                          {item.dateUpdated}
-                        </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
-                          <div className="flex items-center justify-center gap-1">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
+                          <div className="flex  gap-1">
                             {item.status === "Cancelled" ? (
                               <button
-                                className="text-white bg-blue-500 bg-gray-400 cursor-not-allowed font-medium px-3 py-2 rounded-lg"
+                                className="text-white bg-blue-500  cursor-not-allowed font-medium px-3 py-2 rounded-lg"
                                 disabled
                               >
                                 View
@@ -406,7 +473,7 @@ const Transactions = () => {
 
                             {item.status === "Cancelled" ? (
                               <button
-                                className="text-white text-base bg-gray-400 cursor-not-allowed py-2 px-4 rounded-lg"
+                                className="text-white text-base bg-gray-400 cursor-not-allowed py-2 px-3 rounded-lg"
                                 disabled
                               >
                                 <FontAwesomeIcon icon={faStar} />
@@ -432,6 +499,7 @@ const Transactions = () => {
                   )}
                 </tbody>
               </table>
+
               {rate && (
                 <RateModal
                   isOpen={rate}

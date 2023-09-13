@@ -210,19 +210,19 @@ const ServiceTransaction = () => {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
                   <tr className="bg-gray-200">
-                    <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-20 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                       #
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className=" py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Request ID
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className=" py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Date of Request
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className=" py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Nature of Request
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center">
+                    <th className=" py-5 text-base font-semibold tracking-wider whitespace-nowrap text-left">
                       Mode
                       <div className="relative inline-block">
                         <button
@@ -266,11 +266,14 @@ const ServiceTransaction = () => {
                         )}
                       </div>
                     </th>
-                    <th className="w-52 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-42 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Assigned To
                     </th>
+                    <th className="w-42 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                      Date Updated
+                    </th>
                     <th
-                      className={`px-3 py-5 text-base font-semibold tracking-wider whitespace-nowrap text-center`}
+                      className={`w-42  py-5 text-base font-semibold tracking-wider whitespace-nowrap text-left`}
                     >
                       Status
                       <div className="relative inline-block">
@@ -341,10 +344,8 @@ const ServiceTransaction = () => {
                         )}
                       </div>
                     </th>
-                    <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
-                      Date Updated
-                    </th>
-                    <th className="w-56 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+
+                    <th className="w-42 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Action
                     </th>
                   </tr>
@@ -380,22 +381,25 @@ const ServiceTransaction = () => {
                         <td className="border-b-2 py-3 border-gray-200 text-center">
                           {firstIndex + index + 1}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
                           {setting.id}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
                           {setting.dateRequested}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
                           {setting.natureOfRequest}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
                           {setting.modeOfRequest}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
                           {setting.assignedTo}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
+                          {setting.dateUpdated}
+                        </td>
+                        <td className="border-b-2 py-3 pr-16 border-gray-200 text-center">
                           <p
                             className={` rounded-xl py-2 ${
                               setting.status === "Pending"
@@ -416,11 +420,9 @@ const ServiceTransaction = () => {
                             {setting.status}
                           </p>
                         </td>
+
                         <td className="border-b-2 py-3 border-gray-200 text-center">
-                          {setting.dateUpdated}
-                        </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
-                          <div className="flex items-center justify-center gap-1">
+                          <div className="flex gap-1">
                             {setting.status === "Cancelled" ? (
                               <button
                                 className="text-white text-base bg-gray-400 cursor-not-allowed py-2 px-4 rounded-lg"

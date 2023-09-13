@@ -100,7 +100,9 @@ const ReceiveService = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/pending-request");
+      const response = await axios.get(
+        "http://127.0.0.1:8000/api/pending-request"
+      );
       if (response.status === 200) {
         setLoading(false);
         setData(response.data.results);
@@ -208,28 +210,28 @@ const ReceiveService = () => {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
                   <tr className="bg-gray-200">
-                    <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-10  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       #
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Request ID
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Property No.
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className=" py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Requesting Office
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Date
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className=" py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Nature Of Request
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Requested By
                     </th>
-                    <th className="w-56 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-56  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Action
                     </th>
                   </tr>
@@ -262,28 +264,28 @@ const ReceiveService = () => {
                   ) : (
                     filteredRecords.map((setting, index) => (
                       <tr key={setting.id}>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3  border-gray-200 text-center">
                           {firstIndex + index + 1}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
                           {setting.id}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
                           {setting.propertyNo}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
                           {setting.reqOffice}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
                           {setting.dateRequested}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
                           {setting.natureOfRequest}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left">
                           {setting.fullName}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-3 border-gray-200 text-left ">
                           <button
                             className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
                             onClick={() => openModal(setting)}

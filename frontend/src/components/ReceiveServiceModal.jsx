@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 import PropTypes from "prop-types";
@@ -76,6 +76,19 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
     }
   };
 
+  const [technicians, setTechnicians] = useState([]);
+
+  const fetchTechnicians = async () => {
+    const response = await axios.get(
+      "http://127.0.0.1:8000/api/technician-list"
+    );
+    setTechnicians(response.data.results);
+  };
+
+  useEffect(() => {
+    fetchTechnicians();
+  }, []);
+
   console.log(formData);
 
   return (
@@ -86,7 +99,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
       title={
         <div className="flex justify-between items-center">
           <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
-          <span>REQUEST ID: {data.id}</span>
+          <span>REQUEST ID: E-{data.id}</span>
         </div>
       }
       centered
@@ -323,16 +336,22 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 >
                   Assigned To
                 </label>
-                <input
+                <select
                   className="shadow-md appearance-none border-2 border-gray-800 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  type="text"
-                  id="assignedTo"
                   name="assignedTo"
+                  id="assignedTo"
                   required
                   onChange={(e) => {
                     changeUserFieldHandler(e);
                   }}
-                />
+                >
+                  <option value="">Select a technician</option>
+                  {technicians.map((technician) => (
+                    <option key={technician.id} value={technician.id}>
+                      {technician.technician}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="col-span-1">
                 <label
