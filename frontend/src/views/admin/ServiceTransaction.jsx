@@ -44,7 +44,7 @@ const ServiceTransaction = () => {
   }, []);
 
   const isLargeScreen = windowWidth >= 1024;
-  const isWidth1980 = window.innerWidth === 1980;
+  const isWidth1920 = window.innerWidth === 1920;
 
   useEffect(() => {
     fetchData();
@@ -174,18 +174,20 @@ const ServiceTransaction = () => {
       </Helmet>
       <div
         className={`className="flex flex-col lg:flex-row bg-gray-200 ${
-          isWidth1980 ? "lg:pl-20" : "lg:pl-[3.0rem]"
+          isWidth1920 ? "lg:pl-20" : "lg:pl-[3.0rem]"
         } lg:py-5 h-screen`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
         <div className="flex flex-col lg:pb-10 bg-gray-200 gap-2 lg:w-full">
           <div
             className={`overflow-x-auto ${
-              isWidth1980 ? "lg:w-[83%]" : "lg:w-[82%]"
-            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-4/5 pb-10 bg-white shadow-xl  lg:ml-72  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
+              isWidth1920
+                ? "lg:w-[84%]  lg:ml-[16.6rem]"
+                : "lg:w-[82%]  lg:ml-72"
+            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-4/5 pb-10 bg-white shadow-xl   border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
           >
             <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
-              <h1 className="font-sans lg:text-3xl text-xl mt-8 ml-5 mr-auto tracking-wide">
+              <h1 className="font-sans lg:text-3xl text-xl flex items-center justify-center ml-5 mr-auto tracking-wide">
                 Service Transaction
               </h1>
               <div className="relative flex items-center lg:mr-10 ">
@@ -203,26 +205,26 @@ const ServiceTransaction = () => {
               </div>
             </div>
             <div
-              className={`overflow-auto h-screen ${
-                isSingleRequest ? "h-screen" : ""
+              className={`overflow-auto lg:h-screen h-[68vh]${
+                isSingleRequest ? "lg:h-screen" : ""
               } rounded-lg w-full`}
             >
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
                   <tr className="bg-gray-200">
-                    <th className="w-20 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-20 pl-5 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
                       #
                     </th>
-                    <th className=" py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th className=" py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Request ID
                     </th>
-                    <th className=" py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th className=" py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Date of Request
                     </th>
-                    <th className=" py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th className=" py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Nature of Request
                     </th>
-                    <th className=" py-5 text-base font-semibold tracking-wider whitespace-nowrap text-left">
+                    <th className=" py-5 pl-5 text-base font-semibold tracking-wider whitespace-nowrap text-left">
                       Mode
                       <div className="relative inline-block">
                         <button
@@ -266,14 +268,14 @@ const ServiceTransaction = () => {
                         )}
                       </div>
                     </th>
-                    <th className="w-42 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th className="w-42 pl-5 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Assigned To
                     </th>
-                    <th className="w-42 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th className="w-42 pl-5 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Date Updated
                     </th>
                     <th
-                      className={`w-42  py-5 text-base font-semibold tracking-wider whitespace-nowrap text-left`}
+                      className={`w-42 pl-5  py-5 text-base font-semibold tracking-wider whitespace-nowrap text-left`}
                     >
                       Status
                       <div className="relative inline-block">
@@ -378,30 +380,30 @@ const ServiceTransaction = () => {
                   ) : (
                     filteredRecords.map((setting, index) => (
                       <tr key={setting.id}>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-center">
                           {firstIndex + index + 1}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-left">
+                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
                           {setting.id}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-left">
+                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
                           {setting.dateRequested}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-left">
+                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
                           {setting.natureOfRequest}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-left">
+                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
                           {setting.modeOfRequest}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-left">
+                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
                           {setting.assignedTo}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-left">
+                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
                           {setting.dateUpdated}
                         </td>
-                        <td className="border-b-2 py-3 pr-16 border-gray-200 text-center">
+                        <td className="border-b-2 pl-5 py-3 pr-16 border-gray-200 text-center">
                           <p
-                            className={` rounded-xl py-2 ${
+                            className={` rounded-xl lg:px-0 px-3 py-2 ${
                               setting.status === "Pending"
                                 ? "bg-red-500 text-white" // Apply red background and white text for Pending
                                 : setting.status === "Received"
@@ -421,8 +423,8 @@ const ServiceTransaction = () => {
                           </p>
                         </td>
 
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
-                          <div className="flex gap-1">
+                        <td className="border-b-2 py-3  border-gray-200 text-left">
+                          <div className="flex justify-start gap-1">
                             {setting.status === "Cancelled" ? (
                               <button
                                 className="text-white text-base bg-gray-400 cursor-not-allowed py-2 px-4 rounded-lg"
@@ -469,7 +471,7 @@ const ServiceTransaction = () => {
             </div>
           </div>
           <nav
-            className={`lg:ml-56 mr-6  ${isWidth1980 ? "lg:mr-10" : "lg:mr-8"}`}
+            className={`lg:ml-56 mr-6  ${isWidth1920 ? "lg:mr-10" : "lg:mr-8"}`}
           >
             <ul className="flex gap-2 items-center">
               <li className="flex-auto ml-10 lg:ml-20 mr-5 text-base font-bold">

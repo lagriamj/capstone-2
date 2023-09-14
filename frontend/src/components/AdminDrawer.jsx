@@ -13,7 +13,6 @@ import HandymanIcon from "@mui/icons-material/Handyman";
 import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
-import RecommendIcon from "@mui/icons-material/Recommend";
 import { useAuth } from "../AuthContext";
 import { useActiveTab } from "../ActiveTabContext";
 import { useActiveSubTab } from "../ActiveSubTabContext";
@@ -47,6 +46,7 @@ const AdminDrawer = () => {
   };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownUtilityOpen, setIsDropdownUtilityOpen] = useState(false);
 
   const handleItemClick = (item) => {
     setActive(item);
@@ -55,6 +55,11 @@ const AdminDrawer = () => {
   const handleAccountClick = (item) => {
     setActive(item);
     setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleUtilityClick = (item) => {
+    setActive(item);
+    setIsDropdownUtilityOpen(!isDropdownUtilityOpen);
   };
 
   return (
@@ -138,27 +143,81 @@ const AdminDrawer = () => {
             <WorkHistoryIcon></WorkHistoryIcon>
             <Link to={"/service-transaction"}>Service Transaction</Link>
           </li>
+
           <li
-            className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
-              activeTab === "recommendation"
+            className={`flex gap-3 items-center relative w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
+              activeTab === "utilitySettings"
                 ? "bg-white text-main font-semibold"
                 : ""
             }`}
-            onClick={() => handleItemClick("recommendation")}
-          >
-            <RecommendIcon></RecommendIcon>
-            <Link to={"/recommendation"}>Recommendation</Link>
-          </li>
-          <li
-            className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
-              activeTab === "utility-settings"
-                ? "bg-white text-main font-semibold"
-                : ""
-            }`}
-            onClick={() => handleItemClick("utility-settings")}
+            onClick={() => handleUtilityClick("utilitySettings")}
           >
             <FontAwesomeIcon icon={faGear} className="h-5" />
-            <Link to={"/utility-settings"}>Utility Settings</Link>
+            Utility Settings
+            <div
+              className={`absolute  top-10 left-0 w-full bg-white border rounded-lg shadow-lg p-3 ${
+                isDropdownUtilityOpen ? "" : "hidden"
+              }`}
+            >
+              {/* Dropdown Tabs */}
+              <div className="flex flex-col gap-2">
+                <button
+                  className={`block text-left px-3 py-2 w-full rounded-lg hover:bg-main hover:text-white ${
+                    activeSubTab === "departments"
+                      ? "bg-main text-white font-medium"
+                      : ""
+                  }`}
+                  onClick={() => {
+                    handleItemClickAccount("departments");
+                    navigate("/admin/departments");
+                  }}
+                >
+                  Departments/Office
+                </button>
+                <button
+                  className={`block text-left px-3 py-2 w-full rounded-lg hover:bg-main hover:text-white ${
+                    activeSubTab === "categories"
+                      ? "bg-main text-white font-medium"
+                      : ""
+                  }`}
+                  onClick={() => {
+                    // Handle tab click (e.g., navigate to a different page)
+                    handleItemClickAccount("categories");
+                    navigate("/admin/categories");
+                  }}
+                >
+                  Categories
+                </button>
+                <button
+                  className={`block text-left px-3 py-2 w-full rounded-lg hover:bg-main hover:text-white ${
+                    activeSubTab === "natureOfRequests"
+                      ? "bg-main text-white font-medium"
+                      : ""
+                  }`}
+                  onClick={() => {
+                    // Handle tab click (e.g., navigate to a different page)
+                    handleItemClickAccount("natureOfRequests");
+                    navigate("/admin/nature-of-requests");
+                  }}
+                >
+                  Nature of Requests
+                </button>
+                <button
+                  className={`block text-left px-3 py-2 w-full rounded-lg hover:bg-main hover:text-white ${
+                    activeSubTab === "technicians"
+                      ? "bg-main text-white font-medium"
+                      : ""
+                  }`}
+                  onClick={() => {
+                    // Handle tab click (e.g., navigate to a different page)
+                    handleItemClickAccount("technicians");
+                    navigate("/admin/technicians");
+                  }}
+                >
+                  Technicians
+                </button>
+              </div>
+            </div>
           </li>
         </ul>
 

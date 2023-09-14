@@ -24,6 +24,10 @@ import AdminAccount from "./views/admin/AdminAccount";
 import { ActiveTabProvider } from "./ActiveTabContext";
 import UsersList from "./views/admin/UsersList";
 import { ActiveSubTabProvider } from "./ActiveSubTabContext";
+import OfficeDepartment from "./views/admin/OfficeDepartment";
+import Categories from "./views/admin/Categories";
+import NatureOfRequest from "./views/admin/NatureOfRequest";
+import Technicians from "./views/admin/Technicians";
 
 function App() {
   function ProtectedRoute({ element, requiredRole }) {
@@ -177,6 +181,42 @@ function App() {
                 element={
                   <ProtectedRoute
                     element={<UsersList />}
+                    requiredRole={"admin"}
+                  />
+                }
+              />
+              <Route
+                path="/admin/departments"
+                element={
+                  <ProtectedRoute
+                    element={<OfficeDepartment />}
+                    requiredRole={"admin"}
+                  />
+                }
+              />
+              <Route
+                path="/admin/categories"
+                element={
+                  <ProtectedRoute
+                    element={<Categories />}
+                    requiredRole={"admin"}
+                  />
+                }
+              />
+              <Route
+                path="/admin/nature-of-requests"
+                element={
+                  <ProtectedRoute
+                    element={<NatureOfRequest />}
+                    requiredRole={"admin"}
+                  />
+                }
+              />
+              <Route
+                path="/admin/technicians"
+                element={
+                  <ProtectedRoute
+                    element={<Technicians />}
                     requiredRole={"admin"}
                   />
                 }

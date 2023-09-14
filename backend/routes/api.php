@@ -65,7 +65,7 @@ Route::get('service-task-list', [ReceiveServiceController::class, 'showServiceTa
 Route::put('onprogress-request/{id}', [ReceiveServiceController::class, 'onprogressRequest']);
 Route::put('torelease-request/{id}', [ReceiveServiceController::class, 'toreleaseRequest']);
 Route::post('torate-request', [ReceiveServiceController::class, 'torateRequest']);
-Route::put('delete-serviced/{id}/{reqID}', [ReceiveServiceController::class, 'destroyServiceTask']);
+Route::put('delete-serviced/{id}/{reqID}', [ReceiveServiceController::class, 'destroyReceiveTask']);
 
 //Service Transaction
 Route::get('closed-transaction', [RatingController::class, 'showServiceTransanction']);

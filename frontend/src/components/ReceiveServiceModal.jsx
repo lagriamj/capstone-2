@@ -347,7 +347,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 >
                   <option value="">Select a technician</option>
                   {technicians.map((technician) => (
-                    <option key={technician.id} value={technician.id}>
+                    <option key={technician.id} value={technician.technician}>
                       {technician.technician}
                     </option>
                   ))}

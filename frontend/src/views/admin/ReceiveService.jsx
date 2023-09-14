@@ -47,7 +47,7 @@ const ReceiveService = () => {
   }, []);
 
   const isLargeScreen = windowWidth >= 1024;
-  const isWidth1980 = window.innerWidth === 1980;
+  const isWidth1920 = window.innerWidth === 1920;
 
   useEffect(() => {
     // Initialize popconfirmVisible state with false for each row
@@ -174,15 +174,17 @@ const ReceiveService = () => {
       </Helmet>
       <div
         className={`className="flex flex-col lg:flex-row bg-gray-200 ${
-          isWidth1980 ? "lg:pl-20" : "lg:pl-[3.0rem]"
+          isWidth1920 ? "lg:pl-20" : "lg:pl-[3.0rem]"
         } lg:py-5 h-screen`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
         <div className="flex flex-col lg:pb-10 bg-gray-200 gap-2 lg:w-full">
           <div
             className={`overflow-x-auto ${
-              isWidth1980 ? "lg:w-[83%]" : "lg:w-[82%]"
-            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-4/5 pb-10 bg-white shadow-xl  lg:ml-72  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
+              isWidth1920
+                ? "lg:w-[84%]  lg:ml-[16.6rem]"
+                : "lg:w-[82%]  lg:ml-72"
+            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-4/5 pb-10 bg-white shadow-xl   border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
           >
             <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
               <h1 className="font-sans lg:text-3xl text-xl mt-8 ml-5 mr-auto tracking-wide">
@@ -203,35 +205,35 @@ const ReceiveService = () => {
               </div>
             </div>
             <div
-              className={`overflow-auto min-h-[50vh] ${
-                isSingleRequest ? "min-h-[50vh]" : ""
+              className={`overflow-auto lg:h-screen h-[68vh]${
+                isSingleRequest ? "lg:h-screen" : ""
               } rounded-lg w-full`}
             >
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
                   <tr className="bg-gray-200">
-                    <th className="w-10  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th className="w-20 pl-5  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       #
                     </th>
-                    <th className="py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th className="py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Request ID
                     </th>
-                    <th className="py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th className="py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Property No.
                     </th>
-                    <th className=" py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th className=" py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Requesting Office
                     </th>
-                    <th className="py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th className="py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Date
                     </th>
-                    <th className=" py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th className=" py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Nature Of Request
                     </th>
-                    <th className="py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th className="py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Requested By
                     </th>
-                    <th className="w-56  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th className="w-56 pl-5  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Action
                     </th>
                   </tr>
@@ -264,28 +266,28 @@ const ReceiveService = () => {
                   ) : (
                     filteredRecords.map((setting, index) => (
                       <tr key={setting.id}>
-                        <td className="border-b-2 py-3  border-gray-200 text-center">
+                        <td className="border-b-2 pl-5 py-3  border-gray-200 text-center">
                           {firstIndex + index + 1}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-left">
+                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
                           {setting.id}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-left">
+                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
                           {setting.propertyNo}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-left">
+                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
                           {setting.reqOffice}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-left">
+                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
                           {setting.dateRequested}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-left">
+                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
                           {setting.natureOfRequest}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-left">
+                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
                           {setting.fullName}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-left ">
+                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left ">
                           <button
                             className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
                             onClick={() => openModal(setting)}
@@ -337,7 +339,7 @@ const ReceiveService = () => {
             />
           </div>
           <nav
-            className={`lg:ml-56 mr-6  ${isWidth1980 ? "lg:mr-10" : "lg:mr-8"}`}
+            className={`lg:ml-56 mr-6  ${isWidth1920 ? "lg:mr-10" : "lg:mr-8"}`}
           >
             <ul className="flex gap-2 items-center">
               <li className="flex-auto ml-10 lg:ml-20 mr-5 text-base font-bold">

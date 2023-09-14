@@ -50,7 +50,7 @@ const Transactions = () => {
   }, []);
 
   const isLargeScreen = windowWidth >= 1024;
-  const isWidth1980 = window.innerWidth === 1980;
+  const isWidth1920 = window.innerWidth === 1920;
 
   useEffect(() => {
     fetchData();
@@ -203,15 +203,17 @@ const Transactions = () => {
       </Helmet>
       <div
         className={`className="flex flex-col lg:flex-row bg-gray-200 ${
-          isWidth1980 ? "lg:pl-20" : "lg:pl-[3.0rem]"
+          isWidth1920 ? "lg:pl-20" : "lg:pl-[3.0rem]"
         } lg:py-5 h-screen`}
       >
         {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
         <div className="flex flex-col lg:pb-10 bg-gray-200 gap-2 lg:w-full">
           <div
             className={`overflow-x-auto ${
-              isWidth1980 ? "lg:w-[83%]" : "lg:w-[82%]"
-            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-[80vh] pb-10 bg-white shadow-xl  lg:ml-72  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
+              isWidth1920
+                ? "lg:w-[84%]  lg:ml-[16.6rem]"
+                : "lg:w-[82%]  lg:ml-72"
+            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-[80vh] pb-10 bg-white shadow-xl   border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
           >
             <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
               <h1 className="font-sans lg:text-3xl text-xl mt-8 ml-5 mr-auto tracking-wide">
@@ -430,7 +432,7 @@ const Transactions = () => {
                         </td>
                         <td
                           className={`${
-                            isWidth1980 ? "px-6" : "px-5"
+                            isWidth1920 ? "px-6" : "px-5"
                           }  py-2 text-base whitespace-nowrap text-center`}
                         >
                           <p
@@ -520,7 +522,7 @@ const Transactions = () => {
             </div>
           </div>
           <nav
-            className={`lg:ml-56 mr-6  ${isWidth1980 ? "lg:mr-10" : "lg:mr-8"}`}
+            className={`lg:ml-56 mr-6  ${isWidth1920 ? "lg:mr-10" : "lg:mr-8"}`}
           >
             <ul className="flex gap-2 items-center">
               <li className="flex-auto ml-10 lg:ml-20 mr-5 text-base font-bold">

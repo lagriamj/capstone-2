@@ -219,7 +219,7 @@ const Requests = () => {
 
       <div className="flex flex-col lg:flex-row bg-gray-200 overflow-auto lg:pl-24 lg:py-10 h-screen">
         {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
-        <div className="w-[80%] pb-10 mt-20 lg:mt-10 bg-white shadow-xl h-auto  lg:ml-72 border-0 border-gray-400  self-center rounded-lg flex flex-col items-center font-sans">
+        <div className="w-[80%] pb-10 mt-20 lg:mt-0 bg-white shadow-xl h-[80vh]  lg:ml-72 border-0 border-gray-400  self-center rounded-lg flex flex-col items-center font-sans">
           <h1 className=" text-3xl text-center my-10 font-bold ">
             CITC TECHNICAL SERVICE REQUEST SLIP
           </h1>
