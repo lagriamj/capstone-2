@@ -66,7 +66,7 @@ export default function CurrentRequestModal({
         centered
         title={
           <div className="flex flex-col lg:flex-row font-sans text-xl py-6 px-10">
-            <label>{`Request ID: ${itemData.id}`}</label>
+            <label>{`Request ID: E-${itemData.id}`}</label>
             <label className="ml-auto ">{`Date Requested: ${
               itemData.dateRequested.split(" ")[0]
             }`}</label>
