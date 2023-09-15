@@ -19,7 +19,7 @@ class RequestsController extends Controller
 
 
         $startDateTime = Carbon::now();
-        $startDateTime->setTime(6, 5, 0);
+        $startDateTime->setTime(1, 5, 0);
 
         $endDateTime = Carbon::now();
         $endDateTime->setTime(23, 59, 0);

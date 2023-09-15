@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ReceiveService;
 use App\Models\Requests;
+use App\Models\CancelReason;
 use App\Models\ReleaseRequests;
 use Illuminate\Support\Facades\DB;
 
@@ -190,5 +191,35 @@ class ReceiveServiceController extends Controller
         return response()->json([
             'message' => 'Request deleted successfully.'
         ], 200);
+    }
+
+
+    public function cancelReason(Request $request, $requestId)
+    {
+        try {
+            $reason = $request->input('reason');
+
+            $cancelReason = new CancelReason([
+                'request_id' => $requestId,
+                'reason' => $reason,
+            ]);
+            $request_id = Requests::find($requestId);
+            $request_id->update(['status' => 'Cancelled']);
+            $cancelReason->save();
+
+            return response()->json(['message' => 'Cancellation reason saved successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to save cancellation reason'], 500);
+        }
+    }
+
+    public function viewCancelRequest($id)
+    {
+        $data = DB::table('user_requests')
+            ->join('cancel_reason', 'user_requests.id', '=', 'cancel_reason.request_id')
+            ->where('user_requests.id', $id)
+            ->select('user_requests.*', 'cancel_reason.*')
+            ->get();
+        return response()->json(['results' => $data]);
     }
 }

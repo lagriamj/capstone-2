@@ -19,7 +19,6 @@ import ReceiveService from "./views/admin/ReceiveService";
 import ServiceTask from "./views/admin/ServiceTask";
 import ServiceTransaction from "./views/admin/ServiceTransaction";
 import Recommendation from "./views/admin/Recommendation";
-import UtilitySettings from "./views/admin/UtilitySettings";
 import AdminAccount from "./views/admin/AdminAccount";
 import { ActiveTabProvider } from "./ActiveTabContext";
 import UsersList from "./views/admin/UsersList";
@@ -158,15 +157,7 @@ function App() {
                   />
                 }
               />
-              <Route
-                path="/utility-settings"
-                element={
-                  <ProtectedRoute
-                    element={<UtilitySettings />}
-                    requiredRole={"admin"}
-                  />
-                }
-              />
+
               <Route
                 path="/admin/account"
                 element={

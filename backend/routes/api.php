@@ -35,6 +35,11 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LogoutController::class, 'logout']);
 Route::put('/update-phone', [UserController::class, 'updatePhoneNumber']);
 
+//Admin and User
+Route::post('/change-password', [UserController::class, 'changePassword']);
+Route::post('/check-password', [UserController::class, 'checkPassword']);
+Route::put('/update-contact', [UserController::class, 'updateContactNumber']);
+
 //Request Services (user side)
 Route::get('/getOfficeAndDivision/{userID}', [RequestsController::class, 'getOfficeAndDivision']);
 Route::post('add-request', [RequestsController::class, 'addRequest']);
@@ -51,9 +56,6 @@ Route::post('transanction-rate', [RatingController::class, 'rateTransaction']);
 
 //Account (user side)
 Route::get('/account', [UserController::class, 'accountDetails']);
-Route::post('/change-password', [UserController::class, 'changePasswoequestupdaterd']);
-Route::post('/check-password', [UserController::class, 'checkPassword']);
-Route::put('/update-contact', [UserController::class, 'updateContactNumber']);
 
 //Receive Service (admin side)
 Route::put('delete-receive/{id}', [ReceiveServiceController::class, 'destroyService']);
@@ -99,3 +101,6 @@ Route::get('technician-list', [TechnicianController::class, 'showTechnician']);
 Route::post('add-technician', [TechnicianController::class, 'addTechnician']);
 Route::put('update-technician', [TechnicianController::class, 'updateTechnician']);
 Route::delete('delete-technician/{id}', [TechnicianController::class, 'destroyTechnician']);
+
+Route::post('cancel-reason/{id}', [ReceiveServiceController::class, 'cancelReason']);
+Route::get('view-cancelled/{id}', [ReceiveServiceController::class, 'viewCancelRequest']);

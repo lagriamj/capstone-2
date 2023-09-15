@@ -10,6 +10,7 @@ import { Skeleton, message } from "antd";
 import ClosedModal from "../../components/ClosedModal";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { useAuth } from "../../AuthContext";
+import ViewCancel from "../../components/ViewCancel";
 
 const Transactions = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -23,6 +24,14 @@ const Transactions = () => {
   const { userID } = useAuth();
   const [view, setView] = useState(false);
   const [viewRequest, seViewRequest] = useState(false);
+
+  const [cancel, setCancel] = useState(false);
+  const [viewCancel, setViewCancel] = useState(false);
+
+  const handleCancelRequest = (data) => {
+    setViewCancel(data);
+    setCancel(true);
+  };
 
   const handleViewRequest = (data) => {
     seViewRequest(data);
@@ -459,8 +468,8 @@ const Transactions = () => {
                           <div className="flex  gap-1">
                             {item.status === "Cancelled" ? (
                               <button
-                                className="text-white bg-blue-500  cursor-not-allowed font-medium px-3 py-2 rounded-lg"
-                                disabled
+                                className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
+                                onClick={() => handleCancelRequest(item)}
                               >
                                 View
                               </button>
@@ -517,6 +526,14 @@ const Transactions = () => {
                   isOpen={view}
                   onClose={() => setView(false)}
                   datas={viewRequest} // Pass the selectedItemId as a prop
+                />
+              )}
+
+              {cancel && (
+                <ViewCancel
+                  isOpen={cancel}
+                  onClose={() => setCancel(false)}
+                  datas={viewCancel} // Pass the selectedItemId as a prop
                 />
               )}
             </div>

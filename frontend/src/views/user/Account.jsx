@@ -209,7 +209,7 @@ const Account = () => {
               <div className="lg:w-1/4 w-[80%]">
                 <div className="flex flex-col">
                   <label className="font-semibold text-lg " htmlFor="userRole">
-                    Typed:
+                    Type:
                   </label>
                   <input
                     type="text"
@@ -243,23 +243,6 @@ const Account = () => {
               </div>
               <div className="lg:w-1/4 w-[80%]">
                 <div className="flex flex-col">
-                  <label className="font-semibold text-lg " htmlFor="userEmail">
-                    Email:
-                  </label>
-                  <input
-                    type="text"
-                    name="userEmail"
-                    id="userEmail"
-                    value={userData?.userEmail || ""}
-                    className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                    readOnly
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="flex lg:gap-10 gap-4 items-center my-4 flex-col lg:flex-row">
-              <div className="lg:w-1/4 w-[80%]">
-                <div className="flex flex-col">
                   <label
                     className="font-semibold text-lg "
                     htmlFor="userLastName"
@@ -276,6 +259,56 @@ const Account = () => {
                   />
                 </div>
               </div>
+            </div>
+            <div className="flex lg:gap-10 gap-4 items-center flex-col lg:flex-row ">
+              <div className="lg:w-1/4 w-[80%]  ">
+                <div className="flex flex-col">
+                  <label className="font-semibold text-lg " htmlFor="office">
+                    Office:
+                  </label>
+                  <input
+                    type="text"
+                    name="office"
+                    id="office"
+                    value={userData?.office || ""}
+                    className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                    readOnly
+                  />
+                </div>
+              </div>
+              <div className="lg:w-1/4 w-[80%]">
+                <div className="flex flex-col">
+                  <label className="font-semibold text-lg " htmlFor="division">
+                    Division:
+                  </label>
+                  <input
+                    type="text"
+                    name="division"
+                    id="division"
+                    value={userData?.division || ""}
+                    className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                    readOnly
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="flex lg:gap-10 gap-4 items-center my-4 flex-col lg:flex-row">
+              <div className="lg:w-1/4 w-[80%]">
+                <div className="flex flex-col">
+                  <label className="font-semibold text-lg " htmlFor="userEmail">
+                    Email:
+                  </label>
+                  <input
+                    type="text"
+                    name="userEmail"
+                    id="userEmail"
+                    value={userData?.userEmail || ""}
+                    className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                    readOnly
+                  />
+                </div>
+              </div>
+
               <div className="lg:w-1/4 w-[80%]">
                 <div className="flex flex-col">
                   <div className="flex">

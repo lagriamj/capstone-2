@@ -16,6 +16,7 @@ import { message, Skeleton } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import RateModal from "../../components/RateModal";
+import ReasonModal from "../../components/ReasonModal";
 
 const CurrentRequests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -35,6 +36,24 @@ const CurrentRequests = () => {
   const [selectedID, setSelectedID] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedOffice, setSelectedOffice] = useState(null);
+
+  const [selectedReason, setSelectedReason] = useState(null);
+  // eslint-disable-next-line no-unused-vars
+  const [isReasonModalOpen, setIsReasonModalOpen] = useState(false);
+
+  const handleOpenReasonModalClick = (id) => {
+    setSelectedReason(id);
+  };
+
+  const handleCloseReasonModalClick = () => {
+    setSelectedReason(null);
+  };
+
+  const handleReasonModalSubmit = () => {
+    setIsReasonModalOpen(false);
+    fetchData();
+    message.success("Request Cancelled Successfully");
+  };
 
   const handleStarIconClick = (id, user_id, office) => {
     setSelectedID(id);
@@ -115,25 +134,6 @@ const CurrentRequests = () => {
     setPopconfirmVisible(new Array(data.length).fill(false));
   }, [data]);
 
-  const showPopconfirm = (id) => {
-    setOpen(true);
-    const popconfirmVisibleCopy = [...popconfirmVisible];
-    popconfirmVisibleCopy[id] = true;
-    setPopconfirmVisible(popconfirmVisibleCopy);
-    setTimeout(() => {
-      setOpen(false);
-      setPopconfirmVisible(false);
-    }, 5000);
-  };
-
-  const handleOk = (item) => {
-    handleDelete(item);
-    handleCancel(item);
-    setTimeout(() => {
-      setOpen(false);
-    }, 2000);
-  };
-
   const showPopconfirmInRate = (id) => {
     setOpen(true);
     const popconfirmVisibleCopy = [...popconfirmVisible];
@@ -165,13 +165,6 @@ const CurrentRequests = () => {
     const popconfirmVisibleCopy = [...popconfirmVisible];
     popconfirmVisibleCopy[index] = false;
     setPopconfirmVisible(popconfirmVisibleCopy);
-  };
-
-  const handleDelete = async (id) => {
-    console.log(id);
-    await axios.delete(`http://127.0.0.1:8000/api/delete-request/${id}`);
-    const newUserData = data.filter((item) => item.id !== id);
-    setData(newUserData);
   };
 
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
@@ -595,36 +588,14 @@ const CurrentRequests = () => {
                               </button>
                             </Popconfirm>
                           ) : (
-                            <Popconfirm
-                              placement="left"
-                              title="Cancel the request"
-                              description="Are you sure to cancel this request?"
-                              open={popconfirmVisible[item.id]}
-                              icon={
-                                <QuestionCircleOutlined
-                                  style={{ color: "red" }}
-                                />
+                            <button
+                              onClick={() =>
+                                handleOpenReasonModalClick(item.id)
                               }
-                              onConfirm={() => handleOk(item.id)}
-                              okButtonProps={{
-                                color: "red",
-                                className:
-                                  "text-black border-1 border-gray-300",
-                                size: "large",
-                              }}
-                              cancelButtonProps={{
-                                size: "large",
-                              }}
-                              onCancel={() => handleCancel(item.id)}
-                              okText="Yes"
+                              className="text-white text-base font-medium bg-red-600 py-2 px-4 rounded-lg"
                             >
-                              <button
-                                onClick={() => showPopconfirm(item.id)}
-                                className="text-white text-base font-medium bg-red-600 py-2 px-4 rounded-lg"
-                              >
-                                Cancel
-                              </button>
-                            </Popconfirm>
+                              Cancel
+                            </button>
                           )}
                         </td>
                       </tr>
@@ -638,6 +609,15 @@ const CurrentRequests = () => {
                     itemData={data.find((item) => item.id === selectedItemId)}
                     onClose={handleCloseModalClick} // Pass the callback here
                     isLargeScreen={isLargeScreen}
+                  />
+                )}
+                {selectedReason && (
+                  <ReasonModal
+                    display={true}
+                    itemData={data.find((item) => item.id === selectedReason)}
+                    onClose={handleCloseReasonModalClick} // Pass the callback here
+                    isLargeScreen={isLargeScreen}
+                    onSubmit={handleReasonModalSubmit}
                   />
                 )}
               </table>
