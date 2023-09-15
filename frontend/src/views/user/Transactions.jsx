@@ -205,6 +205,22 @@ const Transactions = () => {
     setRateView(hasNonNullDateRate);
   }, [ratings]); // Make sure to include ratings in the dependency array
 
+  const [windowWidth1366, setWindowWidth1366] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth1366(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const isScreenWidth1366 = windowWidth1366 === 1366;
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -212,8 +228,12 @@ const Transactions = () => {
       </Helmet>
       <div
         className={`className="flex flex-col lg:flex-row bg-gray-200 ${
-          isWidth1920 ? "lg:pl-20" : "lg:pl-[3.0rem]"
-        } lg:py-5 h-screen`}
+          isWidth1920
+            ? "lg:pl-20"
+            : isScreenWidth1366
+            ? "lg:pl-[0.5rem]"
+            : "lg:pl-[3.0rem]"
+        } lg:pt-5 h-screen`}
       >
         {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
         <div className="flex flex-col lg:pb-10 bg-gray-200 gap-2 lg:w-full">
@@ -221,22 +241,32 @@ const Transactions = () => {
             className={`overflow-x-auto ${
               isWidth1920
                 ? "lg:w-[84%]  lg:ml-[16.6rem]"
+                : isScreenWidth1366
+                ? "lg:w-[82%]  lg:ml-[14.5rem]"
                 : "lg:w-[82%]  lg:ml-72"
-            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-[80vh] pb-10 bg-white shadow-xl   border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
+            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-[80vh] pb-10 bg-white shadow-xl    border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
           >
             <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
-              <h1 className="font-sans lg:text-3xl text-xl mt-8 ml-5 mr-auto tracking-wide">
+              <h1
+                className={`font-sans flex items-center justify-center  ${
+                  isScreenWidth1366 ? "text-xl" : "lg:text-3xl text-xl"
+                }  ml-5 mr-auto tracking-wide`}
+              >
                 Service Transactions
               </h1>
               <div className="relative flex items-center lg:mr-10 ">
                 <FontAwesomeIcon
                   icon={faSearch}
-                  className="h-6 w-6 absolute ml-3 text-main"
+                  className={`${
+                    isScreenWidth1366 ? "w-4 h-4" : "w-6 h-6"
+                  } absolute ml-3 text-main`}
                 />
                 <input
                   type="text"
                   placeholder="Search"
-                  className="border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 h-14 lg:w-full w-[90%] focus:outline-none text-xl"
+                  className={`border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 lg:w-full w-[90%] focus:outline-none ${
+                    isScreenWidth1366 ? "text-sm h-10" : "text-xl h-14"
+                  }`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -250,16 +280,32 @@ const Transactions = () => {
               <table className="w-full ">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
                   <tr className="border-b-2 border-gray-100">
-                    <th className="w-20 px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-20 px-3 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       #
                     </th>
-                    <th className="w-30 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-30 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Request ID
                     </th>
-                    <th className="w-40  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-40  ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Date of Request
                     </th>
-                    <th className="w-30  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-30  ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Mode
                       <div className="relative inline-block">
                         <button
@@ -303,16 +349,32 @@ const Transactions = () => {
                         )}
                       </div>
                     </th>
-                    <th className="w-40  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-40 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Nature of Request
                     </th>
-                    <th className="w-48  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-48  ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Assigned To
                     </th>
-                    <th className="w-48 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-48 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Date Updated
                     </th>
-                    <th className="w-36  pl-5 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-36  pl-5 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Status
                       <div className="relative inline-block">
                         <button
@@ -382,7 +444,11 @@ const Transactions = () => {
                         )}
                       </div>
                     </th>
-                    <th className="w-30  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-30  ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider  whitespace-nowrap text-left`}
+                    >
                       Action
                     </th>
                   </tr>
@@ -418,31 +484,63 @@ const Transactions = () => {
                         className="border-b-2 border-gray-200 h-auto overflow-auto"
                         key={item.id}
                       >
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-left">
+                        <td
+                          className={`p-3 ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } text-gray-700 whitespace-nowrap text-left`}
+                        >
                           {firstIndex + index + 1}
                         </td>
-                        <td className="py-3 text-lg text-gray-700 whitespace-nowrap text-left">
+                        <td
+                          className={`py-3 pr-3 ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } text-gray-700 whitespace-nowrap text-left`}
+                        >
                           E-{item.id}
                         </td>
-                        <td className="py-3 pr-5 text-lg text-gray-700 whitespace-nowrap text-left">
+                        <td
+                          className={`py-3 pr-5 ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } text-gray-700 whitespace-nowrap text-left`}
+                        >
                           {item.dateRequested}
                         </td>
-                        <td className="py-3 text-lg text-gray-700 whitespace-nowrap text-left">
+                        <td
+                          className={`py-3 pr-5 ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } text-gray-700 whitespace-nowrap text-left`}
+                        >
                           {item.modeOfRequest}
                         </td>
-                        <td className="py-3 pr-5 text-lg text-gray-700 whitespace-nowrap text-left">
+                        <td
+                          className={`py-3 pr-5 ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } text-gray-700 whitespace-nowrap text-left`}
+                        >
                           {item.natureOfRequest}
                         </td>
-                        <td className="py-3 text-left text-lg font-medium whitespace-nowrap ">
+                        <td
+                          className={`py-3 pr-5 ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } text-gray-700 whitespace-nowrap text-left`}
+                        >
                           {item.assignedTo}
                         </td>
-                        <td className="py-3 text-left text-lg font-medium whitespace-nowrap">
+                        <td
+                          className={`py-3 pr-5 ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } text-gray-700 whitespace-nowrap text-left`}
+                        >
                           {item.dateUpdated}
                         </td>
                         <td
                           className={`${
-                            isWidth1920 ? "px-6" : "px-5"
-                          }  py-2 text-base whitespace-nowrap text-center`}
+                            isWidth1920
+                              ? "px-6"
+                              : isScreenWidth1366
+                              ? "text-xs py-3"
+                              : "text-base py-2 "
+                          } px-3 whitespace-nowrap text-center`}
                         >
                           <p
                             className={`rounded-xl py-2  ${
@@ -464,7 +562,9 @@ const Transactions = () => {
                             {item.status}
                           </p>
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-left">
+                        <td
+                          className={`border-b-2 py-3 border-gray-200   text-left`}
+                        >
                           <div className="flex  gap-1">
                             {item.status === "Cancelled" ? (
                               <button

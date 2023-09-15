@@ -11,7 +11,15 @@ import {
 import { Button, Modal } from "antd";
 import PropTypes from "prop-types";
 
-const RateModal = ({ isOpen, onClose, id, user_id, office, isLargeScreen }) => {
+const RateModal = ({
+  isOpen,
+  onClose,
+  id,
+  user_id,
+  office,
+  isLargeScreen,
+  isScreenWidth1366,
+}) => {
   const [loading, setLoading] = useState(false);
 
   console.log("reqid", id);
@@ -169,9 +177,13 @@ const RateModal = ({ isOpen, onClose, id, user_id, office, isLargeScreen }) => {
       centered
     >
       <form onSubmit={onSubmitChange}>
-        <div className="relative p-6 flex-auto grid grid-rows-4 grid-cols-5 lg:grid-rows-2 lg:grid-cols-4 gap-4">
+        <div
+          className={`relative p-6 flex-auto grid grid-rows-4 ${
+            isScreenWidth1366 ? "text-sm" : "text-lg"
+          } grid-cols-5 lg:grid-rows-2 lg:grid-cols-4 gap-4`}
+        >
           <div className="col-span-5 lg:col-span-2">
-            <label htmlFor="q1" className="text-lg font-semibold ">
+            <label htmlFor="q1" className=" font-semibold ">
               1. Timeless Delivery of Service (Kapaspason sa paghatag og
               serbisyo)
             </label>
@@ -182,7 +194,7 @@ const RateModal = ({ isOpen, onClose, id, user_id, office, isLargeScreen }) => {
             </div>
           </div>
           <div className="col-span-5 lg:col-span-2">
-            <label htmlFor="name" className="text-lg font-semibold">
+            <label htmlFor="name" className=" font-semibold">
               2. Quality of Service (Kalidad serbisyo)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
@@ -192,7 +204,7 @@ const RateModal = ({ isOpen, onClose, id, user_id, office, isLargeScreen }) => {
             </div>
           </div>
           <div className="col-span-5 lg:col-span-2">
-            <label htmlFor="name" className="text-lg font-semibold">
+            <label htmlFor="name" className=" font-semibold">
               3. Access and Facilities (Paagi ug pag-gamit sa pasilidad)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
@@ -202,7 +214,7 @@ const RateModal = ({ isOpen, onClose, id, user_id, office, isLargeScreen }) => {
             </div>
           </div>
           <div className="col-span-5 lg:col-span-2">
-            <label htmlFor="name" className="text-lg font-semibold">
+            <label htmlFor="name" className=" font-semibold">
               4. Communication (Kahanas sa pag abi-abi)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
@@ -212,7 +224,7 @@ const RateModal = ({ isOpen, onClose, id, user_id, office, isLargeScreen }) => {
             </div>
           </div>
           <div className="col-span-5 lg:col-span-2">
-            <label htmlFor="name" className="text-lg font-semibold">
+            <label htmlFor="name" className=" font-semibold">
               5. Employee Attitude towards Client (Saktong pamatasan sa
               empleyado)
             </label>
@@ -223,7 +235,7 @@ const RateModal = ({ isOpen, onClose, id, user_id, office, isLargeScreen }) => {
             </div>
           </div>
           <div className="col-span-5 lg:col-span-2">
-            <label htmlFor="name" className="text-lg font-semibold">
+            <label htmlFor="name" className=" font-semibold">
               6. Integrity (Pagkamatarongon sinsero sa empleyado)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
@@ -233,7 +245,7 @@ const RateModal = ({ isOpen, onClose, id, user_id, office, isLargeScreen }) => {
             </div>
           </div>
           <div className="col-span-5 lg:col-span-2">
-            <label htmlFor="name" className="text-lg font-semibold">
+            <label htmlFor="name" className=" font-semibold">
               7. Transaction Costs (Kantidad sa serbisyo)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
@@ -243,7 +255,7 @@ const RateModal = ({ isOpen, onClose, id, user_id, office, isLargeScreen }) => {
             </div>
           </div>
           <div className="col-span-5 lg:col-span-2">
-            <label htmlFor="name" className="text-lg font-semibold">
+            <label htmlFor="name" className=" font-semibold">
               8. Overall Experience/Satisfaction (Kinatibuk-ang kasinatian)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
@@ -253,7 +265,7 @@ const RateModal = ({ isOpen, onClose, id, user_id, office, isLargeScreen }) => {
             </div>
           </div>
           <div className="col-span-5 ">
-            <label className="text-lg font-semibold">Commendation</label>
+            <label className="font-semibold">Commendation</label>
             <input
               className="ml-2 bg-gray-300 w-full h-10 rounded-md outline-none p-2 text-base"
               id="commendation"
@@ -264,7 +276,7 @@ const RateModal = ({ isOpen, onClose, id, user_id, office, isLargeScreen }) => {
             />
           </div>
           <div className="col-span-5">
-            <label className="text-lg font-semibold">Suggestion</label>
+            <label className=" font-semibold">Suggestion</label>
             <input
               className="ml-2 bg-gray-300 w-full h-10 rounded-md outline-none p-2 text-base"
               id="suggestion"
@@ -275,7 +287,7 @@ const RateModal = ({ isOpen, onClose, id, user_id, office, isLargeScreen }) => {
             />
           </div>
           <div className="col-span-5">
-            <label className="text-lg font-semibold">Request</label>
+            <label className=" font-semibold">Request</label>
             <input
               className="ml-2 bg-gray-300 w-full h-10 rounded-md outline-none p-2 text-base"
               id="request"
@@ -286,7 +298,7 @@ const RateModal = ({ isOpen, onClose, id, user_id, office, isLargeScreen }) => {
             />
           </div>
           <div className="col-span-5">
-            <label className="text-lg font-semibold">Complaint</label>
+            <label className=" font-semibold">Complaint</label>
             <input
               className="ml-2 bg-gray-300 w-full h-10 rounded-md outline-none p-2 text-base"
               id="complaint"
@@ -299,7 +311,9 @@ const RateModal = ({ isOpen, onClose, id, user_id, office, isLargeScreen }) => {
         </div>
         <div className="flex items-center justify-end p-6 border-t border-solid border-gray-300 rounded-b">
           <button
-            className="text-red-500 hover:text-red-700 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+            className={` font-sans text-white bg-red-700 ${
+              isScreenWidth1366 ? "text-sm py-3" : "text-sm py-2"
+            }  rounded-lg  background-transparent font-bold px-6  outline-none focus:outline-none mr-1  ease-linear transition-all duration-150`}
             type="button"
             onClick={onClose}
           >
@@ -309,7 +323,9 @@ const RateModal = ({ isOpen, onClose, id, user_id, office, isLargeScreen }) => {
             loading={loading}
             type="primary"
             htmlType="submit"
-            className="bg-gray-800  py-7  font-semibold flex items-center justify-center text-white text-base font-sans w-28 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out "
+            className={`bg-gray-800  ${
+              isScreenWidth1366 ? "text-sm py-6" : "text-base py-7"
+            }  font-semibold flex items-center justify-center text-white  font-sans w-28  rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out `}
           >
             {loading ? "Submitting" : "Submit"}
           </Button>
@@ -327,6 +343,7 @@ RateModal.propTypes = {
   user_id: PropTypes.number.isRequired,
   isLargeScreen: PropTypes.bool,
   office: PropTypes.string.isRequired,
+  isScreenWidth1366: PropTypes.bool.isRequired,
 };
 
 export default RateModal;

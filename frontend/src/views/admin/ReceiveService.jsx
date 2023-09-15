@@ -287,7 +287,7 @@ const ReceiveService = () => {
                         <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
                           {setting.fullName}
                         </td>
-                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left ">
+                        <td className="border-b-2 pl-5 py-3 flex  border-gray-200 text-left ">
                           <button
                             className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
                             onClick={() => openModal(setting)}

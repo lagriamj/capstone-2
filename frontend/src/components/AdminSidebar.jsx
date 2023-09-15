@@ -13,7 +13,7 @@ import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import { useActiveTab } from "../ActiveTabContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useActiveSubTab } from "../ActiveSubTabContext";
 import axios from "axios";
 import { message } from "antd";
@@ -59,22 +59,46 @@ const AdminSidebar = () => {
     setIsDropdownUtilityOpen(!isDropdownUtilityOpen);
   };
 
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const isScreenWidth1366 = windowWidth <= 1366;
+
   return (
-    <div className="sidebar flex flex-col bg-main h-screen w-[17%] font-sans overflow-auto text-white text-lg fixed top-0 left-0">
+    <div
+      className={`sidebar flex flex-col bg-main h-screen w-[17%] font-sans overflow-auto text-white ${
+        isScreenWidth1366 ? "text-sm" : "text-lg"
+      } fixed top-0 left-0`}
+    >
       <div className="w-full flex gap-4 items-center justify-center py-4 px-3 my-2">
         <img className="w-1/3 h-[95%]" src="/cityhalllogo.png" alt="" />
         <img className="w-1/3 h-[95%]" src="/citclogo.png" alt="" />
       </div>
 
       <hr className="mx-7 mb-8" />
-      <ul className="flex flex-col justify-center items-start gap-4 px-5 lg:ml-4">
+      <ul className="flex flex-col justify-center items-start gap-2 px-5 lg:ml-4">
         <li
           className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "dashboard" ? "bg-white text-main font-semibold" : ""
           }`}
           onClick={() => handleItemClick("dashboard")}
         >
-          <DashboardIcon></DashboardIcon>
+          <DashboardIcon
+            style={{
+              fontSize: isScreenWidth1366 ? "1.2rem" : "",
+            }}
+          ></DashboardIcon>
           <Link to={"/dashboard"}>Dashboard</Link>
         </li>
         <li
@@ -85,7 +109,11 @@ const AdminSidebar = () => {
           }`}
           onClick={() => handleItemClick("service-request")}
         >
-          <HandymanIcon></HandymanIcon>
+          <HandymanIcon
+            style={{
+              fontSize: isScreenWidth1366 ? "1.2rem" : "",
+            }}
+          ></HandymanIcon>
           <Link to={"/service-request"}>Service Request</Link>
         </li>
         <li
@@ -96,7 +124,11 @@ const AdminSidebar = () => {
           }`}
           onClick={() => handleItemClick("receive-service")}
         >
-          <MarkAsUnreadIcon></MarkAsUnreadIcon>
+          <MarkAsUnreadIcon
+            style={{
+              fontSize: isScreenWidth1366 ? "1.2rem" : "",
+            }}
+          ></MarkAsUnreadIcon>
           <Link to={"/receive-service"}>Receive Service</Link>
         </li>
         <li
@@ -107,18 +139,26 @@ const AdminSidebar = () => {
           }`}
           onClick={() => handleItemClick("service-task")}
         >
-          <AssignmentIcon></AssignmentIcon>
+          <AssignmentIcon
+            style={{
+              fontSize: isScreenWidth1366 ? "1.2rem" : "",
+            }}
+          ></AssignmentIcon>
           <Link to={"/service-task"}>Service Task</Link>
         </li>
         <li
-          className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:text-lg hover:font-semibold ${
+          className={`flex gap-3 items-center w-full py-3 px-2 whitespace-nowrap rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "service-transaction"
               ? "bg-white text-main font-semibold"
               : ""
           }`}
           onClick={() => handleItemClick("service-transaction")}
         >
-          <WorkHistoryIcon></WorkHistoryIcon>
+          <WorkHistoryIcon
+            style={{
+              fontSize: isScreenWidth1366 ? "1.2rem" : "",
+            }}
+          ></WorkHistoryIcon>
           <Link to={"/service-transaction"}>Service Transaction</Link>
         </li>
 
@@ -130,7 +170,10 @@ const AdminSidebar = () => {
           }`}
           onClick={() => handleUtilityClick("utilitySettings")}
         >
-          <FontAwesomeIcon icon={faGear} className="h-5" />
+          <FontAwesomeIcon
+            icon={faGear}
+            className={`${isScreenWidth1366 ? "h-4" : "h-5"}`}
+          />
           Utility Settings
           <div
             className={`absolute z-50 top-10 left-0 w-full bg-white border rounded-lg shadow-lg p-3 ${
@@ -200,7 +243,7 @@ const AdminSidebar = () => {
       </ul>
 
       <div className="flex flex-col mt-auto mb-10">
-        <hr className="mx-7 mb-5" />
+        <hr className="mx-7 mt-4 mb-5" />
         <div className="flex flex-col  lg:mx-2 ">
           <ul className="flex flex-col justify-center items-start gap-3 px-5">
             <li
@@ -211,7 +254,10 @@ const AdminSidebar = () => {
               }`}
               onClick={() => handleAccountClick("account")}
             >
-              <FontAwesomeIcon icon={faUser} className="h-5" />
+              <FontAwesomeIcon
+                icon={faUser}
+                className={`${isScreenWidth1366 ? "h-4" : "h-5"}`}
+              />
               Account
               <div
                 className={`absolute top-10 left-0 w-full bg-white border rounded-lg shadow-lg p-3 ${
@@ -254,7 +300,10 @@ const AdminSidebar = () => {
               onClick={handleLogout}
               className="flex gap-3 items-center py-3 px-4 rounded-lg w-full transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold"
             >
-              <FontAwesomeIcon icon={faRightFromBracket} className="h-5" />
+              <FontAwesomeIcon
+                icon={faRightFromBracket}
+                className={`${isScreenWidth1366 ? "h-3" : "h-5"}`}
+              />
               <Link>Logout</Link>
             </li>
           </ul>

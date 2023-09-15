@@ -219,6 +219,23 @@ const Register = () => {
     setTermsAgreed(e.target.checked); // Update the termsAgreed state when checkbox changes
   };
 
+  const [windowWidth1366, setWindowWidth1366] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth1366(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const isScreenWidth1366 = windowWidth1366 === 1366;
+  const isLargeScreen = windowWidth1366 >= 1024;
+
   return (
     <div className="bg-transparent">
       {loading && (
@@ -245,14 +262,18 @@ const Register = () => {
 
         {/* Right Column */}
         <div className="w-full lg:w-1/2 h-screen  bg-gray-200 py-5 flex flex-col items-center justify-center overflow-auto ml-auto">
-          <div className="  bg-white lg:w-[80%] w-[90%] py-5  h-auto rounded-2xl shadow-xl text-4xl">
+          <div
+            className={` bg-white lg:w-[80%] w-[90%] py-5 h-auto rounded-2xl shadow-xl ${
+              isLargeScreen ? "text-4xl" : "text-lg"
+            }`}
+          >
             <div className="w-full  flex flex-col gap-4">
               <div className="lg:hidden flex my-5 gap-4 items-center justify-center">
                 <img className="w-20 h-20" src="/cityhalllogo.png" alt="" />
                 <img className="w-20 h-20" src="/citc1.png" alt="" />
               </div>
               <div className="lg:pl-5 lg:mt-5">
-                <h1 className="lg:text-5xl font-semibold text-center">
+                <h1 className={`lg:text-5xl font-semibold text-center`}>
                   Register
                 </h1>
               </div>
@@ -350,7 +371,7 @@ const Register = () => {
                         setSelectedOffice(selectedOption.value)
                       }
                       isSearchable
-                      placeholder="Select an office..."
+                      placeholder="Office"
                       styles={customStyles}
                     />
                     <div className="absolute inset-y-0 left-0 flex items-center p-3 bg-main rounded-l-lg">

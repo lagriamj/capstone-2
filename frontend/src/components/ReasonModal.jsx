@@ -39,21 +39,10 @@ export default function ReasonModal({
     setConfirmationVisible(false);
   };
 
-  const footerContent = (
-    <div className="flex gap-3">
-      <button
-        className="bg-red-800 text-white w-24 font-sans ml-auto tracking-widest text-base font-bold py-3 flex items-center justify-center  rounded-lg "
-        onClick={onClose}
-      >
-        Exit
-      </button>
-    </div>
-  );
-
   const CustomCancelButton = () => (
     <button
       onClick={() => handleCancel()}
-      className="bg-red-700 text-white px-4 ml-auto py-3 rounded-lg hover:bg-opacity-80"
+      className="bg-red-700 text-white px-4 ml-auto py-3 rounded-lg  hover:bg-white hover:text-red-700 hover:border-2 hover:border-red-700 ease-linear transition-all duration-150 font-sans"
     >
       Cancel
     </button>
@@ -62,7 +51,7 @@ export default function ReasonModal({
   const CustomOkButton = () => (
     <button
       onClick={() => handleConfirm()}
-      className="bg-main text-white px-4 py-3 rounded-lg hover:bg-opacity-80"
+      className="bg-main text-white px-4 py-3 rounded-lg hover:bg-opacity-80 hover:bg-white hover:text-main hover:border-2 hover:border-main ease-linear transition-all duration-150 font-sans"
     >
       Confirm
     </button>
@@ -73,7 +62,6 @@ export default function ReasonModal({
       <Modal
         open={display}
         onCancel={onClose}
-        centered
         title={
           <div className="flex flex-col lg:flex-row font-sans text-xl py-6 px-10">
             <label>{`Request ID: E-${itemData.id}`}</label>
@@ -83,10 +71,10 @@ export default function ReasonModal({
           </div>
         }
         width={isLargeScreen ? "60%" : "80%"}
-        footer={footerContent}
+        footer={null}
       >
         <form onSubmit={handleSubmit}>
-          <div className="px-10 flex-auto border-b-2 border-gray-400 text-base pb-2 place-content-center flex flex-col  gap-y-2">
+          <div className="px-10 flex-auto text-base pb-2 place-content-center flex flex-col  gap-y-2">
             <div className="w-full">
               <label htmlFor="dateRequested" className="font-semibold text-lg">
                 Reason to Cancel:
@@ -104,7 +92,7 @@ export default function ReasonModal({
             <div className="w-full">
               <button
                 type="submit"
-                className="text-white items-center justify-center w-28 tracking-wider bg-main rounded-lg hover:bg-opacity-95 font-bold font-sans text-base px-3 flex ml-auto py-4   outline-none focus:outline-none ease-linear transition-all duration-150"
+                className="text-white items-center justify-center w-28 tracking-wider bg-main rounded-lg hover:bg-white hover:text-main hover:border-2 hover:border-main font-bold font-sans text-base px-3 flex ml-auto py-3   outline-none focus:outline-none ease-linear transition-all duration-150"
               >
                 Submit
               </button>

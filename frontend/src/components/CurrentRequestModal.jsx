@@ -11,6 +11,7 @@ export default function CurrentRequestModal({
   itemData,
   onClose,
   isLargeScreen,
+  isScreenWidth1366,
 }) {
   const [isPrintPreviewModalVisible, setIsPrintPreviewModalVisible] =
     useState(false);
@@ -41,12 +42,16 @@ export default function CurrentRequestModal({
     <div className="flex gap-3">
       <button
         onClick={() => setIsPrintPreviewModalVisible(true)}
-        className="text-white bg-main rounded-lg hover:bg-opacity-95 font-bold uppercase px-3 flex ml-auto py-4  text-sm outline-none focus:outline-none ease-linear transition-all duration-150"
+        className={`text-white bg-main rounded-lg hover:bg-opacity-95 font-bold uppercase px-3 flex ml-auto ${
+          isScreenWidth1366 ? "text-sm py-3" : "text-base py-4"
+        }   outline-none focus:outline-none ease-linear transition-all duration-150`}
       >
         Print Preview
       </button>
       <button
-        className="bg-red-800 text-white w-24 text-base font-bold  rounded-lg pb-1"
+        className={`bg-red-800 text-white w-24 ${
+          isScreenWidth1366 ? "text-sm" : "text-base"
+        } font-bold  rounded-lg `}
         onClick={onClose}
       >
         EXIT
@@ -65,7 +70,11 @@ export default function CurrentRequestModal({
         onCancel={onClose}
         centered
         title={
-          <div className="flex flex-col lg:flex-row font-sans text-xl py-6 px-10">
+          <div
+            className={`flex flex-col lg:flex-row font-sans ${
+              isScreenWidth1366 ? "text-base" : "text-xl"
+            } py-6 px-10`}
+          >
             <label>{`Request ID: E-${itemData.id}`}</label>
             <label className="ml-auto ">{`Date Requested: ${
               itemData.dateRequested.split(" ")[0]
@@ -75,16 +84,15 @@ export default function CurrentRequestModal({
         width={isLargeScreen ? "60%" : "80%"}
         footer={footerContent}
       >
-        {" "}
-        <h3 className="text-2xl font-semibold ml-4  text-white">
-          Request Details
-        </h3>
         <PrintPreviewModal
           visible={isPrintPreviewModalVisible}
           onClose={() => setIsPrintPreviewModalVisible(false)}
           itemData={itemData}
         />
-        <Stepper alternativeLabel className="mb-10">
+        <Stepper
+          alternativeLabel
+          className={`${isScreenWidth1366 ? "mb-5" : "mb-10"}`}
+        >
           {steps.map((status, index) => (
             <Step key={index} completed={index < activeIndex}>
               <StepLabel icon={index}>{status}</StepLabel>
@@ -92,11 +100,19 @@ export default function CurrentRequestModal({
           ))}
         </Stepper>
         <div className="my-6 pb-4 w-full border-b-2 border-gray-400">
-          <label className="m-10 text-2xl font-sans font-semibold">
+          <label
+            className={`m-10 ${
+              isScreenWidth1366 ? "text-xl" : "text-2xl"
+            } font-sans font-semibold`}
+          >
             Request Details:
           </label>
         </div>
-        <div className="px-10 flex-auto border-b-2 border-gray-400 text-base pb-2 place-content-center grid grid-cols-1 lg:grid-cols-3 gap-y-10">
+        <div
+          className={`px-10 flex-auto border-b-2 border-gray-400 ${
+            isScreenWidth1366 ? "text-sm gap-y-5" : "text-base gap-y-10"
+          } pb-2 place-content-center grid grid-cols-1 lg:grid-cols-3 `}
+        >
           {" "}
           {/* Reduced padding */}
           <div className=" w-full">
@@ -160,4 +176,5 @@ CurrentRequestModal.propTypes = {
   onClose: PropTypes.func.isRequired, // Ensure that 'onClose' is a required function prop
   itemData: PropTypes.object.isRequired, // Ensure that 'itemData' is a required object prop
   isLargeScreen: PropTypes.bool.isRequired,
+  isScreenWidth1366: PropTypes.bool.isRequired,
 };

@@ -265,6 +265,23 @@ const CurrentRequests = () => {
       goToPage(); // Trigger page change when the Enter key is pressed
     }
   };
+
+  const [windowWidth1366, setWindowWidth1366] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth1366(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const isScreenWidth1366 = windowWidth1366 === 1366;
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -272,7 +289,11 @@ const CurrentRequests = () => {
       </Helmet>
       <div
         className={`className="flex flex-col lg:flex-row bg-gray-200 ${
-          isWidth1920 ? "lg:pl-20" : "lg:pl-[3.0rem]"
+          isWidth1920
+            ? "lg:pl-20"
+            : isScreenWidth1366
+            ? "lg:pl-[0.5rem]"
+            : "lg:pl-[3.0rem]"
         } lg:pt-5 h-screen`}
       >
         {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
@@ -281,22 +302,32 @@ const CurrentRequests = () => {
             className={`overflow-x-auto ${
               isWidth1920
                 ? "lg:w-[84%]  lg:ml-[16.6rem]"
+                : isScreenWidth1366
+                ? "lg:w-[82%]  lg:ml-[14.5rem]"
                 : "lg:w-[82%]  lg:ml-72"
             } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-[80vh] pb-10 bg-white shadow-xl    border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
           >
             <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
-              <h1 className="font-sans lg:text-3xl text-xl mt-8 ml-5 mr-auto tracking-wide">
+              <h1
+                className={`font-sans flex items-center justify-center  ${
+                  isScreenWidth1366 ? "text-xl" : "lg:text-3xl text-xl"
+                }  ml-5 mr-auto tracking-wide`}
+              >
                 Request
               </h1>
               <div className="relative flex items-center lg:mr-10 ">
                 <FontAwesomeIcon
                   icon={faSearch}
-                  className="h-6 w-6 absolute ml-3 text-main"
+                  className={`${
+                    isScreenWidth1366 ? "w-4 h-4" : "w-6 h-6"
+                  } absolute ml-3 text-main`}
                 />
                 <input
                   type="text"
                   placeholder="Search"
-                  className="border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 h-14 lg:w-full w-[90%] focus:outline-none text-xl"
+                  className={`border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 lg:w-full w-[90%] focus:outline-none ${
+                    isScreenWidth1366 ? "text-sm h-10" : "text-xl h-14"
+                  }`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -310,16 +341,32 @@ const CurrentRequests = () => {
               <table className="w-full ">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
                   <tr className="border-b-2 border-gray-100">
-                    <th className="w-20 px-3 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-20 px-3 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       #
                     </th>
-                    <th className="w-30 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-30 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Request ID
                     </th>
-                    <th className="w-40  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-40  ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Date of Request
                     </th>
-                    <th className="w-30  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-30  ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Mode
                       <div className="relative inline-block">
                         <button
@@ -363,16 +410,32 @@ const CurrentRequests = () => {
                         )}
                       </div>
                     </th>
-                    <th className="w-40  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-40 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Nature of Request
                     </th>
-                    <th className="w-48  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-48  ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Assigned To
                     </th>
-                    <th className="w-48 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-48 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Date Updated
                     </th>
-                    <th className="w-36  pl-5 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-36  pl-5 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Status
                       <div className="relative inline-block">
                         <button
@@ -442,7 +505,11 @@ const CurrentRequests = () => {
                         )}
                       </div>
                     </th>
-                    <th className="w-30  py-5 text-base font-semibold tracking-wider  whitespace-nowrap text-left">
+                    <th
+                      className={`w-30  ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider  whitespace-nowrap text-left`}
+                    >
                       Action
                     </th>
                   </tr>
@@ -478,29 +545,59 @@ const CurrentRequests = () => {
                         className="border-b-2 border-gray-200 h-auto overflow-auto"
                         key={item.id}
                       >
-                        <td className="p-3 text-lg text-gray-700 whitespace-nowrap text-left">
+                        <td
+                          className={`p-3 ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } text-gray-700 whitespace-nowrap text-left`}
+                        >
                           {firstIndex + index + 1}
                         </td>
-                        <td className="py-3 pr-3 text-lg text-gray-700 whitespace-nowrap text-left">
+                        <td
+                          className={`py-3 pr-3 ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } text-gray-700 whitespace-nowrap text-left`}
+                        >
                           E-{item.id}
                         </td>
-                        <td className="py-3 pr-5 text-lg text-gray-700 whitespace-nowrap text-left">
+                        <td
+                          className={`py-3 pr-5 ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } text-gray-700 whitespace-nowrap text-left`}
+                        >
                           {item.dateRequested}
                         </td>
-                        <td className="py-3 text-lg text-gray-700 whitespace-nowrap text-left">
+                        <td
+                          className={`py-3 ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } text-gray-700 whitespace-nowrap text-left`}
+                        >
                           {item.modeOfRequest}
                         </td>
-                        <td className="py-3 pr-5 text-lg text-gray-700 whitespace-nowrap text-left">
+                        <td
+                          className={`py-3 pr-5 ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } text-gray-700 whitespace-nowrap text-left`}
+                        >
                           {item.natureOfRequest}
                         </td>
-                        <td className="py-3 text-lg text-gray-700 whitespace-nowrap text-left">
+                        <td
+                          className={`py-3 ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } text-gray-700 whitespace-nowrap text-left`}
+                        >
                           {item.assignedTo}
                         </td>
-                        <td className="py-3 text-lg text-gray-700 whitespace-nowrap text-left">
+                        <td
+                          className={`py-3 ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } text-gray-700 whitespace-nowrap text-left`}
+                        >
                           {item.dateUpdated}
                         </td>
                         <td
-                          className={`px-5 py-2 text-base whitespace-nowrap text-center`}
+                          className={`px-5 py-2 ${
+                            isScreenWidth1366 ? "text-xs" : " text-base"
+                          } whitespace-nowrap text-center`}
                         >
                           <p
                             className={`rounded-xl py-2 px-3 ${
@@ -524,10 +621,16 @@ const CurrentRequests = () => {
                             {item.status}
                           </p>
                         </td>
-                        <td className="p-2 text-lg text-gray-700 flex gap-1 ">
+                        <td
+                          className={`p-2 ${
+                            isScreenWidth1366 ? "text-xs" : " text-lg"
+                          } text-gray-700 flex gap-1 `}
+                        >
                           {item.status === "To Rate" ? (
                             <button
-                              className="text-white text-base font-medium bg-gray-800 py-2 px-4 rounded-lg"
+                              className={`text-white ${
+                                isScreenWidth1366 ? "text-xs" : " text-base"
+                              } font-medium bg-gray-800 py-2 px-4 rounded-lg`}
                               onClick={() =>
                                 handleStarIconClick(
                                   item.id,
@@ -541,7 +644,9 @@ const CurrentRequests = () => {
                           ) : (
                             <button
                               onClick={() => handleOpenModalClick(item.id)}
-                              className="text-white text-base font-medium bg-blue-600 py-2 px-4 rounded-lg"
+                              className={`text-white ${
+                                isScreenWidth1366 ? "text-xs" : " text-base"
+                              } font-medium bg-blue-600 py-2 px-4 rounded-lg`}
                             >
                               View
                             </button>
@@ -551,7 +656,9 @@ const CurrentRequests = () => {
                           item.status === "On Progress" ||
                           item.status === "To Release" ? (
                             <button
-                              className="text-white text-base bg-gray-400 cursor-not-allowed py-2 px-4 rounded-lg"
+                              className={`text-white ${
+                                isScreenWidth1366 ? "text-xs" : " text-base"
+                              } bg-gray-400 cursor-not-allowed py-2 px-4 rounded-lg`}
                               disabled
                             >
                               Cancel
@@ -582,7 +689,9 @@ const CurrentRequests = () => {
                             >
                               <button
                                 onClick={() => showPopconfirmInRate(item.id)}
-                                className="text-white text-base font-medium bg-red-600 py-2 px-5 rounded-lg"
+                                className={`text-white ${
+                                  isScreenWidth1366 ? "text-xs" : " text-base"
+                                } font-medium bg-red-600 py-2 px-5 rounded-lg`}
                               >
                                 Close
                               </button>
@@ -592,7 +701,9 @@ const CurrentRequests = () => {
                               onClick={() =>
                                 handleOpenReasonModalClick(item.id)
                               }
-                              className="text-white text-base font-medium bg-red-600 py-2 px-4 rounded-lg"
+                              className={`text-white ${
+                                isScreenWidth1366 ? "text-xs" : " text-base"
+                              } font-medium bg-red-600 py-2 px-4 rounded-lg`}
                             >
                               Cancel
                             </button>
@@ -609,6 +720,7 @@ const CurrentRequests = () => {
                     itemData={data.find((item) => item.id === selectedItemId)}
                     onClose={handleCloseModalClick} // Pass the callback here
                     isLargeScreen={isLargeScreen}
+                    isScreenWidth1366={isScreenWidth1366}
                   />
                 )}
                 {selectedReason && (
@@ -629,6 +741,7 @@ const CurrentRequests = () => {
                   id={selectedID} // Pass the selectedItemId as a prop
                   user_id={selectedUserId} // Pass the selectedUserId as a prop
                   office={selectedOffice}
+                  isScreenWidth1366={isScreenWidth1366}
                 />
               )}
             </div>
@@ -637,36 +750,54 @@ const CurrentRequests = () => {
             className={`lg:ml-56 mr-6  ${isWidth1920 ? "lg:mr-10" : "lg:mr-8"}`}
           >
             <ul className="flex gap-2 items-center">
-              <li className="flex-auto ml-10 lg:ml-20 mr-5 text-base font-bold">
+              <li
+                className={`flex-auto ml-10 lg:ml-20 mr-5 ${
+                  isScreenWidth1366 ? "text-sm" : " text-base"
+                } font-bold`}
+              >
                 Page {currentPage} of {npage}
               </li>
               <li>
                 <a
                   href="#"
                   onClick={prePage}
-                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                  className={`pagination-link bg-main hover:bg-opacity-95 text-white font-bold ${
+                    isScreenWidth1366 ? "py-1" : "py-2"
+                  } px-4 rounded`}
                 >
-                  <LeftOutlined />
+                  <LeftOutlined
+                    style={{
+                      fontSize: isScreenWidth1366 ? ".8rem" : "",
+                    }}
+                  />
                 </a>
               </li>
               <li className="flex items-center">
                 <input
                   type="number"
                   placeholder="Page"
-                  className="border rounded-lg bg-gray-100 py-2 px-4 text-black w-24  text-center outline-none"
+                  className={`border rounded-lg bg-gray-100  px-4 text-black w-24  text-center outline-none ${
+                    isScreenWidth1366 ? "text-sm py-1" : "py-2"
+                  }`}
                   value={pageInput}
                   onChange={handlePageInputChange}
                   onBlur={handlePageInputBlur} // Trigger page change when the input field loses focus
-                  onKeyPress={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
+                  onKeyDown={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
                 />
               </li>
               <li>
                 <a
                   href="#"
                   onClick={nextPage}
-                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                  className={`pagination-link bg-main hover:bg-opacity-95 text-white font-bold ${
+                    isScreenWidth1366 ? "py-1" : "py-2"
+                  } px-4 rounded`}
                 >
-                  <RightOutlined />
+                  <RightOutlined
+                    style={{
+                      fontSize: isScreenWidth1366 ? "0.8rem" : "",
+                    }}
+                  />
                 </a>
               </li>
             </ul>
