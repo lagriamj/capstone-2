@@ -33,6 +33,10 @@ export default {
         sans: ['Poppins', 'sans-serif'],
         'sans-semi': ['Poppins Semibold', 'sans-serif'],
       },
+      screens: {
+        'mediumLg' : '1366px',
+        'large' : '1920px',
+      },
     },
   },
   plugins: [],

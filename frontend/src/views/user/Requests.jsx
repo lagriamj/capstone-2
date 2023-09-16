@@ -288,7 +288,7 @@ const Requests = () => {
                     value: option.natureRequest,
                     label: option.natureRequest,
                   }))}
-                  placeholder="Select an option..."
+                  placeholder="select..."
                   styles={customStyles}
                 />
               </div>
@@ -315,7 +315,7 @@ const Requests = () => {
                     value: option.utilityCategory,
                     label: option.utilityCategory,
                   }))}
-                  placeholder="Select an option..."
+                  placeholder="select..."
                   styles={customStyles}
                 />
               </div>

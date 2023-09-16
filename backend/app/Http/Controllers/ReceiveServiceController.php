@@ -14,7 +14,9 @@ class ReceiveServiceController extends Controller
 {
     public function pendingRequest()
     {
-        $pendingRequests = Requests::where('status', 'Pending')->get();
+        $pendingRequests = Requests::where('status', 'Pending')
+            ->orderBy('user_requests.dateUpdated', 'desc')
+            ->get();
 
         return response()->json([
             'results' => $pendingRequests
@@ -70,6 +72,27 @@ class ReceiveServiceController extends Controller
             'message' => 'Request deleted successfully.'
         ], 200);
     }
+
+    // public function showServiceTask($fullName)
+    // {
+    //     $technicianExists = DB::table('technicians')
+    //         ->where('technician', $fullName)
+    //         ->exists();
+
+    //     $query = DB::table('user_requests')
+    //         ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
+    //         ->select('user_requests.*', 'receive_service.*')
+    //         ->whereNotIn('user_requests.status', ['Pending', 'Closed', 'Cancelled']);
+
+    //     if ($technicianExists) {
+    //         $query->where('user_requests.assignedTo', '=', $fullName);
+    //     }
+
+    //     $query->orderBy('user_requests.dateUpdated', 'desc');
+
+    //     $data = $query->get();
+    //     return response()->json(['results' => $data]);
+    // }
 
     public function showServiceTask()
     {

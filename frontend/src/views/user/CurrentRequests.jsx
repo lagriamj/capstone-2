@@ -379,7 +379,9 @@ const CurrentRequests = () => {
                         >
                           <FontAwesomeIcon
                             icon={faFilter}
-                            className="h-4 w-4"
+                            className={`${
+                              isScreenWidth1366 ? "h-3 w-3" : "h-4 w-4"
+                            }`}
                           />
                         </button>
                         {isModeDropdownOpen && (
@@ -448,7 +450,9 @@ const CurrentRequests = () => {
                         >
                           <FontAwesomeIcon
                             icon={faFilter}
-                            className="h-4 w-4"
+                            className={`${
+                              isScreenWidth1366 ? "h-3 w-3" : "h-4 w-4"
+                            }`}
                           />
                         </button>
                         {isStatusDropdownOpen && (
@@ -761,9 +765,7 @@ const CurrentRequests = () => {
                 <a
                   href="#"
                   onClick={prePage}
-                  className={`pagination-link bg-main hover:bg-opacity-95 text-white font-bold ${
-                    isScreenWidth1366 ? "py-1" : "py-2"
-                  } px-4 rounded`}
+                  className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
                 >
                   <LeftOutlined
                     style={{
@@ -789,9 +791,7 @@ const CurrentRequests = () => {
                 <a
                   href="#"
                   onClick={nextPage}
-                  className={`pagination-link bg-main hover:bg-opacity-95 text-white font-bold ${
-                    isScreenWidth1366 ? "py-1" : "py-2"
-                  } px-4 rounded`}
+                  className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
                 >
                   <RightOutlined
                     style={{

@@ -9,6 +9,7 @@ const UpdateDepertmentModal = ({
   onUpdate,
   departmentData,
   refreshData,
+  isScreenWidth1366,
 }) => {
   const [form] = Form.useForm();
   const [isUpdating, setIsUpdating] = useState(false);
@@ -42,7 +43,11 @@ const UpdateDepertmentModal = ({
       onOk={onUpdate}
       footer={null}
     >
-      <Form form={form} initialValues={departmentData}>
+      <Form
+        form={form}
+        initialValues={departmentData}
+        className={`${isScreenWidth1366 ? "flex flex-col gap-6" : ""} `}
+      >
         <Form.Item
           labelAlign="top"
           labelCol={{ span: 24 }}
@@ -132,6 +137,7 @@ UpdateDepertmentModal.propTypes = {
   onUpdate: PropTypes.func.isRequired,
   departmentData: PropTypes.object,
   refreshData: PropTypes.func.isRequired,
+  isScreenWidth1366: PropTypes.bool.isRequired,
 };
 
 export default UpdateDepertmentModal;

@@ -318,7 +318,9 @@ const Transactions = () => {
                         >
                           <FontAwesomeIcon
                             icon={faFilter}
-                            className="h-4 w-4"
+                            className={`${
+                              isScreenWidth1366 ? "h-3 w-3" : "h-4 w-4"
+                            }`}
                           />
                         </button>
                         {isModeDropdownOpen && (
@@ -387,7 +389,9 @@ const Transactions = () => {
                         >
                           <FontAwesomeIcon
                             icon={faFilter}
-                            className="h-4 w-4"
+                            className={`${
+                              isScreenWidth1366 ? "h-3 w-3" : "h-4 w-4"
+                            }`}
                           />
                         </button>
                         {isStatusDropdownOpen && (
@@ -642,36 +646,46 @@ const Transactions = () => {
             className={`lg:ml-56 mr-6  ${isWidth1920 ? "lg:mr-10" : "lg:mr-8"}`}
           >
             <ul className="flex gap-2 items-center">
-              <li className="flex-auto ml-10 lg:ml-20 mr-5 text-base font-bold">
+              <li className="flex-auto ml-10 lg:ml-20 mr-5 mediumLg:text-sm text-base font-bold">
                 Page {currentPage} of {npage}
               </li>
               <li>
                 <a
                   href="#"
                   onClick={prePage}
-                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                  className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
                 >
-                  <LeftOutlined />
+                  <LeftOutlined
+                    style={{
+                      fontSize: isScreenWidth1366 ? ".8rem" : "",
+                    }}
+                  />
                 </a>
               </li>
               <li className="flex items-center">
                 <input
                   type="number"
                   placeholder="Page"
-                  className="border rounded-lg bg-gray-100 py-2 px-4 text-black w-24  text-center outline-none"
+                  className={`border rounded-lg bg-gray-100  px-4 text-black w-24  text-center outline-none ${
+                    isScreenWidth1366 ? "text-sm py-1" : "py-2"
+                  }`}
                   value={pageInput}
                   onChange={handlePageInputChange}
                   onBlur={handlePageInputBlur} // Trigger page change when the input field loses focus
-                  onKeyPress={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
+                  onKeyDown={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
                 />
               </li>
               <li>
                 <a
                   href="#"
                   onClick={nextPage}
-                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                  className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
                 >
-                  <RightOutlined />
+                  <RightOutlined
+                    style={{
+                      fontSize: isScreenWidth1366 ? ".8rem" : "",
+                    }}
+                  />
                 </a>
               </li>
             </ul>

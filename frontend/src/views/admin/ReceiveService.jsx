@@ -167,6 +167,22 @@ const ReceiveService = () => {
     }
   };
 
+  const [windowWidth1366, setWindowWidth1366] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth1366(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const isScreenWidth1366 = windowWidth1366 === 1366;
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -174,8 +190,12 @@ const ReceiveService = () => {
       </Helmet>
       <div
         className={`className="flex flex-col lg:flex-row bg-gray-200 ${
-          isWidth1920 ? "lg:pl-20" : "lg:pl-[3.0rem]"
-        } lg:py-5 h-screen`}
+          isWidth1920
+            ? "lg:pl-20"
+            : isScreenWidth1366
+            ? "lg:pl-[0.5rem]"
+            : "lg:pl-[3.0rem]"
+        } lg:pt-5 h-screen`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
         <div className="flex flex-col lg:pb-10 bg-gray-200 gap-2 lg:w-full">
@@ -183,22 +203,32 @@ const ReceiveService = () => {
             className={`overflow-x-auto ${
               isWidth1920
                 ? "lg:w-[84%]  lg:ml-[16.6rem]"
+                : isScreenWidth1366
+                ? "lg:w-[82%]  lg:ml-[14.5rem]"
                 : "lg:w-[82%]  lg:ml-72"
-            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-4/5 pb-10 bg-white shadow-xl   border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
+            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-[80vh] pb-10 bg-white shadow-xl    border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
           >
             <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
-              <h1 className="font-sans lg:text-3xl text-xl mt-8 ml-5 mr-auto tracking-wide">
+              <h1
+                className={`font-sans flex items-center justify-center  ${
+                  isScreenWidth1366 ? "text-xl" : "lg:text-3xl text-xl"
+                }  ml-5 mr-auto tracking-wide`}
+              >
                 Receive
               </h1>
               <div className="relative flex items-center lg:mr-10">
                 <FontAwesomeIcon
                   icon={faSearch}
-                  className="h-6 w-6 absolute ml-3 text-main"
+                  className={`${
+                    isScreenWidth1366 ? "w-4 h-4" : "w-6 h-6"
+                  } absolute ml-3 text-main`}
                 />
                 <input
                   type="text"
                   placeholder="Search"
-                  className="border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 h-14 lg:w-full w-[90%] focus:outline-none text-xl"
+                  className={`border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 lg:w-full w-[90%] focus:outline-none ${
+                    isScreenWidth1366 ? "text-sm h-10" : "text-xl h-14"
+                  }`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -212,28 +242,60 @@ const ReceiveService = () => {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
                   <tr className="bg-gray-200">
-                    <th className="w-20 pl-5  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-20 pl-5  ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       #
                     </th>
-                    <th className="py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={` pl-5 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Request ID
                     </th>
-                    <th className="py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`pl-5 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Property No.
                     </th>
-                    <th className=" py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={` pl-5 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Requesting Office
                     </th>
-                    <th className="py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`pl-5 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      }  font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Date
                     </th>
-                    <th className=" py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`pl-5 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Nature Of Request
                     </th>
-                    <th className="py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`pl-5 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Requested By
                     </th>
-                    <th className="w-56 pl-5  py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-56 pl-5  ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Action
                     </th>
                   </tr>
@@ -266,30 +328,80 @@ const ReceiveService = () => {
                   ) : (
                     filteredRecords.map((setting, index) => (
                       <tr key={setting.id}>
-                        <td className="border-b-2 pl-5 py-3  border-gray-200 text-center">
+                        <td
+                          className={`border-b-2 pl-5  ${
+                            isScreenWidth1366
+                              ? "py-3 text-sm"
+                              : "py-5 text-base"
+                          }  border-gray-200 text-left`}
+                        >
                           {firstIndex + index + 1}
                         </td>
-                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
+                        <td
+                          className={`border-b-2 pl-5  ${
+                            isScreenWidth1366
+                              ? "py-3 text-sm"
+                              : "py-5 text-base"
+                          } border-gray-200 text-left`}
+                        >
                           {setting.id}
                         </td>
-                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
+                        <td
+                          className={`border-b-2 pl-5  ${
+                            isScreenWidth1366
+                              ? "py-3 text-sm"
+                              : "py-5 text-base"
+                          } border-gray-200 text-left`}
+                        >
                           {setting.propertyNo}
                         </td>
-                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
+                        <td
+                          className={`border-b-2 pl-5  ${
+                            isScreenWidth1366
+                              ? "py-3 text-sm"
+                              : "py-5 text-base"
+                          } border-gray-200 text-left`}
+                        >
                           {setting.reqOffice}
                         </td>
-                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
+                        <td
+                          className={`border-b-2 pl-5  ${
+                            isScreenWidth1366
+                              ? "py-3 text-sm"
+                              : "py-5 text-base"
+                          } border-gray-200 text-left whitespace-nowrap`}
+                        >
                           {setting.dateRequested}
                         </td>
-                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
+                        <td
+                          className={`border-b-2 pl-5  ${
+                            isScreenWidth1366
+                              ? "py-3 text-sm"
+                              : "py-5 text-base"
+                          } border-gray-200 text-left whitespace-nowrap`}
+                        >
                           {setting.natureOfRequest}
                         </td>
-                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
+                        <td
+                          className={`border-b-2 pl-5  ${
+                            isScreenWidth1366
+                              ? "py-3 text-sm"
+                              : "py-5 text-base"
+                          } border-gray-200 text-left whitespace-nowrap`}
+                        >
                           {setting.fullName}
                         </td>
-                        <td className="border-b-2 pl-5 py-3 flex  border-gray-200 text-left ">
+                        <td
+                          className={`border-b-2 pl-5  ${
+                            isScreenWidth1366
+                              ? "py-3 text-sm"
+                              : "py-5 text-base"
+                          } flex  border-gray-200 text-left `}
+                        >
                           <button
-                            className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
+                            className={`text-white bg-blue-500  ${
+                              isScreenWidth1366 ? "text-xs" : " text-base"
+                            } font-medium px-3 py-2 rounded-lg`}
                             onClick={() => openModal(setting)}
                           >
                             View
@@ -319,7 +431,9 @@ const ReceiveService = () => {
                           >
                             <button
                               onClick={() => showPopconfirm(setting.id)}
-                              className="text-white text-base bg-red-700 py-2 px-4 rounded-lg ml-1"
+                              className={`text-white  ${
+                                isScreenWidth1366 ? "text-xs" : " text-base"
+                              } bg-red-700 py-2 px-4 rounded-lg ml-1`}
                             >
                               <FontAwesomeIcon icon={faTrash} />
                             </button>
@@ -342,36 +456,50 @@ const ReceiveService = () => {
             className={`lg:ml-56 mr-6  ${isWidth1920 ? "lg:mr-10" : "lg:mr-8"}`}
           >
             <ul className="flex gap-2 items-center">
-              <li className="flex-auto ml-10 lg:ml-20 mr-5 text-base font-bold">
+              <li
+                className={`flex-auto ml-10 lg:ml-20 mr-5 ${
+                  isScreenWidth1366 ? "text-sm" : " text-base"
+                } font-bold`}
+              >
                 Page {currentPage} of {npage}
               </li>
               <li>
                 <a
                   href="#"
                   onClick={prePage}
-                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                  className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
                 >
-                  <LeftOutlined />
+                  <LeftOutlined
+                    style={{
+                      fontSize: isScreenWidth1366 ? ".8rem" : "",
+                    }}
+                  />
                 </a>
               </li>
               <li className="flex items-center">
                 <input
                   type="number"
                   placeholder="Page"
-                  className="border rounded-lg bg-gray-100 py-2 px-4 text-black w-24  text-center outline-none"
+                  className={`border rounded-lg bg-gray-100  px-4 text-black w-24  text-center outline-none ${
+                    isScreenWidth1366 ? "text-sm py-1" : "py-2"
+                  }`}
                   value={pageInput}
                   onChange={handlePageInputChange}
                   onBlur={handlePageInputBlur} // Trigger page change when the input field loses focus
-                  onKeyPress={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
+                  onKeyDown={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
                 />
               </li>
               <li>
                 <a
                   href="#"
                   onClick={nextPage}
-                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                  className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
                 >
-                  <RightOutlined />
+                  <RightOutlined
+                    style={{
+                      fontSize: isScreenWidth1366 ? ".8rem" : "",
+                    }}
+                  />
                 </a>
               </li>
             </ul>

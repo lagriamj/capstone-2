@@ -9,6 +9,7 @@ const UpdateNatureModal = ({
   onUpdate,
   natureData,
   refreshData,
+  isScreenWidth1366,
 }) => {
   const [form] = Form.useForm();
   const [isUpdating, setIsUpdating] = useState(false);
@@ -42,7 +43,11 @@ const UpdateNatureModal = ({
       onOk={onUpdate}
       footer={null}
     >
-      <Form form={form} initialValues={natureData}>
+      <Form
+        form={form}
+        initialValues={natureData}
+        className={`${isScreenWidth1366 ? "flex flex-col gap-6" : ""} `}
+      >
         <Form.Item
           labelAlign="top"
           labelCol={{ span: 24 }}
@@ -108,6 +113,7 @@ UpdateNatureModal.propTypes = {
   onUpdate: PropTypes.func.isRequired,
   natureData: PropTypes.object,
   refreshData: PropTypes.func.isRequired,
+  isScreenWidth1366: PropTypes.bool.isRequired,
 };
 
 export default UpdateNatureModal;

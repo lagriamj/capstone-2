@@ -10,6 +10,7 @@ const UpdateCategoryModal = ({
   onUpdate,
   categoryData,
   refreshData,
+  isScreenWidth1366,
 }) => {
   if (!isOpen) return null;
   const [form] = Form.useForm();
@@ -45,7 +46,11 @@ const UpdateCategoryModal = ({
       footer={null}
     >
       {/* Content */}
-      <Form form={form} initialValues={categoryData}>
+      <Form
+        form={form}
+        initialValues={categoryData}
+        className={`${isScreenWidth1366 ? "flex flex-col gap-6" : ""} `}
+      >
         <Form.Item
           name="utilityCategory"
           label={
@@ -107,6 +112,7 @@ UpdateCategoryModal.propTypes = {
   onUpdate: PropTypes.func.isRequired,
   categoryData: PropTypes.object,
   refreshData: PropTypes.func.isRequired,
+  isScreenWidth1366: PropTypes.bool.isRequired,
 };
 
 export default UpdateCategoryModal;

@@ -18,6 +18,7 @@ class RatingController extends Controller
             ->select('user_requests.*')
             ->whereNotIn('status', ['Pending', 'Received', 'On Progress', 'To Release', 'To Rate'])
             ->where('user_id', $id)
+            ->orderBy('user_requests.dateUpdated', 'desc')
             ->get();
         return response()->json(['results' => $data]);
     }
@@ -27,6 +28,7 @@ class RatingController extends Controller
         $data = DB::table('user_requests')
             ->select('user_requests.*')
             ->whereNotIn('status', ['Pending', 'Received', 'On Progress', 'To Release', 'To Rate'])
+            ->orderBy('user_requests.dateUpdated', 'desc')
             ->get();
         return response()->json(['results' => $data]);
     }

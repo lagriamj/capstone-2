@@ -10,6 +10,7 @@ const UpdateTechnicianModal = ({
   onUpdate,
   technicianData,
   refreshData,
+  isScreenWidth1366,
 }) => {
   if (!isOpen) return null;
   const [form] = Form.useForm();
@@ -45,7 +46,11 @@ const UpdateTechnicianModal = ({
       footer={null}
     >
       {/* Content */}
-      <Form form={form} initialValues={technicianData}>
+      <Form
+        form={form}
+        initialValues={technicianData}
+        className={`${isScreenWidth1366 ? "flex flex-col gap-6" : ""} `}
+      >
         <Form.Item
           name="technician"
           label={
@@ -107,6 +112,7 @@ UpdateTechnicianModal.propTypes = {
   onUpdate: PropTypes.func.isRequired,
   technicianData: PropTypes.object,
   refreshData: PropTypes.func.isRequired,
+  isScreenWidth1366: PropTypes.bool.isRequired,
 };
 
 export default UpdateTechnicianModal;

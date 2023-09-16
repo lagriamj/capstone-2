@@ -9,6 +9,7 @@ use App\Http\Controllers\NatureRequestController;
 use App\Http\Controllers\UtilitySettingController;
 use App\Http\Controllers\TechnicianController;
 use App\Http\Controllers\RatingController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,11 +36,6 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LogoutController::class, 'logout']);
 Route::put('/update-phone', [UserController::class, 'updatePhoneNumber']);
 
-//Admin and User
-Route::post('/change-password', [UserController::class, 'changePassword']);
-Route::post('/check-password', [UserController::class, 'checkPassword']);
-Route::put('/update-contact', [UserController::class, 'updateContactNumber']);
-
 //Request Services (user side)
 Route::get('/getOfficeAndDivision/{userID}', [RequestsController::class, 'getOfficeAndDivision']);
 Route::post('add-request', [RequestsController::class, 'addRequest']);
@@ -56,6 +52,9 @@ Route::post('transanction-rate', [RatingController::class, 'rateTransaction']);
 
 //Account (user side)
 Route::get('/account', [UserController::class, 'accountDetails']);
+Route::post('/change-password', [UserController::class, 'changePasswoequestupdaterd']);
+Route::post('/check-password', [UserController::class, 'checkPassword']);
+Route::put('/update-contact', [UserController::class, 'updateContactNumber']);
 
 //Receive Service (admin side)
 Route::put('delete-receive/{id}', [ReceiveServiceController::class, 'destroyService']);
@@ -67,7 +66,7 @@ Route::get('service-task-list', [ReceiveServiceController::class, 'showServiceTa
 Route::put('onprogress-request/{id}', [ReceiveServiceController::class, 'onprogressRequest']);
 Route::put('torelease-request/{id}', [ReceiveServiceController::class, 'toreleaseRequest']);
 Route::post('torate-request', [ReceiveServiceController::class, 'torateRequest']);
-Route::put('delete-serviced/{id}/{reqID}', [ReceiveServiceController::class, 'destroyReceiveTask']);
+Route::put('delete-serviced/{id}/{reqID}', [ReceiveServiceController::class, 'destroyServiceTask']);
 
 //Service Transaction
 Route::get('closed-transaction', [RatingController::class, 'showServiceTransanction']);
@@ -102,5 +101,12 @@ Route::post('add-technician', [TechnicianController::class, 'addTechnician']);
 Route::put('update-technician', [TechnicianController::class, 'updateTechnician']);
 Route::delete('delete-technician/{id}', [TechnicianController::class, 'destroyTechnician']);
 
+// View Cancel Reason
 Route::post('cancel-reason/{id}', [ReceiveServiceController::class, 'cancelReason']);
 Route::get('view-cancelled/{id}', [ReceiveServiceController::class, 'viewCancelRequest']);
+
+// Dashboard
+Route::get('pending-requests', [DashboardController::class, 'countPendingUserRequests']);
+Route::get('all-users', [DashboardController::class, 'countAllUsers']);
+Route::get('received-requests', [DashboardController::class, 'countReceivedUserRequests']);
+Route::get('closed-requests', [DashboardController::class, 'countClosedUserRequests']);

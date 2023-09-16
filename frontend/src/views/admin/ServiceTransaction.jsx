@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faSearch, faStar } from "@fortawesome/free-solid-svg-icons";
 import { Skeleton, message } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import ViewCancel from "../../components/ViewCancel";
 
 const ServiceTransaction = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -17,6 +18,14 @@ const ServiceTransaction = () => {
   const [modalType, setModalType] = useState(null);
   const [selectedData, setSelectedData] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
+
+  const [cancel, setCancel] = useState(false);
+  const [viewCancel, setViewCancel] = useState(false);
+
+  const handleCancelRequest = (data) => {
+    setViewCancel(data);
+    setCancel(true);
+  };
 
   const openModal = (data) => {
     setSelectedData(data);
@@ -167,6 +176,22 @@ const ServiceTransaction = () => {
     }
   };
 
+  const [windowWidth1366, setWindowWidth1366] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth1366(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const isScreenWidth1366 = windowWidth1366 === 1366;
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -174,8 +199,12 @@ const ServiceTransaction = () => {
       </Helmet>
       <div
         className={`className="flex flex-col lg:flex-row bg-gray-200 ${
-          isWidth1920 ? "lg:pl-20" : "lg:pl-[3.0rem]"
-        } lg:py-5 h-screen`}
+          isWidth1920
+            ? "lg:pl-20"
+            : isScreenWidth1366
+            ? "lg:pl-[0.5rem]"
+            : "lg:pl-[3.0rem]"
+        } lg:pt-5 h-screen`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
         <div className="flex flex-col lg:pb-10 bg-gray-200 gap-2 lg:w-full">
@@ -183,22 +212,32 @@ const ServiceTransaction = () => {
             className={`overflow-x-auto ${
               isWidth1920
                 ? "lg:w-[84%]  lg:ml-[16.6rem]"
+                : isScreenWidth1366
+                ? "lg:w-[82%]  lg:ml-[14.5rem]"
                 : "lg:w-[82%]  lg:ml-72"
-            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-4/5 pb-10 bg-white shadow-xl   border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
+            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-[80vh] pb-10 bg-white shadow-xl    border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
           >
             <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
-              <h1 className="font-sans lg:text-3xl text-xl flex items-center justify-center ml-5 mr-auto tracking-wide">
+              <h1
+                className={`font-sans flex items-center justify-center  ${
+                  isScreenWidth1366 ? "text-xl" : "lg:text-3xl text-xl"
+                }  ml-5 mr-auto tracking-wide`}
+              >
                 Service Transaction
               </h1>
               <div className="relative flex items-center lg:mr-10 ">
                 <FontAwesomeIcon
                   icon={faSearch}
-                  className="h-6 w-6 absolute ml-3 text-main"
+                  className={`${
+                    isScreenWidth1366 ? "w-4 h-4" : "w-6 h-6"
+                  } absolute ml-3 text-main`}
                 />
                 <input
                   type="text"
                   placeholder="Search"
-                  className="border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 h-14 lg:w-full w-[90%] focus:outline-none text-xl"
+                  className={`border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 lg:w-full w-[90%] focus:outline-none ${
+                    isScreenWidth1366 ? "text-sm h-10" : "text-xl h-14"
+                  }`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -212,19 +251,39 @@ const ServiceTransaction = () => {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
                   <tr className="bg-gray-200">
-                    <th className="w-20 pl-5 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th
+                      className={`w-20 pl-5 px-3 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-center whitespace-nowrap`}
+                    >
                       #
                     </th>
-                    <th className=" py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`pl-5 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      }  font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Request ID
                     </th>
-                    <th className=" py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`pl-5 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Date of Request
                     </th>
-                    <th className=" py-5 pl-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`pl-5 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Nature of Request
                     </th>
-                    <th className=" py-5 pl-5 text-base font-semibold tracking-wider whitespace-nowrap text-left">
+                    <th
+                      className={`pl-5 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider whitespace-nowrap text-left`}
+                    >
                       Mode
                       <div className="relative inline-block">
                         <button
@@ -237,7 +296,9 @@ const ServiceTransaction = () => {
                         >
                           <FontAwesomeIcon
                             icon={faFilter}
-                            className="h-4 w-4"
+                            className={`${
+                              isScreenWidth1366 ? " h-3 w-3" : "h-4 w-4"
+                            }`}
                           />
                         </button>
                         {isModeDropdownOpen && (
@@ -268,14 +329,24 @@ const ServiceTransaction = () => {
                         )}
                       </div>
                     </th>
-                    <th className="w-42 pl-5 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-42 pl-5 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Assigned To
                     </th>
-                    <th className="w-42 pl-5 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-42 pl-5 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Date Updated
                     </th>
                     <th
-                      className={`w-42 pl-5  py-5 text-base font-semibold tracking-wider whitespace-nowrap text-left`}
+                      className={`w-42 pl-5 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider whitespace-nowrap text-left`}
                     >
                       Status
                       <div className="relative inline-block">
@@ -289,7 +360,9 @@ const ServiceTransaction = () => {
                         >
                           <FontAwesomeIcon
                             icon={faFilter}
-                            className="h-4 w-4"
+                            className={`${
+                              isScreenWidth1366 ? " h-3 w-3" : "h-4 w-4"
+                            }`}
                           />
                         </button>
                         {isStatusDropdownOpen && (
@@ -347,7 +420,11 @@ const ServiceTransaction = () => {
                       </div>
                     </th>
 
-                    <th className="w-42 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-42 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Action
                     </th>
                   </tr>
@@ -380,30 +457,62 @@ const ServiceTransaction = () => {
                   ) : (
                     filteredRecords.map((setting, index) => (
                       <tr key={setting.id}>
-                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-center">
+                        <td
+                          className={`border-b-2 pl-5 py-3  ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } border-gray-200 text-center`}
+                        >
                           {firstIndex + index + 1}
                         </td>
-                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
+                        <td
+                          className={`border-b-2 pl-5 py-3  ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } border-gray-200 text-left`}
+                        >
                           {setting.id}
                         </td>
-                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
+                        <td
+                          className={`border-b-2 pl-5 py-3  ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } border-gray-200 text-left`}
+                        >
                           {setting.dateRequested}
                         </td>
-                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
+                        <td
+                          className={`border-b-2 pl-5 py-3  ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } border-gray-200 text-left`}
+                        >
                           {setting.natureOfRequest}
                         </td>
-                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
+                        <td
+                          className={`border-b-2 pl-5 py-3  ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } border-gray-200 text-left`}
+                        >
                           {setting.modeOfRequest}
                         </td>
-                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
+                        <td
+                          className={`border-b-2 pl-5 py-3  ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } border-gray-200 text-left`}
+                        >
                           {setting.assignedTo}
                         </td>
-                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left">
+                        <td
+                          className={`border-b-2 pl-5 py-3  ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } border-gray-200 text-left`}
+                        >
                           {setting.dateUpdated}
                         </td>
-                        <td className="border-b-2 pl-5 py-3 pr-16 border-gray-200 text-center">
+                        <td
+                          className={`border-b-2 pl-5 py-3  ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } pr-16 border-gray-200 text-center`}
+                        >
                           <p
-                            className={` rounded-xl lg:px-0 px-3 py-2 ${
+                            className={` rounded-xl lg:px-0 mediumLg:px-2 px-3 py-2 ${
                               setting.status === "Pending"
                                 ? "bg-red-500 text-white" // Apply red background and white text for Pending
                                 : setting.status === "Received"
@@ -427,28 +536,38 @@ const ServiceTransaction = () => {
                           <div className="flex justify-start gap-1">
                             {setting.status === "Cancelled" ? (
                               <button
-                                className="text-white text-base bg-gray-400 cursor-not-allowed py-2 px-4 rounded-lg"
-                                disabled
+                                className={`text-white bg-blue-500 ${
+                                  isScreenWidth1366 ? "text-xs" : " text-base"
+                                } font-medium px-3 py-2 rounded-lg`}
+                                onClick={() => handleCancelRequest(setting)}
                               >
                                 View
                               </button>
                             ) : (
                               <button
                                 onClick={() => openModal(setting)}
-                                className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
+                                className={`text-white bg-blue-500 ${
+                                  isScreenWidth1366 ? "text-xs" : " text-base"
+                                } font-medium px-3 py-2 rounded-lg`}
                               >
                                 View
                               </button>
                             )}
                             {setting.status === "Cancelled" ? (
                               <button
-                                className="text-white text-base bg-gray-400 cursor-not-allowed py-2 px-4 rounded-lg"
+                                className={`text-white ${
+                                  isScreenWidth1366 ? "text-xs" : " text-base"
+                                } bg-gray-400 cursor-not-allowed py-2 px-4 rounded-lg`}
                                 disabled
                               >
                                 <FontAwesomeIcon icon={faStar} />
                               </button>
                             ) : (
-                              <button className="text-white text-base bg-yellow-500 py-2 px-4 rounded-lg">
+                              <button
+                                className={`text-white ${
+                                  isScreenWidth1366 ? "text-xs" : " text-base"
+                                } bg-yellow-500 py-2 px-4 rounded-lg`}
+                              >
                                 <FontAwesomeIcon icon={faStar} />
                               </button>
                             )}
@@ -468,42 +587,57 @@ const ServiceTransaction = () => {
                   refreshData={fetchData}
                 />
               )}
+              {cancel && (
+                <ViewCancel
+                  isOpen={cancel}
+                  onClose={() => setCancel(false)}
+                  datas={viewCancel} // Pass the selectedItemId as a prop
+                />
+              )}
             </div>
           </div>
           <nav
             className={`lg:ml-56 mr-6  ${isWidth1920 ? "lg:mr-10" : "lg:mr-8"}`}
           >
             <ul className="flex gap-2 items-center">
-              <li className="flex-auto ml-10 lg:ml-20 mr-5 text-base font-bold">
+              <li className="flex-auto ml-10 mediumLg:text-sm lg:ml-20 mr-5 text-base font-bold">
                 Page {currentPage} of {npage}
               </li>
               <li>
                 <a
                   href="#"
                   onClick={prePage}
-                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                  className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
                 >
-                  <LeftOutlined />
+                  <LeftOutlined
+                    style={{
+                      fontSize: isScreenWidth1366 ? ".8rem" : "",
+                    }}
+                  />
                 </a>
               </li>
               <li className="flex items-center">
                 <input
                   type="number"
                   placeholder="Page"
-                  className="border rounded-lg bg-gray-100 py-2 px-4 text-black w-24  text-center outline-none"
+                  className="border rounded-lg mediumLg:text-sm mediumLg:py-1 bg-gray-100 py-2 px-4 text-black w-24  text-center outline-none"
                   value={pageInput}
                   onChange={handlePageInputChange}
                   onBlur={handlePageInputBlur} // Trigger page change when the input field loses focus
-                  onKeyPress={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
+                  onKeyDown={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
                 />
               </li>
               <li>
                 <a
                   href="#"
                   onClick={nextPage}
-                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                  className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
                 >
-                  <RightOutlined />
+                  <RightOutlined
+                    style={{
+                      fontSize: isScreenWidth1366 ? ".8rem" : "",
+                    }}
+                  />
                 </a>
               </li>
             </ul>

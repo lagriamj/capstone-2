@@ -87,7 +87,7 @@ const AdminSidebar = () => {
       </div>
 
       <hr className="mx-7 mb-8" />
-      <ul className="flex flex-col justify-center items-start gap-2 px-5 lg:ml-4">
+      <ul className="flex flex-col justify-center items-start gap-2 px-5 lg:ml-4 mediumLg:ml-0">
         <li
           className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "dashboard" ? "bg-white text-main font-semibold" : ""
@@ -242,9 +242,9 @@ const AdminSidebar = () => {
         </li>
       </ul>
 
-      <div className="flex flex-col mt-auto mb-10">
+      <div className="flex flex-col mt-auto  mb-10">
         <hr className="mx-7 mt-4 mb-5" />
-        <div className="flex flex-col  lg:mx-2 ">
+        <div className="flex flex-col  lg:mx-2  mediumLg:mx-0">
           <ul className="flex flex-col justify-center items-start gap-3 px-5">
             <li
               className={`flex gap-3 w-full cursor-pointer items-center relative py-3 px-4 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${

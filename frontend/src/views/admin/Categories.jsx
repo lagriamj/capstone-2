@@ -178,6 +178,22 @@ const Categories = () => {
     }
   };
 
+  const [windowWidth1366, setWindowWidth1366] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth1366(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const isScreenWidth1366 = windowWidth1366 === 1366;
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -185,7 +201,11 @@ const Categories = () => {
       </Helmet>
       <div
         className={`className="flex flex-col lg:flex-row bg-gray-200 ${
-          isWidth1920 ? "lg:pl-20" : "lg:pl-[3.0rem]"
+          isWidth1920
+            ? "lg:pl-20"
+            : isScreenWidth1366
+            ? "lg:pl-[0.5rem]"
+            : "lg:pl-[3.0rem]"
         } lg:pt-5 h-screen`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
@@ -240,22 +260,32 @@ const Categories = () => {
             className={`overflow-x-auto ${
               isWidth1920
                 ? "lg:w-[84%]  lg:ml-[16.6rem]"
+                : isScreenWidth1366
+                ? "lg:w-[82%]  lg:ml-[14.5rem]"
                 : "lg:w-[82%]  lg:ml-72"
-            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-4/5 pb-10 bg-white shadow-xl   border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
+            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-[80vh] pb-10 bg-white shadow-xl    border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
           >
             <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
-              <h1 className="font-sans lg:text-3xl text-base   flex items-center justify-center ml-5 mr-auto">
-                Technicians
+              <h1
+                className={`font-sans flex items-center justify-center  ${
+                  isScreenWidth1366 ? "text-xl" : "lg:text-3xl text-xl"
+                }  ml-5 mr-auto tracking-wide`}
+              >
+                Categories
               </h1>
               <div className="relative flex items-center lg:mr-10 ">
                 <FontAwesomeIcon
                   icon={faSearch}
-                  className="h-6 w-6 absolute ml-3 text-main"
+                  className={`${
+                    isScreenWidth1366 ? "w-4 h-4" : "w-6 h-6"
+                  } absolute ml-3 text-main`}
                 />
                 <input
                   type="text"
                   placeholder="Search"
-                  className="border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 h-14 lg:w-full w-[90%] focus:outline-none text-xl"
+                  className={`border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 lg:w-full w-[90%] focus:outline-none ${
+                    isScreenWidth1366 ? "text-sm h-10" : "text-xl h-14"
+                  }`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -269,13 +299,25 @@ const Categories = () => {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
                   <tr className="bg-gray-200 ">
-                    <th className="w-64 lg:pl-20 pl-4 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-64 lg:pl-20 pl-4 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       #
                     </th>
-                    <th className="w-64 pl-5 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-64 pl-20 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Category
                     </th>
-                    <th className="w-64  pl-5 py-5 text-base font-semibold tracking-wider text-left whitespace-nowrap">
+                    <th
+                      className={`w-64  pl-20 ${
+                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
+                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                    >
                       Action
                     </th>
                   </tr>
@@ -308,16 +350,30 @@ const Categories = () => {
                   ) : (
                     filteredRecords.map((item) => (
                       <tr key={item.id}>
-                        <td className=" lg:pl-20 pl-4 border-b-2 px-3 py-3 border-gray-200 text-left">
+                        <td
+                          className={`lg:pl-20 pl-4 border-b-2 px-3 py-3 ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } border-gray-200 text-left`}
+                        >
                           {item.id}
                         </td>
-                        <td className="border-b-2 pl-5 py-3 border-gray-200 text-left whitespace-nowrap">
+                        <td
+                          className={`border-b-2 pl-20 py-3 ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } border-gray-200 text-left whitespace-nowrap`}
+                        >
                           {item.utilityCategory}
                         </td>
-                        <td className="py-3 text-lg pl-5 border-b-2 text-gray-700 whitespace-nowrap text-center font-medium">
+                        <td
+                          className={`py-3  pl-20 border-b-2 ${
+                            isScreenWidth1366 ? "text-sm" : " text-lg"
+                          } text-gray-700 whitespace-nowrap text-center font-medium`}
+                        >
                           <div className="flex ">
                             <button
-                              className="text-white text-base font-medium bg-blue-600 py-2 px-4 rounded-lg"
+                              className={`text-white ${
+                                isScreenWidth1366 ? "text-xs" : " text-base"
+                              } font-medium bg-blue-600 py-2 px-4 rounded-lg`}
                               onClick={() => openUpdateCategoryModal(item)}
                             >
                               Update
@@ -345,7 +401,11 @@ const Categories = () => {
                                 size: "large",
                               }}
                             >
-                              <button className="ml-1 text-white bg-red-700 rounded-lg px-3 py-2 text-lg font-medium">
+                              <button
+                                className={`ml-1 text-white bg-red-700 rounded-lg px-3 py-2 ${
+                                  isScreenWidth1366 ? "text-xs" : " text-lg"
+                                } font-medium`}
+                              >
                                 <FontAwesomeIcon icon={faTrash} />
                               </button>
                             </Popconfirm>
@@ -366,7 +426,12 @@ const Categories = () => {
                 footer={null}
                 title="Create New Category"
               >
-                <Form form={form}>
+                <Form
+                  form={form}
+                  className={`${
+                    isScreenWidth1366 ? "flex flex-col gap-6" : ""
+                  } `}
+                >
                   <Form.Item
                     name="utilityCategory"
                     label={
@@ -428,29 +493,34 @@ const Categories = () => {
                   onUpdate={() => setUpdateCategoryModalVisible(false)}
                   categoryData={selectedCategoryForUpdate}
                   refreshData={() => fetchCategory()}
+                  isScreenWidth1366={isScreenWidth1366}
                 />
               )}
             </div>
           </div>
           <nav className="mr-auto lg:ml-56">
             <ul className="flex gap-2 items-center">
-              <li className="flex-auto ml-10 lg:ml-20 mr-2">
+              <li className="flex-auto mediumLg:text-sm ml-10 lg:ml-20 mr-2">
                 Page {currentPage} of {npage}
               </li>
               <li>
                 <a
                   href="#"
                   onClick={prePage}
-                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                  className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
                 >
-                  <LeftOutlined />
+                  <LeftOutlined
+                    style={{
+                      fontSize: isScreenWidth1366 ? ".8rem" : "",
+                    }}
+                  />
                 </a>
               </li>
               <li className="flex items-center">
                 <input
                   type="number"
                   placeholder="Page"
-                  className="border rounded-lg bg-gray-100 py-2 px-4 text-black w-24  text-center outline-none"
+                  className="border rounded-lg mediumLg:text-sm mediumLg:py-1 bg-gray-100 py-2 px-4 text-black w-24  text-center outline-none"
                   value={pageInput}
                   onChange={handlePageInputChange}
                   onBlur={handlePageInputBlur} // Trigger page change when the input field loses focus
@@ -461,9 +531,13 @@ const Categories = () => {
                 <a
                   href="#"
                   onClick={nextPage}
-                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                  className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
                 >
-                  <RightOutlined />
+                  <RightOutlined
+                    style={{
+                      fontSize: isScreenWidth1366 ? ".8rem" : "",
+                    }}
+                  />
                 </a>
               </li>
             </ul>
