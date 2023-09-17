@@ -35,6 +35,7 @@ export default {
       },
       screens: {
         'mediumLg' : '1366px',
+        'gotoLarge' : '1400px',
         'large' : '1920px',
       },
     },

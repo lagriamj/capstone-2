@@ -63,6 +63,7 @@ Route::post('received-request', [ReceiveServiceController::class, 'receivedReque
 
 //Service Task (admin side)
 Route::get('service-task-list', [ReceiveServiceController::class, 'showServiceTask']);
+// Route::get('service-my-task-list/{fullName}', [ReceiveServiceController::class, 'showMyServiceTask']);
 Route::put('onprogress-request/{id}', [ReceiveServiceController::class, 'onprogressRequest']);
 Route::put('torelease-request/{id}', [ReceiveServiceController::class, 'toreleaseRequest']);
 Route::post('torate-request', [ReceiveServiceController::class, 'torateRequest']);
@@ -110,3 +111,8 @@ Route::get('pending-requests', [DashboardController::class, 'countPendingUserReq
 Route::get('all-users', [DashboardController::class, 'countAllUsers']);
 Route::get('received-requests', [DashboardController::class, 'countReceivedUserRequests']);
 Route::get('closed-requests', [DashboardController::class, 'countClosedUserRequests']);
+Route::get('top-nature-request', [DashboardController::class, 'showCommonNatureOfRequest']);
+
+Route::get('overall-rating', [DashboardController::class, 'calculateTotalRatings']);
+Route::get('satisfied-rating', [DashboardController::class, 'calculateSatisfiedRatings']);
+Route::get('unsatisfied-rating', [DashboardController::class, 'calculateUnSatisfiedRatings']);

@@ -6,10 +6,14 @@ import { Modal, Button } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClipboardCheck,
+  faHandHoldingHeart,
   faTableList,
   faTicket,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
+import Filter1Icon from "@mui/icons-material/Filter1";
+import Filter2Icon from "@mui/icons-material/Filter2";
+import Filter3Icon from "@mui/icons-material/Filter3";
 
 const Dashboard = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -149,19 +153,112 @@ const Dashboard = () => {
 
   const isScreenWidth1366 = windowWidth1366 === 1366;
 
+  const [topNatures, setTopNatures] = useState([]);
+
+  useEffect(() => {
+    async function fetchTopNatures() {
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/top-nature-request"
+      );
+      const topNaturesData = await response.json();
+      setTopNatures(topNaturesData.topNatures);
+    }
+
+    fetchTopNatures();
+  }, []);
+
+  const [totalRatings, setTotalRatings] = useState(null);
+
+  useEffect(() => {
+    async function fetchOverAllRatings() {
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:8000/api/overall-rating"
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setTotalRatings(data.total_ratings);
+        } else {
+          console.error(
+            "Failed to fetch ratings data. Server returned:",
+            response.status,
+            response.statusText
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching ratings data:", error.message);
+      }
+    }
+
+    fetchOverAllRatings();
+  }, []);
+
+  const [totalUnsatisfied, setTotalUnsatisfied] = useState(null);
+
+  useEffect(() => {
+    async function fetchUnsatisfiedRating() {
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:8000/api/unsatisfied-rating"
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setTotalUnsatisfied(data.UnSatisfiedRating);
+        } else {
+          console.error(
+            "Failed to fetch ratings data. Server returned:",
+            response.status,
+            response.statusText
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching ratings data:", error.message);
+      }
+    }
+
+    fetchUnsatisfiedRating();
+  }, []);
+
+  const [totalSatisfied, setTotalSatisfied] = useState(null);
+
+  useEffect(() => {
+    async function fetchSatisfiedRating() {
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:8000/api/satisfied-rating"
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setTotalSatisfied(data.SatisfiedRating);
+        } else {
+          console.error(
+            "Failed to fetch ratings data. Server returned:",
+            response.status,
+            response.statusText
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching ratings data:", error.message);
+      }
+    }
+
+    fetchSatisfiedRating();
+  }, []);
+
   return (
     <HelmetProvider>
       <Helmet>
         <title>Dashboard</title>
       </Helmet>
       <div
-        className={`className="flex flex-col  lg:flex-row bg-gray-200 ${
+        className={`className="flex flex-col  lg:flex-row bg-gradient-to-r from-indigo-400 via-purple-200 to-cyan-500
+        ${
           isWidth1920
             ? "lg:pl-20"
             : isScreenWidth1366
             ? "lg:pl-[0.5rem]"
             : "lg:pl-[3.0rem]"
-        } lg:pt-2 h-screen`}
+        } lg:pt-2 h-auto`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
         <div className="flex items-center justify-center">
@@ -242,8 +339,67 @@ const Dashboard = () => {
                 <div className="col-span-5 mediumLg:mt-2 large:mt-0 ml-4 row-span-2 rounded-lg shadow-xl  bg-white">
                   <h1>Graph</h1>
                 </div>
-                <div className="col-span-5 mediumLg:mt-2 large:mt-0 mt-4 ml-4 row-span-2 shadow-xl rounded-lg row-start-4 bg-white">
-                  <h1>Graphs 2</h1>
+                <div className="col-span-5 flex lg:flex-row flex-col justify-between mediumLg:mt-2 large:mt-3 mt-4 ml-4 row-span-2  rounded-lg row-start-4 ">
+                  <div className="bg-white lg:w-[40%] w-full rounded-lg shadow-xl">
+                    Pie
+                  </div>
+                  <div className="bg-white lg:w-[29%] w-full rounded-lg shadow-xl font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
+                    <div className="flex border-b-2 items-center justify-center border-gray-400">
+                      <h1 className="p-3  font-semibold ">Rating</h1>
+                      <FontAwesomeIcon
+                        icon={faHandHoldingHeart}
+                        className="large:h-8 large:w-8 text-main mediumLg:h-6 mediumLg:w-6"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-4 gap-y-10 pt-4 gotoLarge:gap-y-12 gotoLarge:pt-14 font-medium   mediumLg:gap-y-4 mediumLg:pt-6 large:gap-y-16 large:pt-10 p-4 ">
+                      <div className="flex items-center justify-center gap-3">
+                        <label>Total Ratings: </label>
+                        <label className=" text-xl large:text-3xl font-semibold italic">
+                          {" "}
+                          {totalRatings}%
+                        </label>
+                      </div>
+
+                      <div className="flex items-center justify-center gap-3">
+                        <label>Satisfied: </label>
+                        <label className=" text-xl large:text-3xl font-semibold italic">
+                          {" "}
+                          {totalSatisfied}%
+                        </label>
+                      </div>
+
+                      <div className="flex items-center justify-center gap-3">
+                        <label>Unsatisfied: </label>
+                        <label className=" text-xl large:text-3xl font-semibold italic">
+                          {" "}
+                          {totalUnsatisfied}%
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-white lg:w-[29%] w-full rounded-lg shadow-xl font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
+                    <h1 className="p-3 text-center font-semibold border-b-2 border-gray-400 ">
+                      Top 3 Nature of Requests
+                    </h1>
+                    <ul className="flex flex-col gap-4 gap-y-10 pt-4 gotoLarge:gap-y-12 gotoLarge:pt-14 font-medium   mediumLg:gap-y-4 mediumLg:pt-6 large:gap-y-20 large:pt-10 p-4 ">
+                      {topNatures.map((natureOfRequest, index) => (
+                        <li className="flex  gap-4" key={natureOfRequest.id}>
+                          <span>
+                            {index === 0 ? (
+                              <Filter1Icon />
+                            ) : index === 1 ? (
+                              <Filter2Icon />
+                            ) : index === 2 ? (
+                              <Filter3Icon />
+                            ) : (
+                              ""
+                            )}
+                          </span>{" "}
+                          {natureOfRequest.natureOfRequest}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
                 <div className=" text-black font-sans mediumLg:mt-2 large:mt-0  bg-white shadow-xl rounded-lg col-span-2  row-span-5 mr-4">
                   <h1 className="text-2xl m-2 font-semibold border-b-2 pb-2 border-gray-400">

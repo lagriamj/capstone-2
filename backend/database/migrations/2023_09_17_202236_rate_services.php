@@ -16,14 +16,14 @@ return new class extends Migration
             $table->foreign('request_id')->references('id')->on('user_requests');
             $table->datetime('dateRate');
             $table->string('department'); // Fixed typo 'derpartment' to 'department'
-            $table->string('q1');
-            $table->string('q2');
-            $table->string('q3');
-            $table->string('q4');
-            $table->string('q5');
-            $table->string('q6');
-            $table->string('q7');
-            $table->string('q8');
+            $table->integer('q1'); // Change data type to integer for ratings
+            $table->integer('q2');
+            $table->integer('q3');
+            $table->integer('q4');
+            $table->integer('q5');
+            $table->integer('q6');
+            $table->integer('q7');
+            $table->integer('q8');
             $table->string('commendation');
             $table->string('suggestion');
             $table->string('request');
