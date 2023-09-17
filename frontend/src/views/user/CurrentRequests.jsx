@@ -238,6 +238,29 @@ const CurrentRequests = () => {
     return matchesSearchQuery && matchesStatusFilter && matchesModeFilter;
   });
 
+  const [selectedSortOrder, setSelectedSortOrder] = useState("asc");
+  const [isSortOptionsVisible, setIsSortOptionsVisible] = useState(false);
+
+  const toggleSortOptions = () => {
+    setIsSortOptionsVisible(!isSortOptionsVisible);
+  };
+
+  const sortedRecords = [...filteredRecords].sort((a, b) => {
+    if (a === b) return 0;
+
+    if (selectedSortOrder === "asc") {
+      // Use selectedSortOrder instead of dateUpdatedSortOrder
+      return a.dateUpdated.localeCompare(b.dateUpdated);
+    } else {
+      return b.dateUpdated.localeCompare(a.dateUpdated);
+    }
+  });
+
+  const handleSortOrderChange = (newOrder) => {
+    setSelectedSortOrder(newOrder);
+    setIsSortOptionsVisible(false); // Hide the options after selecting
+  };
+
   const [pageInput, setPageInput] = useState("");
 
   const goToPage = () => {
@@ -429,9 +452,43 @@ const CurrentRequests = () => {
                     <th
                       className={`w-48 ${
                         isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
-                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                      } font-semibold tracking-wider relative text-left whitespace-nowrap`}
                     >
                       Date Updated
+                      <button
+                        onClick={toggleSortOptions}
+                        className="text-main focus:outline-none ml-2"
+                        style={{
+                          backgroundColor: "transparent",
+                          border: "none",
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faFilter} className="h-4 w-4" />
+                      </button>
+                      {isSortOptionsVisible && (
+                        <div className="absolute top-8 right-0 bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
+                          <button
+                            onClick={() => handleSortOrderChange("asc")}
+                            className={`block px-4 w-full py-2 text-left ${
+                              selectedSortOrder === "asc"
+                                ? "bg-main text-white"
+                                : ""
+                            }`}
+                          >
+                            Ascending
+                          </button>
+                          <button
+                            onClick={() => handleSortOrderChange("desc")}
+                            className={`block px-4 w-full py-2 text-left ${
+                              selectedSortOrder === "desc"
+                                ? "bg-main text-white"
+                                : ""
+                            }`}
+                          >
+                            Descending
+                          </button>
+                        </div>
+                      )}
                     </th>
                     <th
                       className={`w-36  pl-5 ${
@@ -534,7 +591,7 @@ const CurrentRequests = () => {
                         No Records Yet.
                       </td>
                     </tr>
-                  ) : filteredRecords.length === 0 ? (
+                  ) : sortedRecords.length === 0 ? (
                     <tr className="h-[50vh]">
                       <td
                         colSpan="8"
@@ -544,7 +601,7 @@ const CurrentRequests = () => {
                       </td>
                     </tr>
                   ) : (
-                    filteredRecords.map((item, index) => (
+                    sortedRecords.map((item, index) => (
                       <tr
                         className="border-b-2 border-gray-200 h-auto overflow-auto"
                         key={item.id}

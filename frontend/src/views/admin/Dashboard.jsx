@@ -168,18 +168,18 @@ const Dashboard = () => {
           <div
             className={`overflow-x-auto ${
               isWidth1920
-                ? "lg:w-[84%]  lg:ml-[16.6rem]"
+                ? "lg:w-[88%]  lg:ml-[16.0rem]"
                 : isScreenWidth1366
-                ? "lg:w-[82%]  lg:ml-[14.5rem]"
-                : "lg:w-[82%]  lg:ml-72"
+                ? "lg:w-[84%]  lg:ml-[14.0rem]"
+                : "lg:w-[84%]  lg:ml-64"
             } w-[90%] lg:h-[100vh] relative mt-20 lg:mt-0  h-[80vh] pb-10     border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
           >
-            <div className="w-full h-screen grid grid-cols-7 grid-rows-5 gap-x-3">
-              {isLoading ? (
-                <p>Loading...</p>
-              ) : (
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : (
+              <div className="w-full h-screen grid grid-cols-7 grid-rows-5 gap-x-3">
                 <div className="grid col-span-full text-black font-sans">
-                  <div className="flex w-full justify-between px-[2%] mt-4">
+                  <div className="flex w-full justify-between px-[1%] mt-4">
                     <div className="flex lg:w-[24%] lg:h-[16vh] bg-white shadow-xl rounded-lg">
                       <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
                         <FontAwesomeIcon
@@ -238,42 +238,43 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-              )}
-              <div className="col-span-5 mt-5 ml-7 row-span-2 rounded-lg shadow-xl  bg-white">
-                <h1>Graph</h1>
-              </div>
-              <div className="col-span-5 mt-5 ml-7 row-span-2 shadow-xl rounded-lg row-start-4 bg-white">
-                <h1>Graphs 2</h1>
-              </div>
-              <div className="mt-5 text-black font-sans  bg-white shadow-xl rounded-lg col-span-2  row-span-5 mr-8">
-                <h1 className="text-2xl m-2 border-b-2 pb-2 border-gray-400">
-                  Recent Requests
-                </h1>
-                {requestDetails.map((request) => (
-                  <div
-                    key={request.id}
-                    className="mb-5 pb-2 large:text-lg border-b-2 border-gray-400"
-                  >
-                    <div className="grid grid-cols-2 px-2">
-                      <p className="whitespace-nowrap"> {request.fullName}</p>
-                      <p> {request.dateRequested}</p>
-                    </div>
-                    <div className="grid grid-cols-2 mt-2 px-2">
-                      <p className="whitespace-nowrap">
-                        {request.natureOfRequest}
-                      </p>
 
-                      <button
-                        className="text-blue-400"
-                        onClick={() => openModal(request)}
-                      >
-                        View Details
-                      </button>
+                <div className="col-span-5 mediumLg:mt-2 large:mt-0 ml-4 row-span-2 rounded-lg shadow-xl  bg-white">
+                  <h1>Graph</h1>
+                </div>
+                <div className="col-span-5 mediumLg:mt-2 large:mt-0 mt-4 ml-4 row-span-2 shadow-xl rounded-lg row-start-4 bg-white">
+                  <h1>Graphs 2</h1>
+                </div>
+                <div className=" text-black font-sans mediumLg:mt-2 large:mt-0  bg-white shadow-xl rounded-lg col-span-2  row-span-5 mr-4">
+                  <h1 className="text-2xl m-2 font-semibold border-b-2 pb-2 border-gray-400">
+                    Recent Requests
+                  </h1>
+                  {requestDetails.map((request) => (
+                    <div
+                      key={request.id}
+                      className="mb-5 pb-2 large:text-lg border-b-2 border-gray-400"
+                    >
+                      <div className="grid grid-cols-2 px-2">
+                        <p className="whitespace-nowrap"> {request.fullName}</p>
+                        <p> {request.dateRequested}</p>
+                      </div>
+                      <div className="grid grid-cols-2 mt-2 px-2">
+                        <p className="whitespace-nowrap">
+                          {request.natureOfRequest}
+                        </p>
+
+                        <button
+                          className="text-blue-400"
+                          onClick={() => openModal(request)}
+                        >
+                          View Details
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

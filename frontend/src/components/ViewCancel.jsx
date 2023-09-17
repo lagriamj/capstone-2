@@ -221,7 +221,7 @@ const ViewCancel = ({ isOpen, onClose, datas }) => {
       title={
         <div className="flex justify-between items-center">
           <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
-          <span>REQUEST ID: {datas.id}</span>
+          <span>REQUEST ID: E-{datas.id}</span>
         </div>
       }
       centered

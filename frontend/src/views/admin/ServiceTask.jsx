@@ -17,6 +17,7 @@ import {
   QuestionCircleOutlined,
   RightOutlined,
 } from "@ant-design/icons";
+import { useAuth } from "../../AuthContext";
 
 const ServiceTask = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -28,6 +29,7 @@ const ServiceTask = () => {
   const [popconfirmVisible, setPopconfirmVisible] = useState([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalType, setModalType] = useState(null);
+  const { fullName } = useAuth();
 
   const openModal = (data) => {
     setSelectedData(data);
@@ -136,8 +138,30 @@ const ServiceTask = () => {
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const [selectedStatusFilters, setSelectedStatusFilters] = useState([]);
 
+  const [isTechnicianDropDownOpen, setIsTechnicianDropDownOpen] =
+    useState(false);
+  const [selectedTechnicianFilter, setSelectedTechnicianFilter] = useState([]);
+
   const [isModeDropdownOpen, setIsModeDropdownOpen] = useState(false);
   const [selectedModeFilters, setSelectedModeFilters] = useState([]);
+
+  const toggleTechnicianDropDown = () => {
+    setIsTechnicianDropDownOpen(!isTechnicianDropDownOpen);
+  };
+
+  const handleTechnicianCheckboxChange = (e) => {
+    const selectedTechnician = e.target.value;
+
+    setSelectedTechnicianFilter((prevFilters) => {
+      if (prevFilters.length === 1 && prevFilters[0] === selectedTechnician) {
+        return []; // Unselect if the same option is clicked
+      } else {
+        return [selectedTechnician];
+      }
+    });
+  };
+
+  console.log("Selected Technician:" + selectedTechnicianFilter);
 
   const toggleModeDropdown = () => {
     setIsModeDropdownOpen(!isModeDropdownOpen);
@@ -198,7 +222,16 @@ const ServiceTask = () => {
       selectedModeFilters.length === 0 ||
       selectedModeFilters.includes(item.modeOfRequest);
 
-    return matchesSearchQuery && matchesStatusFilter && matchesModeFilter;
+    const matchesTechnician =
+      selectedTechnicianFilter.length === 0 ||
+      selectedTechnicianFilter.includes(item.assignedTo);
+
+    return (
+      matchesSearchQuery &&
+      matchesStatusFilter &&
+      matchesModeFilter &&
+      matchesTechnician
+    );
   });
 
   const [pageInput, setPageInput] = useState("");
@@ -386,6 +419,37 @@ const ServiceTask = () => {
                       } font-semibold tracking-wider text-left whitespace-nowrap`}
                     >
                       Assigned To
+                      <div className="relative inline-block">
+                        <button
+                          onClick={toggleTechnicianDropDown}
+                          className="text-main focus:outline-none ml-2"
+                          style={{
+                            backgroundColor: "transparent",
+                            border: "none",
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            icon={faFilter}
+                            className="h-4 w-4"
+                          />
+                        </button>
+                        {isTechnicianDropDownOpen && (
+                          <div className="absolute right-0 overflow-auto text-start bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
+                            <label className="block px-4 py-2">
+                              <input
+                                type="checkbox"
+                                value={fullName}
+                                checked={selectedTechnicianFilter.includes(
+                                  fullName
+                                )}
+                                onChange={handleTechnicianCheckboxChange}
+                                className="mr-2"
+                              />
+                              My Task
+                            </label>
+                          </div>
+                        )}
+                      </div>
                     </th>
 
                     <th
