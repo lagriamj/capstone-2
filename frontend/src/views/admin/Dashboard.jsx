@@ -251,7 +251,7 @@ const Dashboard = () => {
         <title>Dashboard</title>
       </Helmet>
       <div
-        className={`className="flex flex-col  lg:flex-row bg-gradient-to-r from-indigo-400 via-purple-200 to-cyan-500
+        className={`className="flex flex-col  lg:flex-row bg-[#F5F7FB]
         ${
           isWidth1920
             ? "lg:pl-20"
@@ -265,7 +265,7 @@ const Dashboard = () => {
           <div
             className={`overflow-x-auto ${
               isWidth1920
-                ? "lg:w-[88%]  lg:ml-[16.0rem]"
+                ? "lg:w-[88%]  lg:ml-[15.5rem]"
                 : isScreenWidth1366
                 ? "lg:w-[84%]  lg:ml-[14.0rem]"
                 : "lg:w-[84%]  lg:ml-64"
@@ -277,7 +277,7 @@ const Dashboard = () => {
               <div className="w-full h-screen grid grid-cols-7 grid-rows-5 gap-x-3">
                 <div className="grid col-span-full text-black font-sans">
                   <div className="flex w-full justify-between px-[1%] mt-4">
-                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-white shadow-xl rounded-lg">
+                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-white shadow-md rounded-lg">
                       <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
                         <FontAwesomeIcon
                           icon={faUsers}
@@ -291,7 +291,7 @@ const Dashboard = () => {
                         {counts.allUsers}
                       </h1>
                     </div>
-                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-white shadow-xl rounded-lg">
+                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-white shadow-md rounded-lg">
                       <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
                         <FontAwesomeIcon
                           icon={faTicket}
@@ -305,7 +305,7 @@ const Dashboard = () => {
                         {counts.pending}
                       </h1>
                     </div>
-                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-white shadow-xl rounded-lg">
+                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-white shadow-md rounded-lg">
                       <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
                         <FontAwesomeIcon
                           icon={faTableList}
@@ -319,7 +319,7 @@ const Dashboard = () => {
                         {counts.received}
                       </h1>
                     </div>
-                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-white shadow-xl rounded-lg">
+                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-white shadow-md rounded-lg">
                       <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
                         <FontAwesomeIcon
                           icon={faClipboardCheck}
@@ -336,14 +336,14 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                <div className="col-span-5 mediumLg:mt-2 large:mt-0 ml-4 row-span-2 rounded-lg shadow-xl  bg-white">
+                <div className="col-span-5 mediumLg:mt-2 large:mt-0 ml-4 row-span-2 rounded-lg shadow-md  bg-white">
                   <h1>Graph</h1>
                 </div>
                 <div className="col-span-5 flex lg:flex-row flex-col justify-between mediumLg:mt-2 large:mt-3 mt-4 ml-4 row-span-2  rounded-lg row-start-4 ">
-                  <div className="bg-white lg:w-[40%] w-full rounded-lg shadow-xl">
+                  <div className="bg-white lg:w-[40%] w-full rounded-lg shadow-md">
                     Pie
                   </div>
-                  <div className="bg-white lg:w-[29%] w-full rounded-lg shadow-xl font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
+                  <div className="bg-white lg:w-[29%] w-full rounded-lg shadow-md font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
                     <div className="flex border-b-2 items-center justify-center border-gray-400">
                       <h1 className="p-3  font-semibold ">Rating</h1>
                       <FontAwesomeIcon
@@ -354,7 +354,7 @@ const Dashboard = () => {
                     <div className="flex flex-col gap-4 gap-y-10 pt-4 gotoLarge:gap-y-12 gotoLarge:pt-14 font-medium   mediumLg:gap-y-4 mediumLg:pt-6 large:gap-y-16 large:pt-10 p-4 ">
                       <div className="flex items-center justify-center gap-3">
                         <label>Total Ratings: </label>
-                        <label className=" text-xl large:text-3xl font-semibold italic">
+                        <label className="text-red-700 text-xl large:text-3xl font-semibold italic">
                           {" "}
                           {totalRatings}%
                         </label>
@@ -362,7 +362,7 @@ const Dashboard = () => {
 
                       <div className="flex items-center justify-center gap-3">
                         <label>Satisfied: </label>
-                        <label className=" text-xl large:text-3xl font-semibold italic">
+                        <label className="text-red-700 text-xl large:text-3xl font-semibold italic">
                           {" "}
                           {totalSatisfied}%
                         </label>
@@ -370,14 +370,14 @@ const Dashboard = () => {
 
                       <div className="flex items-center justify-center gap-3">
                         <label>Unsatisfied: </label>
-                        <label className=" text-xl large:text-3xl font-semibold italic">
+                        <label className=" text-red-700 text-xl large:text-3xl font-semibold italic">
                           {" "}
                           {totalUnsatisfied}%
                         </label>
                       </div>
                     </div>
                   </div>
-                  <div className="bg-white lg:w-[29%] w-full rounded-lg shadow-xl font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
+                  <div className="bg-white lg:w-[29%] w-full rounded-lg shadow-md font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
                     <h1 className="p-3 text-center font-semibold border-b-2 border-gray-400 ">
                       Top 3 Nature of Requests
                     </h1>
@@ -401,7 +401,7 @@ const Dashboard = () => {
                     </ul>
                   </div>
                 </div>
-                <div className=" text-black font-sans mediumLg:mt-2 large:mt-0  bg-white shadow-xl rounded-lg col-span-2  row-span-5 mr-4">
+                <div className=" text-black font-sans mediumLg:mt-2 large:mt-0  bg-white shadow-md rounded-lg col-span-2  row-span-5 mr-4">
                   <h1 className="text-2xl m-2 font-semibold border-b-2 pb-2 border-gray-400">
                     Recent Requests
                   </h1>
