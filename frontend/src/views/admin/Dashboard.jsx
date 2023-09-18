@@ -14,6 +14,21 @@ import {
 import Filter1Icon from "@mui/icons-material/Filter1";
 import Filter2Icon from "@mui/icons-material/Filter2";
 import Filter3Icon from "@mui/icons-material/Filter3";
+import axios from "axios";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  AreaChart,
+  Area,
+} from "recharts";
 
 const Dashboard = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -245,20 +260,76 @@ const Dashboard = () => {
     fetchSatisfiedRating();
   }, []);
 
+  const [startDate, setStartDate] = useState("");
+  const [technicianData, setTechnicianData] = useState(null);
+  const [percentData, setPercentData] = useState(null);
+  const [endDate, setEndDate] = useState("");
+
+  useEffect(() => {
+    const defaultStartDate = new Date();
+    defaultStartDate.setDate(defaultStartDate.getDate() - 2);
+    const defaultEndDate = new Date();
+    const defaultStartDateString = defaultStartDate.toISOString().split("T")[0];
+    const defaultEndDateString = defaultEndDate.toISOString().split("T")[0];
+
+    setStartDate(defaultStartDateString);
+    setEndDate(defaultEndDateString);
+  }, []);
+
+  const fetchDataRequest = async () => {
+    try {
+      const techResponse = await axios.get(
+        `http://127.0.0.1:8000/api/technician-performance/${startDate}/${endDate}`
+      );
+      setTechnicianData(techResponse.data.Technician);
+
+      const percentResponse = await axios.get(
+        `http://127.0.0.1:8000/api/percent-accomplished/${startDate}/${endDate}`
+      );
+      setPercentData(percentResponse.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  console.log(technicianData);
+  console.log(percentData);
+
+  useEffect(() => {
+    fetchDataRequest();
+  }, [startDate, endDate]);
+
+  const formatDate = (dateString) => {
+    // Assuming dateString is in the format "YYYY-MM-DD"
+    const date = new Date(dateString);
+    const month = date.toLocaleString("default", { month: "short" }); // Get short month name
+    const day = date.getDate();
+    return `${month} ${day}`;
+  };
+
+  const renderColorfulLegendText = (value) => {
+    if (value === "totalRequests") {
+      return "Total Requests";
+    } else if (value === "closedRequests") {
+      return "Closed Requests";
+    }
+    return value;
+  };
+
   return (
     <HelmetProvider>
       <Helmet>
         <title>Dashboard</title>
       </Helmet>
       <div
-        className={`className="flex flex-col  lg:flex-row bg-[#F5F7FB]
+        className={`className="flex flex-col  lg:flex-row bg-[#F0F0F0]
         ${
           isWidth1920
             ? "lg:pl-20"
             : isScreenWidth1366
             ? "lg:pl-[0.5rem]"
             : "lg:pl-[3.0rem]"
-        } lg:pt-2 h-auto`}
+        } lg:pt-5 h-auto`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
         <div className="flex items-center justify-center">
@@ -274,14 +345,14 @@ const Dashboard = () => {
             {isLoading ? (
               <p>Loading...</p>
             ) : (
-              <div className="w-full h-screen grid grid-cols-7 grid-rows-5 gap-x-3">
+              <div className="w-full h-screen grid grid-cols-7 grid-rows-6 gap-x-3">
                 <div className="grid col-span-full text-black font-sans">
-                  <div className="flex w-full justify-between px-[1%] mt-4">
-                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-white shadow-md rounded-lg">
+                  <div className="flex w-full justify-between px-[1%] ">
+                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-[#ffe2e6] shadow-md rounded-lg">
                       <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
                         <FontAwesomeIcon
                           icon={faUsers}
-                          className="text-orange-600 h-12 w-12 large:h-20 large:w-20"
+                          className="text-[#fa5a7d] h-12 w-12 large:h-20 large:w-20"
                         />
                         <label className="large:text-xl large:mt-2">
                           Users
@@ -291,11 +362,11 @@ const Dashboard = () => {
                         {counts.allUsers}
                       </h1>
                     </div>
-                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-white shadow-md rounded-lg">
+                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-[#fff4de] shadow-md rounded-lg">
                       <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
                         <FontAwesomeIcon
                           icon={faTicket}
-                          className="text-main h-12 w-12 large:h-20 large:w-20"
+                          className="text-[#ff947a] h-12 w-12 large:h-20 large:w-20"
                         />
                         <label className="large:text-xl large:mt-2">
                           New Requests
@@ -305,11 +376,11 @@ const Dashboard = () => {
                         {counts.pending}
                       </h1>
                     </div>
-                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-white shadow-md rounded-lg">
+                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-[#dcfce7] shadow-md rounded-lg">
                       <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
                         <FontAwesomeIcon
                           icon={faTableList}
-                          className="text-cyan-500 h-12 w-12 large:h-20 large:w-20"
+                          className="text-[#3cd958] h-12 w-12 large:h-20 large:w-20"
                         />
                         <label className="w-full large:text-lg large:mt-2 large:whitespace-nowrap text-center ">
                           Received Requests
@@ -319,11 +390,11 @@ const Dashboard = () => {
                         {counts.received}
                       </h1>
                     </div>
-                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-white shadow-md rounded-lg">
+                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-[#f4e8ff] shadow-md rounded-lg">
                       <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
                         <FontAwesomeIcon
                           icon={faClipboardCheck}
-                          className="text-red-700 h-12 w-12 large:h-20 large:w-20"
+                          className="text-[#bf83ff] h-12 w-12 large:h-20 large:w-20"
                         />
                         <label className="large:text-xl large:mt-2">
                           Closed
@@ -336,12 +407,177 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                <div className="col-span-5 mediumLg:mt-2 large:mt-0 ml-4 row-span-2 rounded-lg shadow-md  bg-white">
-                  <h1>Graph</h1>
+                <div className="col-span-5 flex flex-col mediumLg:mt-2 large:mt-2 px-4 ml-4 row-span-3 rounded-lg shadow-md  bg-white">
+                  <div className="w-full flex gap-5 px-2 py-3 mediumLg:pt-1 justify-end">
+                    {" "}
+                    <div className="px-3 py-3 pb-2 font-sans font-semibold text-lg mr-auto">
+                      <h1>Requests Statistics</h1>
+                    </div>
+                    <div className="flex gap-1 items-center justify-center">
+                      <label
+                        htmlFor="startDate"
+                        className="large:text-lg mediumLg:text-sm lg:text-base"
+                      >
+                        From
+                      </label>
+                      <input
+                        type="date"
+                        id="startDate"
+                        name="startDate"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className="border-2 border-gray-700  rounded-lg px-1 large:text-lg mediumLg:text-sm lg:text-base "
+                      />
+                    </div>
+                    <div className="flex gap-1 items-center justify-center">
+                      <label
+                        htmlFor="endDate"
+                        className="large:text-lg mediumLg:text-sm lg:text-base"
+                      >
+                        To
+                      </label>
+                      <input
+                        type="date"
+                        id="endDate"
+                        name="endDate"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        className="border-2 border-gray-700  rounded-lg px-1 large:text-lg mediumLg:text-sm lg:text-base "
+                      />
+                    </div>
+                  </div>
+                  {/*  <ResponsiveContainer width="100%" height="90%">
+                    <LineChart data={percentData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis
+                        dataKey="date"
+                        tickFormatter={formatDate} // Format the tick values using formatDate function
+                      />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Line
+                        type="monotone"
+                        dataKey="totalRequests"
+                        name="Total Requests"
+                        stroke="#8884d8"
+                        strokeWidth={4}
+                        fontSize={12}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="closedRequests"
+                        name="Closed Requests"
+                        stroke="#82ca9d"
+                        strokeWidth={4}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer> */}
+
+                  <ResponsiveContainer width="100%" height="80%">
+                    <AreaChart
+                      width="100%"
+                      height="90%"
+                      data={percentData}
+                      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                    >
+                      <defs>
+                        <linearGradient
+                          id="totalRequests"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor="#8884d8"
+                            stopOpacity={0.8}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor="#8884d8"
+                            stopOpacity={0}
+                          />
+                        </linearGradient>
+                        <linearGradient
+                          id="closedRequests"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor="#82ca9d"
+                            stopOpacity={0.8}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor="#82ca9d"
+                            stopOpacity={0}
+                          />
+                        </linearGradient>
+                      </defs>
+                      <XAxis dataKey="date" tickFormatter={formatDate} />
+                      <YAxis />
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <Legend formatter={renderColorfulLegendText} />
+                      <Tooltip />
+                      <Area
+                        type="monotone"
+                        dataKey="totalRequests"
+                        stroke="#8884d8"
+                        fillOpacity={1}
+                        fill="url(#totalRequests)"
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="closedRequests"
+                        stroke="#82ca9d"
+                        fillOpacity={1}
+                        fill="url(#closedRequests)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
                 </div>
-                <div className="col-span-5 flex lg:flex-row flex-col justify-between mediumLg:mt-2 large:mt-3 mt-4 ml-4 row-span-2  rounded-lg row-start-4 ">
+                <div className="col-span-5 flex lg:flex-row flex-col justify-between mediumLg:mt-2 large:mt-3 mt-4 ml-4 row-span-2  rounded-lg row-start-5 ">
                   <div className="bg-white lg:w-[40%] w-full rounded-lg shadow-md">
-                    Pie
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart width={400} height={400}>
+                        <Pie
+                          dataKey="totalRequests"
+                          nameKey="name"
+                          data={percentData}
+                          cx="50%"
+                          cy="50%"
+                          outerRadius={50}
+                          fill="#8884d8"
+                          label
+                        />
+                        <Pie
+                          dataKey="closedRequests"
+                          nameKey="name"
+                          data={percentData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          fill="#82ca9d"
+                          label
+                        />
+                        <Tooltip />
+                        <Legend
+                          formatter={(value) => {
+                            if (value === "totalRequests") {
+                              return "Total Requests";
+                            } else if (value === "closedRequests") {
+                              return "Closed Requests";
+                            }
+                            return value;
+                          }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
                   </div>
                   <div className="bg-white lg:w-[29%] w-full rounded-lg shadow-md font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
                     <div className="flex border-b-2 items-center justify-center border-gray-400">
@@ -401,7 +637,7 @@ const Dashboard = () => {
                     </ul>
                   </div>
                 </div>
-                <div className=" text-black font-sans mediumLg:mt-2 large:mt-0  bg-white shadow-md rounded-lg col-span-2  row-span-5 mr-4">
+                <div className=" text-black font-sans mediumLg:mt-2 large:mt-2  bg-white shadow-md rounded-lg col-span-2  row-span-5 mr-4">
                   <h1 className="text-2xl m-2 font-semibold border-b-2 pb-2 border-gray-400">
                     Recent Requests
                   </h1>

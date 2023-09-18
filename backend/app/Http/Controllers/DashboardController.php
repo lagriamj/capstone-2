@@ -45,7 +45,6 @@ class DashboardController extends Controller
 
     public function calculateTotalRatings()
     {
-        // Use the DB facade to retrieve the ratings from the database
         $totalAllRatings = DB::table('rate_services')
             ->sum('q1') + DB::table('rate_services')
             ->sum('q2') + DB::table('rate_services')
@@ -112,5 +111,79 @@ class DashboardController extends Controller
         $totalRating = ($satisfiedRating / $request) * 100;
 
         return response()->json(['UnSatisfiedRating' => $totalRating]);
+    }
+
+
+    public function getTechnicianPerformance($startDate = null, $endDate = null)
+    {
+        if ($startDate === null) {
+            $startDate = date('Y-m-d', strtotime('-3 days')); // Default to 2 days ago
+        }
+
+        if ($endDate === null) {
+            $endDate = date('Y-m-d'); // Default to today
+        }
+
+        $performanceData = DB::table('user_requests')
+            ->select(
+                'assignedTo',
+                DB::raw('COUNT(*) as techreq'),
+                DB::raw('SUM(CASE WHEN status = "Closed" THEN 1 ELSE 0 END) as closed'),
+                DB::raw('SUM(CASE WHEN status != "Closed" THEN 1 ELSE 0 END) as unclosed')
+            )
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->groupBy('assignedTo')
+            ->where('assignedTo', '<>', 'None')
+            ->get();
+
+        return response()->json(['Technician' => $performanceData,]);
+    }
+
+
+    public function getPercentAccomplished($startDate = null, $endDate = null)
+    {
+        if ($startDate === null) {
+            $startDate = date('Y-m-d', strtotime('-3 days')); // Default to 2 days ago
+        }
+
+        if ($endDate === null) {
+            $endDate = date('Y-m-d'); // Default to today
+        }
+
+        $totalRequestsData = DB::table('user_requests')
+            ->selectRaw('DATE(dateRequested) as date, count(*) as total')
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->groupBy('date')
+            ->get();
+
+        $closedRequestsData = DB::table('user_requests')
+            ->selectRaw('DATE(dateUpdated) as date, count(*) as closed')
+            ->whereBetween(DB::raw('DATE(dateUpdated)'), [$startDate, $endDate])
+            ->where('status', 'Closed')
+            ->groupBy('date')
+            ->get();
+
+        // Merge the two datasets into a single dataset
+        $chartData = [];
+        foreach ($totalRequestsData as $totalItem) {
+            $date = $totalItem->date;
+            $total = $totalItem->total;
+
+            $chartData[] = [
+                'date' => $date,
+                'totalRequests' => $total,
+                'closedRequests' => 0, // Initialize closed requests count to 0
+            ];
+
+            // Search for the corresponding closed requests count and update the data
+            foreach ($closedRequestsData as $closedItem) {
+                if ($closedItem->date === $date) {
+                    $chartData[count($chartData) - 1]['closedRequests'] = $closedItem->closed;
+                    break;
+                }
+            }
+        }
+
+        return response()->json($chartData);
     }
 }

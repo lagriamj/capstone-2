@@ -116,3 +116,6 @@ Route::get('top-nature-request', [DashboardController::class, 'showCommonNatureO
 Route::get('overall-rating', [DashboardController::class, 'calculateTotalRatings']);
 Route::get('satisfied-rating', [DashboardController::class, 'calculateSatisfiedRatings']);
 Route::get('unsatisfied-rating', [DashboardController::class, 'calculateUnSatisfiedRatings']);
+
+Route::get('technician-performance/{startDate?}/{endDate?}', [DashboardController::class, 'getTechnicianPerformance']);
+Route::get('percent-accomplished/{startDate?}/{endDate?}', [DashboardController::class, 'getPercentAccomplished']);
