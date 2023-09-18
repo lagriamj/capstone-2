@@ -328,9 +328,9 @@ const Dashboard = () => {
   };
 
   const renderColorfulLegendText = (value) => {
-    if (value === "totalRequests") {
+    if (value === "closed") {
       return "Total Requests";
-    } else if (value === "closedRequests") {
+    } else if (value === "unclosed") {
       return "Closed Requests";
     }
     return value;
@@ -343,9 +343,9 @@ const Dashboard = () => {
       <ul className="flex large:text-lg lg:text-base text-sm">
         {payload.map((entry, index) => (
           <li key={`item-${index}`}>
-            {entry.value === "totalRequests"
+            {entry.value === "Closed"
               ? "Total Requests"
-              : entry.value === "closedRequests"
+              : entry.value === "Unclosed"
               ? "Closed Requests"
               : ""}
           </li>
@@ -492,17 +492,11 @@ const Dashboard = () => {
                     <AreaChart
                       width="100%"
                       height="90%"
-                      data={percentData}
+                      data={technicianData}
                       margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                     >
                       <defs>
-                        <linearGradient
-                          id="totalRequests"
-                          x1="0"
-                          y1="0"
-                          x2="0"
-                          y2="1"
-                        >
+                        <linearGradient id="closed" x1="0" y1="0" x2="0" y2="1">
                           <stop
                             offset="5%"
                             stopColor="#8884d8"
@@ -515,7 +509,7 @@ const Dashboard = () => {
                           />
                         </linearGradient>
                         <linearGradient
-                          id="closedRequests"
+                          id="unclosed"
                           x1="0"
                           y1="0"
                           x2="0"
@@ -533,7 +527,7 @@ const Dashboard = () => {
                           />
                         </linearGradient>
                       </defs>
-                      <XAxis dataKey="date" tickFormatter={formatDate} />
+                      <XAxis dataKey="assignedTo" />
                       <YAxis />
                       <CartesianGrid strokeDasharray="3 3" />
                       <Legend
@@ -543,17 +537,17 @@ const Dashboard = () => {
                       <Tooltip />
                       <Area
                         type="monotone"
-                        dataKey="totalRequests"
+                        dataKey="closed"
                         stroke="#8884d8"
                         fillOpacity={1}
-                        fill="url(#totalRequests)"
+                        fill="url(#closed)"
                       />
                       <Area
                         type="monotone"
-                        dataKey="closedRequests"
+                        dataKey="unclosed"
                         stroke="#82ca9d"
                         fillOpacity={1}
-                        fill="url(#closedRequests)"
+                        fill="url(#unclosed)"
                       />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -561,11 +555,10 @@ const Dashboard = () => {
                 <div className="col-span-5 flex lg:flex-row flex-col justify-between mediumLg:mt-2 large:mt-3 mt-4 ml-4 row-span-2  rounded-lg row-start-5 ">
                   <div className="bg-white lg:w-[40%] w-full rounded-lg shadow-md">
                     <ResponsiveContainer width="100%" height="100%">
-                      <PieChart width={400} height={400}>
+                      <PieChart width={400} height={400} data={percentData}>
                         <Pie
                           dataKey="totalRequests"
                           nameKey="name"
-                          data={percentData}
                           cx="50%"
                           cy="50%"
                           outerRadius={50}
@@ -575,7 +568,6 @@ const Dashboard = () => {
                         <Pie
                           dataKey="closedRequests"
                           nameKey="name"
-                          data={percentData}
                           cx="50%"
                           cy="50%"
                           innerRadius={60}
