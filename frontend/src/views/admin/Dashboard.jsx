@@ -183,11 +183,12 @@ const Dashboard = () => {
     };
   }, []);
 
-  const isWindowsHeight768 = windowsHeight768 === 768;
+  const isWindowsHeightBelow768 = windowsHeight768 <= 768;
 
-  console.log("Is Screen Height 768?: " + isWindowsHeight768);
+  console.log("Screen Width: ");
 
   const [topNatures, setTopNatures] = useState([]);
+  console.log(`Browser Height: ${window.innerHeight}`);
 
   useEffect(() => {
     async function fetchTopNatures() {
@@ -448,7 +449,7 @@ const Dashboard = () => {
                   <div className="w-full flex gap-5 px-2 py-3 mediumLg:pt-1 justify-end">
                     {" "}
                     <div className="px-3 py-3 pb-2 font-sans font-semibold text-lg mr-auto">
-                      <h1>Requests Statistics</h1>
+                      <h1>Requests Statistics {window.innerHeight}</h1>
                     </div>
                     <div className="flex gap-1 items-center justify-center">
                       <label
@@ -486,7 +487,7 @@ const Dashboard = () => {
 
                   <ResponsiveContainer
                     width="100%"
-                    height={isWindowsHeight768 ? "80%" : "85%"}
+                    height={isWindowsHeightBelow768 ? "80%" : "85%"}
                   >
                     <AreaChart
                       width="100%"
