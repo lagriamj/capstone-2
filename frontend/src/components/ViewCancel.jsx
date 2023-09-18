@@ -1,18 +1,16 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { Modal } from "antd";
 import { Skeleton } from "antd";
-import { message } from "antd";
-import PropagateLoader from "react-spinners/PropagateLoader";
 
 const ViewCancel = ({ isOpen, onClose, datas }) => {
   if (!isOpen) return null;
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [isSingleRequest, setIsSingleRequest] = useState(false);
 
   useEffect(() => {

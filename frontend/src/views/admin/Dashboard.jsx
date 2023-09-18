@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
 import AdminSidebar from "../../components/AdminSidebar";
 import AdminDrawer from "../../components/AdminDrawer";
@@ -168,6 +169,24 @@ const Dashboard = () => {
 
   const isScreenWidth1366 = windowWidth1366 === 1366;
 
+  const [windowsHeight768, setWindowsHeight768] = useState(window.innerHeight);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowsHeight768(window.innerHeight);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const isWindowsHeight768 = windowsHeight768 === 768;
+
+  console.log("Is Screen Height 768?: " + isWindowsHeight768);
+
   const [topNatures, setTopNatures] = useState([]);
 
   useEffect(() => {
@@ -316,6 +335,24 @@ const Dashboard = () => {
     return value;
   };
 
+  const renderLegend = (props) => {
+    const { payload } = props;
+
+    return (
+      <ul className="flex large:text-lg lg:text-base text-sm">
+        {payload.map((entry, index) => (
+          <li key={`item-${index}`}>
+            {entry.value === "totalRequests"
+              ? "Total Requests"
+              : entry.value === "closedRequests"
+              ? "Closed Requests"
+              : ""}
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -329,12 +366,12 @@ const Dashboard = () => {
             : isScreenWidth1366
             ? "lg:pl-[0.5rem]"
             : "lg:pl-[3.0rem]"
-        } lg:pt-5 h-auto`}
+        } lg:py-3 h-auto`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
         <div className="flex items-center justify-center">
           <div
-            className={`overflow-x-auto ${
+            className={`${
               isWidth1920
                 ? "lg:w-[88%]  lg:ml-[15.5rem]"
                 : isScreenWidth1366
@@ -446,35 +483,11 @@ const Dashboard = () => {
                       />
                     </div>
                   </div>
-                  {/*  <ResponsiveContainer width="100%" height="90%">
-                    <LineChart data={percentData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis
-                        dataKey="date"
-                        tickFormatter={formatDate} // Format the tick values using formatDate function
-                      />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Line
-                        type="monotone"
-                        dataKey="totalRequests"
-                        name="Total Requests"
-                        stroke="#8884d8"
-                        strokeWidth={4}
-                        fontSize={12}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="closedRequests"
-                        name="Closed Requests"
-                        stroke="#82ca9d"
-                        strokeWidth={4}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer> */}
 
-                  <ResponsiveContainer width="100%" height="80%">
+                  <ResponsiveContainer
+                    width="100%"
+                    height={isWindowsHeight768 ? "80%" : "85%"}
+                  >
                     <AreaChart
                       width="100%"
                       height="90%"
@@ -522,7 +535,10 @@ const Dashboard = () => {
                       <XAxis dataKey="date" tickFormatter={formatDate} />
                       <YAxis />
                       <CartesianGrid strokeDasharray="3 3" />
-                      <Legend formatter={renderColorfulLegendText} />
+                      <Legend
+                        align="right"
+                        formatter={renderColorfulLegendText}
+                      />
                       <Tooltip />
                       <Area
                         type="monotone"
