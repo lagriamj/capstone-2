@@ -7,6 +7,7 @@ import { Modal, Button } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClipboardCheck,
+  faFilter,
   faHandHoldingHeart,
   faTableList,
   faTicket,
@@ -16,20 +17,10 @@ import Filter1Icon from "@mui/icons-material/Filter1";
 import Filter2Icon from "@mui/icons-material/Filter2";
 import Filter3Icon from "@mui/icons-material/Filter3";
 import axios from "axios";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  AreaChart,
-  Area,
-} from "recharts";
+import { Tooltip, Legend, ResponsiveContainer, PieChart, Pie } from "recharts";
+import AreaGraph from "../../components/AreaGraph";
+import LineGraph from "../../components/LineGraph";
+import BarGraph from "../../components/BarGraph";
 
 const Dashboard = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -282,7 +273,11 @@ const Dashboard = () => {
 
   const [startDate, setStartDate] = useState("");
   const [technicianData, setTechnicianData] = useState(null);
-  const [percentData, setPercentData] = useState(null);
+  const [percentData, setPercentData] = useState({
+    totalRequests: 0,
+    closedRequests: 0,
+  });
+  const [requestsByDate, setRequestsByDate] = useState(null);
   const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
@@ -307,6 +302,11 @@ const Dashboard = () => {
         `http://127.0.0.1:8000/api/percent-accomplished/${startDate}/${endDate}`
       );
       setPercentData(percentResponse.data);
+
+      const requestsResponse = await axios.get(
+        `http://127.0.0.1:8000/api/requestsByDate/${startDate}/${endDate}`
+      );
+      setRequestsByDate(requestsResponse.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -314,45 +314,87 @@ const Dashboard = () => {
 
   console.log(technicianData);
   console.log(percentData);
+  console.log("Total Closed:" + percentData.closedRequests);
+  console.log("Total Closed:" + percentData.totalRequests);
 
   useEffect(() => {
     fetchDataRequest();
   }, [startDate, endDate]);
 
-  const formatDate = (dateString) => {
+  {
+    /*const formatDate = (dateString) => {
     // Assuming dateString is in the format "YYYY-MM-DD"
     const date = new Date(dateString);
     const month = date.toLocaleString("default", { month: "short" }); // Get short month name
     const day = date.getDate();
     return `${month} ${day}`;
-  };
+  }; */
+  }
 
-  const renderColorfulLegendText = (value) => {
-    if (value === "closed") {
-      return "Total Requests";
-    } else if (value === "unclosed") {
-      return "Closed Requests";
-    }
-    return value;
-  };
+  const pieChartData = [
+    {
+      name: "Closed Requests",
+      value: percentData?.closedRequests,
+      fill: "#8884d8",
+    },
+    {
+      name: "Total Requests",
+      value: percentData?.totalRequests,
+      fill: "#333366",
+    },
+  ];
 
-  const renderLegend = (props) => {
-    const { payload } = props;
+  const formattedTotalRatings =
+    totalRatings !== null ? totalRatings.toFixed(2) : null;
+  const formattedTotalSatisfied =
+    totalSatisfied !== null ? totalSatisfied.toFixed(2) : null;
+  const formattedTotalUnsatisfied =
+    totalUnsatisfied !== null ? totalUnsatisfied.toFixed(2) : null;
+
+  const RADIAN = Math.PI / 180;
+  const renderCustomizedLabel = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    percent,
+    value,
+  }) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
     return (
-      <ul className="flex large:text-lg lg:text-base text-sm">
-        {payload.map((entry, index) => (
-          <li key={`item-${index}`}>
-            {entry.value === "Closed"
-              ? "Total Requests"
-              : entry.value === "Unclosed"
-              ? "Closed Requests"
-              : ""}
-          </li>
-        ))}
-      </ul>
+      <text
+        x={x}
+        y={y}
+        fill="white"
+        textAnchor={x > cx ? "start" : "end"}
+        dominantBaseline="central"
+      >
+        {`${(percent * 100).toFixed(0)}% / ${value}`}
+      </text>
     );
   };
+
+  const [graphType, setGraphType] = useState("area");
+
+  const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+
+  const [selectedDataSources, setSelectedDataSources] = useState([
+    "technicianData", // Default selection
+  ]);
+
+  const toggleFilterModal = () => {
+    setIsFilterModalVisible(!isFilterModalVisible);
+  };
+
+  const toggleDataSource = (dataSource) => {
+    setSelectedDataSources([dataSource]);
+  };
+
+  console.log(requestsByDate);
 
   return (
     <HelmetProvider>
@@ -446,12 +488,70 @@ const Dashboard = () => {
                 </div>
 
                 <div className="col-span-5 flex flex-col mediumLg:mt-2 large:mt-2 px-4 ml-4 row-span-3 rounded-lg shadow-md  bg-white">
-                  <div className="w-full flex gap-5 px-2 py-3 mediumLg:pt-1 justify-end">
+                  <div className="w-full flex gap-2 px-2 py-3 mediumLg:pt-1 justify-end">
                     {" "}
-                    <div className="px-3 py-3 pb-2 font-sans font-semibold text-lg mr-auto">
-                      <h1>Requests Statistics {window.innerHeight}</h1>
+                    <div className="px-3 py-3 relative flex items-center gap-2 pb-2 font-sans font-semibold text-lg mr-auto">
+                      <h1>Requests Statistics </h1>
+                      <FontAwesomeIcon
+                        icon={faFilter}
+                        onClick={toggleFilterModal}
+                        style={{ cursor: "pointer" }}
+                      />
+                      {isFilterModalVisible && (
+                        <div className="absolute right-0 top-9 z-50 overflow-auto text-start bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
+                          <label className="block px-4 py-2">
+                            <input
+                              type="checkbox"
+                              name="dataSource"
+                              value="technicianData"
+                              checked={selectedDataSources.includes(
+                                "technicianData"
+                              )}
+                              onChange={() =>
+                                toggleDataSource("technicianData")
+                              }
+                              className="mr-2"
+                            />
+                            By Technician
+                          </label>
+                          <label className="block px-4 py-2">
+                            <input
+                              type="checkbox"
+                              name="dataSource"
+                              value="requestsByDate"
+                              checked={selectedDataSources.includes(
+                                "requestsByDate"
+                              )}
+                              onChange={() =>
+                                toggleDataSource("requestsByDate")
+                              }
+                              className="mr-2"
+                            />
+                            By Date
+                          </label>
+                        </div>
+                      )}
                     </div>
                     <div className="flex gap-1 items-center justify-center">
+                      <div className="flex gap-1 items-center justify-center mr-2">
+                        <label
+                          htmlFor="graphType"
+                          className="large:text-lg mediumLg:text-sm lg:text-base"
+                        >
+                          Select Graph Type
+                        </label>
+                        <select
+                          id="graphType"
+                          name="graphType"
+                          value={graphType}
+                          onChange={(e) => setGraphType(e.target.value)}
+                          className="border-2 border-gray-700 rounded-lg px-1 large:text-lg mediumLg:text-sm lg:text-base"
+                        >
+                          <option value="area">Area </option>
+                          <option value="bar">Bar </option>
+                          <option value="line">Line </option>
+                        </select>
+                      </div>
                       <label
                         htmlFor="startDate"
                         className="large:text-lg mediumLg:text-sm lg:text-base"
@@ -485,106 +585,120 @@ const Dashboard = () => {
                     </div>
                   </div>
 
-                  <ResponsiveContainer
-                    width="100%"
-                    height={isWindowsHeightBelow768 ? "80%" : "85%"}
-                  >
-                    <AreaChart
-                      width="100%"
-                      height="90%"
-                      data={technicianData}
-                      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                    >
-                      <defs>
-                        <linearGradient id="closed" x1="0" y1="0" x2="0" y2="1">
-                          <stop
-                            offset="5%"
-                            stopColor="#8884d8"
-                            stopOpacity={0.8}
-                          />
-                          <stop
-                            offset="95%"
-                            stopColor="#8884d8"
-                            stopOpacity={0}
-                          />
-                        </linearGradient>
-                        <linearGradient
-                          id="unclosed"
-                          x1="0"
-                          y1="0"
-                          x2="0"
-                          y2="1"
-                        >
-                          <stop
-                            offset="5%"
-                            stopColor="#82ca9d"
-                            stopOpacity={0.8}
-                          />
-                          <stop
-                            offset="95%"
-                            stopColor="#82ca9d"
-                            stopOpacity={0}
-                          />
-                        </linearGradient>
-                      </defs>
-                      <XAxis dataKey="assignedTo" />
-                      <YAxis />
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <Legend
-                        align="right"
-                        formatter={renderColorfulLegendText}
-                      />
-                      <Tooltip />
-                      <Area
-                        type="monotone"
-                        dataKey="closed"
-                        stroke="#8884d8"
-                        fillOpacity={1}
-                        fill="url(#closed)"
-                      />
-                      <Area
-                        type="monotone"
-                        dataKey="unclosed"
-                        stroke="#82ca9d"
-                        fillOpacity={1}
-                        fill="url(#unclosed)"
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
+                  {graphType === "area" && (
+                    <AreaGraph
+                      data={
+                        selectedDataSources.includes("technicianData")
+                          ? technicianData
+                          : selectedDataSources.includes("requestsByDate")
+                          ? requestsByDate
+                          : ""
+                      }
+                      values1={
+                        selectedDataSources.includes("technicianData")
+                          ? "closed"
+                          : selectedDataSources.includes("requestsByDate")
+                          ? "totalRequests"
+                          : ""
+                      }
+                      values2={
+                        selectedDataSources.includes("technicianData")
+                          ? "unclosed"
+                          : selectedDataSources.includes("requestsByDate")
+                          ? "closedRequests"
+                          : ""
+                      }
+                      xValue={
+                        selectedDataSources.includes("technicianData")
+                          ? "assignedTo"
+                          : selectedDataSources.includes("requestsByDate")
+                          ? "date"
+                          : ""
+                      }
+                      windowsHeight768={isWindowsHeightBelow768}
+                    />
+                  )}
+                  {graphType === "line" && (
+                    <LineGraph
+                      data={
+                        selectedDataSources.includes("technicianData")
+                          ? technicianData
+                          : selectedDataSources.includes("requestsByDate")
+                          ? requestsByDate
+                          : ""
+                      }
+                      values1={
+                        selectedDataSources.includes("technicianData")
+                          ? "closed"
+                          : selectedDataSources.includes("requestsByDate")
+                          ? "totalRequests"
+                          : ""
+                      }
+                      values2={
+                        selectedDataSources.includes("technicianData")
+                          ? "unclosed"
+                          : selectedDataSources.includes("requestsByDate")
+                          ? "closedRequests"
+                          : ""
+                      }
+                      xValue={
+                        selectedDataSources.includes("technicianData")
+                          ? "assignedTo"
+                          : selectedDataSources.includes("requestsByDate")
+                          ? "date"
+                          : ""
+                      }
+                      windowsHeight768={isWindowsHeightBelow768}
+                    />
+                  )}
+                  {graphType === "bar" && (
+                    <BarGraph
+                      data={
+                        selectedDataSources.includes("technicianData")
+                          ? technicianData
+                          : selectedDataSources.includes("requestsByDate")
+                          ? requestsByDate
+                          : ""
+                      }
+                      values1={
+                        selectedDataSources.includes("technicianData")
+                          ? "closed"
+                          : selectedDataSources.includes("requestsByDate")
+                          ? "totalRequests"
+                          : ""
+                      }
+                      values2={
+                        selectedDataSources.includes("technicianData")
+                          ? "unclosed"
+                          : selectedDataSources.includes("requestsByDate")
+                          ? "closedRequests"
+                          : ""
+                      }
+                      xValue={
+                        selectedDataSources.includes("technicianData")
+                          ? "assignedTo"
+                          : selectedDataSources.includes("requestsByDate")
+                          ? "date"
+                          : ""
+                      }
+                      windowsHeight768={isWindowsHeightBelow768}
+                    />
+                  )}
                 </div>
                 <div className="col-span-5 flex lg:flex-row flex-col justify-between mediumLg:mt-2 large:mt-3 mt-4 ml-4 row-span-2  rounded-lg row-start-5 ">
                   <div className="bg-white lg:w-[40%] w-full rounded-lg shadow-md">
                     <ResponsiveContainer width="100%" height="100%">
-                      <PieChart width={400} height={400} data={percentData}>
+                      <PieChart width={600} height={600}>
                         <Pie
-                          dataKey="totalRequests"
-                          nameKey="name"
+                          dataKey="value"
+                          data={pieChartData}
                           cx="50%"
                           cy="50%"
-                          outerRadius={50}
-                          fill="#8884d8"
-                          label
-                        />
-                        <Pie
-                          dataKey="closedRequests"
-                          nameKey="name"
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={60}
-                          fill="#82ca9d"
-                          label
+                          fill="color"
+                          label={renderCustomizedLabel}
                         />
                         <Tooltip />
-                        <Legend
-                          formatter={(value) => {
-                            if (value === "totalRequests") {
-                              return "Total Requests";
-                            } else if (value === "closedRequests") {
-                              return "Closed Requests";
-                            }
-                            return value;
-                          }}
-                        />
+                        <Legend />
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
@@ -601,7 +715,7 @@ const Dashboard = () => {
                         <label>Total Ratings: </label>
                         <label className="text-red-700 text-xl large:text-3xl font-semibold italic">
                           {" "}
-                          {totalRatings}%
+                          {formattedTotalRatings}%
                         </label>
                       </div>
 
@@ -609,7 +723,7 @@ const Dashboard = () => {
                         <label>Satisfied: </label>
                         <label className="text-red-700 text-xl large:text-3xl font-semibold italic">
                           {" "}
-                          {totalSatisfied}%
+                          {formattedTotalSatisfied}%
                         </label>
                       </div>
 
@@ -617,7 +731,7 @@ const Dashboard = () => {
                         <label>Unsatisfied: </label>
                         <label className=" text-red-700 text-xl large:text-3xl font-semibold italic">
                           {" "}
-                          {totalUnsatisfied}%
+                          {formattedTotalUnsatisfied}%
                         </label>
                       </div>
                     </div>

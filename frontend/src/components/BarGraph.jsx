@@ -10,16 +10,7 @@ import {
 } from "recharts";
 import PropTypes from "prop-types";
 
-const BarGraph = ({ data }) => {
-  const renderCustomLabel = (value) => {
-    if (value === "totalRequests") {
-      return "Total Requests";
-    } else if (value === "closedRequests") {
-      return "Closed Requests";
-    }
-    return value;
-  };
-
+const BarGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
   const formatDate = (dateString) => {
     // Assuming dateString is in the format "YYYY-MM-DD"
     const date = new Date(dateString);
@@ -29,35 +20,29 @@ const BarGraph = ({ data }) => {
   };
 
   return (
-    <ResponsiveContainer width="100%" height="90%">
+    <ResponsiveContainer width="100%" height={windowsHeight768 ? "80%" : "85%"}>
       <BarChart data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
-          dataKey="date"
-          tickFormatter={formatDate} // Format the tick values using formatDate function
+          dataKey={xValue}
+          {...(xValue === "date" && { tickFormatter: formatDate })}
         />
         <YAxis />
         <Tooltip />
-        <Legend align="right" formatter={renderCustomLabel} />
-        <Bar
-          dataKey="totalRequests"
-          name="Total Requests"
-          fill="#8884d8"
-          barSize={30}
-        />
-        <Bar
-          dataKey="closedRequests"
-          name="Closed Requests"
-          fill="#82ca9d"
-          barSize={30}
-        />
+        <Legend align="right" />
+        <Bar dataKey={values1} name="Closed" fill="#8884d8" barSize={30} />
+        <Bar dataKey={values2} name="Unclosed" fill="#82ca9d" barSize={30} />
       </BarChart>
     </ResponsiveContainer>
   );
 };
 
 BarGraph.propTypes = {
-  data: PropTypes.array.isRequired, // Assuming data is an array of objects
+  data: PropTypes.object.isRequired,
+  values1: PropTypes.any.isRequired,
+  values2: PropTypes.any.isRequired,
+  xValue: PropTypes.any.isRequired,
+  windowsHeight768: PropTypes.bool.isRequired,
 };
 
 export default BarGraph;

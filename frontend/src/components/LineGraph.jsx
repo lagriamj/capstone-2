@@ -10,16 +10,7 @@ import {
 } from "recharts";
 import PropTypes from "prop-types";
 
-const LineGraph = ({ data }) => {
-  const renderCustomLabel = (value) => {
-    if (value === "totalRequests") {
-      return "Total Requests";
-    } else if (value === "closedRequests") {
-      return "Closed Requests";
-    }
-    return value;
-  };
-
+const LineGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
   const formatDate = (dateString) => {
     // Assuming dateString is in the format "YYYY-MM-DD"
     const date = new Date(dateString);
@@ -29,28 +20,28 @@ const LineGraph = ({ data }) => {
   };
 
   return (
-    <ResponsiveContainer width="100%" height="90%">
+    <ResponsiveContainer width="100%" height={windowsHeight768 ? "80%" : "85%"}>
       <LineChart data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
-          dataKey="date"
-          tickFormatter={formatDate} // Format the tick values using formatDate function
+          dataKey={xValue}
+          {...(xValue === "date" && { tickFormatter: formatDate })}
         />
         <YAxis />
         <Tooltip />
-        <Legend align="right" formatter={renderCustomLabel} />
+        <Legend align="right" />
         <Line
           type="monotone"
-          dataKey="totalRequests"
-          name="Total Requests"
+          dataKey={values1}
+          name="Closed"
           stroke="#8884d8"
           strokeWidth={4}
           fontSize={12}
         />
         <Line
           type="monotone"
-          dataKey="closedRequests"
-          name="Closed Requests"
+          dataKey={values2}
+          name="Unclosed"
           stroke="#82ca9d"
           strokeWidth={4}
         />
@@ -61,6 +52,10 @@ const LineGraph = ({ data }) => {
 
 LineGraph.propTypes = {
   data: PropTypes.object.isRequired,
+  values1: PropTypes.any.isRequired,
+  values2: PropTypes.any.isRequired,
+  xValue: PropTypes.any.isRequired,
+  windowsHeight768: PropTypes.bool.isRequired,
 };
 
 export default LineGraph;

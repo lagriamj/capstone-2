@@ -119,3 +119,4 @@ Route::get('unsatisfied-rating', [DashboardController::class, 'calculateUnSatisf
 
 Route::get('technician-performance/{startDate?}/{endDate?}', [DashboardController::class, 'getTechnicianPerformance']);
 Route::get('percent-accomplished/{startDate?}/{endDate?}', [DashboardController::class, 'getPercentAccomplished']);
+Route::get('requestsByDate/{startDate?}/{endDate?}', [DashboardController::class, 'getRequestsByDate']);
