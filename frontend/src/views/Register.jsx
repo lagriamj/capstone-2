@@ -19,7 +19,6 @@ import { useAuth } from "../AuthContext";
 import { Checkbox } from "antd";
 import Select from "react-select";
 import TermsAndConditionsModal from "../components/TermsAndConditionsModal";
-import "./Register.css";
 //import Select from "react-select";
 
 const InputBox = ({
@@ -146,64 +145,6 @@ const Register = () => {
     }),
   };
 
-  const optionsModeOfRequest = [
-    { value: "Walk-In", label: "Walk-In" },
-    { value: "Online", label: "Online" },
-  ];
-
-  const registerUser = async (e) => {
-    e.preventDefault();
-
-    const userData = {
-      userFirstName: userFirstName,
-      userLastName: userLastName,
-      userGovernmentID: userGovernmentID,
-      office: selectedOffice,
-      division: division,
-      userEmail: userEmail,
-      userContactNumber: userContactNumber,
-      userPassword: userPassword,
-    };
-
-    setLoading(true);
-
-    try {
-      const response = await axios
-        .post("http://127.0.0.1:8000/api/register", userData)
-        .then((response) => {
-          if (response.status === 201) {
-            const registeredUser = response.data;
-            console.log(registeredUser);
-            setUser(registeredUser);
-            setUserId(registeredUser.userID);
-            navigate("/verify-otp", {
-              state: {
-                user: registeredUser,
-                contactNumber: registeredUser.userContactNumber,
-              },
-            });
-          } else if (response.status === 422) {
-            setErrorMessage("That government ID is not available");
-            setLoading(false);
-          }
-        });
-    } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        setErrorMessage(
-          `The government ID ${userGovernmentID} is not available`
-        );
-      } else {
-        setErrorMessage("An error occurred.");
-      }
-      console.error(error);
-      setLoading(false);
-    }
-  };
-
   const [showModal, setShowModal] = useState(false);
   const [termsAgreed, setTermsAgreed] = useState(false);
 
@@ -215,9 +156,67 @@ const Register = () => {
     setShowModal(false);
   };
 
-  const handleCheckboxChange = (e) => {
-    setTermsAgreed(e.target.checked); // Update the termsAgreed state when checkbox changes
+  const handleAgreeToTerms = () => {
+    setTermsAgreed(true);
+    handleCloseModal();
   };
+
+  const registerUser = async (e) => {
+    e.preventDefault();
+
+    if (termsAgreed) {
+      const userData = {
+        userFirstName: userFirstName,
+        userLastName: userLastName,
+        userGovernmentID: userGovernmentID,
+        office: selectedOffice,
+        division: division,
+        userEmail: userEmail,
+        userContactNumber: userContactNumber,
+        userPassword: userPassword,
+      };
+      setLoading(true);
+      try {
+        const response = await axios
+          .post("http://127.0.0.1:8000/api/register", userData)
+          .then((response) => {
+            if (response.status === 201) {
+              const registeredUser = response.data;
+              console.log(registeredUser);
+              setUser(registeredUser);
+              setUserId(registeredUser.userID);
+              navigate("/verify-otp", {
+                state: {
+                  user: registeredUser,
+                  contactNumber: registeredUser.userContactNumber,
+                },
+              });
+            } else if (response.status === 422) {
+              setErrorMessage("That government ID is not available");
+              setLoading(false);
+            }
+          });
+      } catch (error) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.message
+        ) {
+          setErrorMessage(
+            `The government ID ${userGovernmentID} is not available`
+          );
+        } else {
+          setErrorMessage("An error occurred.");
+        }
+        console.error(error);
+        setLoading(false);
+      }
+    } else {
+      setShowModal(true);
+    }
+  };
+
+  console.log("Terms: " + termsAgreed);
 
   const [windowWidth1366, setWindowWidth1366] = useState(window.innerWidth);
 
@@ -236,6 +235,22 @@ const Register = () => {
   const isScreenWidth1366 = windowWidth1366 === 1366;
   const isLargeScreen = windowWidth1366 >= 1024;
 
+  const [windowsHeight768, setWindowsHeight768] = useState(window.innerHeight);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowsHeight768(window.innerHeight);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const isWindowsHeightBelow768 = windowsHeight768 <= 768;
+
   return (
     <div className="bg-transparent">
       {loading && (
@@ -243,7 +258,7 @@ const Register = () => {
           <HashLoader color="#ffffff" size={80} />
         </div>
       )}
-      <div className="flex overflow-auto">
+      <div className="flex ">
         {/* Left Column */}
         <div className="lg:w-1/2 h-screen box-border bg-main hidden lg:flex md:w-1/6 justify-center items-start lg:pt-16 fixed">
           <div className=" w-full flex flex-col items-center text-center gap-3">
@@ -261,7 +276,7 @@ const Register = () => {
         </div>
 
         {/* Right Column */}
-        <div className="w-full lg:w-1/2 h-screen  bg-gray-200 py-5 flex flex-col items-center justify-center overflow-auto ml-auto">
+        <div className="w-full lg:w-1/2 h-screen  bg-gray-200 py-5 flex flex-col items-center justify-center  ml-auto">
           <div
             className={` bg-white lg:w-[80%] w-[90%] py-5 h-auto rounded-2xl shadow-xl ${
               isLargeScreen ? "text-4xl" : "text-lg"
@@ -536,39 +551,17 @@ const Register = () => {
 
               <div className="flex items-start justify-center flex-col w-3/4">
                 <button
-                  className={`w-full h-14 text-lg font-medium border-2 rounded-lg pl-2 transition duration-300 ease-in-out  ${
-                    termsAgreed
-                      ? "bg-main text-white"
-                      : "bg-gray-400 text-black cursor-not-allowed"
-                  }`}
+                  className={`w-full h-14 text-lg font-medium border-2 rounded-lg pl-2 transition duration-300 ease-in-out bg-main text-white`}
                   type="submit"
-                  disabled={!termsAgreed}
                 >
                   Next
                 </button>
               </div>
             </form>
-            <div className="w-full flex items-center justify-center flex-col mt-2">
-              <p className="text-sm">
-                <Checkbox
-                  id="termsCheckBox"
-                  name="termsCheckBox"
-                  checked={termsAgreed}
-                  onChange={handleCheckboxChange}
-                >
-                  I agree to the{" "}
-                  <button
-                    onClick={handleShowModal}
-                    className="text-blue-500 underline"
-                  >
-                    Terms and Conditions
-                  </button>
-                </Checkbox>
-              </p>
-            </div>
             <TermsAndConditionsModal
               isOpen={showModal}
               onClose={handleCloseModal}
+              onAgree={handleAgreeToTerms}
             />
             <div className="flex items-center justify-center flex-col w-full mt-2">
               <p className="font-medium text-lg">

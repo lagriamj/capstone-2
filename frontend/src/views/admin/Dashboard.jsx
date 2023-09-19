@@ -692,6 +692,7 @@ const Dashboard = () => {
                         <Pie
                           dataKey="value"
                           data={pieChartData}
+                          isAnimationActive="true"
                           cx="50%"
                           cy="50%"
                           fill="color"

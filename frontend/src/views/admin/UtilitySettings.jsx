@@ -8,7 +8,7 @@ import NatureOfRequest from "./NatureOfRequest";
 import Technicians from "./Technicians";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import "./Select.css";
+
 {
   /*import axios from "axios";
 import UtilityModal from "../../components/UtilityModal";

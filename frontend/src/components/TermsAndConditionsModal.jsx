@@ -1,7 +1,9 @@
-import { List, Modal } from "antd";
+/* eslint-disable react-hooks/rules-of-hooks */
+import { Button, List, Modal } from "antd";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 
-const TermsAndConditionsModal = ({ isOpen, onClose }) => {
+const TermsAndConditionsModal = ({ isOpen, onClose, onAgree }) => {
   const termsAndConditionsList = [
     {
       header: "1. Acceptance of Terms",
@@ -60,13 +62,28 @@ const TermsAndConditionsModal = ({ isOpen, onClose }) => {
     },
   ];
 
+  const navigate = useNavigate();
+
+  const handleDisagree = () => {
+    navigate("/login");
+  };
+
   return (
     <Modal
       title="Terms & Conditions"
       open={isOpen}
       onCancel={() => onClose()}
       width="50%"
-      footer={null}
+      footer={
+        <div className="flex items-center justify-center text-black">
+          <Button type="primary" onClick={onAgree} className="bg-main">
+            Agree
+          </Button>
+          <Button className="bg-main" type="primary" onClick={handleDisagree}>
+            Disagree
+          </Button>
+        </div>
+      }
     >
       <List
         bordered
@@ -87,6 +104,7 @@ const TermsAndConditionsModal = ({ isOpen, onClose }) => {
 TermsAndConditionsModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  onAgree: PropTypes.func.isRequired,
 };
 
 export default TermsAndConditionsModal;
