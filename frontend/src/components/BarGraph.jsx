@@ -19,6 +19,10 @@ const BarGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
     return `${month} ${day}`;
   };
 
+  //const maxValues1 = Math.max(...data.map((item) => item[values1]));
+  //const maxValues2 = Math.max(...data.map((item) => item[values2]));
+  //const maxValue = Math.max(maxValues1, maxValues2) + 1;
+
   return (
     <ResponsiveContainer width="100%" height={windowsHeight768 ? "80%" : "85%"}>
       <BarChart data={data}>
@@ -38,7 +42,7 @@ const BarGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
 };
 
 BarGraph.propTypes = {
-  data: PropTypes.object.isRequired,
+  data: PropTypes.any.isRequired,
   values1: PropTypes.any.isRequired,
   values2: PropTypes.any.isRequired,
   xValue: PropTypes.any.isRequired,

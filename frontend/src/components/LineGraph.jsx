@@ -19,6 +19,10 @@ const LineGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
     return `${month} ${day}`;
   };
 
+  //const maxValues1 = Math.max(...data.map((item) => item[values1]));
+  //const maxValues2 = Math.max(...data.map((item) => item[values2]));
+  //const maxValue = Math.max(maxValues1, maxValues2) + 1;
+
   return (
     <ResponsiveContainer width="100%" height={windowsHeight768 ? "80%" : "85%"}>
       <LineChart data={data}>

@@ -175,9 +175,10 @@ class DashboardController extends Controller
             $endDate = date('Y-m-d'); // Default to today
         }
 
-        $totalRequestsData = DB::table('user_requests')
+        $totalUnclosedRequestsData = DB::table('user_requests')
             ->selectRaw('DATE(dateRequested) as date, count(*) as total')
             ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->where('status', '!=', 'Closed')
             ->groupBy('date')
             ->get();
 
@@ -190,13 +191,13 @@ class DashboardController extends Controller
 
         // Merge the two datasets into a single dataset
         $chartData = [];
-        foreach ($totalRequestsData as $totalItem) {
+        foreach ($totalUnclosedRequestsData as $totalItem) {
             $date = $totalItem->date;
             $total = $totalItem->total;
 
             $chartData[] = [
                 'date' => $date,
-                'totalRequests' => $total,
+                'unclosedRequests' => $total,
                 'closedRequests' => 0, // Initialize closed requests count to 0
             ];
 

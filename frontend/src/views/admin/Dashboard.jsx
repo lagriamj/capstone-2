@@ -598,14 +598,14 @@ const Dashboard = () => {
                         selectedDataSources.includes("technicianData")
                           ? "closed"
                           : selectedDataSources.includes("requestsByDate")
-                          ? "totalRequests"
+                          ? "closedRequests"
                           : ""
                       }
                       values2={
                         selectedDataSources.includes("technicianData")
                           ? "unclosed"
                           : selectedDataSources.includes("requestsByDate")
-                          ? "closedRequests"
+                          ? "unclosedRequests"
                           : ""
                       }
                       xValue={
@@ -631,14 +631,14 @@ const Dashboard = () => {
                         selectedDataSources.includes("technicianData")
                           ? "closed"
                           : selectedDataSources.includes("requestsByDate")
-                          ? "totalRequests"
+                          ? "closedRequests"
                           : ""
                       }
                       values2={
                         selectedDataSources.includes("technicianData")
                           ? "unclosed"
                           : selectedDataSources.includes("requestsByDate")
-                          ? "closedRequests"
+                          ? "unclosedRequests"
                           : ""
                       }
                       xValue={
@@ -664,14 +664,14 @@ const Dashboard = () => {
                         selectedDataSources.includes("technicianData")
                           ? "closed"
                           : selectedDataSources.includes("requestsByDate")
-                          ? "totalRequests"
+                          ? "closedRequests"
                           : ""
                       }
                       values2={
                         selectedDataSources.includes("technicianData")
                           ? "unclosed"
                           : selectedDataSources.includes("requestsByDate")
-                          ? "closedRequests"
+                          ? "unclosedRequests"
                           : ""
                       }
                       xValue={

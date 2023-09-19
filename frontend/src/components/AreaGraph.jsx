@@ -11,15 +11,6 @@ import {
 import PropTypes from "prop-types";
 
 const AreaGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
-  const renderCustomLabel = (value) => {
-    if (value === "totalRequests") {
-      return "Total Requests";
-    } else if (value === "closedRequests") {
-      return "Closed Requests";
-    }
-    return value;
-  };
-
   const formatDate = (dateString) => {
     // Assuming dateString is in the format "YYYY-MM-DD"
     const date = new Date(dateString);
@@ -27,6 +18,19 @@ const AreaGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
     const day = date.getDate();
     return `${month} ${day}`;
   };
+
+  {
+    /*const max = Math.max(
+    ...data.map((item) => Math.max(item.values1, item.values2))
+  );*/
+  }
+
+  // Create an array of ticks from 0 to the maximum value
+  //const ticks = Array.from({ length: max + 1 }, (_, index) => index);
+
+  //const maxValues1 = Math.max(...data.map((item) => item[values1]));
+  //const maxValues2 = Math.max(...data.map((item) => item[values2]));
+  //const maxValue = Math.max(maxValues1, maxValues2) + 1;
 
   return (
     <ResponsiveContainer width="100%" height={windowsHeight768 ? "80%" : "85%"}>
@@ -52,12 +56,13 @@ const AreaGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
         />
         <YAxis />
         <CartesianGrid strokeDasharray="3 3" />
-        <Legend align="right" formatter={renderCustomLabel} />
+        <Legend align="right" />
 
         <Tooltip />
         <Area
           type="monotone"
           dataKey={values1}
+          name="Closed"
           stroke="#8884d8"
           fillOpacity={1}
           fill={`url(#${values1})`}
@@ -65,6 +70,7 @@ const AreaGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
         <Area
           type="monotone"
           dataKey={values2}
+          name="Unclosed"
           stroke="#82ca9d"
           fillOpacity={1}
           fill={`url(#${values2})`}
