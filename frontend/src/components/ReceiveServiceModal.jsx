@@ -347,8 +347,11 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 >
                   <option value="">Select a technician</option>
                   {technicians.map((technician) => (
-                    <option key={technician.id} value={technician.technician}>
-                      {technician.technician}
+                    <option
+                      key={technician.id}
+                      value={`${technician.userFirstName} ${technician.userLastName}`}
+                    >
+                      {technician.userFirstName} {technician.userLastName}
                     </option>
                   ))}
                 </select>

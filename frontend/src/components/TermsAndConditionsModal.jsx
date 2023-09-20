@@ -1,9 +1,7 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { Button, List, Modal } from "antd";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
 
-const TermsAndConditionsModal = ({ isOpen, onClose, onAgree }) => {
+const TermsAndConditionsModal = ({ isOpen, onClose, onAgree, onDisagree }) => {
   const termsAndConditionsList = [
     {
       header: "1. Acceptance of Terms",
@@ -62,28 +60,24 @@ const TermsAndConditionsModal = ({ isOpen, onClose, onAgree }) => {
     },
   ];
 
-  const navigate = useNavigate();
-
-  const handleDisagree = () => {
-    navigate("/login");
-  };
-
   return (
     <Modal
       title="Terms & Conditions"
       open={isOpen}
       onCancel={() => onClose()}
       width="50%"
-      footer={
-        <div className="flex items-center justify-center text-black">
-          <Button type="primary" onClick={onAgree} className="bg-main">
-            Agree
-          </Button>
-          <Button className="bg-main" type="primary" onClick={handleDisagree}>
-            Disagree
-          </Button>
-        </div>
-      }
+      footer={[
+        <Button
+          key="disagree"
+          onClick={onDisagree}
+          className="bg-main text-white"
+        >
+          Disagree
+        </Button>,
+        <Button key="agree" onClick={onAgree} className="bg-main text-white">
+          Agree
+        </Button>,
+      ]}
     >
       <List
         bordered
@@ -105,6 +99,7 @@ TermsAndConditionsModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onAgree: PropTypes.func.isRequired,
+  onDisagree: PropTypes.func.isRequired,
 };
 
 export default TermsAndConditionsModal;

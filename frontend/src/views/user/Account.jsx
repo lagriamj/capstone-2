@@ -6,6 +6,8 @@ import { useAuth } from "../../AuthContext";
 import { Button, message, Modal } from "antd";
 import UpdateContactNumModal from "../../components/UpdateContactNumModal";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserPen } from "@fortawesome/free-solid-svg-icons";
 
 const Account = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -21,6 +23,7 @@ const Account = () => {
   const [isSavingChanges, setIsSavingChange] = useState(false);
   const [userNewContactNumber, setUserNewContactNumber] = useState("");
   const [userPasswordChecker, setUserPasswordChecker] = useState("");
+  const { fullName } = useAuth();
 
   const showModal = () => {
     setCurrentPassword("");
@@ -176,371 +179,350 @@ const Account = () => {
       <Helmet>
         <title>Account</title>
       </Helmet>
-      <div className="flex flex-col lg:flex-row bg-gray-200 h-screen lg:pl-16 lg:pb-10 ">
+      <div className="flex flex-col lg:flex-row  h-auto large:h-screen lg:pl-16 lg:pb-10 ">
         {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
-        <div className="lg:w-[80%] w-[90%] min-h-[90vh]  mt-20 lg:mt-0 mx-5 h-4/5 pb-10 bg-white shadow-xl self-center lg:ml-80 border-0 border-gray-400   rounded-3xl flex flex-col items-center font-sans">
-          <h1 className=" text-3xl text-center my-10 font-bold ">
-            Account Details
-          </h1>
-          <form
-            action=""
-            className=" w-11/12 h-auto  justify-center"
-            onSubmit={handlePasswordChange}
-          >
-            <div className="flex lg:gap-10 gap-4 items-center my-4 flex-col lg:flex-row">
-              <div className="lg:w-1/4 w-[80%]">
-                <div className="flex flex-col">
-                  <label
-                    className="font-semibold text-lg "
-                    htmlFor="governmentID"
-                  >
-                    Government ID
-                  </label>
-                  <input
-                    type="text"
-                    name="governmentID"
-                    id="governmentID"
-                    value={userData?.userGovernmentID || ""}
-                    className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                    readOnly
-                  />
-                </div>
-              </div>
-              <div className="lg:w-1/4 w-[80%]">
-                <div className="flex flex-col">
-                  <label className="font-semibold text-lg " htmlFor="userRole">
-                    Type:
-                  </label>
-                  <input
-                    type="text"
-                    name="userRole"
-                    id="userRole"
-                    value={userData?.role || ""}
-                    className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                    readOnly
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="flex lg:gap-10 gap-4 items-center flex-col lg:flex-row ">
-              <div className="lg:w-1/4 w-[80%]  ">
-                <div className="flex flex-col">
-                  <label
-                    className="font-semibold text-lg "
-                    htmlFor="userFirstName"
-                  >
-                    First Name:
-                  </label>
-                  <input
-                    type="text"
-                    name="userFirstName"
-                    id="userFirstName"
-                    value={userData?.userFirstName || ""}
-                    className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                    readOnly
-                  />
-                </div>
-              </div>
-              <div className="lg:w-1/4 w-[80%]">
-                <div className="flex flex-col">
-                  <label
-                    className="font-semibold text-lg "
-                    htmlFor="userLastName"
-                  >
-                    Last Name:
-                  </label>
-                  <input
-                    type="text"
-                    name="userLastName"
-                    id="userLastName"
-                    value={userData?.userLastName || ""}
-                    className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                    readOnly
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="flex lg:gap-10 gap-4 items-center flex-col lg:flex-row ">
-              <div className="lg:w-1/4 w-[80%]  ">
-                <div className="flex flex-col">
-                  <label className="font-semibold text-lg " htmlFor="office">
-                    Office:
-                  </label>
-                  <input
-                    type="text"
-                    name="office"
-                    id="office"
-                    value={userData?.office || ""}
-                    className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                    readOnly
-                  />
-                </div>
-              </div>
-              <div className="lg:w-1/4 w-[80%]">
-                <div className="flex flex-col">
-                  <label className="font-semibold text-lg " htmlFor="division">
-                    Division:
-                  </label>
-                  <input
-                    type="text"
-                    name="division"
-                    id="division"
-                    value={userData?.division || ""}
-                    className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                    readOnly
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="flex lg:gap-10 gap-4 items-center my-4 flex-col lg:flex-row">
-              <div className="lg:w-1/4 w-[80%]">
-                <div className="flex flex-col">
-                  <label className="font-semibold text-lg " htmlFor="userEmail">
-                    Email:
-                  </label>
-                  <input
-                    type="text"
-                    name="userEmail"
-                    id="userEmail"
-                    value={userData?.userEmail || ""}
-                    className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                    readOnly
-                  />
-                </div>
-              </div>
+        <div className="flex items-center justify-center">
+          <div className="lg:w-full w-[90%] min-h-[90vh]  mt-20 lg:mt-0 mx-5 h-auto pb-10   text-black  lg:ml-48 mediumLg:ml-52 large:ml-80    rounded-3xl flex flex-col font-sans">
+            <h1 className="  lg:text-2xl mediumLg:text-4xl large:text-5xl text-3xl flex mr-auto  mt-10 mb-6 font-medium ">
+              Account
+            </h1>
+            <h3 className="lg:text-lg mediumLg:text-xl large:text-2xl text-base">
+              Review and update your account details.
+            </h3>
 
-              <div className="lg:w-1/4 w-[80%]">
-                <div className="flex flex-col">
-                  <div className="flex">
-                    <label
-                      className="font-semibold text-lg "
-                      htmlFor="userNewContactNumber"
-                    >
-                      Contact:
-                    </label>
-                    <a
-                      id="userNewContactNumber"
-                      href=""
-                      className="ml-14 text-sm mt-1 font-sans font-medium text-red-600 hover:opacity-90"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setModalUpdateContact(true);
-                        setModalMode("password");
-                      }}
-                    >
-                      *Update Contact Number
-                    </a>
-                    <UpdateContactNumModal
-                      onOpen={modalUpdateContact}
-                      onCancel={handleModalUpdateContact}
-                      modalMode={modalMode}
-                      handlePasswordCheck={handlePasswordCheck}
-                      userPasswordChecker={userPasswordChecker}
-                      setUserPasswordChecker={setUserPasswordChecker}
-                      userNewContactNumber={userNewContactNumber}
-                      setUserNewContactNumber={setUserNewContactNumber}
-                      handleContactNumberUpdate={handleContactNumberUpdate}
-                      isSavingChanges={isSavingChanges}
-                    />
-                  </div>
-                  <input
-                    type="text"
-                    name="userNewContactNumber"
-                    id="userNewContactNumber"
-                    value={userData?.userContactNumber || ""}
-                    className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                    readOnly
+            <p className="lg:w-[70%] w-full mt-5">
+              Please make sure these details are up to date as they&apos;ll be
+              used for your requests and communication with the admins
+            </p>
+            <div className="w-full h-auto  flex flex-col mt-5 rounded-md shadow-xl b text-white">
+              <div className="bg-[#334D66] rounded-t-md h-[15vh] flex ">
+                <div className="h-[15vh] lg:w-[10%] w-[30%] flex large:px-10 items-start large:pt-10 lg:pt-4 pt-6 justify-center ">
+                  <FontAwesomeIcon
+                    icon={faUserPen}
+                    className="lg:h-14 lg:w-14 w-12 h-12 px-4"
                   />
                 </div>
+                <div className="large:pt-10 lg:pt-4 py-4  ">
+                  <h1 className="large:text-3xl mediumLg:text-xl lg:text-lg lg:mb-0 large:mb-2 text-2xl">
+                    {fullName}
+                  </h1>
+                  <p className="lg:w-[90%] w-full font-light text-sm">
+                    Please make sure these details are up to date as
+                    they&apos;ll be used for your requests and communication
+                    with the admins
+                  </p>
+                </div>
               </div>
-            </div>
-            <button
-              type="button"
-              onClick={showModal}
-              className="bg-main text-white px-4 py-3 rounded-lg text-xl mt-10 lg:mr-auto"
-            >
-              Update Details
-            </button>
-          </form>
-          <Modal
-            title="Update Account Details"
-            open={isModalVisible}
-            onCancel={handleCancel}
-            footer={null}
-          >
-            <form
-              action=""
-              className=" w-full h-auto  justify-center font-sans"
-              onSubmit={handlePasswordChange}
-            >
-              <div className="flex lg:gap-10 gap-4 items-center my-4 flex-col lg:flex-row font-sans">
-                <div className="lg:w-1/2 w-[80%]">
-                  <div className="flex flex-col">
-                    <label
-                      className="font-semibold text-lg "
-                      htmlFor="userGovernmentID"
-                    >
-                      Government ID
-                    </label>
+              <form action="" onSubmit={handlePasswordChange}>
+                <div className=" text-black grid lg:grid-cols-2 grid-cols-1 gap-y-4 p-10">
+                  <div className="flex flex-col pl-10">
+                    <label htmlFor="userFirstName">First Name:</label>
                     <input
                       type="text"
-                      name="userGovernmentID"
-                      id="userGovernmentID"
+                      name="userFirstName"
+                      id="userFirstName"
+                      value={userData?.userFirstName || ""}
+                      className="h-10 lg:w-[80%] w-full border-2 border-gray-200 rounded-md shadow-md px-3 outline-none"
+                      readOnly
+                    />
+                  </div>
+                  <div className="flex flex-col pl-10">
+                    <label htmlFor="userLastName">Last Name:</label>
+                    <input
+                      type="text"
+                      name="userLastName"
+                      id="userLastName"
+                      value={userData?.userLastName || ""}
+                      className="h-10 lg:w-[80%] w-full border-2 border-gray-200 rounded-md shadow-md px-3 outline-none"
+                      readOnly
+                    />
+                  </div>
+                  <div className="flex flex-col pl-10">
+                    <label htmlFor="">Government ID:</label>
+                    <input
+                      type="text"
+                      name="governmentID"
+                      id="governmentID"
                       value={userData?.userGovernmentID || ""}
-                      className="w-full border-2 border-gray-400 bg-gray-200 cursor-not-allowed rounded-md py-2 px-4 focus:outline-none"
+                      className="h-10 lg:w-[80%] w-full border-2 border-gray-200 rounded-md shadow-md px-3 outline-none"
                       readOnly
                     />
                   </div>
-                </div>
-                <div className="lg:w-1/2 w-[80%]">
-                  <div className="flex flex-col">
-                    <label className="font-semibold text-lg " htmlFor="role">
-                      Typed:
-                    </label>
+                  <div className="flex flex-col pl-10">
+                    <label htmlFor="governmentID">Type:</label>
                     <input
                       type="text"
-                      name="role"
-                      id="role"
+                      name="userRole"
+                      id="userRole"
                       value={userData?.role || ""}
-                      className="w-full border-2 border-gray-400 bg-gray-200 cursor-not-allowed rounded-md py-2 px-4 focus:outline-none"
+                      className="h-10 lg:w-[80%] w-full border-2 border-gray-200 rounded-md shadow-md px-3 outline-none "
                       readOnly
                     />
                   </div>
-                </div>
-              </div>
-              <div className="flex lg:gap-10 gap-4 items-center flex-col lg:flex-row ">
-                <div className="lg:w-1/2 w-[80%]  ">
-                  <div className="flex flex-col">
-                    <label
-                      className="font-semibold text-lg "
-                      htmlFor="EditedUserFirstName"
-                    >
-                      First Name:
-                    </label>
+                  <div className="flex flex-col pl-10">
+                    <label htmlFor="office">Type:</label>
                     <input
                       type="text"
-                      name="EditedUserFirstName"
-                      id="EditedUserFirstName"
-                      className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                      value={userFirstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      required
+                      name="office"
+                      id="office"
+                      value={userData?.office || ""}
+                      className="h-10 lg:w-[80%] w-full border-2 border-gray-200 rounded-md shadow-md px-3 outline-none"
+                      readOnly
                     />
                   </div>
-                </div>
-                <div className="lg:w-1/2 w-[80%]">
-                  <div className="flex flex-col">
-                    <label
-                      className="font-semibold text-lg "
-                      htmlFor="EditedUserEmail"
-                    >
-                      Email:
-                    </label>
-                    <input
-                      type="email"
-                      name="EditedUserEmail"
-                      id="EditedUserEmail"
-                      className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                      value={userEmail}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="flex lg:gap-10 gap-4 items-center my-4 flex-col lg:flex-row">
-                <div className="lg:w-1/2 w-[80%]">
-                  <div className="flex flex-col">
-                    <label
-                      className="font-semibold text-lg "
-                      htmlFor="EditedUserLastName"
-                    >
-                      Last Name:
-                    </label>
+                  <div className="flex flex-col pl-10">
+                    <label htmlFor="division">Division:</label>
                     <input
                       type="text"
-                      name="EditedUserLastName"
-                      id="EditedUserLastName"
-                      className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                      value={userLastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      required
+                      name="division"
+                      id="division"
+                      value={userData?.division || ""}
+                      className="h-10 lg:w-[80%] w-full border-2 border-gray-200 rounded-md shadow-md px-3 outline-none"
+                      readOnly
                     />
                   </div>
-                </div>
-                <div className="lg:w-1/2 w-[80%]">
-                  <div className="flex flex-col">
-                    <label
-                      className="font-semibold text-lg "
-                      htmlFor="userCurrentPassword"
-                    >
-                      Current Password:
-                    </label>
-                    <input
-                      type="password"
-                      name="userCurrentPassword"
-                      id="userCurrentPassword"
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                      className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="flex lg:gap-10 gap-4 items-center my-4 flex-col lg:flex-row">
-                <div className="lg:w-1/2 w-[80%]">
-                  <div className="flex flex-col">
-                    <label
-                      className="font-semibold text-lg "
-                      htmlFor="userContactNumber"
-                    >
-                      Contact:
-                    </label>
+                  <div className="flex flex-col pl-10">
+                    <label htmlFor="userEmail">Email:</label>
                     <input
                       type="text"
-                      name="userContactNumber"
-                      id="userContactNumber"
+                      name="userEmail"
+                      id="userEmail"
+                      value={userData?.userEmail || ""}
+                      className="h-10 lg:w-[80%] w-full border-2 border-gray-200 rounded-md shadow-md px-3 outline-none"
+                      readOnly
+                    />
+                  </div>
+                  <div className="flex flex-col pl-10">
+                    <div className="flex">
+                      <label htmlFor="userNewContactNumber">Contact:</label>
+                      <a
+                        id="userNewContactNumber"
+                        href=""
+                        className="ml-14 text-sm mt-1 font-sans font-medium text-red-600 hover:opacity-90"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setModalUpdateContact(true);
+                          setModalMode("password");
+                        }}
+                      >
+                        *Update Contact Number
+                      </a>
+                      <UpdateContactNumModal
+                        onOpen={modalUpdateContact}
+                        onCancel={handleModalUpdateContact}
+                        modalMode={modalMode}
+                        handlePasswordCheck={handlePasswordCheck}
+                        userPasswordChecker={userPasswordChecker}
+                        setUserPasswordChecker={setUserPasswordChecker}
+                        userNewContactNumber={userNewContactNumber}
+                        setUserNewContactNumber={setUserNewContactNumber}
+                        handleContactNumberUpdate={handleContactNumberUpdate}
+                        isSavingChanges={isSavingChanges}
+                      />
+                    </div>
+                    <input
+                      type="text"
+                      name="userNewContactNumber"
+                      id="userNewContactNumber"
                       value={userData?.userContactNumber || ""}
-                      className="w-full border-2 border-gray-400 bg-gray-200 cursor-not-allowed rounded-md py-2 px-4 focus:outline-none"
+                      className="h-10 lg:w-[80%] w-full border-2 border-gray-200 rounded-md shadow-md px-3 outline-none"
                       readOnly
                     />
                   </div>
                 </div>
-                <div className="lg:w-1/2 w-[80%]">
-                  <div className="flex flex-col">
-                    <label
-                      className="font-semibold text-lg "
-                      htmlFor="userNewPassword"
-                    >
-                      New Password:
-                    </label>
-                    <input
-                      type="password"
-                      name="userNewPassword"
-                      id="userNewPassword"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      className={`w-full border-2 border-gray-400 py-2 rounded-md px-4 focus:outline-none ${
-                        currentPassword === ""
-                          ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                          : ""
-                      }`}
-                      disabled={currentPassword === ""}
-                      required
-                    />
+                <div className="flex pl-10 pr-16 py-6 items-center gap-x-4 text-black text-sm justify-end">
+                  <p>Your data will be handled with care</p>
+                  <button
+                    type="button"
+                    onClick={showModal}
+                    className="bg-main text-white rounded-lg px-4 py-3 text-base"
+                  >
+                    Update
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <Modal
+              title="Update Account Details"
+              open={isModalVisible}
+              onCancel={handleCancel}
+              footer={null}
+            >
+              <form
+                action=""
+                className=" w-full h-auto  justify-center font-sans"
+                onSubmit={handlePasswordChange}
+              >
+                <div className="flex lg:gap-10 gap-4 items-center my-4 flex-col lg:flex-row font-sans">
+                  <div className="lg:w-1/2 w-[80%]">
+                    <div className="flex flex-col">
+                      <label
+                        className="font-semibold text-lg "
+                        htmlFor="userGovernmentID"
+                      >
+                        Government ID
+                      </label>
+                      <input
+                        type="text"
+                        name="userGovernmentID"
+                        id="userGovernmentID"
+                        value={userData?.userGovernmentID || ""}
+                        className="w-full border-2 border-gray-400 bg-gray-200 cursor-not-allowed rounded-md py-2 px-4 focus:outline-none"
+                        readOnly
+                      />
+                    </div>
+                  </div>
+                  <div className="lg:w-1/2 w-[80%]">
+                    <div className="flex flex-col">
+                      <label className="font-semibold text-lg " htmlFor="role">
+                        Typed:
+                      </label>
+                      <input
+                        type="text"
+                        name="role"
+                        id="role"
+                        value={userData?.role || ""}
+                        className="w-full border-2 border-gray-400 bg-gray-200 cursor-not-allowed rounded-md py-2 px-4 focus:outline-none"
+                        readOnly
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <Button
-                loading={isSavingChanges}
-                type="primary"
-                htmlType="submit"
-                className="bg-main pt-5 w-40 rounded-lg h-14  pb-6 px-8 text-lg font-semibold mt-4 flex items-center justify-center"
-              >
-                {isSavingChanges ? "Saving Changes" : "Save Changes"}
-              </Button>
-            </form>
-          </Modal>
+                <div className="flex lg:gap-10 gap-4 items-center flex-col lg:flex-row ">
+                  <div className="lg:w-1/2 w-[80%]  ">
+                    <div className="flex flex-col">
+                      <label
+                        className="font-semibold text-lg "
+                        htmlFor="EditedUserFirstName"
+                      >
+                        First Name:
+                      </label>
+                      <input
+                        type="text"
+                        name="EditedUserFirstName"
+                        id="EditedUserFirstName"
+                        className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                        value={userFirstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="lg:w-1/2 w-[80%]">
+                    <div className="flex flex-col">
+                      <label
+                        className="font-semibold text-lg "
+                        htmlFor="EditedUserEmail"
+                      >
+                        Email:
+                      </label>
+                      <input
+                        type="email"
+                        name="EditedUserEmail"
+                        id="EditedUserEmail"
+                        className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                        value={userEmail}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex lg:gap-10 gap-4 items-center my-4 flex-col lg:flex-row">
+                  <div className="lg:w-1/2 w-[80%]">
+                    <div className="flex flex-col">
+                      <label
+                        className="font-semibold text-lg "
+                        htmlFor="EditedUserLastName"
+                      >
+                        Last Name:
+                      </label>
+                      <input
+                        type="text"
+                        name="EditedUserLastName"
+                        id="EditedUserLastName"
+                        className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                        value={userLastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="lg:w-1/2 w-[80%]">
+                    <div className="flex flex-col">
+                      <label
+                        className="font-semibold text-lg "
+                        htmlFor="userCurrentPassword"
+                      >
+                        Current Password:
+                      </label>
+                      <input
+                        type="password"
+                        name="userCurrentPassword"
+                        id="userCurrentPassword"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex lg:gap-10 gap-4 items-center my-4 flex-col lg:flex-row">
+                  <div className="lg:w-1/2 w-[80%]">
+                    <div className="flex flex-col">
+                      <label
+                        className="font-semibold text-lg "
+                        htmlFor="userContactNumber"
+                      >
+                        Contact:
+                      </label>
+                      <input
+                        type="text"
+                        name="userContactNumber"
+                        id="userContactNumber"
+                        value={userData?.userContactNumber || ""}
+                        className="w-full border-2 border-gray-400 bg-gray-200 cursor-not-allowed rounded-md py-2 px-4 focus:outline-none"
+                        readOnly
+                      />
+                    </div>
+                  </div>
+                  <div className="lg:w-1/2 w-[80%]">
+                    <div className="flex flex-col">
+                      <label
+                        className="font-semibold text-lg "
+                        htmlFor="userNewPassword"
+                      >
+                        New Password:
+                      </label>
+                      <input
+                        type="password"
+                        name="userNewPassword"
+                        id="userNewPassword"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        className={`w-full border-2 border-gray-400 py-2 rounded-md px-4 focus:outline-none ${
+                          currentPassword === ""
+                            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                            : ""
+                        }`}
+                        disabled={currentPassword === ""}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <Button
+                  loading={isSavingChanges}
+                  type="primary"
+                  htmlType="submit"
+                  className="bg-main pt-5 w-40 rounded-lg h-14  pb-6 px-8 text-lg font-semibold mt-4 flex items-center justify-center"
+                >
+                  {isSavingChanges ? "Saving Changes" : "Save Changes"}
+                </Button>
+              </form>
+            </Modal>
+          </div>
         </div>
       </div>
     </HelmetProvider>

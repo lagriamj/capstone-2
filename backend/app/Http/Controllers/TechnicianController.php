@@ -4,14 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Technician;
+use App\Models\User;
 
 class TechnicianController extends Controller
 {
     public function showTechnician()
     {
-        $tech = Technician::all();
+        $adminUsers = User::where('role', 'admin')->get(['userFirstName', 'userLastName']);
+
         return response()->json([
-            'results' => $tech
+            'results' => $adminUsers
         ], 200);
     }
 
