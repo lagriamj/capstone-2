@@ -69,15 +69,29 @@ const Transactions = () => {
   const isLargeScreen = windowWidth >= 1024;
   const isWidth1920 = window.innerWidth === 1920;
 
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  useEffect(() => {
+    const defaultStartDate = new Date();
+    defaultStartDate.setDate(defaultStartDate.getDate() - 10);
+    const defaultEndDate = new Date();
+    const defaultStartDateString = defaultStartDate.toISOString().split("T")[0];
+    const defaultEndDateString = defaultEndDate.toISOString().split("T")[0];
+
+    setStartDate(defaultStartDateString);
+    setEndDate(defaultEndDateString);
+  }, []);
+
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [startDate, endDate]);
 
   const fetchData = async () => {
     setIsFetchingData(true);
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/transaction-list/${userID}`
+        `http://127.0.0.1:8000/api/transaction-list/${userID}/${startDate}/${endDate}`
       );
       if (response.status === 200) {
         setData(response.data.results);
@@ -303,6 +317,8 @@ const Transactions = () => {
                     <input
                       type="date"
                       className="p-2 w-36 outline-none border-none bg-transparent"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
                     />
                   </div>
                   <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">
@@ -310,6 +326,8 @@ const Transactions = () => {
                     <input
                       type="date"
                       className="p-2 w-36 outline-none border-none bg-transparent"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
                     />
                   </div>
                 </div>

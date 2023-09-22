@@ -91,15 +91,29 @@ const ReceiveService = () => {
     }
   };
 
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  useEffect(() => {
+    const defaultStartDate = new Date();
+    defaultStartDate.setDate(defaultStartDate.getDate() - 10);
+    const defaultEndDate = new Date();
+    const defaultStartDateString = defaultStartDate.toISOString().split("T")[0];
+    const defaultEndDateString = defaultEndDate.toISOString().split("T")[0];
+
+    setStartDate(defaultStartDateString);
+    setEndDate(defaultEndDateString);
+  }, []);
+
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [startDate, endDate]);
 
   const fetchData = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/pending-request"
+        `http://127.0.0.1:8000/api/pending-request/${startDate}/${endDate}`
       );
       if (response.status === 200) {
         setLoading(false);
@@ -212,15 +226,22 @@ const ReceiveService = () => {
               </div>
               <div className="flex items-center justify-center gap-4 mr-4 mb-4 lg:mb-0">
                 <div className="flex lg:flex-row flex-col items-center text-black gap-2">
-                  <div className="flex items-center px-2  justify-center rounded-md   border-2 border-gray-400">
+                  <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">
                     <span className="font-semibold">From:</span>
-                    <input type="date" className=" p-2 w-36 outline-none " />
+                    <input
+                      type="date"
+                      className="p-2 w-36 outline-none border-none bg-transparent"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                    />
                   </div>
-                  <div className="flex items-center px-2  justify-center rounded-md   border-2 border-gray-400">
+                  <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">
                     <span className="font-semibold">To:</span>
                     <input
                       type="date"
-                      className=" p-2 w-[10.5rem] outline-none  "
+                      className="p-2 w-36 outline-none border-none bg-transparent"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
                     />
                   </div>
                 </div>

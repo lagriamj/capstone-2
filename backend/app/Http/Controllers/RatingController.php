@@ -12,16 +12,25 @@ use Illuminate\Support\Facades\DB;
 class RatingController extends Controller
 {
 
-    public function showTransanction($id)
+    public function showTransanction($id, $startDate = null, $endDate = null)
     {
-        $data = DB::table('user_requests')
+        $query = DB::table('user_requests')
             ->select('user_requests.*')
             ->whereNotIn('status', ['Pending', 'Received', 'On Progress', 'To Release', 'To Rate'])
             ->where('user_id', $id)
-            ->orderBy('user_requests.dateUpdated', 'desc')
-            ->get();
+            ->orderBy('dateUpdated', 'desc'); // Removed the table alias here
+
+        if ($startDate && $endDate) {
+            // Use '<' for the end date to exclude it from the range
+            $query->where('user_requests.dateRequested', '>=', $startDate)
+                ->where('user_requests.dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
+        }
+
+        $data = $query->get();
+
         return response()->json(['results' => $data]);
     }
+
 
     public function showServiceTransanction($startDate = null, $endDate = null)
     {
@@ -31,7 +40,9 @@ class RatingController extends Controller
             ->orderBy('user_requests.dateUpdated', 'desc');
 
         if ($startDate && $endDate) {
-            $query->whereBetween('user_requests.dateRequested', [$startDate, $endDate]);
+            // Use '<' for the end date to exclude it from the range
+            $query->where('user_requests.dateRequested', '>=', $startDate)
+                ->where('user_requests.dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
         }
 
         $data = $query->get();

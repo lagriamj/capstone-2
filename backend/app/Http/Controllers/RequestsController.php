@@ -10,7 +10,7 @@ use Carbon\Carbon;
 
 class RequestsController extends Controller
 {
-    public function showRequest(Request $request)
+    public function showRequest(Request $request, $startDate = null, $endDate = null)
     {
         $userID = $request->input('user_id');
         $query = Requests::where('status', '!=', 'Cancelled')
@@ -35,6 +35,12 @@ class RequestsController extends Controller
 
         if ($userID) {
             $query->where('user_id', $userID);
+        }
+
+        if ($startDate && $endDate) {
+            // Use '<' for the end date to exclude it from the range
+            $query->where('user_requests.dateRequested', '>=', $startDate)
+                ->where('user_requests.dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
         }
 
         $requests = $query->get();

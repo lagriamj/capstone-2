@@ -12,16 +12,27 @@ use Illuminate\Support\Facades\DB;
 
 class ReceiveServiceController extends Controller
 {
-    public function pendingRequest()
+    public function pendingRequest($startDate = null, $endDate = null)
     {
-        $pendingRequests = Requests::where('status', 'Pending')
-            ->orderBy('user_requests.dateUpdated', 'desc')
-            ->get();
+        $query = Requests::where('status', 'Pending');
+
+
+        if ($startDate && $endDate) {
+
+            $query->where('dateRequested', '>=', $startDate)
+                ->where('dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
+        }
+
+
+        $query->orderBy('dateUpdated', 'desc');
+
+        $data = $query->get();
 
         return response()->json([
-            'results' => $pendingRequests
+            'results' => $data
         ], 200);
     }
+
 
     public function receivedRequest(Request $request)
     {
@@ -103,7 +114,9 @@ class ReceiveServiceController extends Controller
 
         // Check if startDate and endDate parameters are provided and valid
         if ($startDate && $endDate) {
-            $query->whereBetween('user_requests.dateRequested', [$startDate, $endDate]);
+            // Use '<' for the end date to exclude it from the range
+            $query->where('user_requests.dateRequested', '>=', $startDate)
+                ->where('user_requests.dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
         }
 
         $data = $query->get();

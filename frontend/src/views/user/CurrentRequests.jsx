@@ -103,19 +103,35 @@ const CurrentRequests = () => {
   }, []);
 
   const [data, setData] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  useEffect(() => {
+    const defaultStartDate = new Date();
+    defaultStartDate.setDate(defaultStartDate.getDate() - 10);
+    const defaultEndDate = new Date();
+    const defaultStartDateString = defaultStartDate.toISOString().split("T")[0];
+    const defaultEndDateString = defaultEndDate.toISOString().split("T")[0];
+
+    setStartDate(defaultStartDateString);
+    setEndDate(defaultEndDateString);
+  }, []);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [startDate, endDate]);
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      const result = await axios.get("http://127.0.0.1:8000/api/request-list", {
-        params: {
-          user_id: userID, // Pass the user_id from your component's state
-        },
-      });
+      const result = await axios.get(
+        `http://127.0.0.1:8000/api/request-list/${startDate}/${endDate}`,
+        {
+          params: {
+            user_id: userID, // Pass the user_id from your component's state
+          },
+        }
+      );
 
       setData(result.data.results);
       setLoading(false);
@@ -339,6 +355,8 @@ const CurrentRequests = () => {
                     <input
                       type="date"
                       className="p-2 w-36 outline-none border-none bg-transparent"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
                     />
                   </div>
                   <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">
@@ -346,6 +364,8 @@ const CurrentRequests = () => {
                     <input
                       type="date"
                       className="p-2 w-36 outline-none border-none bg-transparent"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
                     />
                   </div>
                 </div>

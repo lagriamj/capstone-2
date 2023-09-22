@@ -1,68 +1,12 @@
-import { Button, List, Modal } from "antd";
+import { Button, Modal } from "antd";
 import PropTypes from "prop-types";
 
 const TermsAndConditionsModal = ({ isOpen, onClose, onAgree, onDisagree }) => {
-  const termsAndConditionsList = [
-    {
-      header: "1. Acceptance of Terms",
-      content:
-        "By using Request Tracker and its services, you agree to comply with and be bound by these Terms and Conditions.",
-    },
-    {
-      header: "2. User Registration and OTP Verification",
-      content:
-        "You agree to provide accurate and complete information during the registration process. We may use OTP (One-Time Password) verification to secure your account and ensure your identity.",
-    },
-    {
-      header: "3. User Conduct",
-      content:
-        "We collect and use your personal information as outlined in our Privacy Policy.",
-    },
-    {
-      header: "4. Privacy and Data Collection",
-      content:
-        "You agree not to engage in any unlawful, harmful, or disruptive behavior while using our services.",
-    },
-    {
-      header: "5. Intellectual Property",
-      content:
-        "All content and materials on Request Tracker are protected by intellectual property laws.",
-    },
-    {
-      header: "6. Termination of Account",
-      content:
-        "We reserve the right to terminate or suspend your account if you violate these Terms and Conditions.",
-    },
-    {
-      header: "7. Disclaimers",
-      content:
-        'Request Tracker is provided "as is" without any warranties. We are not responsible for any errors, interruptions, or security breaches.',
-    },
-    {
-      header: "8. Limitation of Liability",
-      content:
-        "We are not liable for any direct or indirect damages arising from your use of Request Tracker.",
-    },
-    {
-      header: "9. Governing Law",
-      content:
-        "These Terms and Conditions are governed by and construed in accordance with the laws of our Jurisdiction.",
-    },
-    {
-      header: "10. Changes to Terms",
-      content:
-        "We reserve the right to modify these Terms and Conditions at any time. It is your responsibility to review them periodically.",
-    },
-    {
-      header: "11. Contact Information",
-      content:
-        "If you have any questions or concerns regarding these Terms and Conditions, please contact us at citc@gmail.com.",
-    },
-  ];
-
   return (
     <Modal
-      title="Terms & Conditions"
+      title={
+        <span className="flex w-full py-2 text-lg">Terms & Conditions</span>
+      }
       open={isOpen}
       onCancel={() => onClose()}
       width="50%"
@@ -70,27 +14,41 @@ const TermsAndConditionsModal = ({ isOpen, onClose, onAgree, onDisagree }) => {
         <Button
           key="disagree"
           onClick={onDisagree}
-          className="bg-main text-white"
+          style={{ height: "2.5rem", width: "5.5rem" }}
+          className="bg-white text-black border-2 border-main hover:bg-main hover:text-white ease-in-out transition duration-500 font-sans inline-flex items-center justify-center"
         >
           Disagree
         </Button>,
-        <Button key="agree" onClick={onAgree} className="bg-main text-white">
+        <Button
+          key="agree"
+          onClick={onAgree}
+          style={{ height: "2.5rem", width: "5.5rem" }}
+          className="bg-main text-white font-sans hover:bg-white hover:text-black hover:border-2 hover:border-main ase-in-out transition duration-500"
+        >
           Agree
         </Button>,
       ]}
     >
-      <List
-        bordered
-        dataSource={termsAndConditionsList}
-        renderItem={(item) => (
-          <List.Item>
-            <List.Item.Meta
-              title={<strong>{item.header}</strong>}
-              description={item.content}
-            />
-          </List.Item>
-        )}
-      />
+      <div className="flex flex-col font-sans gap-5 pb-4 large:pb-10 px-8">
+        <h1 className="text-center text-xl font-semibold py-4">
+          Confidential Pact and Non-Disclosure Agreement
+        </h1>
+        <p className=" text-base text-justify">
+          1. Access and use of the Student Advising Program (SAP) is a sacred
+          duty of Designated Student Advisers (DSAs) in the service of student
+          development in the University of Mindanao
+        </p>
+        <p className=" text-base text-justify">
+          2. All information, data and materials from the personal records of
+          the students are absolutely confidential in nature and need to be
+          preserved and protected. Violation of this confidentiality through any
+          form of disclosure and illegal use can result in legal liability.
+        </p>
+        <p className=" text-base text-justify">
+          3. Only official DSAs are authorized to access the SAP. You may
+          proceed to log-in if you have the proper authority.
+        </p>
+      </div>
     </Modal>
   );
 };

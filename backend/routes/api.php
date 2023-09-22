@@ -41,12 +41,12 @@ Route::get('/getOfficeAndDivision/{userID}', [RequestsController::class, 'getOff
 Route::post('add-request', [RequestsController::class, 'addRequest']);
 
 //Current Requests (user side)
-Route::get('request-list', [RequestsController::class, 'showRequest']);
+Route::get('request-list/{startDate?}/{endDate?}', [RequestsController::class, 'showRequest']);
 Route::put('closedNorate/{id}', [RatingController::class, 'closedNorate']);
 Route::delete('delete-request/{id}', [RequestsController::class, 'destroyRequest']);
 
 //Transaction (user side)
-Route::get('transaction-list/{id}', [RatingController::class, 'showTransanction']);
+Route::get('transaction-list/{id}/{startDate?}/{endDate?}', [RatingController::class, 'showTransanction']);
 Route::get('closed-view/{id}', [RatingController::class, 'closedView']);
 Route::post('transanction-rate', [RatingController::class, 'rateTransaction']);
 Route::get('done-rate', [RatingController::class, 'doneRating']);
@@ -60,7 +60,7 @@ Route::put('/update-contact', [UserController::class, 'updateContactNumber']);
 
 //Receive Service (admin side)
 Route::put('delete-receive/{id}', [ReceiveServiceController::class, 'destroyService']);
-Route::get('pending-request', [ReceiveServiceController::class, 'pendingRequest']);
+Route::get('pending-request/{startDate?}/{endDate?}', [ReceiveServiceController::class, 'pendingRequest']);
 Route::post('received-request', [ReceiveServiceController::class, 'receivedRequest']);
 
 //Service Task (admin side)
@@ -123,3 +123,4 @@ Route::get('technician-performance/{startDate?}/{endDate?}', [DashboardControlle
 Route::get('percent-accomplished/{startDate?}/{endDate?}', [DashboardController::class, 'getPercentAccomplished']);
 Route::get('requestsByDate/{startDate?}/{endDate?}', [DashboardController::class, 'getRequestsByDate']);
 Route::get('totalRequests-And-Closed/{startDate?}/{endDate?}', [DashboardController::class, 'getTotalAndClosed']);
+Route::get('status-description/{status}/{startDate?}/{endDate?}', [DashboardController::class, 'getStatusDescription']);

@@ -271,4 +271,24 @@ class DashboardController extends Controller
             'closedRequests' => $closedRequests,
         ]);
     }
+
+    public function getStatusDescription($status, $startDate = null, $endDate = null)
+    {
+
+        if ($startDate === null) {
+            $startDate = date('Y-m-d', strtotime('-10 days'));
+        }
+
+        if ($endDate === null) {
+            $endDate = date('Y-m-d'); // Default to today
+        }
+
+
+        $requestData = DB::table('user_requests')
+            ->where('status', $status)
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->get();
+
+        return response()->json(['requestData' => $requestData]);
+    }
 }

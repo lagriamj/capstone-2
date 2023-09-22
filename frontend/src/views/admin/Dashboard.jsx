@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import AdminSidebar from "../../components/AdminSidebar";
 import AdminDrawer from "../../components/AdminDrawer";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { Modal, Button } from "antd";
+import { Modal, Button, Table } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClipboardCheck,
@@ -272,7 +272,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const defaultStartDate = new Date();
-    defaultStartDate.setDate(defaultStartDate.getDate() - 5);
+    defaultStartDate.setDate(defaultStartDate.getDate() - 10);
     const defaultEndDate = new Date();
     const defaultStartDateString = defaultStartDate.toISOString().split("T")[0];
     const defaultEndDateString = defaultEndDate.toISOString().split("T")[0];
@@ -437,11 +437,96 @@ const Dashboard = () => {
     setSelectedDataSources([dataSource]);
   };
 
-  console.log("s", requestsByDate);
-
   const formatter = (value) => {
     return <span className="text-[10px]">{value}</span>;
   };
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalData, setModalData] = useState([]);
+  const [clickedPortion, setClickedPortion] = useState(null);
+  const [tableColumns, setTableColumns] = useState([]);
+  const [modalTitle, setModalTitle] = useState(null);
+
+  const handlePieClick = (entry) => {
+    console.log(clickedPortion);
+
+    axios
+      .get(
+        `http://127.0.0.1:8000/api/status-description/${entry.name}/${startDate}/${endDate}`
+      )
+      .then((response) => {
+        const formattedData = response.data.requestData.map((item, index) => ({
+          key: index,
+          id: item.id,
+          fullName: item.fullName,
+          reqOffice: item.reqOffice,
+          division: item.division,
+          natureOfRequest: item.natureOfRequest,
+          unit: item.unit,
+          serialNo: item.serialNo,
+          propertyNo: item.propertyNo,
+          dateRequested: item.dateRequested,
+          dateUpdated: item.dateUpdated,
+        }));
+        const percentage = Math.round(
+          (entry.value /
+            pieChartData.reduce((total, data) => total + data.value, 0)) *
+            100
+        );
+
+        setModalTitle(percentage);
+        setModalData(formattedData);
+        setModalVisible(true);
+        setClickedPortion(entry.name);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+    setModalVisible(true);
+  };
+
+  const closePieModal = () => {
+    setModalVisible(false);
+    setClickedPortion(null);
+  };
+
+  useEffect(() => {
+    const columnsForPie = [
+      {
+        title: "ID",
+        dataIndex: "id",
+        key: "id",
+        sorter: (a, b) => a.id - b.id,
+      },
+      { title: "Requested By", dataIndex: "fullName", key: "fullName" },
+      { title: "Request Office", dataIndex: "reqOffice", key: "reqOffice" },
+      { title: "Division", dataIndex: "division", key: "division" },
+      {
+        title: "Nature of Request",
+        dataIndex: "natureOfRequest",
+        key: "natureOfRequest",
+      },
+      { title: "Unit", dataIndex: "unit", key: "unit" },
+      { title: "Serial No.", dataIndex: "serialNo", key: "serialNo" },
+      { title: "Property No.", dataIndex: "propertyNo", key: "propertyNo" },
+      {
+        title: "Date Requested",
+        dataIndex: "dateRequested",
+        key: "dateRequested",
+        sorter: (a, b) => a.dateRequested.localeCompare(b.dateRequested),
+      },
+      {
+        title: "Date Updated",
+        dataIndex: "dateUpdated",
+        key: "dateUpdated",
+        sorter: (a, b) => a.dateUpdated.localeCompare(b.dateUpdated),
+      },
+
+      // Add more columns as needed
+    ];
+
+    setTableColumns(columnsForPie);
+  }, []);
 
   return (
     <HelmetProvider>
@@ -459,7 +544,7 @@ const Dashboard = () => {
             {isLoading ? (
               <p>Loading...</p>
             ) : (
-              <div className="w-full h-screen overflow-auto grid grid-cols-7 grid-rows-5 gap-x-3">
+              <div className="w-full h-screen  grid grid-cols-7 grid-rows-5 gap-x-3 ">
                 <div className="grid col-span-5 text-black font-sans">
                   <div className="flex w-full justify-between ">
                     <div className="flex lg:w-[32%] lg:h-[18vh] bg-[#fff4de] shadow-md rounded-lg">
@@ -510,7 +595,7 @@ const Dashboard = () => {
                 <div className="col-span-5 flex flex-col px-4  row-span-2 rounded-lg shadow-md  bg-white">
                   <div className="w-full flex gap-2 px-2 py-3 mediumLg:pt-1 justify-end">
                     {" "}
-                    <div className="px-3 py-3 relative flex items-center gap-2 pb-2 font-sans font-semibold text-lg mr-auto">
+                    <div className="px-3 gotoLarge:py-3 py-1 relative whitespace-nowrap flex items-center gap-2 pb-2 font-sans font-semibold text-lg mr-auto">
                       <h1>Requests Statistics </h1>
                       <FontAwesomeIcon
                         icon={faFilter}
@@ -558,7 +643,7 @@ const Dashboard = () => {
                           htmlFor="graphType"
                           className="large:text-lg mediumLg:text-sm lg:text-base"
                         >
-                          Select Graph Type
+                          Type
                         </label>
                         <select
                           id="graphType"
@@ -583,7 +668,7 @@ const Dashboard = () => {
                         name="startDate"
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
-                        className="border-2 border-gray-700  rounded-lg px-1 large:text-lg mediumLg:text-sm lg:text-base "
+                        className="border-2 border-gray-700  rounded-lg px-1 large:text-lg mediumLg:text-sm w-36 lg:text-base "
                       />
                     </div>
                     <div className="flex gap-1 items-center justify-center">
@@ -599,7 +684,7 @@ const Dashboard = () => {
                         name="endDate"
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
-                        className="border-2 border-gray-700  rounded-lg px-1 large:text-lg mediumLg:text-sm lg:text-base "
+                        className="border-2 border-gray-700  rounded-lg px-1 large:text-lg mediumLg:text-sm w-36 lg:text-base "
                       />
                     </div>
                   </div>
@@ -699,11 +784,33 @@ const Dashboard = () => {
                           cx="50%"
                           cy="50%"
                           label={renderCustomizedLabel}
+                          onClick={handlePieClick}
                         />
                         <Tooltip />
                         <Legend formatter={formatter} />
                       </PieChart>
                     </ResponsiveContainer>
+                    <Modal
+                      title={
+                        <div className="flex text-lg gap-4 px-6 py-4 font-sans">
+                          <span>{clickedPortion} Requests</span>
+                          <span className="font-bold text-red-700">
+                            {modalTitle}%
+                          </span>
+                        </div>
+                      }
+                      open={modalVisible}
+                      onCancel={closePieModal}
+                      footer={null}
+                      width="90%"
+                    >
+                      <Table
+                        dataSource={modalData}
+                        columns={tableColumns}
+                        pagination={true}
+                        className="gotoLarge:w-full overflow-auto"
+                      />
+                    </Modal>
                   </div>
                   <div className="bg-white lg:w-[20%] w-full rounded-lg shadow-md font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
                     <div className="flex border-b-2 items-center justify-center border-gray-400">
@@ -715,7 +822,9 @@ const Dashboard = () => {
                     </div>
                     <div className="flex flex-col gap-4 gap-y-10 pt-4 gotoLarge:gap-y-12 gotoLarge:pt-14 font-medium   mediumLg:gap-y-4 mediumLg:pt-6 large:gap-y-16 large:pt-10 p-4 ">
                       <div className="flex items-center justify-center gap-3">
-                        <label>Total Ratings: </label>
+                        <label className="gotoLarge:whitespace-nowrap">
+                          Overall Ratings:{" "}
+                        </label>
                         <label className="text-red-700 text-xl large:text-3xl font-semibold italic">
                           {" "}
                           {formattedTotalRatings}%
@@ -774,15 +883,13 @@ const Dashboard = () => {
                     >
                       <div className="grid grid-cols-2 px-2">
                         <p className="whitespace-nowrap"> {request.fullName}</p>
-                        <p> {request.dateRequested}</p>
+                        <p className="text-right"> {request.dateRequested}</p>
                       </div>
                       <div className="grid grid-cols-2 mt-2 px-2">
-                        <p className="whitespace-nowrap">
-                          {request.natureOfRequest}
-                        </p>
+                        <p className="">{request.natureOfRequest}</p>
 
                         <button
-                          className="text-blue-400"
+                          className="text-blue-400 text-right"
                           onClick={() => openModal(request)}
                         >
                           View Details

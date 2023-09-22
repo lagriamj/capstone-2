@@ -25,6 +25,7 @@ const ServiceTask = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
+  const [isSingleRequest, setIsSingleRequest] = useState(false);
   const [popconfirmVisible, setPopconfirmVisible] = useState([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalType, setModalType] = useState(null);
@@ -114,7 +115,7 @@ const ServiceTask = () => {
 
   useEffect(() => {
     const defaultStartDate = new Date();
-    defaultStartDate.setDate(defaultStartDate.getDate() - 2);
+    defaultStartDate.setDate(defaultStartDate.getDate() - 10);
     const defaultEndDate = new Date();
     const defaultStartDateString = defaultStartDate.toISOString().split("T")[0];
     const defaultEndDateString = defaultEndDate.toISOString().split("T")[0];
@@ -136,6 +137,7 @@ const ServiceTask = () => {
       if (response.status === 200) {
         setLoading(false);
         setData(response.data.results);
+        setIsSingleRequest(response.data.results.length === 1);
       } else {
         setLoading(false);
         console.error("Failed to fetch utility settings. Response:", response);
@@ -316,13 +318,13 @@ const ServiceTask = () => {
         <title>Service Task</title>
       </Helmet>
       <div
-        className={`className="flex flex-grow flex-col gotoLarge:px-6 large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
+        className={`className="flex flex-grow flex-col large:ml-20 gotoLarge:px-6 lg:flex-row white pt-5 large:h-screen h-auto`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
 
         <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">
           <div
-            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] h-auto lg:ml-auto lg:mx-4 mt-20 lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
+            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] h-auto lg:ml-auto lg:mx-4   lg:mt-0  mt-20 justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
             <div className="flex lg:flex-row text-center flex-col w-full lg:pl-4 items-center justify-center shadow-xl bg-white  text-white rounded-t-lg lg:gap-4 gap-2">
               <h1 className="flex text-black items-center lg:text-2xl font-semibold ">
@@ -365,7 +367,9 @@ const ServiceTask = () => {
               </div>
             </div>
             <div
-              className={`overflow-auto h-auto shadow-xl  pb-5  rounded-lg w-full`}
+              className={`overflow-auto h-auto shadow-xl  pb-5 ${
+                isSingleRequest ? "lg:h-screen" : ""
+              } rounded-lg w-full`}
             >
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
@@ -584,7 +588,12 @@ const ServiceTask = () => {
                     </tr>
                   ) : (
                     filteredRecords.map((setting, index) => (
-                      <tr className={`lg:text-sm text-base`} key={setting.id}>
+                      <tr
+                        className={`${
+                          isScreenWidth1366 ? "text-sm" : " text-lg"
+                        }`}
+                        key={setting.id}
+                      >
                         <td className="border-b-2 px-3 py-2 large:py-3 border-gray-200 text-left">
                           {index + 1}
                         </td>
@@ -728,7 +737,7 @@ const ServiceTask = () => {
                 />
               )}
             </div>
-            <nav className={`  mt-2 px-4 `}>
+            <nav className={`  mt-2 px-4`}>
               <ul className="flex gap-2 items-center">
                 <li className="flex-auto  mr-5 text-base font-bold">
                   Page {currentPage} of {npage}
