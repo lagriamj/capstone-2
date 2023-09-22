@@ -29,7 +29,6 @@ const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [isUpdating, setIsUpdating] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const [isSingleCategory, setIsSingleCategory] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const showAddNewModal = () => {
@@ -54,7 +53,6 @@ const Categories = () => {
       );
       if (response.status === 200) {
         setCategories(response.data.results);
-        setIsSingleCategory(response.data.results.length === 1);
         setLoading(false);
       } else {
         console.error("Failed to category. Response:", response);
@@ -129,7 +127,6 @@ const Categories = () => {
   }, []);
 
   const isLargeScreen = windowWidth >= 1024;
-  const isWidth1920 = window.innerWidth === 1920;
 
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPage = 10;
@@ -200,13 +197,7 @@ const Categories = () => {
         <title>Technicians</title>
       </Helmet>
       <div
-        className={`className="flex flex-col lg:flex-row bg-gray-200 ${
-          isWidth1920
-            ? "lg:pl-20"
-            : isScreenWidth1366
-            ? "lg:pl-[0.5rem]"
-            : "lg:pl-[3.0rem]"
-        } lg:pt-5 h-screen`}
+        className={`className="flex flex-grow flex-col gotoLarge:px-6 large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
         {isLargeScreen ? (
@@ -255,68 +246,46 @@ const Categories = () => {
             </Fab>
           </Box>
         )}
-        <div className="flex flex-col lg:pb-10 bg-gray-200 gap-2 lg:w-full">
+        <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">
           <div
-            className={`overflow-x-auto ${
-              isWidth1920
-                ? "lg:w-[84%]  lg:ml-[16.6rem]"
-                : isScreenWidth1366
-                ? "lg:w-[82%]  lg:ml-[14.5rem]"
-                : "lg:w-[82%]  lg:ml-72"
-            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-[80vh] pb-10 bg-white shadow-xl    border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
+            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] h-auto lg:ml-auto lg:mx-4   mt-20 lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
-            <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
-              <h1
-                className={`font-sans flex items-center justify-center  ${
-                  isScreenWidth1366 ? "text-xl" : "lg:text-3xl text-xl"
-                }  ml-5 mr-auto tracking-wide`}
-              >
+            <div className="flex lg:flex-row text-center flex-col w-full lg:pl-4 items-center justify-center shadow-xl bg-white  text-white rounded-t-lg lg:gap-4 gap-2">
+              <h1 className="flex text-black items-center lg:text-2xl text-base font-semibold ">
                 Categories
               </h1>
-              <div className="relative flex items-center lg:mr-10 ">
+              <div className="relative flex items-center lg:mr-auto lg:ml-4 ">
                 <FontAwesomeIcon
                   icon={faSearch}
-                  className={`${
-                    isScreenWidth1366 ? "w-4 h-4" : "w-6 h-6"
-                  } absolute ml-3 text-main`}
+                  className={`w-4 h-4 absolute ml-3 text-main`}
                 />
                 <input
                   type="text"
                   placeholder="Search"
-                  className={`border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 lg:w-full w-[90%] focus:outline-none ${
-                    isScreenWidth1366 ? "text-sm h-10" : "text-xl h-14"
-                  }`}
+                  className={`border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 w-full focus:outline-none text-base h-10`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
             </div>
             <div
-              className={`overflow-auto h-[90vh] ${
-                isSingleCategory ? "h-screen" : ""
-              } rounded-lg w-full`}
+              className={`overflow-auto h-auto shadow-xl  pb-5 rounded-lg w-full`}
             >
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
-                  <tr className="bg-gray-200 ">
+                  <tr className="bg-secondary text-white">
                     <th
-                      className={`w-64 lg:pl-20 pl-4 ${
-                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
-                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                      className={`w-64 lg:pl-20 pl-4 px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
                     >
                       #
                     </th>
                     <th
-                      className={`w-64 pl-20 ${
-                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
-                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                      className={`w-64 pl-20 px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
                     >
                       Category
                     </th>
                     <th
-                      className={`w-64  pl-20 ${
-                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
-                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                      className={`w-64  pl-20 px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
                     >
                       Action
                     </th>
@@ -351,23 +320,17 @@ const Categories = () => {
                     filteredRecords.map((item) => (
                       <tr key={item.id}>
                         <td
-                          className={`lg:pl-20 pl-4 border-b-2 px-3 py-3 ${
-                            isScreenWidth1366 ? "text-sm" : " text-lg"
-                          } border-gray-200 text-left`}
+                          className={`lg:pl-20 pl-4 border-b-2 px-3 py-2 large:py-3 large:text-lg text-sm border-gray-200 text-left`}
                         >
                           {item.id}
                         </td>
                         <td
-                          className={`border-b-2 pl-20 py-3 ${
-                            isScreenWidth1366 ? "text-sm" : " text-lg"
-                          } border-gray-200 text-left whitespace-nowrap`}
+                          className={`border-b-2 pl-20 py-2 large:py-3 large:text-lg text-sm border-gray-200 text-left whitespace-nowrap`}
                         >
                           {item.utilityCategory}
                         </td>
                         <td
-                          className={`py-3  pl-20 border-b-2 ${
-                            isScreenWidth1366 ? "text-sm" : " text-lg"
-                          } text-gray-700 whitespace-nowrap text-center font-medium`}
+                          className={` pl-20 border-b-2 py-2 large:py-3 large:text-lg text-sm text-gray-700 whitespace-nowrap text-center font-medium`}
                         >
                           <div className="flex ">
                             <button
@@ -497,51 +460,53 @@ const Categories = () => {
                 />
               )}
             </div>
+            <nav className={`  mt-2 px-2 `}>
+              <ul className="flex gap-2 items-center">
+                <li className="flex-auto  mr-5 text-base font-bold">
+                  Page {currentPage} of {npage}
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    onClick={prePage}
+                    className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
+                  >
+                    <LeftOutlined
+                      style={{
+                        fontSize: isScreenWidth1366 ? ".8rem" : "",
+                      }}
+                    />
+                  </a>
+                </li>
+                <li className="flex items-center">
+                  <input
+                    type="number"
+                    placeholder="Page"
+                    className={`border rounded-lg bg-gray-100  px-4 text-black w-24  text-center outline-none ${
+                      isScreenWidth1366 ? "text-sm py-1" : "py-2"
+                    }`}
+                    value={pageInput}
+                    onChange={handlePageInputChange}
+                    onBlur={handlePageInputBlur} // Trigger page change when the input field loses focus
+                    onKeyPress={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
+                  />
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    onClick={nextPage}
+                    className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
+                  >
+                    <RightOutlined
+                      style={{
+                        fontSize: isScreenWidth1366 ? ".8rem" : "",
+                      }}
+                    />
+                  </a>
+                </li>
+              </ul>
+            </nav>
           </div>
-          <nav className="mr-auto lg:ml-56">
-            <ul className="flex gap-2 items-center">
-              <li className="flex-auto mediumLg:text-sm ml-10 lg:ml-20 mr-2">
-                Page {currentPage} of {npage}
-              </li>
-              <li>
-                <a
-                  href="#"
-                  onClick={prePage}
-                  className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
-                >
-                  <LeftOutlined
-                    style={{
-                      fontSize: isScreenWidth1366 ? ".8rem" : "",
-                    }}
-                  />
-                </a>
-              </li>
-              <li className="flex items-center">
-                <input
-                  type="number"
-                  placeholder="Page"
-                  className="border rounded-lg mediumLg:text-sm mediumLg:py-1 bg-gray-100 py-2 px-4 text-black w-24  text-center outline-none"
-                  value={pageInput}
-                  onChange={handlePageInputChange}
-                  onBlur={handlePageInputBlur} // Trigger page change when the input field loses focus
-                  onKeyPress={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
-                />
-              </li>
-              <li>
-                <a
-                  href="#"
-                  onClick={nextPage}
-                  className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
-                >
-                  <RightOutlined
-                    style={{
-                      fontSize: isScreenWidth1366 ? ".8rem" : "",
-                    }}
-                  />
-                </a>
-              </li>
-            </ul>
-          </nav>
         </div>
       </div>
     </HelmetProvider>

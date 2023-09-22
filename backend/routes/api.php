@@ -64,7 +64,7 @@ Route::get('pending-request', [ReceiveServiceController::class, 'pendingRequest'
 Route::post('received-request', [ReceiveServiceController::class, 'receivedRequest']);
 
 //Service Task (admin side)
-Route::get('service-task-list', [ReceiveServiceController::class, 'showServiceTask']);
+Route::get('service-task-list/{startDate?}/{endDate?}', [ReceiveServiceController::class, 'showServiceTask']);
 // Route::get('service-my-task-list/{fullName}', [ReceiveServiceController::class, 'showMyServiceTask']);
 Route::put('onprogress-request/{id}', [ReceiveServiceController::class, 'onprogressRequest']);
 Route::put('torelease-request/{id}', [ReceiveServiceController::class, 'toreleaseRequest']);
@@ -72,7 +72,7 @@ Route::post('torate-request', [ReceiveServiceController::class, 'torateRequest']
 Route::put('delete-serviced/{id}/{reqID}', [ReceiveServiceController::class, 'destroyServiceTask']);
 
 //Service Transaction
-Route::get('closed-transaction', [RatingController::class, 'showServiceTransanction']);
+Route::get('closed-transaction/{startDate?}/{endDate?}', [RatingController::class, 'showServiceTransanction']);
 
 //Account List in Account (admin side)
 Route::get('/users-list', [UserController::class, 'showUsersList']);
@@ -121,3 +121,5 @@ Route::get('unsatisfied-rating', [DashboardController::class, 'calculateUnSatisf
 
 Route::get('technician-performance/{startDate?}/{endDate?}', [DashboardController::class, 'getTechnicianPerformance']);
 Route::get('percent-accomplished/{startDate?}/{endDate?}', [DashboardController::class, 'getPercentAccomplished']);
+Route::get('requestsByDate/{startDate?}/{endDate?}', [DashboardController::class, 'getRequestsByDate']);
+Route::get('totalRequests-And-Closed/{startDate?}/{endDate?}', [DashboardController::class, 'getTotalAndClosed']);

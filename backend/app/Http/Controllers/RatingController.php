@@ -23,13 +23,19 @@ class RatingController extends Controller
         return response()->json(['results' => $data]);
     }
 
-    public function showServiceTransanction()
+    public function showServiceTransanction($startDate = null, $endDate = null)
     {
-        $data = DB::table('user_requests')
+        $query = DB::table('user_requests')
             ->select('user_requests.*')
             ->whereNotIn('status', ['Pending', 'Received', 'On Progress', 'To Release', 'To Rate'])
-            ->orderBy('user_requests.dateUpdated', 'desc')
-            ->get();
+            ->orderBy('user_requests.dateUpdated', 'desc');
+
+        if ($startDate && $endDate) {
+            $query->whereBetween('user_requests.dateRequested', [$startDate, $endDate]);
+        }
+
+        $data = $query->get();
+
         return response()->json(['results' => $data]);
     }
 

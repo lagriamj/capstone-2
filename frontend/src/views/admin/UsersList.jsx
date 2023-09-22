@@ -20,7 +20,6 @@ import {
 const UsersList = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [users, setUsers] = useState([]);
-  const [isSingleRequest, setIsSingleRequest] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -46,7 +45,6 @@ const UsersList = () => {
       if (response.status === 200) {
         console.log(response.data.result);
         setUsers(response.data.result);
-        setIsSingleRequest(response.data.results.length === 1);
         setLoading(false);
       } else {
         setLoading(false);
@@ -122,6 +120,8 @@ const UsersList = () => {
         .toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
       item.userStatus.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.office?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.division?.toString().includes(searchQuery.toLowerCase()) ||
       item.role.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesRoleFilter =
@@ -213,9 +213,7 @@ const UsersList = () => {
         <title>Users Lists</title>
       </Helmet>
       <div
-        className={`className="flex flex-col lg:flex-row bg-gray-200 ${
-          isWidth1980 ? "lg:pl-20" : "lg:pl-[3.0rem]"
-        } lg:py-5 h-screen`}
+        className={`className="flex flex-grow flex-col gotoLarge:px-6 large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
         {isLargeScreen ? (
@@ -279,57 +277,71 @@ const UsersList = () => {
             isLargeScreen={isLargeScreen}
           />
         )}
-        <div className="flex flex-col lg:pb-10 bg-gray-200 gap-2 lg:w-full">
+        <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">
           <div
-            className={`overflow-x-auto ${
-              isWidth1980 ? "lg:w-[83%]" : "lg:w-[82%]"
-            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-4/5 pb-10 bg-white shadow-xl  lg:ml-72  border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
+            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] h-auto lg:ml-auto lg:mx-4 mt-20 lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
-            <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
-              <h1 className="font-sans lg:text-3xl text-xl mt-8 ml-5 mr-auto tracking-wide">
-                Users
+            <div className="flex lg:flex-row text-center flex-col w-full lg:pl-4 items-center justify-center shadow-xl bg-white  text-white rounded-t-lg lg:gap-4 gap-2">
+              <h1 className="flex text-black items-center lg:text-2xl font-semibold ">
+                Users List
               </h1>
-              <div className="relative flex items-center lg:mr-10 ">
+              <div className="relative flex items-center lg:mr-auto lg:ml-4 ">
                 <FontAwesomeIcon
                   icon={faSearch}
-                  className="h-6 w-6 absolute ml-3 text-main"
+                  className={`w-4 h-4 absolute ml-3 text-main`}
                 />
                 <input
                   type="text"
                   placeholder="Search"
-                  className="border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 h-14 lg:w-full w-[90%] focus:outline-none text-xl"
+                  className={`border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 w-full focus:outline-none text-base h-10`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
+              <div className="flex items-center justify-center gap-4 mr-4 mb-4 lg:mb-0">
+                <div className="flex lg:flex-row flex-col items-center text-black gap-2">
+                  <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">
+                    <span className="font-semibold">From:</span>
+                    <input
+                      type="date"
+                      className="p-2 w-36 outline-none border-none bg-transparent"
+                    />
+                  </div>
+                  <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">
+                    <span className="font-semibold">To:</span>
+                    <input
+                      type="date"
+                      className="p-2 w-36 outline-none border-none bg-transparent"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
             <div
-              className={`overflow-auto h-screen ${
-                isSingleRequest ? "h-screen" : ""
-              } rounded-lg w-full`}
+              className={`overflow-auto h-auto shadow-xl  pb-5  rounded-lg w-full`}
             >
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
-                  <tr className="bg-gray-200">
-                    <th className="w-10 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                  <tr className="bg-secondary text-white ">
+                    <th className="w-10 px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       #
                     </th>
-                    <th className="whitespace-nowrap tracking-wider">
+                    <th className="py-5 large:py-6 text-sm large:text-base text-left whitespace-nowrap tracking-wider">
                       Government ID
                     </th>
-                    <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-48 px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Name
                     </th>
-                    <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className=" px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Office
                     </th>
-                    <th className="w-48 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className=" px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Division
                     </th>
-                    <th className="w-52 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-52 px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Email
                     </th>
-                    <th className="px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Contact Number
                     </th>
                     <th
@@ -381,7 +393,7 @@ const UsersList = () => {
                       </div>
                     </th>
                     <th
-                      className={`px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap`}
+                      className={`px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
                     >
                       Role
                       <div className="relative inline-block">
@@ -424,7 +436,7 @@ const UsersList = () => {
                         )}
                       </div>
                     </th>
-                    <th className="w-56 px-3 py-5 text-base font-semibold tracking-wider text-center whitespace-nowrap">
+                    <th className="w-56 px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap">
                       Action
                     </th>
                   </tr>
@@ -456,36 +468,39 @@ const UsersList = () => {
                     </tr>
                   ) : (
                     filteredRecords.map((record) => (
-                      <tr key={record.userID}>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                      <tr
+                        key={record.userID}
+                        className={`lg:text-sm text-base`}
+                      >
+                        <td className="border-b-2 px-3 py-2 large:py-3 border-gray-200 text-left">
                           {record.userID}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 px-3 py-2 large:py-3 border-gray-200 text-left">
                           {record.userGovernmentID}
                         </td>
-                        <td className=" border-b-2 py-3 whitespace-nowrap border-gray-200 text-center">
+                        <td className=" border-b-2 py-2 large:py-3 whitespace-nowrap border-gray-200 text-left">
                           {`${record.userFirstName} ${record.userLastName}`}
                         </td>
-                        <td className="border-b-2 py-3 whitespace-nowrap border-gray-200 text-center">
+                        <td className="border-b-2 px-3 py-2 large:py-3 whitespace-nowrap border-gray-200 text-left">
                           {!record.office ? "Null" : record.office}
                         </td>
-                        <td className="border-b-2 py-3 whitespace-nowrap border-gray-200 text-center">
+                        <td className="border-b-2 px-3 py-2 large:py-3 whitespace-nowrap border-gray-200 text-left">
                           {!record.division ? "Null" : record.division}
                         </td>
-                        <td className="border-b-2 py-3 whitespace-nowrap border-gray-200 text-center">
+                        <td className="border-b-2 py-2 large:py-3 whitespace-nowrap border-gray-200 text-left">
                           {record.userEmail}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-2 large:py-3 border-gray-200 text-left">
                           {record.userContactNumber}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-2 large:py-3 border-gray-200 text-left">
                           {record.userStatus}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
+                        <td className="border-b-2 py-2 large:py-3 border-gray-200 text-left">
                           {record.role}
                         </td>
-                        <td className="border-b-2 py-3 border-gray-200 text-center">
-                          <div className="flex items-center justify-center">
+                        <td className="border-b-2 py-2 large:py-3 border-gray-200 text-left">
+                          <div className="flex items-center justify-start">
                             <button
                               className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
                               onClick={() => openUpdateUserModal(record)}

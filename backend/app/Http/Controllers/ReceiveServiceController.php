@@ -94,16 +94,23 @@ class ReceiveServiceController extends Controller
     //     return response()->json(['results' => $data]);
     // }
 
-    public function showServiceTask()
+    public function showServiceTask($startDate = null, $endDate = null)
     {
-        $data = DB::table('user_requests')
+        $query = DB::table('user_requests')
             ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
             ->select('user_requests.*', 'receive_service.*')
-            ->whereNotIn('user_requests.status', ['Pending', 'Closed', 'Cancelled'])
-            ->get();
+            ->whereNotIn('user_requests.status', ['Pending', 'Closed', 'Cancelled']);
+
+        // Check if startDate and endDate parameters are provided and valid
+        if ($startDate && $endDate) {
+            $query->whereBetween('user_requests.dateRequested', [$startDate, $endDate]);
+        }
+
+        $data = $query->get();
 
         return response()->json(['results' => $data]);
     }
+
 
     public function onprogressRequest(Request $request, $id)
     {

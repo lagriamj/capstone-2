@@ -33,7 +33,7 @@ const AreaGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
   //const maxValue = Math.max(maxValues1, maxValues2) + 1;
 
   return (
-    <ResponsiveContainer width="100%" height={windowsHeight768 ? "80%" : "85%"}>
+    <ResponsiveContainer width="100%" height={windowsHeight768 ? "70%" : "85%"}>
       <AreaChart
         width="100%"
         height="90%"

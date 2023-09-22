@@ -187,6 +187,68 @@ class DashboardController extends Controller
 
     public function getRequestsByDate($startDate = null, $endDate = null)
     {
+        $unclosedRequestsData = DB::table('user_requests')
+            ->selectRaw('DATE(dateRequested) as date, COUNT(*) as total')
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->where('status', '!=', 'Closed')
+            ->where('status', '!=', 'Cancelled')
+            ->groupBy('date')
+            ->get();
+
+        $closedRequestsData = DB::table('user_requests')
+            ->selectRaw('DATE(dateRequested) as date, COUNT(*) as closed')
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->where('status', 'Closed')
+            ->groupBy('date')
+            ->get();
+
+        // Create a dictionary to store counts by date
+        $chartData = [];
+
+        // Process unclosed requests data
+        foreach ($unclosedRequestsData as $unclosedItem) {
+            $date = $unclosedItem->date;
+            $total = $unclosedItem->total;
+
+            // Initialize if date not already in the chartData
+            if (!isset($chartData[$date])) {
+                $chartData[$date] = [
+                    'date' => $date,
+                    'unclosedBydate' => 0,
+                    'closedBydate' => 0,
+                ];
+            }
+
+            $chartData[$date]['unclosedBydate'] = $total;
+        }
+
+        // Process closed requests data
+        foreach ($closedRequestsData as $closedItem) {
+            $date = $closedItem->date;
+            $closed = $closedItem->closed;
+
+            // Initialize if date not already in the chartData
+            if (!isset($chartData[$date])) {
+                $chartData[$date] = [
+                    'date' => $date,
+                    'unclosedBydate' => 0,
+                    'closedBydate' => 0,
+                ];
+            }
+
+            $chartData[$date]['closedBydate'] = $closed;
+        }
+
+        // Sort the chartData by date in ascending order
+        usort($chartData, function ($a, $b) {
+            return strtotime($a['date']) - strtotime($b['date']);
+        });
+
+        return response()->json($chartData);
+    }
+
+    public function getTotalAndClosed($startDate = null, $endDate = null)
+    {
         if ($startDate === null) {
             $startDate = date('Y-m-d', strtotime('-3 days')); // Default to 2 days ago
         }
@@ -195,41 +257,18 @@ class DashboardController extends Controller
             $endDate = date('Y-m-d'); // Default to today
         }
 
-        $totalRequestsData = DB::table('user_requests')
-            ->selectRaw('DATE(dateRequested) as date, count(*) as total')
+        $totalRequests = DB::table('user_requests')
             ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
-            ->where('status', '!=', 'Closed')
-            ->groupBy('date')
-            ->get();
+            ->count();
 
-        $closedRequestsData = DB::table('user_requests')
-            ->selectRaw('DATE(dateUpdated) as date, count(*) as closed')
+        $closedRequests = DB::table('user_requests')
             ->whereBetween(DB::raw('DATE(dateUpdated)'), [$startDate, $endDate])
             ->where('status', 'Closed')
-            ->groupBy('date')
-            ->get();
+            ->count();
 
-        // Merge the two datasets into a single dataset
-        $chartData = [];
-        foreach ($totalRequestsData as $totalItem) {
-            $date = $totalItem->date;
-            $total = $totalItem->total;
-
-            $chartData[] = [
-                'date' => $date,
-                'totalRequests' => $total,
-                'closedRequests' => 0, // Initialize closed requests count to 0
-            ];
-
-            // Search for the corresponding closed requests count and update the data
-            foreach ($closedRequestsData as $closedItem) {
-                if ($closedItem->date === $date) {
-                    $chartData[count($chartData) - 1]['closedRequests'] = $closedItem->closed;
-                    break;
-                }
-            }
-        }
-
-        return response()->json($chartData);
+        return response()->json([
+            'totalRequests' => $totalRequests,
+            'closedRequests' => $closedRequests,
+        ]);
     }
 }

@@ -217,207 +217,219 @@ const Requests = () => {
         <title>Request</title>
       </Helmet>
 
-      <div className="flex flex-col lg:flex-row bg-gray-200 overflow-auto lg:pl-24 lg:py-10 h-screen">
+      <div
+        className={`className="flex flex-grow flex-col gotoLarge:px-6 large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
+      >
         {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
-        <div className="w-[80%] pb-10 mt-20 lg:mt-0 bg-white shadow-xl h-auto  lg:ml-72 border-0 border-gray-400  self-center rounded-lg flex flex-col items-center font-sans">
-          <h1 className=" text-3xl text-center my-10 font-bold ">
-            CITC TECHNICAL SERVICE REQUEST SLIP
-          </h1>
-          <form
-            action=""
-            onSubmit={onSubmitChange}
-            className="w-11/12 h-auto flex lg:flex-wrap items-center justify-between  text-xl gap-10 mt-10 flex-col lg:flex-row  "
+        <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">
+          <div
+            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] shadow-xl p-10 h-auto lg:ml-auto lg:mx-4 mt-20 lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
-            <div className="flex flex-col lg:w-1/4 ">
-              <label htmlFor="reqOffice" className="font-semibold text-lg ">
-                Requesting Office:
-              </label>
-              <input
-                type="text"
-                id="reqOffice"
-                name="reqOffice"
-                value={formOffice}
-                readOnly
-                className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-              />
-            </div>
-            <div className="flex flex-col lg:w-1/4 ">
-              <label htmlFor="division" className="font-semibold text-lg ">
-                Division:
-              </label>
-              <input
-                type="text"
-                id="division"
-                name="division"
-                value={formDivision}
-                readOnly
-                className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-              />
-            </div>
-            <div className="flex flex-col lg:w-1/4 ">
-              <label htmlFor="dateRequested" className="font-semibold text-lg ">
-                Date Requested:
-              </label>
-              <input
-                required
-                value={daytime}
-                className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                readOnly
-              />
-            </div>
-            <div className="flex flex-col w-full lg:w-1/4">
-              <label className="font-semibold text-lg">
-                Nature of Request:
-              </label>
-              <div className="relative">
-                <Select // Use react-select
-                  required
-                  name="natureOfRequest"
-                  className="w-full  border-2 border-gray-400 bg-gray-50 rounded-md focus:outline-none"
-                  value={selectedNatureOfRequest} // Set selected value
-                  onChange={(selectedOption) => {
-                    setSelectedNatureOfRequest(selectedOption); // Update selected option
-                    changeUserFieldHandler({
-                      target: {
-                        name: "natureOfRequest",
-                        value: selectedOption ? selectedOption.value : "",
-                      },
-                    });
-                  }}
-                  options={data.map((option) => ({
-                    value: option.natureRequest,
-                    label: option.natureRequest,
-                  }))}
-                  placeholder="select..."
-                  styles={customStyles}
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col w-full lg:w-1/4">
-              <label className="font-semibold text-lg">Unit:</label>
-              <div className="relative">
-                <Select // Use react-select
-                  required
-                  name="unit"
-                  className="w-full  border-2 border-gray-400 bg-gray-50 rounded-md focus:outline-none"
-                  value={selectedUnit} // Set selected value
-                  onChange={(selectedOption) => {
-                    setSelectedUnit(selectedOption); // Update selected option
-                    changeUserFieldHandler({
-                      target: {
-                        name: "unit",
-                        value: selectedOption ? selectedOption.value : "",
-                      },
-                    });
-                  }}
-                  options={units.map((option) => ({
-                    value: option.utilityCategory,
-                    label: option.utilityCategory,
-                  }))}
-                  placeholder="select..."
-                  styles={customStyles}
-                />
-              </div>
-            </div>
-            <div className="flex flex-col w-full lg:w-1/4 ">
-              <div className="flex items-center gap-2">
-                <label className="font-semibold text-lg">Property No:</label>
-                <NoteModal display={true} />
-              </div>
-              <input
-                required
-                type="text"
-                id="propertyNo"
-                name="propertyNo"
-                className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                onChange={(e) => {
-                  changeUserFieldHandler(e);
-                }}
-              />
-            </div>
-            <div className="flex lg:flex-row flex-col justify-between  w-full gap-10 ">
+            <h1 className=" text-3xl text-center my-10 font-bold ">
+              CITC TECHNICAL SERVICE REQUEST SLIP
+            </h1>
+            <form
+              action=""
+              onSubmit={onSubmitChange}
+              className="w-11/12 h-auto flex lg:flex-wrap items-center justify-between  text-xl gap-10 mt-10 flex-col lg:flex-row  "
+            >
               <div className="flex flex-col lg:w-1/4 ">
-                <label htmlFor="serialNo" className="font-semibold text-lg ">
-                  Serial No:
+                <label htmlFor="reqOffice" className="font-semibold text-lg ">
+                  Requesting Office:
                 </label>
+                <input
+                  type="text"
+                  id="reqOffice"
+                  name="reqOffice"
+                  value={formOffice}
+                  readOnly
+                  className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                />
+              </div>
+              <div className="flex flex-col lg:w-1/4 ">
+                <label htmlFor="division" className="font-semibold text-lg ">
+                  Division:
+                </label>
+                <input
+                  type="text"
+                  id="division"
+                  name="division"
+                  value={formDivision}
+                  readOnly
+                  className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                />
+              </div>
+              <div className="flex flex-col lg:w-1/4 ">
+                <label
+                  htmlFor="dateRequested"
+                  className="font-semibold text-lg "
+                >
+                  Date Requested:
+                </label>
+                <input
+                  required
+                  value={daytime}
+                  className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                  readOnly
+                />
+              </div>
+              <div className="flex flex-col w-full lg:w-1/4">
+                <label className="font-semibold text-lg">
+                  Nature of Request:
+                </label>
+                <div className="relative">
+                  <Select // Use react-select
+                    required
+                    name="natureOfRequest"
+                    className="w-full  border-2 border-gray-400 bg-gray-50 rounded-md focus:outline-none"
+                    value={selectedNatureOfRequest} // Set selected value
+                    onChange={(selectedOption) => {
+                      setSelectedNatureOfRequest(selectedOption); // Update selected option
+                      changeUserFieldHandler({
+                        target: {
+                          name: "natureOfRequest",
+                          value: selectedOption ? selectedOption.value : "",
+                        },
+                      });
+                    }}
+                    options={data.map((option) => ({
+                      value: option.natureRequest,
+                      label: option.natureRequest,
+                    }))}
+                    placeholder="select..."
+                    styles={customStyles}
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col w-full lg:w-1/4">
+                <label className="font-semibold text-lg">Unit:</label>
+                <div className="relative">
+                  <Select // Use react-select
+                    required
+                    name="unit"
+                    className="w-full  border-2 border-gray-400 bg-gray-50 rounded-md focus:outline-none"
+                    value={selectedUnit} // Set selected value
+                    onChange={(selectedOption) => {
+                      setSelectedUnit(selectedOption); // Update selected option
+                      changeUserFieldHandler({
+                        target: {
+                          name: "unit",
+                          value: selectedOption ? selectedOption.value : "",
+                        },
+                      });
+                    }}
+                    options={units.map((option) => ({
+                      value: option.utilityCategory,
+                      label: option.utilityCategory,
+                    }))}
+                    placeholder="select..."
+                    styles={customStyles}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col w-full lg:w-1/4 ">
+                <div className="flex items-center gap-2">
+                  <label className="font-semibold text-lg">Property No:</label>
+                  <NoteModal display={true} />
+                </div>
                 <input
                   required
                   type="text"
-                  id="serialNo"
-                  name="serialNo"
-                  className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                  onChange={(e) => {
-                    changeUserFieldHandler(e);
-                  }}
-                />
-              </div>
-
-              <div className="flex flex-col lg:w-1/4 ">
-                <label
-                  htmlFor="dateProcured"
-                  className="font-semibold text-lg "
-                >
-                  Date Procured:
-                </label>
-                <input
-                  type="date"
-                  id="dateProcured"
-                  name="dateProcured"
+                  id="propertyNo"
+                  name="propertyNo"
                   className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
                   onChange={(e) => {
                     changeUserFieldHandler(e);
                   }}
                 />
               </div>
+              <div className="flex lg:flex-row flex-col justify-between  w-full gap-10 ">
+                <div className="flex flex-col lg:w-1/4 ">
+                  <label htmlFor="serialNo" className="font-semibold text-lg ">
+                    Serial No:
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    id="serialNo"
+                    name="serialNo"
+                    className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                    onChange={(e) => {
+                      changeUserFieldHandler(e);
+                    }}
+                  />
+                </div>
+
+                <div className="flex flex-col lg:w-1/4 ">
+                  <label
+                    htmlFor="dateProcured"
+                    className="font-semibold text-lg "
+                  >
+                    Date Procured:
+                  </label>
+                  <input
+                    type="date"
+                    id="dateProcured"
+                    name="dateProcured"
+                    className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                    onChange={(e) => {
+                      changeUserFieldHandler(e);
+                    }}
+                  />
+                </div>
+                <div className="flex flex-col lg:w-1/4 ">
+                  <input
+                    hidden
+                    className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col w-full ">
+                <label htmlFor="message" className="font-semibold text-lg">
+                  Special Instruction{" "}
+                </label>
+                <textarea
+                  id="message"
+                  name="specialIns"
+                  rows="4"
+                  required
+                  className="block p-2.5 w-full text-lg  bg-gray-50 rounded-lg border border-gray-400  dark:placeholder-gray-400 dark:text-white focus:outline-none"
+                  placeholder="Write the special instructions here..."
+                  onChange={(e) => {
+                    changeUserFieldHandler(e);
+                  }}
+                ></textarea>
+              </div>
               <div className="flex flex-col lg:w-1/4 ">
+                <label
+                  htmlFor="authorizedBy"
+                  className="font-semibold text-lg "
+                >
+                  Authorized By:
+                </label>
                 <input
-                  hidden
+                  required
+                  type="text"
+                  id="authorizedBy"
+                  name="authorizedBy"
+                  value={author}
                   className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                  readOnly
                 />
               </div>
-            </div>
-
-            <div className="flex flex-col w-full ">
-              <label htmlFor="message" className="font-semibold text-lg">
-                Special Instruction{" "}
-              </label>
-              <textarea
-                id="message"
-                name="specialIns"
-                rows="4"
-                required
-                className="block p-2.5 w-full text-lg  bg-gray-50 rounded-lg border border-gray-400  dark:placeholder-gray-400 dark:text-white focus:outline-none"
-                placeholder="Write the special instructions here..."
-                onChange={(e) => {
-                  changeUserFieldHandler(e);
-                }}
-              ></textarea>
-            </div>
-            <div className="flex flex-col lg:w-1/4 ">
-              <label htmlFor="authorizedBy" className="font-semibold text-lg ">
-                Authorized By:
-              </label>
-              <input
-                required
-                type="text"
-                id="authorizedBy"
-                name="authorizedBy"
-                value={author}
-                className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                readOnly
-              />
-            </div>
-            <Button
-              loading={loading}
-              htmlType="submit"
-              className="bg-main h-20 text-lg font-sans font-semibold text-white hover:bg-opacity-90 hover:text-white flex gap-3 items-center rounded-lg ml-auto"
-            >
-              <FontAwesomeIcon icon={faCheck} style={{ color: "#ffffff" }} />
-              {loading ? "Requesting" : "Request Service"}
-            </Button>
-            <p></p>
-          </form>
+              <Button
+                loading={loading}
+                htmlType="submit"
+                className="bg-main h-20 text-lg font-sans font-semibold text-white hover:bg-opacity-90 hover:text-white flex gap-3 items-center rounded-lg ml-auto"
+              >
+                <FontAwesomeIcon icon={faCheck} style={{ color: "#ffffff" }} />
+                {loading ? "Requesting" : "Request Service"}
+              </Button>
+              <p></p>
+            </form>
+          </div>
         </div>
       </div>
     </HelmetProvider>

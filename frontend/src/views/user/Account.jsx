@@ -1,15 +1,16 @@
-import DrawerComponent from "../../components/DrawerComponent";
-import Sidebar from "../../components/Sidebar";
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { useAuth } from "../../AuthContext";
-import { Button, message, Modal } from "antd";
-import UpdateContactNumModal from "../../components/UpdateContactNumModal";
+
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { Button, Modal, message } from "antd";
+import axios from "axios";
+import UpdateContactNumModal from "../../components/UpdateContactNumModal";
+import { useAuth } from "../../AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPen } from "@fortawesome/free-solid-svg-icons";
+import Sidebar from "../../components/Sidebar";
+import DrawerComponent from "../../components/DrawerComponent";
 
-const Account = () => {
+const AdminAccount = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const isLargeScreen = windowWidth >= 1024;
   const [currentPassword, setCurrentPassword] = useState("");
@@ -179,10 +180,14 @@ const Account = () => {
       <Helmet>
         <title>Account</title>
       </Helmet>
-      <div className="flex flex-col lg:flex-row  h-auto large:h-screen lg:pl-16 lg:pb-10 ">
+      <div
+        className={`className="flex  flex-col gotoLarge:px-6 large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
+      >
         {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
-        <div className="flex items-center justify-center">
-          <div className="lg:w-full w-[90%] min-h-[90vh]  mt-20 lg:mt-0 mx-5 h-auto pb-10   text-black  lg:ml-48 mediumLg:ml-52 large:ml-80    rounded-3xl flex flex-col font-sans">
+        <div className="flex flex-col flex-grow  lg:pb-10 bg-white gap-2 w-full">
+          <div
+            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%]  large:h-[90vh]  h-auto lg:ml-auto lg:mx-4 mt-20 lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
+          >
             <h1 className="  lg:text-2xl mediumLg:text-4xl large:text-5xl text-3xl flex mr-auto  mt-10 mb-6 font-medium ">
               Account
             </h1>
@@ -190,11 +195,11 @@ const Account = () => {
               Review and update your account details.
             </h3>
 
-            <p className="lg:w-[70%] w-full mt-5">
+            <p className=" w-full mt-5">
               Please make sure these details are up to date as they&apos;ll be
               used for your requests and communication with the admins
             </p>
-            <div className="w-full h-auto  flex flex-col mt-5 rounded-md shadow-xl b text-white">
+            <div className="w-full h-auto   flex flex-col mt-5 rounded-md shadow-lg  text-white">
               <div className="bg-[#334D66] rounded-t-md h-[15vh] flex ">
                 <div className="h-[15vh] lg:w-[10%] w-[30%] flex large:px-10 items-start large:pt-10 lg:pt-4 pt-6 justify-center ">
                   <FontAwesomeIcon
@@ -206,16 +211,20 @@ const Account = () => {
                   <h1 className="large:text-3xl mediumLg:text-xl lg:text-lg lg:mb-0 large:mb-2 text-2xl">
                     {fullName}
                   </h1>
-                  <p className="lg:w-[90%] w-full font-light text-sm">
+                  <p className=" w-full font-light text-sm">
                     Please make sure these details are up to date as
                     they&apos;ll be used for your requests and communication
                     with the admins
                   </p>
                 </div>
               </div>
-              <form action="" onSubmit={handlePasswordChange}>
+              <form
+                action=""
+                className="shadow-lg border-2 border-gray-200"
+                onSubmit={handlePasswordChange}
+              >
                 <div className=" text-black grid lg:grid-cols-2 grid-cols-1 gap-y-4 p-10">
-                  <div className="flex flex-col pl-10">
+                  <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
                     <label htmlFor="userFirstName">First Name:</label>
                     <input
                       type="text"
@@ -226,7 +235,7 @@ const Account = () => {
                       readOnly
                     />
                   </div>
-                  <div className="flex flex-col pl-10">
+                  <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
                     <label htmlFor="userLastName">Last Name:</label>
                     <input
                       type="text"
@@ -237,7 +246,7 @@ const Account = () => {
                       readOnly
                     />
                   </div>
-                  <div className="flex flex-col pl-10">
+                  <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
                     <label htmlFor="">Government ID:</label>
                     <input
                       type="text"
@@ -248,7 +257,7 @@ const Account = () => {
                       readOnly
                     />
                   </div>
-                  <div className="flex flex-col pl-10">
+                  <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
                     <label htmlFor="governmentID">Type:</label>
                     <input
                       type="text"
@@ -259,7 +268,7 @@ const Account = () => {
                       readOnly
                     />
                   </div>
-                  <div className="flex flex-col pl-10">
+                  <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
                     <label htmlFor="office">Type:</label>
                     <input
                       type="text"
@@ -270,7 +279,7 @@ const Account = () => {
                       readOnly
                     />
                   </div>
-                  <div className="flex flex-col pl-10">
+                  <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
                     <label htmlFor="division">Division:</label>
                     <input
                       type="text"
@@ -281,7 +290,7 @@ const Account = () => {
                       readOnly
                     />
                   </div>
-                  <div className="flex flex-col pl-10">
+                  <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
                     <label htmlFor="userEmail">Email:</label>
                     <input
                       type="text"
@@ -292,7 +301,7 @@ const Account = () => {
                       readOnly
                     />
                   </div>
-                  <div className="flex flex-col pl-10">
+                  <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
                     <div className="flex">
                       <label htmlFor="userNewContactNumber">Contact:</label>
                       <a
@@ -529,4 +538,4 @@ const Account = () => {
   );
 };
 
-export default Account;
+export default AdminAccount;

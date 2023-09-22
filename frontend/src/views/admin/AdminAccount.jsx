@@ -179,10 +179,14 @@ const AdminAccount = () => {
       <Helmet>
         <title>Account</title>
       </Helmet>
-      <div className="flex flex-col lg:flex-row  h-auto large:h-screen lg:pl-16 lg:pb-10 ">
+      <div
+        className={`className="flex flex-grow flex-col gotoLarge:px-6 large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
+      >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
-        <div className="flex items-center justify-center">
-          <div className="lg:w-full w-[90%] min-h-[90vh]  mt-20 lg:mt-0 mx-5 h-auto pb-10   text-black  lg:ml-48 mediumLg:ml-52 large:ml-80    rounded-3xl flex flex-col font-sans">
+        <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">
+          <div
+            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh]  h-auto lg:ml-auto lg:mx-4 mt-20 lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
+          >
             <h1 className="  lg:text-2xl mediumLg:text-4xl large:text-5xl text-3xl flex mr-auto  mt-10 mb-6 font-medium ">
               Account
             </h1>
@@ -190,7 +194,7 @@ const AdminAccount = () => {
               Review and update your account details.
             </h3>
 
-            <p className="lg:w-[70%] w-full mt-5">
+            <p className=" w-full mt-5">
               Please make sure these details are up to date as they&apos;ll be
               used for your requests and communication with the admins
             </p>
@@ -206,14 +210,18 @@ const AdminAccount = () => {
                   <h1 className="large:text-3xl mediumLg:text-xl lg:text-lg lg:mb-0 large:mb-2 text-2xl">
                     {fullName}
                   </h1>
-                  <p className="lg:w-[90%] w-full font-light text-sm">
+                  <p className=" w-full font-light text-sm">
                     Please make sure these details are up to date as
                     they&apos;ll be used for your requests and communication
                     with the admins
                   </p>
                 </div>
               </div>
-              <form action="" onSubmit={handlePasswordChange}>
+              <form
+                action=""
+                className="shadow-lg border-2 border-gray-200"
+                onSubmit={handlePasswordChange}
+              >
                 <div className=" text-black grid lg:grid-cols-2 grid-cols-1 gap-y-4 p-10">
                   <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
                     <label htmlFor="userFirstName">First Name:</label>

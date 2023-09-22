@@ -15,7 +15,6 @@ const ServiceTransaction = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isSingleRequest, setIsSingleRequest] = useState(false);
   const [modalType, setModalType] = useState(null);
   const [selectedData, setSelectedData] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -63,21 +62,33 @@ const ServiceTransaction = () => {
 
   const isLargeScreen = windowWidth >= 1024;
 
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  useEffect(() => {
+    const defaultStartDate = new Date();
+    defaultStartDate.setDate(defaultStartDate.getDate() - 2);
+    const defaultEndDate = new Date();
+    const defaultStartDateString = defaultStartDate.toISOString().split("T")[0];
+    const defaultEndDateString = defaultEndDate.toISOString().split("T")[0];
+
+    setStartDate(defaultStartDateString);
+    setEndDate(defaultEndDateString);
+  }, []);
+
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [startDate, endDate]);
 
   const fetchData = async () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/closed-transaction"
+        `http://127.0.0.1:8000/api/closed-transaction/${startDate}/${endDate}`
       );
       if (response.status === 200) {
         setLoading(false);
         setData(response.data.results);
-        console.log();
-        setIsSingleRequest(response.data.results.length === 1);
       } else {
         setLoading(false);
         console.error("Failed to fetch utility settings. Response:", response);
@@ -219,12 +230,12 @@ const ServiceTransaction = () => {
         <title>Service Transaction</title>
       </Helmet>
       <div
-        className={`className="flex flex-grow flex-col large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
+        className={`className="flex flex-grow flex-col gotoLarge:px-6  large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
         <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">
           <div
-            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] h-auto lg:ml-auto lg:mx-4   lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
+            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] h-auto lg:ml-auto lg:mx-4  mt-20 lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
             <div className="flex lg:flex-row text-center flex-col w-full lg:pl-4 items-center justify-center shadow-xl bg-white  text-white rounded-t-lg lg:gap-4 gap-2">
               <h1 className="flex text-black items-center lg:text-2xl font-semibold ">
@@ -245,24 +256,29 @@ const ServiceTransaction = () => {
               </div>
               <div className="flex items-center justify-center gap-4 mr-4 mb-4 lg:mb-0">
                 <div className="flex lg:flex-row flex-col items-center text-black gap-2">
-                  <div className="flex items-center px-2  justify-center rounded-md   border-2 border-gray-400">
+                  <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">
                     <span className="font-semibold">From:</span>
-                    <input type="date" className=" p-2 w-36 outline-none " />
+                    <input
+                      type="date"
+                      className="p-2 w-36 outline-none border-none bg-transparent"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                    />
                   </div>
-                  <div className="flex items-center px-2  justify-center rounded-md   border-2 border-gray-400">
+                  <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">
                     <span className="font-semibold">To:</span>
                     <input
                       type="date"
-                      className=" p-2 w-[10.5rem] outline-none  "
+                      className="p-2 w-36 outline-none border-none bg-transparent"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
                     />
                   </div>
                 </div>
               </div>
             </div>
             <div
-              className={`overflow-auto h-auto shadow-xl  pb-5 ${
-                isSingleRequest ? "lg:h-screen" : ""
-              } rounded-lg w-full`}
+              className={`overflow-auto h-auto shadow-xl  pb-5  rounded-lg w-full`}
             >
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
@@ -601,7 +617,7 @@ const ServiceTransaction = () => {
                 />
               )}
             </div>
-            <nav className={`  mt-2 `}>
+            <nav className={`  mt-2 px-4 `}>
               <ul className="flex gap-2 items-center">
                 <li className="flex-auto  mr-5 text-base font-bold">
                   Page {currentPage} of {npage}

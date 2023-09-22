@@ -11,14 +11,12 @@ import {
   faHandHoldingHeart,
   faTableList,
   faTicket,
-  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import Filter1Icon from "@mui/icons-material/Filter1";
 import Filter2Icon from "@mui/icons-material/Filter2";
 import Filter3Icon from "@mui/icons-material/Filter3";
 import axios from "axios";
 import { Tooltip, Legend, ResponsiveContainer, PieChart, Pie } from "recharts";
-import AreaGraph from "../../components/AreaGraph";
 import LineGraph from "../../components/LineGraph";
 import BarGraph from "../../components/BarGraph";
 
@@ -263,12 +261,18 @@ const Dashboard = () => {
     toreleaseRequests: 0,
     closedRequests: 0,
   });
+
+  const [totalAndClosed, setTotalAndClosed] = useState({
+    totalRequests: 0,
+    closedRequests: 0,
+  });
+
   const [requestsByDate, setRequestsByDate] = useState(null);
   const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
     const defaultStartDate = new Date();
-    defaultStartDate.setDate(defaultStartDate.getDate() - 2);
+    defaultStartDate.setDate(defaultStartDate.getDate() - 5);
     const defaultEndDate = new Date();
     const defaultStartDateString = defaultStartDate.toISOString().split("T")[0];
     const defaultEndDateString = defaultEndDate.toISOString().split("T")[0];
@@ -304,12 +308,21 @@ const Dashboard = () => {
     }
   };
 
-  useEffect(() => {
-    fetchPiegraphDetails();
-  }, [startDate, endDate]);
+  const fetchTotalAndClosed = async () => {
+    try {
+      const totalAndClosedRes = await axios.get(
+        `http://127.0.0.1:8000/api/totalRequests-And-Closed/${startDate}/${endDate}`
+      );
+      setTotalAndClosed(totalAndClosedRes.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
+    fetchPiegraphDetails();
     fetchDataRequest();
+    fetchTotalAndClosed();
   }, [startDate, endDate]);
 
   {
@@ -322,29 +335,44 @@ const Dashboard = () => {
   }; */
   }
 
+  const pieTotalAndClosed = [
+    {
+      name: "Total",
+      value: totalAndClosed?.totalRequests,
+      fill: "#8884d8",
+    },
+    {
+      name: "Closed",
+      value: totalAndClosed?.closedRequests,
+      fill: "#82ca9d",
+    },
+  ];
+
+  console.log("Total: " + totalAndClosed);
+
   const pieChartData = [
     {
-      name: "Pending Requests",
+      name: "Pending ",
       value: percentData?.pendingRequests,
       fill: "#FF5733", // Red
     },
     {
-      name: "Received Requests",
+      name: "Received",
       value: percentData?.receivedRequests,
       fill: "#FFA500", // Orange
     },
     {
-      name: "On Progress Requests",
+      name: "On Progress",
       value: percentData?.onprogressRequests,
       fill: "#8B8B00", // Yellow
     },
     {
-      name: "To Release Requests",
+      name: "To Release",
       value: percentData?.toreleaseRequests,
       fill: "#008000", // Green
     },
     {
-      name: "Closed Requests",
+      name: "Closed ",
       value: percentData?.closedRequests,
       fill: "#808080", // Gray
     },
@@ -365,7 +393,6 @@ const Dashboard = () => {
     innerRadius,
     outerRadius,
     percent,
-    value,
   }) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -385,7 +412,7 @@ const Dashboard = () => {
           dominantBaseline="central"
           fontSize={fontSize} // Set the font size here
         >
-          {`${(percent * 100).toFixed(0)}% / ${value}`}
+          {`${(percent * 100).toFixed(0)}% `}
         </text>
       );
     }
@@ -394,7 +421,7 @@ const Dashboard = () => {
     return null;
   };
 
-  const [graphType, setGraphType] = useState("area");
+  const [graphType, setGraphType] = useState("bar");
 
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
 
@@ -410,7 +437,11 @@ const Dashboard = () => {
     setSelectedDataSources([dataSource]);
   };
 
-  console.log(requestsByDate);
+  console.log("s", requestsByDate);
+
+  const formatter = (value) => {
+    return <span className="text-[10px]">{value}</span>;
+  };
 
   return (
     <HelmetProvider>
@@ -418,34 +449,20 @@ const Dashboard = () => {
         <title>Dashboard</title>
       </Helmet>
       <div
-        className={`className="flex flex-grow flex-col large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
+        className={`className="flex flex-grow flex-col overflow-auto gotoLarge:px-6 bg-gray-200 large:ml-20 lg:flex-row white pt-5  h-screen`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
-        <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">
+        <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start  bg-gray-200 gap-2 w-full">
           <div
-            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] h-auto lg:ml-auto lg:mx-4   lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
+            className={` w-[90%] lg:w-[80%] large:w-[85%] large:h-[95vh] h-auto lg:ml-auto lg:mx-4 mt-20  lg:mt-0   justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
             {isLoading ? (
               <p>Loading...</p>
             ) : (
-              <div className="w-full h-screen grid grid-cols-7 grid-rows-6 gap-x-3">
-                <div className="grid col-span-full text-black font-sans">
-                  <div className="flex w-full justify-between px-[1%] ">
-                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-[#ffe2e6] shadow-md rounded-lg">
-                      <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
-                        <FontAwesomeIcon
-                          icon={faUsers}
-                          className="text-[#fa5a7d] h-12 w-12 large:h-20 large:w-20"
-                        />
-                        <label className="large:text-xl large:mt-2">
-                          Users
-                        </label>
-                      </div>
-                      <h1 className="large:text-4xl lg:text-2xl font-bold flex items-center justify-center ml-auto mr-auto">
-                        {counts.allUsers}
-                      </h1>
-                    </div>
-                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-[#fff4de] shadow-md rounded-lg">
+              <div className="w-full h-screen overflow-auto grid grid-cols-7 grid-rows-5 gap-x-3">
+                <div className="grid col-span-5 text-black font-sans">
+                  <div className="flex w-full justify-between ">
+                    <div className="flex lg:w-[32%] lg:h-[18vh] bg-[#fff4de] shadow-md rounded-lg">
                       <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
                         <FontAwesomeIcon
                           icon={faTicket}
@@ -459,7 +476,7 @@ const Dashboard = () => {
                         {counts.pending}
                       </h1>
                     </div>
-                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-[#dcfce7] shadow-md rounded-lg">
+                    <div className="flex lg:w-[32%] lg:h-[18vh] bg-[#dcfce7] shadow-md rounded-lg">
                       <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
                         <FontAwesomeIcon
                           icon={faTableList}
@@ -473,7 +490,7 @@ const Dashboard = () => {
                         {counts.received}
                       </h1>
                     </div>
-                    <div className="flex lg:w-[24%] lg:h-[16vh] bg-[#f4e8ff] shadow-md rounded-lg">
+                    <div className="flex lg:w-[32%] lg:h-[18vh] bg-[#f4e8ff] shadow-md rounded-lg">
                       <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
                         <FontAwesomeIcon
                           icon={faClipboardCheck}
@@ -490,7 +507,7 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                <div className="col-span-5 flex flex-col mediumLg:mt-2 large:mt-2 px-4 ml-4 row-span-3 rounded-lg shadow-md  bg-white">
+                <div className="col-span-5 flex flex-col px-4  row-span-2 rounded-lg shadow-md  bg-white">
                   <div className="w-full flex gap-2 px-2 py-3 mediumLg:pt-1 justify-end">
                     {" "}
                     <div className="px-3 py-3 relative flex items-center gap-2 pb-2 font-sans font-semibold text-lg mr-auto">
@@ -550,7 +567,6 @@ const Dashboard = () => {
                           onChange={(e) => setGraphType(e.target.value)}
                           className="border-2 border-gray-700 rounded-lg px-1 large:text-lg mediumLg:text-sm lg:text-base"
                         >
-                          <option value="area">Area </option>
                           <option value="bar">Bar </option>
                           <option value="line">Line </option>
                         </select>
@@ -588,39 +604,6 @@ const Dashboard = () => {
                     </div>
                   </div>
 
-                  {graphType === "area" && (
-                    <AreaGraph
-                      data={
-                        selectedDataSources.includes("technicianData")
-                          ? technicianData
-                          : selectedDataSources.includes("requestsByDate")
-                          ? requestsByDate
-                          : ""
-                      }
-                      values1={
-                        selectedDataSources.includes("technicianData")
-                          ? "closed"
-                          : selectedDataSources.includes("requestsByDate")
-                          ? "toreleaseRequests"
-                          : ""
-                      }
-                      values2={
-                        selectedDataSources.includes("technicianData")
-                          ? "unclosed"
-                          : selectedDataSources.includes("requestsByDate")
-                          ? "closedRequests"
-                          : ""
-                      }
-                      xValue={
-                        selectedDataSources.includes("technicianData")
-                          ? "assignedTo"
-                          : selectedDataSources.includes("requestsByDate")
-                          ? "date"
-                          : ""
-                      }
-                      windowsHeight768={isWindowsHeightBelow768}
-                    />
-                  )}
                   {graphType === "line" && (
                     <LineGraph
                       data={
@@ -634,14 +617,14 @@ const Dashboard = () => {
                         selectedDataSources.includes("technicianData")
                           ? "closed"
                           : selectedDataSources.includes("requestsByDate")
-                          ? "toreleaseRequests"
+                          ? "closedBydate"
                           : ""
                       }
                       values2={
                         selectedDataSources.includes("technicianData")
                           ? "unclosed"
                           : selectedDataSources.includes("requestsByDate")
-                          ? "closedRequests"
+                          ? "unclosedBydate"
                           : ""
                       }
                       xValue={
@@ -667,14 +650,14 @@ const Dashboard = () => {
                         selectedDataSources.includes("technicianData")
                           ? "closed"
                           : selectedDataSources.includes("requestsByDate")
-                          ? "toreleaseRequests"
+                          ? "closedBydate"
                           : ""
                       }
                       values2={
                         selectedDataSources.includes("technicianData")
                           ? "unclosed"
                           : selectedDataSources.includes("requestsByDate")
-                          ? "closedRequests"
+                          ? "unclosedBydate"
                           : ""
                       }
                       xValue={
@@ -688,13 +671,14 @@ const Dashboard = () => {
                     />
                   )}
                 </div>
-                <div className="col-span-5 flex lg:flex-row flex-col justify-between mediumLg:mt-2 large:mt-3 mt-4 ml-4 row-span-2  rounded-lg row-start-5 ">
-                  <div className="bg-white lg:w-[40%] w-full rounded-lg shadow-md">
+                <div className="col-span-full flex lg:flex-row flex-col justify-between mediumLg:mt-2 large:mt-3 mt-4 gap-3 row-span-2  rounded-lg row-start-4 ">
+                  <div className="bg-white lg:w-[30%] w-full rounded-lg shadow-md">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart width={600} height={600}>
                         <Pie
                           dataKey="value"
-                          data={pieChartData}
+                          data={pieTotalAndClosed}
+                          isAnimationActive="true"
                           cx="50%"
                           cy="50%"
                           fill="color"
@@ -705,7 +689,23 @@ const Dashboard = () => {
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
-                  <div className="bg-white lg:w-[29%] w-full rounded-lg shadow-md font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
+                  <div className="bg-white lg:w-[30%] w-full rounded-lg shadow-md">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart width={600} height={600}>
+                        <Pie
+                          labelLine={false}
+                          dataKey="value"
+                          data={pieChartData}
+                          cx="50%"
+                          cy="50%"
+                          label={renderCustomizedLabel}
+                        />
+                        <Tooltip />
+                        <Legend formatter={formatter} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="bg-white lg:w-[20%] w-full rounded-lg shadow-md font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
                     <div className="flex border-b-2 items-center justify-center border-gray-400">
                       <h1 className="p-3  font-semibold ">Rating</h1>
                       <FontAwesomeIcon
@@ -739,11 +739,11 @@ const Dashboard = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="bg-white lg:w-[29%] w-full rounded-lg shadow-md font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
+                  <div className="bg-white lg:w-[20%] w-full rounded-lg shadow-md font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
                     <h1 className="p-3 text-center font-semibold border-b-2 border-gray-400 ">
                       Top 3 Nature of Requests
                     </h1>
-                    <ul className="flex flex-col gap-4 gap-y-10 pt-4 gotoLarge:gap-y-12 gotoLarge:pt-14 font-medium   mediumLg:gap-y-4 mediumLg:pt-6 large:gap-y-20 large:pt-10 p-4 ">
+                    <ul className="flex flex-col gap-4 gap-y-10 pt-4 gotoLarge:gap-y-12 gotoLarge:pt-14 font-medium   mediumLg:gap-y-4 mediumLg:pt-6 large:gap-y-14 large:pt-10 p-4 ">
                       {topNatures.map((natureOfRequest, index) => (
                         <li className="flex  gap-4" key={natureOfRequest.id}>
                           <span>
@@ -763,7 +763,7 @@ const Dashboard = () => {
                     </ul>
                   </div>
                 </div>
-                <div className=" text-black font-sans mediumLg:mt-2 large:mt-2  bg-white shadow-md rounded-lg col-span-2  row-span-5 mr-4">
+                <div className=" text-black font-sans  bg-white shadow-md rounded-lg col-start-6 col-span-2  row-start-1 row-span-3 ">
                   <h1 className="text-2xl m-2 font-semibold border-b-2 pb-2 border-gray-400">
                     Recent Requests
                   </h1>
