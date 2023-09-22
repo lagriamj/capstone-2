@@ -89,4 +89,22 @@ class RatingController extends Controller
 
         return response()->json(['message' => 'Request has been closed']);
     }
+
+
+    public function doneRating()
+    {
+        $requests = DB::table('rate_services')->select('request_id')->get();
+
+        return response()->json(['results' => $requests]);
+    }
+
+
+    public function viewRating($id)
+    {
+        $requests = DB::table('rate_services')
+            ->where('request_id', $id)
+            ->get();
+
+        return response()->json(['results' => $requests]);
+    }
 }

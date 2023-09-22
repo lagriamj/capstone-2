@@ -24,6 +24,7 @@ export default {
     extend: {
       colors: {
         'main': '#343467',
+        'secondary': '#334D66',
       },
       borderRadius: {
         'custom-bl': '60%',
@@ -36,7 +37,7 @@ export default {
       screens: {
         'mediumLg' : '1366px',
         'gotoLarge' : '1400px',
-        'large' : '1920px',
+        'large' : '1530px',
       },
     },
   },

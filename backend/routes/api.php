@@ -49,6 +49,8 @@ Route::delete('delete-request/{id}', [RequestsController::class, 'destroyRequest
 Route::get('transaction-list/{id}', [RatingController::class, 'showTransanction']);
 Route::get('closed-view/{id}', [RatingController::class, 'closedView']);
 Route::post('transanction-rate', [RatingController::class, 'rateTransaction']);
+Route::get('done-rate', [RatingController::class, 'doneRating']);
+Route::get('view-rate/{id}', [RatingController::class, 'viewRating']);
 
 //Account (user side)
 Route::get('/account', [UserController::class, 'accountDetails']);
@@ -119,4 +121,3 @@ Route::get('unsatisfied-rating', [DashboardController::class, 'calculateUnSatisf
 
 Route::get('technician-performance/{startDate?}/{endDate?}', [DashboardController::class, 'getTechnicianPerformance']);
 Route::get('percent-accomplished/{startDate?}/{endDate?}', [DashboardController::class, 'getPercentAccomplished']);
-Route::get('requestsByDate/{startDate?}/{endDate?}', [DashboardController::class, 'getRequestsByDate']);

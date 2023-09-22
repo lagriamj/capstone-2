@@ -11,6 +11,7 @@ import ClosedModal from "../../components/ClosedModal";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { useAuth } from "../../AuthContext";
 import ViewCancel from "../../components/ViewCancel";
+import DoneRateModal from "../../components/DoneRateModal";
 
 const Transactions = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -23,7 +24,10 @@ const Transactions = () => {
   const [selectedOffice, setSelectedOffice] = useState(null);
   const { userID } = useAuth();
   const [view, setView] = useState(false);
-  const [viewRequest, seViewRequest] = useState(false);
+  const [viewRequest, setViewRequest] = useState(false);
+
+  const [viewRating, setViewRating] = useState(false);
+  const [viewRatingModal, setViewRatingModal] = useState(false);
 
   const [cancel, setCancel] = useState(false);
   const [viewCancel, setViewCancel] = useState(false);
@@ -34,8 +38,13 @@ const Transactions = () => {
   };
 
   const handleViewRequest = (data) => {
-    seViewRequest(data);
+    setViewRequest(data);
     setView(true);
+  };
+
+  const handleViewRating = (id) => {
+    setViewRatingModal(id);
+    setViewRating(true);
   };
 
   const handleStarIconClick = (id, user_id, office) => {
@@ -205,6 +214,44 @@ const Transactions = () => {
     setRateView(hasNonNullDateRate);
   }, [ratings]); // Make sure to include ratings in the dependency array
 
+  const [selectedSortOrder, setSelectedSortOrder] = useState("asc");
+  const [isSortOptionsVisible, setIsSortOptionsVisible] = useState(false);
+
+  const toggleSortOptions = () => {
+    setIsSortOptionsVisible(!isSortOptionsVisible);
+  };
+
+  const sortedRecords = [...filteredRecords].sort((a, b) => {
+    if (a === b) return 0;
+
+    if (selectedSortOrder === "asc") {
+      // Use selectedSortOrder instead of dateUpdatedSortOrder
+      return a.dateUpdated.localeCompare(b.dateUpdated);
+    } else {
+      return b.dateUpdated.localeCompare(a.dateUpdated);
+    }
+  });
+
+  const handleSortOrderChange = (newOrder) => {
+    setSelectedSortOrder(newOrder);
+    setIsSortOptionsVisible(false); // Hide the options after selecting
+  };
+
+  const [doneRating, setDoneRating] = useState([]);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/done-rate") // Adjust the URL to match your Laravel route
+      .then((response) => response.json())
+      .then((data) => {
+        setDoneRating(data.results); // Assuming your API returns data under the 'results' key
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+
+  console.log(doneRating);
+
   const [windowWidth1366, setWindowWidth1366] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -368,9 +415,43 @@ const Transactions = () => {
                     <th
                       className={`w-48 ${
                         isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
-                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                      } font-semibold tracking-wider relative text-left whitespace-nowrap`}
                     >
                       Date Updated
+                      <button
+                        onClick={toggleSortOptions}
+                        className="text-main focus:outline-none ml-2"
+                        style={{
+                          backgroundColor: "transparent",
+                          border: "none",
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faFilter} className="h-4 w-4" />
+                      </button>
+                      {isSortOptionsVisible && (
+                        <div className="absolute top-8 right-0 bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
+                          <button
+                            onClick={() => handleSortOrderChange("asc")}
+                            className={`block px-4 w-full py-2 text-left ${
+                              selectedSortOrder === "asc"
+                                ? "bg-main text-white"
+                                : ""
+                            }`}
+                          >
+                            Ascending
+                          </button>
+                          <button
+                            onClick={() => handleSortOrderChange("desc")}
+                            className={`block px-4 w-full py-2 text-left ${
+                              selectedSortOrder === "desc"
+                                ? "bg-main text-white"
+                                : ""
+                            }`}
+                          >
+                            Descending
+                          </button>
+                        </div>
+                      )}
                     </th>
                     <th
                       className={`w-36  pl-5 ${
@@ -473,7 +554,7 @@ const Transactions = () => {
                         No Record Yet.
                       </td>
                     </tr>
-                  ) : filteredRecords.length === 0 ? (
+                  ) : sortedRecords.length === 0 ? (
                     <tr className="h-[50vh]">
                       <td
                         colSpan="8"
@@ -483,7 +564,7 @@ const Transactions = () => {
                       </td>
                     </tr>
                   ) : (
-                    filteredRecords.map((item, index) => (
+                    sortedRecords.map((item, index) => (
                       <tr
                         className="border-b-2 border-gray-200 h-auto overflow-auto"
                         key={item.id}
@@ -567,9 +648,9 @@ const Transactions = () => {
                           </p>
                         </td>
                         <td
-                          className={`border-b-2 py-3 border-gray-200   text-left`}
+                          className={`border-b-2 py-3 border-gray-200 text-left`}
                         >
-                          <div className="flex  gap-1">
+                          <div className="flex gap-1">
                             {item.status === "Cancelled" ? (
                               <button
                                 className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
@@ -593,6 +674,30 @@ const Transactions = () => {
                               >
                                 <FontAwesomeIcon icon={faStar} />
                               </button>
+                            ) : item.status === "Closed" ? (
+                              doneRating.some(
+                                (rating) => rating.request_id === item.id
+                              ) ? (
+                                <button
+                                  onClick={() => handleViewRating(item.id)}
+                                  className="text-white text-base bg-gray-400 py-2 px-3 rounded-lg"
+                                >
+                                  <FontAwesomeIcon icon={faStar} />
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() =>
+                                    handleStarIconClick(
+                                      item.id,
+                                      item.user_id,
+                                      item.reqOffice
+                                    )
+                                  }
+                                  className="text-white text-base bg-yellow-500 py-2 px-3 rounded-lg"
+                                >
+                                  <FontAwesomeIcon icon={faStar} />
+                                </button>
+                              )
                             ) : (
                               <button
                                 onClick={() =>
@@ -615,6 +720,14 @@ const Transactions = () => {
                 </tbody>
               </table>
 
+              {viewRating && (
+                <DoneRateModal
+                  isOpen={viewRating}
+                  onClose={() => setViewRating(false)}
+                  id={viewRatingModal}
+                />
+              )}
+
               {rate && (
                 <RateModal
                   isOpen={rate}
@@ -632,7 +745,6 @@ const Transactions = () => {
                   datas={viewRequest} // Pass the selectedItemId as a prop
                 />
               )}
-
               {cancel && (
                 <ViewCancel
                   isOpen={cancel}

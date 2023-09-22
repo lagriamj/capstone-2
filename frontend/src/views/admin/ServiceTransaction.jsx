@@ -9,6 +9,7 @@ import { faFilter, faSearch, faStar } from "@fortawesome/free-solid-svg-icons";
 import { Skeleton, message } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import ViewCancel from "../../components/ViewCancel";
+import DoneRateModal from "../../components/DoneRateModal";
 
 const ServiceTransaction = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -21,6 +22,14 @@ const ServiceTransaction = () => {
 
   const [cancel, setCancel] = useState(false);
   const [viewCancel, setViewCancel] = useState(false);
+
+  const [viewRating, setViewRating] = useState(false);
+  const [viewRatingModal, setViewRatingModal] = useState(false);
+
+  const handleViewRating = (id) => {
+    setViewRatingModal(id);
+    setViewRating(true);
+  };
 
   const handleCancelRequest = (data) => {
     setViewCancel(data);
@@ -53,7 +62,6 @@ const ServiceTransaction = () => {
   }, []);
 
   const isLargeScreen = windowWidth >= 1024;
-  const isWidth1920 = window.innerWidth === 1920;
 
   useEffect(() => {
     fetchData();
@@ -190,6 +198,19 @@ const ServiceTransaction = () => {
     };
   }, []);
 
+  const [doneRating, setDoneRating] = useState([]);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/done-rate") // Adjust the URL to match your Laravel route
+      .then((response) => response.json())
+      .then((data) => {
+        setDoneRating(data.results); // Assuming your API returns data under the 'results' key
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+
   const isScreenWidth1366 = windowWidth1366 === 1366;
 
   return (
@@ -198,91 +219,76 @@ const ServiceTransaction = () => {
         <title>Service Transaction</title>
       </Helmet>
       <div
-        className={`className="flex flex-col lg:flex-row bg-gray-200 ${
-          isWidth1920
-            ? "lg:pl-20"
-            : isScreenWidth1366
-            ? "lg:pl-[0.5rem]"
-            : "lg:pl-[3.0rem]"
-        } lg:pt-5 h-screen`}
+        className={`className="flex flex-grow flex-col large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
-        <div className="flex flex-col lg:pb-10 bg-gray-200 gap-2 lg:w-full">
+        <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">
           <div
-            className={`overflow-x-auto ${
-              isWidth1920
-                ? "lg:w-[84%]  lg:ml-[16.6rem]"
-                : isScreenWidth1366
-                ? "lg:w-[82%]  lg:ml-[14.5rem]"
-                : "lg:w-[82%]  lg:ml-72"
-            } w-[90%] lg:h-[90vh] relative mt-20 lg:mt-0 ml-5  h-[80vh] pb-10 bg-white shadow-xl    border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
+            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] h-auto lg:ml-auto lg:mx-4   lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
-            <div className="flex  w-full   bg-main text-white rounded-t-3xl gap-10">
-              <h1
-                className={`font-sans flex items-center justify-center  ${
-                  isScreenWidth1366 ? "text-xl" : "lg:text-3xl text-xl"
-                }  ml-5 mr-auto tracking-wide`}
-              >
-                Service Transaction
+            <div className="flex lg:flex-row text-center flex-col w-full lg:pl-4 items-center justify-center shadow-xl bg-white  text-white rounded-t-lg lg:gap-4 gap-2">
+              <h1 className="flex text-black items-center lg:text-2xl font-semibold ">
+                Service Transactions
               </h1>
-              <div className="relative flex items-center lg:mr-10 ">
+              <div className="relative flex items-center lg:mr-auto lg:ml-4 ">
                 <FontAwesomeIcon
                   icon={faSearch}
-                  className={`${
-                    isScreenWidth1366 ? "w-4 h-4" : "w-6 h-6"
-                  } absolute ml-3 text-main`}
+                  className={`w-4 h-4 absolute ml-3 text-main`}
                 />
                 <input
                   type="text"
                   placeholder="Search"
-                  className={`border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 lg:w-full w-[90%] focus:outline-none ${
-                    isScreenWidth1366 ? "text-sm h-10" : "text-xl h-14"
-                  }`}
+                  className={`border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 w-full focus:outline-none text-base h-10`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
+              <div className="flex items-center justify-center gap-4 mr-4 mb-4 lg:mb-0">
+                <div className="flex lg:flex-row flex-col items-center text-black gap-2">
+                  <div className="flex items-center px-2  justify-center rounded-md   border-2 border-gray-400">
+                    <span className="font-semibold">From:</span>
+                    <input type="date" className=" p-2 w-36 outline-none " />
+                  </div>
+                  <div className="flex items-center px-2  justify-center rounded-md   border-2 border-gray-400">
+                    <span className="font-semibold">To:</span>
+                    <input
+                      type="date"
+                      className=" p-2 w-[10.5rem] outline-none  "
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
             <div
-              className={`overflow-auto lg:h-screen h-[68vh]${
+              className={`overflow-auto h-auto shadow-xl  pb-5 ${
                 isSingleRequest ? "lg:h-screen" : ""
               } rounded-lg w-full`}
             >
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
-                  <tr className="bg-gray-200">
+                  <tr className="bg-secondary text-white">
                     <th
-                      className={`w-20 pl-5 px-3 ${
-                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
-                      } font-semibold tracking-wider text-center whitespace-nowrap`}
+                      className={`w-20 pl-5 px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-center whitespace-nowrap`}
                     >
                       #
                     </th>
                     <th
-                      className={`pl-5 ${
-                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
-                      }  font-semibold tracking-wider text-left whitespace-nowrap`}
+                      className={`pl-5 py-5 large:py-6 text-sm large:text-base  font-semibold tracking-wider text-left whitespace-nowrap`}
                     >
                       Request ID
                     </th>
                     <th
-                      className={`pl-5 ${
-                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
-                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                      className={`pl-5 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
                     >
                       Date of Request
                     </th>
                     <th
-                      className={`pl-5 ${
-                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
-                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                      className={`pl-5 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
                     >
                       Nature of Request
                     </th>
                     <th
-                      className={`pl-5 ${
-                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
-                      } font-semibold tracking-wider whitespace-nowrap text-left`}
+                      className={`pl-5 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider whitespace-nowrap text-left`}
                     >
                       Mode
                       <div className="relative inline-block">
@@ -296,13 +302,11 @@ const ServiceTransaction = () => {
                         >
                           <FontAwesomeIcon
                             icon={faFilter}
-                            className={`${
-                              isScreenWidth1366 ? " h-3 w-3" : "h-4 w-4"
-                            }`}
+                            className={`large:h-4 large:w-4 w-3 h-3 text-white`}
                           />
                         </button>
                         {isModeDropdownOpen && (
-                          <div className="absolute right-0 overflow-auto bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
+                          <div className="absolute right-0 overflow-auto text-black bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
                             <label className="block px-4 py-2">
                               <input
                                 type="checkbox"
@@ -330,23 +334,17 @@ const ServiceTransaction = () => {
                       </div>
                     </th>
                     <th
-                      className={`w-42 pl-5 ${
-                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
-                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                      className={`w-42 pl-5 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
                     >
                       Assigned To
                     </th>
                     <th
-                      className={`w-42 pl-5 ${
-                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
-                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                      className={`w-42 pl-5 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
                     >
                       Date Updated
                     </th>
                     <th
-                      className={`w-42 pl-5 ${
-                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
-                      } font-semibold tracking-wider whitespace-nowrap text-left`}
+                      className={`w-42 pl-5 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider whitespace-nowrap text-left`}
                     >
                       Status
                       <div className="relative inline-block">
@@ -360,13 +358,11 @@ const ServiceTransaction = () => {
                         >
                           <FontAwesomeIcon
                             icon={faFilter}
-                            className={`${
-                              isScreenWidth1366 ? " h-3 w-3" : "h-4 w-4"
-                            }`}
+                            className={`large:h-4 large:w-4 w-3 h-3 text-white`}
                           />
                         </button>
                         {isStatusDropdownOpen && (
-                          <div className="absolute right-0 bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg text-center">
+                          <div className="absolute right-0 overflow-auto bg-white border text-start text-black border-gray-200 py-2 mt-2 shadow-lg rounded-lg ">
                             <label className="block px-4 py-2">
                               <input
                                 type="checkbox"
@@ -421,9 +417,7 @@ const ServiceTransaction = () => {
                     </th>
 
                     <th
-                      className={`w-42 ${
-                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
-                      } font-semibold tracking-wider text-left whitespace-nowrap`}
+                      className={`w-42 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
                     >
                       Action
                     </th>
@@ -458,58 +452,42 @@ const ServiceTransaction = () => {
                     filteredRecords.map((setting, index) => (
                       <tr key={setting.id}>
                         <td
-                          className={`border-b-2 pl-5 py-3  ${
-                            isScreenWidth1366 ? "text-sm" : " text-lg"
-                          } border-gray-200 text-center`}
+                          className={`border-b-2 pl-5  py-2 large:py-3 large:text-lg text-sm border-gray-200 text-center`}
                         >
                           {firstIndex + index + 1}
                         </td>
                         <td
-                          className={`border-b-2 pl-5 py-3  ${
-                            isScreenWidth1366 ? "text-sm" : " text-lg"
-                          } border-gray-200 text-left`}
+                          className={`border-b-2 pl-5 py-2 large:py-3 large:text-lg text-sm border-gray-200 text-left`}
                         >
                           {setting.id}
                         </td>
                         <td
-                          className={`border-b-2 pl-5 py-3  ${
-                            isScreenWidth1366 ? "text-sm" : " text-lg"
-                          } border-gray-200 text-left`}
+                          className={`border-b-2 pl-5 py-2 large:py-3 large:text-lg text-sm border-gray-200 text-left`}
                         >
                           {setting.dateRequested}
                         </td>
                         <td
-                          className={`border-b-2 pl-5 py-3  ${
-                            isScreenWidth1366 ? "text-sm" : " text-lg"
-                          } border-gray-200 text-left`}
+                          className={`border-b-2 pl-5  py-2 large:py-3 large:text-lg text-sm border-gray-200 text-left`}
                         >
                           {setting.natureOfRequest}
                         </td>
                         <td
-                          className={`border-b-2 pl-5 py-3  ${
-                            isScreenWidth1366 ? "text-sm" : " text-lg"
-                          } border-gray-200 text-left`}
+                          className={`border-b-2 pl-5 py-2 large:py-3 large:text-lg text-sm border-gray-200 text-left`}
                         >
                           {setting.modeOfRequest}
                         </td>
                         <td
-                          className={`border-b-2 pl-5 py-3  ${
-                            isScreenWidth1366 ? "text-sm" : " text-lg"
-                          } border-gray-200 text-left`}
+                          className={`border-b-2 pl-5 py-2 large:py-3 large:text-lg text-sm border-gray-200 text-left`}
                         >
                           {setting.assignedTo}
                         </td>
                         <td
-                          className={`border-b-2 pl-5 py-3  ${
-                            isScreenWidth1366 ? "text-sm" : " text-lg"
-                          } border-gray-200 text-left`}
+                          className={`border-b-2 pl-5   py-2 large:py-3 large:text-lg text-sm border-gray-200 text-left`}
                         >
                           {setting.dateUpdated}
                         </td>
                         <td
-                          className={`border-b-2 pl-5 py-3  ${
-                            isScreenWidth1366 ? "text-sm" : " text-lg"
-                          } pr-16 border-gray-200 text-center`}
+                          className={`border-b-2 pl-5 py-2 large:py-3 large:text-lg text-sm pr-16 border-gray-200 text-center`}
                         >
                           <p
                             className={` rounded-xl lg:px-0 mediumLg:px-2 px-3 py-2 ${
@@ -553,6 +531,7 @@ const ServiceTransaction = () => {
                                 View
                               </button>
                             )}
+
                             {setting.status === "Cancelled" ? (
                               <button
                                 className={`text-white ${
@@ -562,6 +541,25 @@ const ServiceTransaction = () => {
                               >
                                 <FontAwesomeIcon icon={faStar} />
                               </button>
+                            ) : setting.status === "Closed" ? (
+                              doneRating.some(
+                                (rating) => rating.request_id === setting.id
+                              ) ? (
+                                <button
+                                  onClick={() => handleViewRating(setting.id)}
+                                  className="text-white text-base bg-gray-400 py-2 px-4 rounded-lg"
+                                >
+                                  <FontAwesomeIcon icon={faStar} />
+                                </button>
+                              ) : (
+                                <button
+                                  className={`text-white ${
+                                    isScreenWidth1366 ? "text-xs" : " text-base"
+                                  } bg-yellow-500 py-2 px-4 rounded-lg`}
+                                >
+                                  <FontAwesomeIcon icon={faStar} />
+                                </button>
+                              )
                             ) : (
                               <button
                                 className={`text-white ${
@@ -579,6 +577,14 @@ const ServiceTransaction = () => {
                 </tbody>
               </table>
 
+              {viewRating && (
+                <DoneRateModal
+                  isOpen={viewRating}
+                  onClose={() => setViewRating(false)}
+                  id={viewRatingModal}
+                />
+              )}
+
               {modalType === "ServiceClosed" && (
                 <ClosedModal
                   isOpen={isModalOpen}
@@ -595,53 +601,53 @@ const ServiceTransaction = () => {
                 />
               )}
             </div>
+            <nav className={`  mt-2 `}>
+              <ul className="flex gap-2 items-center">
+                <li className="flex-auto  mr-5 text-base font-bold">
+                  Page {currentPage} of {npage}
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    onClick={prePage}
+                    className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
+                  >
+                    <LeftOutlined
+                      style={{
+                        fontSize: isScreenWidth1366 ? ".8rem" : "",
+                      }}
+                    />
+                  </a>
+                </li>
+                <li className="flex items-center">
+                  <input
+                    type="number"
+                    placeholder="Page"
+                    className={`border rounded-lg bg-gray-100  px-4 text-black w-24  text-center outline-none ${
+                      isScreenWidth1366 ? "text-sm py-1" : "py-2"
+                    }`}
+                    value={pageInput}
+                    onChange={handlePageInputChange}
+                    onBlur={handlePageInputBlur} // Trigger page change when the input field loses focus
+                    onKeyPress={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
+                  />
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    onClick={nextPage}
+                    className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
+                  >
+                    <RightOutlined
+                      style={{
+                        fontSize: isScreenWidth1366 ? ".8rem" : "",
+                      }}
+                    />
+                  </a>
+                </li>
+              </ul>
+            </nav>
           </div>
-          <nav
-            className={`lg:ml-56 mr-6  ${isWidth1920 ? "lg:mr-10" : "lg:mr-8"}`}
-          >
-            <ul className="flex gap-2 items-center">
-              <li className="flex-auto ml-10 mediumLg:text-sm lg:ml-20 mr-5 text-base font-bold">
-                Page {currentPage} of {npage}
-              </li>
-              <li>
-                <a
-                  href="#"
-                  onClick={prePage}
-                  className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
-                >
-                  <LeftOutlined
-                    style={{
-                      fontSize: isScreenWidth1366 ? ".8rem" : "",
-                    }}
-                  />
-                </a>
-              </li>
-              <li className="flex items-center">
-                <input
-                  type="number"
-                  placeholder="Page"
-                  className="border rounded-lg mediumLg:text-sm mediumLg:py-1 bg-gray-100 py-2 px-4 text-black w-24  text-center outline-none"
-                  value={pageInput}
-                  onChange={handlePageInputChange}
-                  onBlur={handlePageInputBlur} // Trigger page change when the input field loses focus
-                  onKeyDown={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
-                />
-              </li>
-              <li>
-                <a
-                  href="#"
-                  onClick={nextPage}
-                  className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
-                >
-                  <RightOutlined
-                    style={{
-                      fontSize: isScreenWidth1366 ? ".8rem" : "",
-                    }}
-                  />
-                </a>
-              </li>
-            </ul>
-          </nav>
         </div>
       </div>
     </HelmetProvider>

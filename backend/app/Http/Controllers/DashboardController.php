@@ -150,17 +150,37 @@ class DashboardController extends Controller
             $endDate = date('Y-m-d'); // Default to today
         }
 
-        $totalRequests = DB::table('user_requests')
+        $pendingRequests = DB::table('user_requests')
             ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->where('status', 'Pending')
+            ->count();
+
+        $receivedRequests = DB::table('user_requests')
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->where('status', 'received')
+            ->count();
+
+        $onprogressRequests = DB::table('user_requests')
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->where('status', 'On Progress')
+            ->count();
+
+        $toreleaseRequests = DB::table('user_requests')
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->where('status', 'To Release')
             ->count();
 
         $closedRequests = DB::table('user_requests')
-            ->whereBetween(DB::raw('DATE(dateUpdated)'), [$startDate, $endDate])
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
             ->where('status', 'Closed')
             ->count();
 
+
         return response()->json([
-            'totalRequests' => $totalRequests,
+            'pendingRequests' => $pendingRequests,
+            'receivedRequests' => $receivedRequests,
+            'onprogressRequests' => $onprogressRequests,
+            'toreleaseRequests' => $toreleaseRequests,
             'closedRequests' => $closedRequests,
         ]);
     }
@@ -175,7 +195,7 @@ class DashboardController extends Controller
             $endDate = date('Y-m-d'); // Default to today
         }
 
-        $totalUnclosedRequestsData = DB::table('user_requests')
+        $totalRequestsData = DB::table('user_requests')
             ->selectRaw('DATE(dateRequested) as date, count(*) as total')
             ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
             ->where('status', '!=', 'Closed')
@@ -191,13 +211,13 @@ class DashboardController extends Controller
 
         // Merge the two datasets into a single dataset
         $chartData = [];
-        foreach ($totalUnclosedRequestsData as $totalItem) {
+        foreach ($totalRequestsData as $totalItem) {
             $date = $totalItem->date;
             $total = $totalItem->total;
 
             $chartData[] = [
                 'date' => $date,
-                'unclosedRequests' => $total,
+                'totalRequests' => $total,
                 'closedRequests' => 0, // Initialize closed requests count to 0
             ];
 

@@ -142,23 +142,6 @@ const Dashboard = () => {
   };
 
   const isLargeScreen = windowWidth >= 1024;
-  const isWidth1920 = window.innerWidth === 1920;
-
-  const [windowWidth1366, setWindowWidth1366] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth1366(window.innerWidth);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  const isScreenWidth1366 = windowWidth1366 === 1366;
 
   const [windowsHeight768, setWindowsHeight768] = useState(window.innerHeight);
 
@@ -274,7 +257,10 @@ const Dashboard = () => {
   const [startDate, setStartDate] = useState("");
   const [technicianData, setTechnicianData] = useState(null);
   const [percentData, setPercentData] = useState({
-    totalRequests: 0,
+    pendingRequests: 0,
+    receivedRequests: 0,
+    onprogressRequests: 0,
+    toreleaseRequests: 0,
     closedRequests: 0,
   });
   const [requestsByDate, setRequestsByDate] = useState(null);
@@ -298,11 +284,6 @@ const Dashboard = () => {
       );
       setTechnicianData(techResponse.data.Technician);
 
-      const percentResponse = await axios.get(
-        `http://127.0.0.1:8000/api/percent-accomplished/${startDate}/${endDate}`
-      );
-      setPercentData(percentResponse.data);
-
       const requestsResponse = await axios.get(
         `http://127.0.0.1:8000/api/requestsByDate/${startDate}/${endDate}`
       );
@@ -312,10 +293,20 @@ const Dashboard = () => {
     }
   };
 
-  console.log(technicianData);
-  console.log(percentData);
-  console.log("Total Closed:" + percentData.closedRequests);
-  console.log("Total Closed:" + percentData.totalRequests);
+  const fetchPiegraphDetails = async () => {
+    try {
+      const percentResponse = await axios.get(
+        `http://127.0.0.1:8000/api/percent-accomplished/${startDate}/${endDate}`
+      );
+      setPercentData(percentResponse.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPiegraphDetails();
+  }, [startDate, endDate]);
 
   useEffect(() => {
     fetchDataRequest();
@@ -333,14 +324,29 @@ const Dashboard = () => {
 
   const pieChartData = [
     {
-      name: "Closed Requests",
-      value: percentData?.closedRequests,
-      fill: "#8884d8",
+      name: "Pending Requests",
+      value: percentData?.pendingRequests,
+      fill: "#FF5733", // Red
     },
     {
-      name: "Total Requests",
-      value: percentData?.totalRequests,
-      fill: "#333366",
+      name: "Received Requests",
+      value: percentData?.receivedRequests,
+      fill: "#FFA500", // Orange
+    },
+    {
+      name: "On Progress Requests",
+      value: percentData?.onprogressRequests,
+      fill: "#8B8B00", // Yellow
+    },
+    {
+      name: "To Release Requests",
+      value: percentData?.toreleaseRequests,
+      fill: "#008000", // Green
+    },
+    {
+      name: "Closed Requests",
+      value: percentData?.closedRequests,
+      fill: "#808080", // Gray
     },
   ];
 
@@ -365,17 +371,27 @@ const Dashboard = () => {
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
-    return (
-      <text
-        x={x}
-        y={y}
-        fill="white"
-        textAnchor={x > cx ? "start" : "end"}
-        dominantBaseline="central"
-      >
-        {`${(percent * 100).toFixed(0)}% / ${value}`}
-      </text>
-    );
+    // Define the font size for the text
+    const fontSize = 12; // You can adjust this value as needed
+
+    // Check if percent is non-zero before rendering
+    if (percent > 0) {
+      return (
+        <text
+          x={x}
+          y={y}
+          fill="white"
+          textAnchor={x > cx ? "start" : "end"}
+          dominantBaseline="central"
+          fontSize={fontSize} // Set the font size here
+        >
+          {`${(percent * 100).toFixed(0)}% / ${value}`}
+        </text>
+      );
+    }
+
+    // Return null if percent is zero
+    return null;
   };
 
   const [graphType, setGraphType] = useState("area");
@@ -402,25 +418,12 @@ const Dashboard = () => {
         <title>Dashboard</title>
       </Helmet>
       <div
-        className={`className="flex flex-col  lg:flex-row bg-[#F0F0F0]
-        ${
-          isWidth1920
-            ? "lg:pl-20"
-            : isScreenWidth1366
-            ? "lg:pl-[0.5rem]"
-            : "lg:pl-[3.0rem]"
-        } lg:py-3 h-auto`}
+        className={`className="flex flex-grow flex-col large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
-        <div className="flex items-center justify-center">
+        <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">
           <div
-            className={`${
-              isWidth1920
-                ? "lg:w-[88%]  lg:ml-[15.5rem]"
-                : isScreenWidth1366
-                ? "lg:w-[84%]  lg:ml-[14.0rem]"
-                : "lg:w-[84%]  lg:ml-64"
-            } w-[90%] lg:h-[100vh] relative mt-20 lg:mt-0  h-[80vh] pb-10     border-0 border-gray-400  rounded-3xl flex flex-col items-center font-sans`}
+            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] h-auto lg:ml-auto lg:mx-4   lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
             {isLoading ? (
               <p>Loading...</p>
@@ -598,14 +601,14 @@ const Dashboard = () => {
                         selectedDataSources.includes("technicianData")
                           ? "closed"
                           : selectedDataSources.includes("requestsByDate")
-                          ? "closedRequests"
+                          ? "toreleaseRequests"
                           : ""
                       }
                       values2={
                         selectedDataSources.includes("technicianData")
                           ? "unclosed"
                           : selectedDataSources.includes("requestsByDate")
-                          ? "unclosedRequests"
+                          ? "closedRequests"
                           : ""
                       }
                       xValue={
@@ -631,14 +634,14 @@ const Dashboard = () => {
                         selectedDataSources.includes("technicianData")
                           ? "closed"
                           : selectedDataSources.includes("requestsByDate")
-                          ? "closedRequests"
+                          ? "toreleaseRequests"
                           : ""
                       }
                       values2={
                         selectedDataSources.includes("technicianData")
                           ? "unclosed"
                           : selectedDataSources.includes("requestsByDate")
-                          ? "unclosedRequests"
+                          ? "closedRequests"
                           : ""
                       }
                       xValue={
@@ -664,14 +667,14 @@ const Dashboard = () => {
                         selectedDataSources.includes("technicianData")
                           ? "closed"
                           : selectedDataSources.includes("requestsByDate")
-                          ? "closedRequests"
+                          ? "toreleaseRequests"
                           : ""
                       }
                       values2={
                         selectedDataSources.includes("technicianData")
                           ? "unclosed"
                           : selectedDataSources.includes("requestsByDate")
-                          ? "unclosedRequests"
+                          ? "closedRequests"
                           : ""
                       }
                       xValue={
@@ -692,7 +695,6 @@ const Dashboard = () => {
                         <Pie
                           dataKey="value"
                           data={pieChartData}
-                          isAnimationActive="true"
                           cx="50%"
                           cy="50%"
                           fill="color"
