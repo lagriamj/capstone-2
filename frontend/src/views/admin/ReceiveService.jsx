@@ -301,7 +301,7 @@ const ReceiveService = () => {
                       Requesting Office
                     </th>
                     <th
-                      className={`pl-5 px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
+                      className={`pl-5 px-3 py-5 relative large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
                     >
                       Date Requested
                       <button
