@@ -641,8 +641,8 @@ const Dashboard = () => {
                         </div>
                       )}
                     </div>
-                    <div className="flex gap-1 items-center justify-center">
-                      <div className="flex gap-1 items-center justify-center mr-2">
+                    <div className="flex gap-1 items-center lg:justify-center justify-end lg:mr-0 mr-2">
+                      <div className="flex gap-1 items-center lg:justify-center mr-auto lg:mr-2">
                         <label
                           htmlFor="graphType"
                           className="large:text-lg mediumLg:text-sm lg:text-base"
