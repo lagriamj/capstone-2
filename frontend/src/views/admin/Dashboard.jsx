@@ -503,26 +503,6 @@ const Dashboard = () => {
         title: "Request Office",
         dataIndex: "reqOffice",
         key: "reqOffice",
-        filters: [
-          {
-            text: "CEMG",
-            value: "CEMG",
-          },
-          {
-            text: "CITC",
-            value: "CITC",
-          },
-          {
-            text: "CCE",
-            value: "CCE",
-          },
-          {
-            text: "CAE",
-            value: "CAE",
-          },
-        ],
-        onFilter: (value, record) => record.reqOffice.includes(value),
-        filterSearch: true,
       },
       { title: "Division", dataIndex: "division", key: "division" },
       {
@@ -568,10 +548,10 @@ const Dashboard = () => {
             {isLoading ? (
               <p>Loading...</p>
             ) : (
-              <div className="w-full h-screen  grid grid-cols-7 grid-rows-5 gap-x-3 ">
-                <div className="grid col-span-5 text-black font-sans">
-                  <div className="flex w-full justify-between ">
-                    <div className="flex lg:w-[32%] lg:h-[18vh] bg-[#fff4de] shadow-md rounded-lg">
+              <div className="w-full lg:h-screen h-auto flex flex-col  lg:grid lg:grid-cols-7 lg:grid-rows-5 gap-x-3 ">
+                <div className="lg:grid lg:col-span-5 text-black font-sans">
+                  <div className="flex lg:flex-row flex-col w-full  lg:justify-between ">
+                    <div className="flex lg:w-[32%] lg:h-[18vh] lg:mb-0 mb-3 bg-[#fff4de] shadow-md rounded-lg">
                       <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
                         <FontAwesomeIcon
                           icon={faTicket}
@@ -585,7 +565,7 @@ const Dashboard = () => {
                         {counts.pending}
                       </h1>
                     </div>
-                    <div className="flex lg:w-[32%] lg:h-[18vh] bg-[#dcfce7] shadow-md rounded-lg">
+                    <div className="flex lg:w-[32%] lg:h-[18vh] mb-3 bg-[#dcfce7] shadow-md rounded-lg">
                       <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
                         <FontAwesomeIcon
                           icon={faTableList}
@@ -599,7 +579,7 @@ const Dashboard = () => {
                         {counts.received}
                       </h1>
                     </div>
-                    <div className="flex lg:w-[32%] lg:h-[18vh] bg-[#f4e8ff] shadow-md rounded-lg">
+                    <div className="flex lg:w-[32%] lg:h-[18vh] mb-3 bg-[#f4e8ff] shadow-md rounded-lg">
                       <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
                         <FontAwesomeIcon
                           icon={faClipboardCheck}
@@ -616,8 +596,8 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                <div className="col-span-5 flex flex-col px-4  row-span-2 rounded-lg shadow-md  bg-white">
-                  <div className="w-full flex gap-2 px-2 py-3 mediumLg:pt-1 justify-end">
+                <div className="lg:col-span-5 flex flex-col px-4  row-span-2 rounded-lg shadow-md  bg-white">
+                  <div className="w-full flex lg:flex-row flex-col gap-2 px-2 py-3 mediumLg:pt-1 justify-end">
                     {" "}
                     <div className="px-3 gotoLarge:py-3 py-1 relative whitespace-nowrap flex items-center gap-2 pb-2 font-sans font-semibold text-lg mr-auto">
                       <h1>Requests Statistics </h1>
@@ -695,7 +675,7 @@ const Dashboard = () => {
                         className="border-2 border-gray-700  rounded-lg px-1 large:text-lg mediumLg:text-sm w-36 lg:text-base "
                       />
                     </div>
-                    <div className="flex gap-1 items-center justify-center">
+                    <div className="flex gap-1 items-center lg:justify-center justify-end lg:mr-0 mr-2">
                       <label
                         htmlFor="endDate"
                         className="large:text-lg mediumLg:text-sm lg:text-base"
@@ -780,14 +760,14 @@ const Dashboard = () => {
                     />
                   )}
                 </div>
-                <div className="col-span-full flex lg:flex-row flex-col justify-between mediumLg:mt-2 large:mt-3 mt-4 gap-3 row-span-2  rounded-lg row-start-4 ">
+                <div className="lg:col-span-full flex lg:flex-row flex-col justify-between mediumLg:mt-2 large:mt-3 mt-4 gap-3 row-span-2  rounded-lg row-start-4 ">
                   <div className="bg-white lg:w-[30%] w-full rounded-lg shadow-md">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart width={600} height={600}>
                         <Pie
                           dataKey="value"
                           data={pieTotalAndClosed}
-                          isAnimationActive="true"
+                          isAnimationActive={true}
                           cx="50%"
                           cy="50%"
                           fill="color"
@@ -896,7 +876,7 @@ const Dashboard = () => {
                     </ul>
                   </div>
                 </div>
-                <div className=" text-black font-sans  bg-white shadow-md rounded-lg col-start-6 col-span-2  row-start-1 row-span-3 ">
+                <div className="text-black font-sans overflow-auto lg:mt-0 mt-3  bg-white shadow-md rounded-lg lg:col-start-6 lg:col-span-2  lg:row-start-1 lg:row-span-3 ">
                   <h1 className="text-2xl m-2 font-semibold border-b-2 pb-2 border-gray-400">
                     Recent Requests
                   </h1>
