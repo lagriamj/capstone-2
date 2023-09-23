@@ -35,10 +35,24 @@ const CurrentRequests = () => {
   const [selectedID, setSelectedID] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedOffice, setSelectedOffice] = useState(null);
-
   const [selectedReason, setSelectedReason] = useState(null);
   // eslint-disable-next-line no-unused-vars
   const [isReasonModalOpen, setIsReasonModalOpen] = useState(false);
+
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+  const [selectedStatusFilters, setSelectedStatusFilters] =
+    useState("no-status-selected");
+
+  const [selectedSortOrder, setSelectedDateOrder] = useState("desc");
+  const [isDateSortingDropdownOpen, setIsDateSortingDropdownOpen] =
+    useState(false);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleDateOrderChange = (order) => {
+    setSelectedDateOrder(order);
+    setIsDateSortingDropdownOpen(false);
+  };
 
   const handleOpenReasonModalClick = (id) => {
     setSelectedReason(id);
@@ -58,7 +72,7 @@ const CurrentRequests = () => {
     setSelectedID(id);
     setSelectedUserId(user_id);
     setSelectedOffice(office);
-    setUpdateModalVisible(true); // Open the RateModal
+    setUpdateModalVisible(true);
   };
 
   useEffect(() => {
@@ -66,19 +80,17 @@ const CurrentRequests = () => {
 
     if (locationState && locationState.successMessage) {
       setDisplaySuccessMessage(true);
-      navigate("/current-requests"); // Clear the location state from the URL
+      navigate("/current-requests");
     }
   }, []);
 
   useEffect(() => {
     if (displaySuccessMessage) {
-      // Display the success message using Ant Design message component
       const successMessage = message.success("Requested Successfully");
 
-      // Close the message after a certain duration
       setTimeout(() => {
-        successMessage(); // Close the message
-      }, 5000); // Duration of 5 seconds
+        successMessage();
+      }, 5000);
     }
   }, [displaySuccessMessage]);
 
@@ -119,19 +131,48 @@ const CurrentRequests = () => {
 
   useEffect(() => {
     fetchData();
-  }, [startDate, endDate]);
+  }, [
+    startDate,
+    endDate,
+    selectedStatusFilters,
+    selectedSortOrder,
+    searchQuery,
+  ]);
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      const result = await axios.get(
-        `http://127.0.0.1:8000/api/request-list/${startDate}/${endDate}`,
-        {
-          params: {
-            user_id: userID, // Pass the user_id from your component's state
-          },
-        }
+      const urlSegments = ["http://127.0.0.1:8000/api/request-list"];
+
+      if (startDate) {
+        urlSegments.push(startDate);
+      }
+      if (endDate) {
+        urlSegments.push(endDate);
+      }
+      if (selectedStatusFilters) {
+        urlSegments.push(selectedStatusFilters);
+      }
+      if (selectedSortOrder) {
+        urlSegments.push(selectedSortOrder);
+      }
+      if (searchQuery) {
+        urlSegments.push(searchQuery);
+      }
+
+      const filteredUrlSegments = urlSegments.filter(
+        (segment) => segment !== null && segment !== ""
       );
+      const url = filteredUrlSegments.join("/");
+      const regex = new RegExp(`/${selectedSortOrder}$`);
+      const cleanedUrl = url.replace(regex, "");
+
+      const result = await axios.get(cleanedUrl, {
+        params: {
+          user_id: userID,
+          order: selectedSortOrder,
+        },
+      });
 
       setData(result.data.results);
       setLoading(false);
@@ -143,8 +184,14 @@ const CurrentRequests = () => {
     }
   };
 
+  if (selectedStatusFilters.length === 0) {
+    setSelectedStatusFilters(["no-status-selected"]);
+  }
+
+  console.log("ssss", selectedSortOrder);
+  console.log("aa", selectedStatusFilters);
+
   useEffect(() => {
-    // Initialize popconfirmVisible state with false for each row
     setPopconfirmVisible(new Array(data.length).fill(false));
   }, [data]);
 
@@ -181,12 +228,6 @@ const CurrentRequests = () => {
     setPopconfirmVisible(popconfirmVisibleCopy);
   };
 
-  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
-  const [selectedStatusFilters, setSelectedStatusFilters] = useState([]);
-
-  const [isModeDropdownOpen, setIsModeDropdownOpen] = useState(false);
-  const [selectedModeFilters, setSelectedModeFilters] = useState([]);
-
   const toggleStatusDropdown = () => {
     setIsStatusDropdownOpen(!isStatusDropdownOpen);
   };
@@ -196,25 +237,9 @@ const CurrentRequests = () => {
 
     setSelectedStatusFilters((prevFilters) => {
       if (prevFilters.length === 1 && prevFilters[0] === selectedStatus) {
-        return []; // Unselect if the same option is clicked
+        return [];
       } else {
         return [selectedStatus];
-      }
-    });
-  };
-
-  const toggleModeDropdown = () => {
-    setIsModeDropdownOpen(!isModeDropdownOpen);
-  };
-
-  const handleModeCheckboxChange = (e) => {
-    const selectedMode = e.target.value;
-
-    setSelectedModeFilters((prevFilters) => {
-      if (prevFilters.length === 1 && prevFilters[0] === selectedMode) {
-        return []; // Unselect if the same option is clicked
-      } else {
-        return [selectedMode];
       }
     });
   };
@@ -225,54 +250,27 @@ const CurrentRequests = () => {
   const lastIndex = currentPage * recordsPage;
   const firstIndex = lastIndex - recordsPage;
   const records = data.slice(firstIndex, lastIndex);
-
   const npage = Math.ceil(data.length / recordsPage);
-  //const numbers = [...Array(npage + 1).keys()].slice(1);
+
+  useEffect(() => {
+    if (selectedStatusFilters !== null) {
+      setCurrentPage(1);
+    }
+  }, [selectedStatusFilters]);
+
+  useEffect(() => {
+    if (selectedSortOrder !== null) {
+      setCurrentPage(1);
+    }
+  }, [selectedSortOrder]);
+
+  useEffect(() => {
+    if (searchQuery !== null) {
+      setCurrentPage(1);
+    }
+  }, [searchQuery]);
 
   const isLargeScreen = windowWidth >= 1024;
-
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const filteredRecords = records.filter((item) => {
-    const matchesSearchQuery =
-      item.natureOfRequest.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.assignedTo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.modeOfRequest.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.dateRequested.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesStatusFilter =
-      selectedStatusFilters.length === 0 ||
-      selectedStatusFilters.includes(item.status);
-
-    const matchesModeFilter =
-      selectedModeFilters.length === 0 ||
-      selectedModeFilters.includes(item.modeOfRequest);
-
-    return matchesSearchQuery && matchesStatusFilter && matchesModeFilter;
-  });
-
-  const [selectedSortOrder, setSelectedSortOrder] = useState("asc");
-  const [isSortOptionsVisible, setIsSortOptionsVisible] = useState(false);
-
-  const toggleSortOptions = () => {
-    setIsSortOptionsVisible(!isSortOptionsVisible);
-  };
-
-  const sortedRecords = [...filteredRecords].sort((a, b) => {
-    if (a === b) return 0;
-
-    if (selectedSortOrder === "asc") {
-      // Use selectedSortOrder instead of dateUpdatedSortOrder
-      return a.dateUpdated.localeCompare(b.dateUpdated);
-    } else {
-      return b.dateUpdated.localeCompare(a.dateUpdated);
-    }
-  });
-
-  const handleSortOrderChange = (newOrder) => {
-    setSelectedSortOrder(newOrder);
-    setIsSortOptionsVisible(false); // Hide the options after selecting
-  };
 
   const [pageInput, setPageInput] = useState("");
 
@@ -281,9 +279,8 @@ const CurrentRequests = () => {
 
     if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= npage) {
       setCurrentPage(pageNumber);
-      setPageInput(""); // Clear the input field after changing the page
+      setPageInput("");
     } else {
-      // Handle invalid page number input, e.g., show an error message to the user
       message.error("Invalid page number. Please enter a valid page number.");
     }
   };
@@ -293,12 +290,12 @@ const CurrentRequests = () => {
   };
 
   const handlePageInputBlur = () => {
-    goToPage(); // Trigger page change when the input field loses focus
+    goToPage();
   };
 
   const handlePageInputKeyPress = (e) => {
     if (e.key === "Enter") {
-      goToPage(); // Trigger page change when the Enter key is pressed
+      goToPage();
     }
   };
 
@@ -343,7 +340,7 @@ const CurrentRequests = () => {
                 <input
                   type="text"
                   placeholder="Search"
-                  className={`border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 w-full focus:outline-none text-base h-10`}
+                  className="border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 w-full focus:outline-none text-base h-10"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -396,47 +393,6 @@ const CurrentRequests = () => {
                       className={`w-30  py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
                     >
                       Mode
-                      <div className="relative inline-block">
-                        <button
-                          onClick={toggleModeDropdown}
-                          className="text-main focus:outline-none ml-2"
-                          style={{
-                            backgroundColor: "transparent",
-                            border: "none",
-                          }}
-                        >
-                          <FontAwesomeIcon
-                            icon={faFilter}
-                            className={`large:h-4 large:w-4 w-3 h-3 text-white`}
-                          />
-                        </button>
-                        {isModeDropdownOpen && (
-                          <div className="absolute right-0 overflow-auto text-start text-black bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
-                            <label className="block px-4 py-2">
-                              <input
-                                type="checkbox"
-                                value="Walk-In"
-                                checked={selectedModeFilters.includes(
-                                  "Walk-In"
-                                )}
-                                onChange={handleModeCheckboxChange}
-                                className="mr-2"
-                              />
-                              Walk-In
-                            </label>
-                            <label className="block px-4 py-2">
-                              <input
-                                type="checkbox"
-                                value="Online"
-                                checked={selectedModeFilters.includes("Online")}
-                                onChange={handleModeCheckboxChange}
-                                className="mr-2"
-                              />
-                              Online
-                            </label>
-                          </div>
-                        )}
-                      </div>
                     </th>
                     <th
                       className={`w-40 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
@@ -453,7 +409,11 @@ const CurrentRequests = () => {
                     >
                       Date Updated
                       <button
-                        onClick={toggleSortOptions}
+                        onClick={() =>
+                          setIsDateSortingDropdownOpen(
+                            !isDateSortingDropdownOpen
+                          )
+                        }
                         className="text-main focus:outline-none ml-2"
                         style={{
                           backgroundColor: "transparent",
@@ -462,14 +422,14 @@ const CurrentRequests = () => {
                       >
                         <FontAwesomeIcon
                           icon={faFilter}
-                          className="large:h-4 large:w-4 w-3 h-3 text-white"
+                          className={`large:h-4 large:w-4 w-3 h-3 text-white`}
                         />
                       </button>
-                      {isSortOptionsVisible && (
-                        <div className="absolute top-8 right-0 text-black bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
+                      {isDateSortingDropdownOpen && (
+                        <div className="absolute top-8 right-0 flex flex-col text-black bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
                           <button
-                            onClick={() => handleSortOrderChange("asc")}
-                            className={`block px-4 w-full py-2 text-left ${
+                            onClick={() => handleDateOrderChange("asc")}
+                            className={`text-black font-medium py-2 px-4 rounded-lg ${
                               selectedSortOrder === "asc"
                                 ? "bg-main text-white"
                                 : ""
@@ -478,8 +438,8 @@ const CurrentRequests = () => {
                             Ascending
                           </button>
                           <button
-                            onClick={() => handleSortOrderChange("desc")}
-                            className={`block px-4 w-full py-2 text-left ${
+                            onClick={() => handleDateOrderChange("desc")}
+                            className={`text-black font-medium py-2 px-4 rounded-lg ${
                               selectedSortOrder === "desc"
                                 ? "bg-main text-white"
                                 : ""
@@ -585,7 +545,7 @@ const CurrentRequests = () => {
                         No Records Yet.
                       </td>
                     </tr>
-                  ) : sortedRecords.length === 0 ? (
+                  ) : records.length === 0 ? (
                     <tr className="h-[50vh]">
                       <td
                         colSpan="8"
@@ -595,7 +555,7 @@ const CurrentRequests = () => {
                       </td>
                     </tr>
                   ) : (
-                    sortedRecords.map((item, index) => (
+                    records.map((item, index) => (
                       <tr
                         className="border-b-2 border-x-2  lg:text-sm text-base border-gray-200 h-auto overflow-auto"
                         key={item.id}
@@ -611,9 +571,7 @@ const CurrentRequests = () => {
                           E-{item.id}
                         </td>
                         <td
-                          className={`py-3 pr-5 ${
-                            isScreenWidth1366 ? "text-sm" : " text-lg"
-                          } text-gray-700 whitespace-nowrap text-left`}
+                          className={`pr-3 py-2 large:py-3 text-gray-700 whitespace-nowrap text-left`}
                         >
                           {item.dateRequested}
                         </td>
@@ -643,20 +601,20 @@ const CurrentRequests = () => {
                           <p
                             className={`rounded-xl py-2 px-3 ${
                               item.status === "Pending"
-                                ? "bg-red-500 text-white" // Apply red background and white text for Pending
+                                ? "bg-red-500 text-white"
                                 : item.status === "Received"
-                                ? "bg-orange-500 text-white" // Apply orange background and white text for Received
+                                ? "bg-orange-500 text-white"
                                 : item.status === "On Progress"
-                                ? "bg-yellow-500 text-white" // Apply yellow background and white text for On Progress
+                                ? "bg-yellow-500 text-white"
                                 : item.status === "To Release"
-                                ? "bg-green-500 text-white" // Apply green background and white text for To Release
+                                ? "bg-green-500 text-white"
                                 : item.status === "To Rate"
-                                ? "bg-blue-600 text-white" // Apply blue background and white text for To Rate
+                                ? "bg-blue-600 text-white"
                                 : item.status === "Closed"
-                                ? "bg-gray-800 text-white" // Apply gray background and white text for Closed
+                                ? "bg-gray-800 text-white"
                                 : item.status === "Cancelled"
-                                ? "bg-red-700 text-white" // Apply dark red background and white text for Cancelled
-                                : "bg-main text-white" // Default background and text color (if none of the conditions match)
+                                ? "bg-red-700 text-white"
+                                : "bg-main text-white"
                             }`}
                           >
                             {item.status}
@@ -811,8 +769,8 @@ const CurrentRequests = () => {
                     }`}
                     value={pageInput}
                     onChange={handlePageInputChange}
-                    onBlur={handlePageInputBlur} // Trigger page change when the input field loses focus
-                    onKeyPress={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
+                    onBlur={handlePageInputBlur}
+                    onKeyPress={handlePageInputKeyPress}
                   />
                 </li>
                 <li>
@@ -841,14 +799,11 @@ const CurrentRequests = () => {
       setCurrentPage(currentPage - 1);
     }
   }
-  //function changeCPage(id) {
-  //setCurrentPage(id);
-  //}
+
   function nextPage() {
     if (currentPage !== npage) {
       setCurrentPage(currentPage + 1);
     }
   }
 };
-
 export default CurrentRequests;

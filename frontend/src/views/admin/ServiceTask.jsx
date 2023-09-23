@@ -25,11 +25,36 @@ const ServiceTask = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
-  const [isSingleRequest, setIsSingleRequest] = useState(false);
   const [popconfirmVisible, setPopconfirmVisible] = useState([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalType, setModalType] = useState(null);
   const { fullName } = useAuth();
+
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+  const [selectedStatusFilters, setSelectedStatusFilters] =
+    useState("no-status-selected");
+
+  const [isTechnicianDropDownOpen, setIsTechnicianDropDownOpen] =
+    useState(false);
+  const [selectedTechnicianFilter, setSelectedTechnicianFilter] = useState([]);
+
+  const [isModeDropdownOpen, setIsModeDropdownOpen] = useState(false);
+  const [selectedModeFilters, setSelectedModeFilters] = useState(["notech"]);
+
+  const [selectedSortOrder, setSelectedDateOrder] = useState("desc");
+  const [isDateSortingDropdownOpen, setIsDateSortingDropdownOpen] =
+    useState(false);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleDateOrderChange = (order) => {
+    setSelectedDateOrder(order);
+    setIsDateSortingDropdownOpen(false);
+  };
+
+  if (selectedStatusFilters.length === 0) {
+    setSelectedStatusFilters(["no-status-selected"]);
+  }
 
   const openModal = (data) => {
     setSelectedData(data);
@@ -126,37 +151,61 @@ const ServiceTask = () => {
 
   useEffect(() => {
     fetchData();
-  }, [startDate, endDate]);
+  }, [
+    selectedTechnicianFilter,
+    startDate,
+    endDate,
+    selectedStatusFilters,
+    selectedSortOrder,
+    searchQuery,
+  ]);
 
   const fetchData = async () => {
-    setLoading(true);
     try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/service-task-list/${startDate}/${endDate}`
-      );
-      if (response.status === 200) {
-        setLoading(false);
-        setData(response.data.results);
-        setIsSingleRequest(response.data.results.length === 1);
-      } else {
-        setLoading(false);
-        console.error("Failed to fetch utility settings. Response:", response);
+      setLoading(true);
+      const urlSegments = ["http://127.0.0.1:8000/api/service-task-list"];
+
+      if (selectedTechnicianFilter) {
+        urlSegments.push(selectedTechnicianFilter);
       }
-    } catch (error) {
+      if (startDate) {
+        urlSegments.push(startDate);
+      }
+      if (endDate) {
+        urlSegments.push(endDate);
+      }
+      if (selectedStatusFilters) {
+        urlSegments.push(selectedStatusFilters);
+      }
+      if (selectedSortOrder) {
+        urlSegments.push(selectedSortOrder);
+      }
+      if (searchQuery) {
+        urlSegments.push(searchQuery);
+      }
+
+      const filteredUrlSegments = urlSegments.filter(
+        (segment) => segment !== null && segment !== ""
+      );
+      const url = filteredUrlSegments.join("/");
+      const regex = new RegExp(`/${selectedSortOrder}$`);
+      const cleanedUrl = url.replace(regex, "");
+
+      const result = await axios.get(cleanedUrl, {
+        params: {
+          order: selectedSortOrder,
+        },
+      });
+      console.log("ssss", selectedTechnicianFilter);
+      setData(result.data.results);
       setLoading(false);
-      console.error("Error fetching utility settings:", error);
+    } catch (err) {
+      console.log("Something went wrong:", err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
-
-  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
-  const [selectedStatusFilters, setSelectedStatusFilters] = useState([]);
-
-  const [isTechnicianDropDownOpen, setIsTechnicianDropDownOpen] =
-    useState(false);
-  const [selectedTechnicianFilter, setSelectedTechnicianFilter] = useState([]);
-
-  const [isModeDropdownOpen, setIsModeDropdownOpen] = useState(false);
-  const [selectedModeFilters, setSelectedModeFilters] = useState([]);
 
   const toggleTechnicianDropDown = () => {
     setIsTechnicianDropDownOpen(!isTechnicianDropDownOpen);
@@ -175,6 +224,10 @@ const ServiceTask = () => {
   };
 
   console.log("Selected Technician:" + selectedTechnicianFilter);
+
+  if (selectedTechnicianFilter.length == 0) {
+    setSelectedTechnicianFilter(["notech"]);
+  }
 
   const toggleModeDropdown = () => {
     setIsModeDropdownOpen(!isModeDropdownOpen);
@@ -216,36 +269,24 @@ const ServiceTask = () => {
   const records = data.slice(firstIndex, lastIndex);
 
   const npage = Math.ceil(data.length / recordsPage);
-  //const numbers = [...Array(npage + 1).keys()].slice(1);
 
-  const [searchQuery, setSearchQuery] = useState("");
+  useEffect(() => {
+    if (selectedStatusFilters !== null) {
+      setCurrentPage(1);
+    }
+  }, [selectedStatusFilters]);
 
-  const filteredRecords = records.filter((item) => {
-    const matchesSearchQuery =
-      item.natureOfRequest.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.assignedTo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.modeOfRequest.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.dateRequested.toLowerCase().includes(searchQuery.toLowerCase());
+  useEffect(() => {
+    if (selectedSortOrder !== null) {
+      setCurrentPage(1);
+    }
+  }, [selectedSortOrder]);
 
-    const matchesStatusFilter =
-      selectedStatusFilters.length === 0 ||
-      selectedStatusFilters.includes(item.status);
-
-    const matchesModeFilter =
-      selectedModeFilters.length === 0 ||
-      selectedModeFilters.includes(item.modeOfRequest);
-
-    const matchesTechnician =
-      selectedTechnicianFilter.length === 0 ||
-      selectedTechnicianFilter.includes(item.assignedTo);
-
-    return (
-      matchesSearchQuery &&
-      matchesStatusFilter &&
-      matchesModeFilter &&
-      matchesTechnician
-    );
-  });
+  useEffect(() => {
+    if (searchQuery !== null) {
+      setCurrentPage(1);
+    }
+  }, [searchQuery]);
 
   const [pageInput, setPageInput] = useState("");
 
@@ -318,13 +359,13 @@ const ServiceTask = () => {
         <title>Service Task</title>
       </Helmet>
       <div
-        className={`className="flex flex-grow flex-col large:ml-20 gotoLarge:px-6 lg:flex-row white pt-5 large:h-screen h-auto`}
+        className={`className="flex flex-grow flex-col large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
 
         <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">
           <div
-            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] h-auto lg:ml-auto lg:mx-4   lg:mt-0  mt-20 justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
+            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] h-auto lg:ml-auto lg:mx-4   lg:mt-0 mt-20  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
             <div className="flex lg:flex-row text-center flex-col w-full lg:pl-4 items-center justify-center shadow-xl bg-white  text-white rounded-t-lg lg:gap-4 gap-2">
               <h1 className="flex text-black items-center lg:text-2xl font-semibold ">
@@ -338,7 +379,7 @@ const ServiceTask = () => {
                 <input
                   type="text"
                   placeholder="Search"
-                  className={`border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 w-full focus:outline-none text-base h-10`}
+                  className="border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 w-full focus:outline-none text-base h-10"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -367,9 +408,7 @@ const ServiceTask = () => {
               </div>
             </div>
             <div
-              className={`overflow-auto h-auto shadow-xl  pb-5 ${
-                isSingleRequest ? "lg:h-screen" : ""
-              } rounded-lg w-full`}
+              className={`overflow-auto h-auto shadow-xl  pb-5  rounded-lg w-full`}
             >
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
@@ -476,11 +515,51 @@ const ServiceTask = () => {
                         )}
                       </div>
                     </th>
-
                     <th
-                      className={`pl-5 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
+                      className={`w-48py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider relative text-left whitespace-nowrap`}
                     >
                       Date Updated
+                      <button
+                        onClick={() =>
+                          setIsDateSortingDropdownOpen(
+                            !isDateSortingDropdownOpen
+                          )
+                        }
+                        className="text-main focus:outline-none ml-2"
+                        style={{
+                          backgroundColor: "transparent",
+                          border: "none",
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          icon={faFilter}
+                          className={`large:h-4 large:w-4 w-3 h-3 text-white`}
+                        />
+                      </button>
+                      {isDateSortingDropdownOpen && (
+                        <div className="absolute top-8 right-0 flex flex-col text-black bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
+                          <button
+                            onClick={() => handleDateOrderChange("asc")}
+                            className={`text-black font-medium py-2 px-4 rounded-lg ${
+                              selectedSortOrder === "asc"
+                                ? "bg-main text-white"
+                                : ""
+                            }`}
+                          >
+                            Ascending
+                          </button>
+                          <button
+                            onClick={() => handleDateOrderChange("desc")}
+                            className={`text-black font-medium py-2 px-4 rounded-lg ${
+                              selectedSortOrder === "desc"
+                                ? "bg-main text-white"
+                                : ""
+                            }`}
+                          >
+                            Descending
+                          </button>
+                        </div>
+                      )}
                     </th>
                     <th
                       className={`pl-5  py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
@@ -577,7 +656,7 @@ const ServiceTask = () => {
                         No Records Yet.
                       </td>
                     </tr>
-                  ) : filteredRecords.length === 0 ? (
+                  ) : records.length === 0 ? (
                     <tr className="h-[50vh]">
                       <td
                         colSpan="8"
@@ -587,7 +666,7 @@ const ServiceTask = () => {
                       </td>
                     </tr>
                   ) : (
-                    filteredRecords.map((setting, index) => (
+                    records.map((setting, index) => (
                       <tr
                         className={`${
                           isScreenWidth1366 ? "text-sm" : " text-lg"
@@ -595,7 +674,7 @@ const ServiceTask = () => {
                         key={setting.id}
                       >
                         <td className="border-b-2 px-3 py-2 large:py-3 border-gray-200 text-left">
-                          {index + 1}
+                          {firstIndex + index + 1}
                         </td>
                         <td className="border-b-2 pl-5 py-2 large:py-3 border-gray-200 text-left">
                           {setting.request_id}
@@ -737,7 +816,7 @@ const ServiceTask = () => {
                 />
               )}
             </div>
-            <nav className={`  mt-2 px-4`}>
+            <nav className={`  mt-2 `}>
               <ul className="flex gap-2 items-center">
                 <li className="flex-auto  mr-5 text-base font-bold">
                   Page {currentPage} of {npage}
@@ -764,8 +843,8 @@ const ServiceTask = () => {
                     }`}
                     value={pageInput}
                     onChange={handlePageInputChange}
-                    onBlur={handlePageInputBlur} // Trigger page change when the input field loses focus
-                    onKeyPress={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
+                    onBlur={handlePageInputBlur}
+                    onKeyPress={handlePageInputKeyPress}
                   />
                 </li>
                 <li>
@@ -794,9 +873,7 @@ const ServiceTask = () => {
       setCurrentPage(currentPage - 1);
     }
   }
-  //function changeCPage(id) {
-  //setCurrentPage(id);
-  //}
+
   function nextPage() {
     if (currentPage !== npage) {
       setCurrentPage(currentPage + 1);

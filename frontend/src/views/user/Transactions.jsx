@@ -16,7 +16,7 @@ import DoneRateModal from "../../components/DoneRateModal";
 const Transactions = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [data, setData] = useState([]);
-  const [isFetchingData, setIsFetchingData] = useState(false);
+
   const [rate, setRate] = useState(false);
   const [selectedID, setSelectedID] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
@@ -30,6 +30,33 @@ const Transactions = () => {
 
   const [cancel, setCancel] = useState(false);
   const [viewCancel, setViewCancel] = useState(false);
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  const [loading, setLoading] = useState(true);
+  const [isModeDropdownOpen, setIsModeDropdownOpen] = useState(false);
+  const [selectedModeFilters, setSelectedModeFilters] = useState([]);
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+  const [selectedStatusFilters, setSelectedStatusFilters] = useState([
+    "no-status-selected",
+  ]);
+  const [selectedSortOrder, setSelectedSortOrder] = useState("desc"); // Set your default sorting order here
+
+  const [isDateSortingDropdownOpen, setIsDateSortingDropdownOpen] =
+    useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  console.log("sss", selectedSortOrder);
+  console.log(selectedStatusFilters);
+
+  const handleDateOrderChange = (order) => {
+    setSelectedSortOrder(order);
+    setIsDateSortingDropdownOpen(false);
+  };
+
+  if (selectedStatusFilters.length === 0) {
+    setSelectedStatusFilters(["no-status-selected"]);
+  }
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   const handleCancelRequest = (data) => {
     setViewCancel(data);
@@ -51,7 +78,7 @@ const Transactions = () => {
     setSelectedUserId(user_id);
     setSelectedOffice(office);
     handleRatings(id);
-    setRate(true); // Open the RateModal
+    setRate(true);
   };
 
   useEffect(() => {
@@ -85,28 +112,66 @@ const Transactions = () => {
 
   useEffect(() => {
     fetchData();
-  }, [startDate, endDate]);
+  }, [
+    startDate,
+    endDate,
+    selectedStatusFilters,
+    selectedSortOrder,
+    searchQuery,
+  ]);
 
   const fetchData = async () => {
-    setIsFetchingData(true);
     try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/transaction-list/${userID}/${startDate}/${endDate}`
-      );
-      if (response.status === 200) {
-        setData(response.data.results);
-        console.log(response.data.results);
-        setIsFetchingData(false);
-      } else {
-        console.error("Failed to fetch utility settings. Response:", response);
-        setIsFetchingData(false);
+      setLoading(true);
+      const urlSegments = ["http://127.0.0.1:8000/api/transaction-list"];
+
+      if (userID) {
+        urlSegments.push(userID);
       }
-    } catch (error) {
-      console.error("Error fetching utility settings:", error);
-      setIsFetchingData(false);
+
+      if (startDate) {
+        urlSegments.push(startDate);
+      }
+      if (endDate) {
+        urlSegments.push(endDate);
+      }
+      if (selectedStatusFilters) {
+        urlSegments.push(selectedStatusFilters);
+      }
+      if (selectedSortOrder) {
+        urlSegments.push(selectedSortOrder);
+      }
+      if (searchQuery) {
+        urlSegments.push(searchQuery);
+      }
+
+      // Filter out null or empty segments
+      const filteredUrlSegments = urlSegments.filter(
+        (segment) => segment !== null && segment !== ""
+      );
+
+      // Join the filtered segments with '/'
+      const url = filteredUrlSegments.join("/");
+      const regex = new RegExp(`/${selectedSortOrder}$`);
+      const cleanedUrl = url.replace(regex, "");
+
+      console.log("URL:", cleanedUrl);
+
+      const result = await axios.get(cleanedUrl, {
+        params: {
+          order: selectedSortOrder,
+        },
+      });
+      console.log("URL:", selectedSortOrder);
+      setData(result.data.results);
+      setLoading(false);
+    } catch (err) {
+      console.log("Something went wrong:", err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
-
   const [ratings, setRatings] = useState([]);
 
   const handleRatings = async (id) => {
@@ -116,12 +181,6 @@ const Transactions = () => {
     );
     setRatings(response.data.results);
   };
-
-  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
-  const [selectedStatusFilters, setSelectedStatusFilters] = useState([]);
-
-  const [isModeDropdownOpen, setIsModeDropdownOpen] = useState(false);
-  const [selectedModeFilters, setSelectedModeFilters] = useState([]);
 
   const toggleStatusDropdown = () => {
     setIsStatusDropdownOpen(!isStatusDropdownOpen);
@@ -148,42 +207,40 @@ const Transactions = () => {
 
     setSelectedModeFilters((prevFilters) => {
       if (prevFilters.length === 1 && prevFilters[0] === selectedMode) {
-        return []; // Unselect if the same option is clicked
+        return [];
       } else {
         return [selectedMode];
       }
     });
   };
 
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPage = 10;
-
   const lastIndex = currentPage * recordsPage;
   const firstIndex = lastIndex - recordsPage;
   const records = data.slice(firstIndex, lastIndex);
-
   const npage = Math.ceil(data.length / recordsPage);
-  // const numbers = [...Array(npage + 1).keys()].slice(1);
 
-  const [searchQuery, setSearchQuery] = useState("");
+  useEffect(() => {
+    if (selectedStatusFilters !== null) {
+      setCurrentPage(1);
+    }
+  }, [selectedStatusFilters]);
 
-  const filteredRecords = records.filter((item) => {
-    const matchesSearchQuery =
-      item.natureOfRequest.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.assignedTo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.modeOfRequest.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.dateRequested.toLowerCase().includes(searchQuery.toLowerCase());
+  useEffect(() => {
+    if (selectedSortOrder !== null) {
+      setCurrentPage(1);
+    }
+  }, [selectedSortOrder]);
 
-    const matchesStatusFilter =
-      selectedStatusFilters.length === 0 ||
-      selectedStatusFilters.includes(item.status);
+  useEffect(() => {
+    if (searchQuery !== null) {
+      setCurrentPage(1);
+    }
+  }, [searchQuery]);
 
-    const matchesModeFilter =
-      selectedModeFilters.length === 0 ||
-      selectedModeFilters.includes(item.modeOfRequest);
-
-    return matchesSearchQuery && matchesModeFilter && matchesStatusFilter;
-  });
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   const [pageInput, setPageInput] = useState("");
 
@@ -192,9 +249,8 @@ const Transactions = () => {
 
     if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= npage) {
       setCurrentPage(pageNumber);
-      setPageInput(""); // Clear the input field after changing the page
+      setPageInput("");
     } else {
-      // Handle invalid page number input, e.g., show an error message to the user
       message.error("Invalid page number. Please enter a valid page number.");
     }
   };
@@ -204,12 +260,12 @@ const Transactions = () => {
   };
 
   const handlePageInputBlur = () => {
-    goToPage(); // Trigger page change when the input field loses focus
+    goToPage();
   };
 
   const handlePageInputKeyPress = (e) => {
     if (e.key === "Enter") {
-      goToPage(); // Trigger page change when the Enter key is pressed
+      goToPage();
     }
   };
 
@@ -217,45 +273,20 @@ const Transactions = () => {
   const [rateView, setRateView] = useState(null);
 
   useEffect(() => {
-    // Check if any rating in the array has a non-null dateRate
     const hasNonNullDateRate = ratings.some(
       (rating) => rating.dateRate !== null
     );
 
-    // Set the rateView state based on the condition
     setRateView(hasNonNullDateRate);
-  }, [ratings]); // Make sure to include ratings in the dependency array
-
-  const [selectedSortOrder, setSelectedSortOrder] = useState("asc");
-  const [isSortOptionsVisible, setIsSortOptionsVisible] = useState(false);
-
-  const toggleSortOptions = () => {
-    setIsSortOptionsVisible(!isSortOptionsVisible);
-  };
-
-  const sortedRecords = [...filteredRecords].sort((a, b) => {
-    if (a === b) return 0;
-
-    if (selectedSortOrder === "asc") {
-      // Use selectedSortOrder instead of dateUpdatedSortOrder
-      return a.dateUpdated.localeCompare(b.dateUpdated);
-    } else {
-      return b.dateUpdated.localeCompare(a.dateUpdated);
-    }
-  });
-
-  const handleSortOrderChange = (newOrder) => {
-    setSelectedSortOrder(newOrder);
-    setIsSortOptionsVisible(false); // Hide the options after selecting
-  };
+  }, [ratings]);
 
   const [doneRating, setDoneRating] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/done-rate") // Adjust the URL to match your Laravel route
+    fetch("http://127.0.0.1:8000/api/done-rate")
       .then((response) => response.json())
       .then((data) => {
-        setDoneRating(data.results); // Assuming your API returns data under the 'results' key
+        setDoneRating(data.results);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -305,7 +336,7 @@ const Transactions = () => {
                 <input
                   type="text"
                   placeholder="Search"
-                  className={`border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 w-full focus:outline-none text-base h-10`}
+                  className="border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 w-full focus:outline-none text-base h-10"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -425,26 +456,31 @@ const Transactions = () => {
                       Assigned To
                     </th>
                     <th
-                      className={`w-48 ${
-                        isScreenWidth1366 ? "py-3 text-sm" : "py-5 text-base"
-                      } font-semibold tracking-wider relative text-left whitespace-nowrap`}
+                      className={`w-48py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider relative text-left whitespace-nowrap`}
                     >
                       Date Updated
                       <button
-                        onClick={toggleSortOptions}
+                        onClick={() =>
+                          setIsDateSortingDropdownOpen(
+                            !isDateSortingDropdownOpen
+                          )
+                        }
                         className="text-main focus:outline-none ml-2"
                         style={{
                           backgroundColor: "transparent",
                           border: "none",
                         }}
                       >
-                        <FontAwesomeIcon icon={faFilter} className="h-4 w-4" />
+                        <FontAwesomeIcon
+                          icon={faFilter}
+                          className={`large:h-4 large:w-4 w-3 h-3 text-white`}
+                        />
                       </button>
-                      {isSortOptionsVisible && (
-                        <div className="absolute top-8 right-0 bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
+                      {isDateSortingDropdownOpen && (
+                        <div className="absolute top-8 right-0 flex flex-col text-black bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
                           <button
-                            onClick={() => handleSortOrderChange("asc")}
-                            className={`block px-4 w-full py-2 text-left ${
+                            onClick={() => handleDateOrderChange("asc")}
+                            className={`text-black font-medium py-2 px-4 rounded-lg ${
                               selectedSortOrder === "asc"
                                 ? "bg-main text-white"
                                 : ""
@@ -453,8 +489,8 @@ const Transactions = () => {
                             Ascending
                           </button>
                           <button
-                            onClick={() => handleSortOrderChange("desc")}
-                            className={`block px-4 w-full py-2 text-left ${
+                            onClick={() => handleDateOrderChange("desc")}
+                            className={`text-black font-medium py-2 px-4 rounded-lg ${
                               selectedSortOrder === "desc"
                                 ? "bg-main text-white"
                                 : ""
@@ -488,54 +524,30 @@ const Transactions = () => {
                           />
                         </button>
                         {isStatusDropdownOpen && (
-                          <div className="absolute right-0 bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg text-start">
+                          <div className="absolute right-0 bg-white border text-black border-gray-200 py-2 mt-2 shadow-lg rounded-lg text-start">
                             <label className="block px-4 py-2">
                               <input
                                 type="checkbox"
-                                value="Pending"
+                                value="Closed"
                                 checked={selectedStatusFilters.includes(
-                                  "Pending"
+                                  "Closed"
                                 )}
                                 onChange={handleStatusCheckboxChange}
                                 className="mr-2"
                               />
-                              Pending
+                              Closed
                             </label>
                             <label className="block px-4 py-2">
                               <input
                                 type="checkbox"
-                                value="Received"
+                                value="Cancelled"
                                 checked={selectedStatusFilters.includes(
-                                  "Received"
+                                  "Cancelled"
                                 )}
                                 onChange={handleStatusCheckboxChange}
                                 className="mr-2"
                               />
-                              Received
-                            </label>
-                            <label className="block px-4 py-2">
-                              <input
-                                type="checkbox"
-                                value="On Progress"
-                                checked={selectedStatusFilters.includes(
-                                  "On Progress"
-                                )}
-                                onChange={handleStatusCheckboxChange}
-                                className="mr-2"
-                              />
-                              On Progress
-                            </label>
-                            <label className="block px-4 py-2">
-                              <input
-                                type="checkbox"
-                                value="toRelease"
-                                checked={selectedStatusFilters.includes(
-                                  "toRelease"
-                                )}
-                                onChange={handleStatusCheckboxChange}
-                                className="mr-2"
-                              />
-                              To Release
+                              Cancelled
                             </label>
                           </div>
                         )}
@@ -551,22 +563,22 @@ const Transactions = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {isFetchingData ? (
-                    <tr>
-                      <td colSpan="3">
+                  {loading ? (
+                    <tr className="">
+                      <td colSpan="8">
                         <Skeleton active />
                       </td>
                     </tr>
                   ) : data.length === 0 ? (
-                    <tr className="h-[20vh]">
+                    <tr className="h-[60vh]">
                       <td
                         colSpan="8"
                         className="p-3 text-lg text-gray-700 text-center"
                       >
-                        No Record Yet.
+                        No Records Yet.
                       </td>
                     </tr>
-                  ) : sortedRecords.length === 0 ? (
+                  ) : records.length === 0 ? (
                     <tr className="h-[50vh]">
                       <td
                         colSpan="8"
@@ -576,7 +588,7 @@ const Transactions = () => {
                       </td>
                     </tr>
                   ) : (
-                    sortedRecords.map((item, index) => (
+                    records.map((item, index) => (
                       <tr
                         className="border-b-2 border-gray-200 h-auto overflow-auto"
                         key={item.id}

@@ -540,43 +540,43 @@ const UsersList = () => {
                 </tbody>
               </table>
             </div>
+            <nav className="my-4 py-4 mr-auto">
+              <ul className="flex gap-2 items-center">
+                <li className="flex-auto ml-10 lg:ml-20 mr-2">
+                  Page {currentPage} of {npage}
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    onClick={prePage}
+                    className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                  >
+                    <LeftOutlined />
+                  </a>
+                </li>
+                <li className="flex items-center">
+                  <input
+                    type="number"
+                    placeholder="Page"
+                    className="border rounded-lg bg-gray-100 py-2 px-4 text-black w-24  text-center outline-none"
+                    value={pageInput}
+                    onChange={handlePageInputChange}
+                    onBlur={handlePageInputBlur} // Trigger page change when the input field loses focus
+                    onKeyPress={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
+                  />
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    onClick={nextPage}
+                    className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
+                  >
+                    <RightOutlined />
+                  </a>
+                </li>
+              </ul>
+            </nav>
           </div>
-          <nav className="mr-auto lg:ml-56">
-            <ul className="flex gap-2 items-center">
-              <li className="flex-auto ml-10 lg:ml-20 mr-2">
-                Page {currentPage} of {npage}
-              </li>
-              <li>
-                <a
-                  href="#"
-                  onClick={prePage}
-                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
-                >
-                  <LeftOutlined />
-                </a>
-              </li>
-              <li className="flex items-center">
-                <input
-                  type="number"
-                  placeholder="Page"
-                  className="border rounded-lg bg-gray-100 py-2 px-4 text-black w-24  text-center outline-none"
-                  value={pageInput}
-                  onChange={handlePageInputChange}
-                  onBlur={handlePageInputBlur} // Trigger page change when the input field loses focus
-                  onKeyPress={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
-                />
-              </li>
-              <li>
-                <a
-                  href="#"
-                  onClick={nextPage}
-                  className="pagination-link bg-main hover:bg-opacity-95 text-white font-bold py-2 px-4 rounded"
-                >
-                  <RightOutlined />
-                </a>
-              </li>
-            </ul>
-          </nav>
         </div>
       </div>
     </HelmetProvider>

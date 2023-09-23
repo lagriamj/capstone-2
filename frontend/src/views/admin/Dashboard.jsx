@@ -499,7 +499,31 @@ const Dashboard = () => {
         sorter: (a, b) => a.id - b.id,
       },
       { title: "Requested By", dataIndex: "fullName", key: "fullName" },
-      { title: "Request Office", dataIndex: "reqOffice", key: "reqOffice" },
+      {
+        title: "Request Office",
+        dataIndex: "reqOffice",
+        key: "reqOffice",
+        filters: [
+          {
+            text: "CEMG",
+            value: "CEMG",
+          },
+          {
+            text: "CITC",
+            value: "CITC",
+          },
+          {
+            text: "CCE",
+            value: "CCE",
+          },
+          {
+            text: "CAE",
+            value: "CAE",
+          },
+        ],
+        onFilter: (value, record) => record.reqOffice.includes(value),
+        filterSearch: true,
+      },
       { title: "Division", dataIndex: "division", key: "division" },
       {
         title: "Nature of Request",

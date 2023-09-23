@@ -15,7 +15,6 @@ const ServiceTransaction = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isSingleRequest, setIsSingleRequest] = useState(false);
   const [modalType, setModalType] = useState(null);
   const [selectedData, setSelectedData] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -25,6 +24,24 @@ const ServiceTransaction = () => {
 
   const [viewRating, setViewRating] = useState(false);
   const [viewRatingModal, setViewRatingModal] = useState(false);
+
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+  const [selectedStatusFilters, setSelectedStatusFilters] =
+    useState("no-status-selected");
+
+  const [selectedSortOrder, setSelectedDateOrder] = useState("desc");
+  const [isDateSortingDropdownOpen, setIsDateSortingDropdownOpen] =
+    useState(false);
+
+  const [isModeDropdownOpen, setIsModeDropdownOpen] = useState(false);
+  const [selectedModeFilters, setSelectedModeFilters] = useState([]);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleDateOrderChange = (order) => {
+    setSelectedDateOrder(order);
+    setIsDateSortingDropdownOpen(false);
+  };
 
   const handleViewRating = (id) => {
     setViewRatingModal(id);
@@ -79,33 +96,57 @@ const ServiceTransaction = () => {
 
   useEffect(() => {
     fetchData();
-  }, [startDate, endDate]);
+  }, [
+    startDate,
+    endDate,
+    selectedStatusFilters,
+    selectedSortOrder,
+    searchQuery,
+  ]);
 
   const fetchData = async () => {
-    setLoading(true);
     try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/closed-transaction/${startDate}/${endDate}`
-      );
-      if (response.status === 200) {
-        setLoading(false);
-        setData(response.data.results);
-        setIsSingleRequest(response.data.results.length === 1);
-      } else {
-        setLoading(false);
-        console.error("Failed to fetch utility settings. Response:", response);
+      setLoading(true);
+      const urlSegments = ["http://127.0.0.1:8000/api/closed-transaction"];
+
+      if (startDate) {
+        urlSegments.push(startDate);
       }
-    } catch (error) {
+      if (endDate) {
+        urlSegments.push(endDate);
+      }
+      if (selectedStatusFilters) {
+        urlSegments.push(selectedStatusFilters);
+      }
+      if (selectedSortOrder) {
+        urlSegments.push(selectedSortOrder);
+      }
+      if (searchQuery) {
+        urlSegments.push(searchQuery);
+      }
+
+      const filteredUrlSegments = urlSegments.filter(
+        (segment) => segment !== null && segment !== ""
+      );
+      const url = filteredUrlSegments.join("/");
+      const regex = new RegExp(`/${selectedSortOrder}$`);
+      const cleanedUrl = url.replace(regex, "");
+
+      const result = await axios.get(cleanedUrl, {
+        params: {
+          order: selectedSortOrder,
+        },
+      });
+
+      setData(result.data.results);
       setLoading(false);
-      console.error("Error fetching utility settings:", error);
+    } catch (err) {
+      console.log("Something went wrong:", err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
-
-  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
-  const [selectedStatusFilters, setSelectedStatusFilters] = useState([]);
-
-  const [isModeDropdownOpen, setIsModeDropdownOpen] = useState(false);
-  const [selectedModeFilters, setSelectedModeFilters] = useState([]);
 
   const toggleModeDropdown = () => {
     setIsModeDropdownOpen(!isModeDropdownOpen);
@@ -147,27 +188,28 @@ const ServiceTransaction = () => {
   const records = data.slice(firstIndex, lastIndex);
 
   const npage = Math.ceil(data.length / recordsPage);
-  //const numbers = [...Array(npage + 1).keys()].slice(1);
 
-  const [searchQuery, setSearchQuery] = useState("");
+  useEffect(() => {
+    if (selectedStatusFilters !== null) {
+      setCurrentPage(1);
+    }
+  }, [selectedStatusFilters]);
 
-  const filteredRecords = records.filter((item) => {
-    const matchesSearchQuery =
-      item.natureOfRequest.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.assignedTo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.modeOfRequest.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.dateRequested.toLowerCase().includes(searchQuery.toLowerCase());
+  useEffect(() => {
+    if (selectedSortOrder !== null) {
+      setCurrentPage(1);
+    }
+  }, [selectedSortOrder]);
 
-    const matchesStatusFilter =
-      selectedStatusFilters.length === 0 ||
-      selectedStatusFilters.includes(item.status);
+  useEffect(() => {
+    if (searchQuery !== null) {
+      setCurrentPage(1);
+    }
+  }, [searchQuery]);
 
-    const matchesModeFilter =
-      selectedModeFilters.length === 0 ||
-      selectedModeFilters.includes(item.modeOfRequest);
-
-    return matchesSearchQuery && matchesStatusFilter && matchesModeFilter;
-  });
+  if (selectedStatusFilters.length === 0) {
+    setSelectedStatusFilters(["no-status-selected"]);
+  }
 
   const [pageInput, setPageInput] = useState("");
 
@@ -237,7 +279,7 @@ const ServiceTransaction = () => {
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
         <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">
           <div
-            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] h-auto lg:ml-auto lg:mx-4   lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
+            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] h-auto lg:ml-auto lg:mx-4   lg:mt-0   mt-20  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
             <div className="flex lg:flex-row text-center flex-col w-full lg:pl-4 items-center justify-center shadow-xl bg-white  text-white rounded-t-lg lg:gap-4 gap-2">
               <h1 className="flex text-black items-center lg:text-2xl font-semibold ">
@@ -251,7 +293,7 @@ const ServiceTransaction = () => {
                 <input
                   type="text"
                   placeholder="Search"
-                  className={`border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 w-full focus:outline-none text-base h-10`}
+                  className="border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 w-full focus:outline-none text-base h-10"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -280,9 +322,7 @@ const ServiceTransaction = () => {
               </div>
             </div>
             <div
-              className={`overflow-auto h-auto shadow-xl  pb-5 ${
-                isSingleRequest ? "lg:h-screen" : ""
-              } rounded-lg w-full`}
+              className={`overflow-auto h-auto shadow-xl  pb-5  rounded-lg w-full`}
             >
               <table className="w-full">
                 <thead className="bg-gray-50 border-b-2 border-gray-200">
@@ -359,12 +399,53 @@ const ServiceTransaction = () => {
                       Assigned To
                     </th>
                     <th
-                      className={`w-42 pl-5 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
+                      className={`w-48py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider relative text-left whitespace-nowrap`}
                     >
                       Date Updated
+                      <button
+                        onClick={() =>
+                          setIsDateSortingDropdownOpen(
+                            !isDateSortingDropdownOpen
+                          )
+                        }
+                        className="text-main focus:outline-none ml-2"
+                        style={{
+                          backgroundColor: "transparent",
+                          border: "none",
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          icon={faFilter}
+                          className={`large:h-4 large:w-4 w-3 h-3 text-white`}
+                        />
+                      </button>
+                      {isDateSortingDropdownOpen && (
+                        <div className="absolute top-8 right-0 flex flex-col text-black bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
+                          <button
+                            onClick={() => handleDateOrderChange("asc")}
+                            className={`text-black font-medium py-2 px-4 rounded-lg ${
+                              selectedSortOrder === "asc"
+                                ? "bg-main text-white"
+                                : ""
+                            }`}
+                          >
+                            Ascending
+                          </button>
+                          <button
+                            onClick={() => handleDateOrderChange("desc")}
+                            className={`text-black font-medium py-2 px-4 rounded-lg ${
+                              selectedSortOrder === "desc"
+                                ? "bg-main text-white"
+                                : ""
+                            }`}
+                          >
+                            Descending
+                          </button>
+                        </div>
+                      )}
                     </th>
                     <th
-                      className={`w-42 pl-5 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider whitespace-nowrap text-left`}
+                      className={`w-36  pl-5py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
                     >
                       Status
                       <div className="relative inline-block">
@@ -382,54 +463,30 @@ const ServiceTransaction = () => {
                           />
                         </button>
                         {isStatusDropdownOpen && (
-                          <div className="absolute right-0 overflow-auto bg-white border text-start text-black border-gray-200 py-2 mt-2 shadow-lg rounded-lg ">
+                          <div className="absolute right-0 bg-white border text-black border-gray-200 py-2 mt-2 shadow-lg rounded-lg text-start">
                             <label className="block px-4 py-2">
                               <input
                                 type="checkbox"
-                                value="Pending"
+                                value="Closed"
                                 checked={selectedStatusFilters.includes(
-                                  "Pending"
+                                  "Closed"
                                 )}
                                 onChange={handleStatusCheckboxChange}
                                 className="mr-2"
                               />
-                              Pending
+                              Closed
                             </label>
                             <label className="block px-4 py-2">
                               <input
                                 type="checkbox"
-                                value="Received"
+                                value="Cancelled"
                                 checked={selectedStatusFilters.includes(
-                                  "Received"
+                                  "Cancelled"
                                 )}
                                 onChange={handleStatusCheckboxChange}
                                 className="mr-2"
                               />
-                              Received
-                            </label>
-                            <label className="block px-4 py-2">
-                              <input
-                                type="checkbox"
-                                value="On Progress"
-                                checked={selectedStatusFilters.includes(
-                                  "On Progress"
-                                )}
-                                onChange={handleStatusCheckboxChange}
-                                className="mr-2"
-                              />
-                              On Progress
-                            </label>
-                            <label className="block px-4 py-2">
-                              <input
-                                type="checkbox"
-                                value="toRelease"
-                                checked={selectedStatusFilters.includes(
-                                  "toRelease"
-                                )}
-                                onChange={handleStatusCheckboxChange}
-                                className="mr-2"
-                              />
-                              To Release
+                              Cancelled
                             </label>
                           </div>
                         )}
@@ -459,7 +516,7 @@ const ServiceTransaction = () => {
                         No Records Yet.
                       </td>
                     </tr>
-                  ) : filteredRecords.length === 0 ? (
+                  ) : records.length === 0 ? (
                     <tr className="h-[50vh]">
                       <td
                         colSpan="8"
@@ -469,7 +526,7 @@ const ServiceTransaction = () => {
                       </td>
                     </tr>
                   ) : (
-                    filteredRecords.map((setting, index) => (
+                    records.map((setting, index) => (
                       <tr key={setting.id}>
                         <td
                           className={`border-b-2 pl-5  py-2 large:py-3 large:text-lg text-sm border-gray-200 text-center`}

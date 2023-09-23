@@ -10,13 +10,12 @@ use Carbon\Carbon;
 
 class RequestsController extends Controller
 {
-    public function showRequest(Request $request, $startDate = null, $endDate = null)
+    public function showRequest(Request $request, $startDate = null, $endDate = null, $selectedStatus = null, $selectedSort = null, $search = null)
     {
         $userID = $request->input('user_id');
+        $order = $request->input('order');
         $query = Requests::where('status', '!=', 'Cancelled')
             ->where('status', '!=', 'Closed');
-
-
 
         $startDateTime = Carbon::now();
         $startDateTime->setTime(1, 5, 0);
@@ -38,10 +37,29 @@ class RequestsController extends Controller
         }
 
         if ($startDate && $endDate) {
-            // Use '<' for the end date to exclude it from the range
-            $query->where('user_requests.dateRequested', '>=', $startDate)
-                ->where('user_requests.dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
+            $query->where('dateRequested', '>=', $startDate)
+                ->where('dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
         }
+
+        if ($selectedStatus && in_array($selectedStatus, ['Pending', 'Received', 'On Progress', 'To Release', 'To Rate'])) {
+            $query->where('status', $selectedStatus);
+        }
+
+
+        if ($order && in_array($order, ['asc', 'desc'])) {
+            $query->orderByRaw("dateRequested $order");
+        }
+
+        if ($search) {
+            $search = preg_replace('/^E-/i', '', $search); // Remove 'E-' or 'e-' prefix
+            $query->where(function ($query) use ($search) {
+                $query->where('id', 'LIKE', "%$search%")
+                    ->orWhere('natureOfRequest', 'LIKE', "%$search%")
+                    ->orWhere('assignedTo', 'LIKE', "%$search%");
+            });
+        }
+
+
 
         $requests = $query->get();
 
@@ -49,6 +67,7 @@ class RequestsController extends Controller
             'results' => $requests
         ], 200);
     }
+
 
     public function addRequest(Request $request)
     {

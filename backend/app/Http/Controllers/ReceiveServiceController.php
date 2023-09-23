@@ -12,8 +12,9 @@ use Illuminate\Support\Facades\DB;
 
 class ReceiveServiceController extends Controller
 {
-    public function pendingRequest($startDate = null, $endDate = null)
+    public function pendingRequest(Request $request, $startDate = null, $endDate = null, $selectedSort = null, $search = null)
     {
+        $order = $request->input('order');
         $query = Requests::where('status', 'Pending');
 
 
@@ -24,7 +25,19 @@ class ReceiveServiceController extends Controller
         }
 
 
-        $query->orderBy('dateUpdated', 'desc');
+        if ($order && in_array($order, ['asc', 'desc'])) {
+            $query->orderByRaw("dateRequested $order");
+        }
+
+        if ($search) {
+            $search = preg_replace('/^E-/i', '', $search); // Remove 'E-' or 'e-' prefix
+            $query->where(function ($query) use ($search) {
+                $query->where('id', 'LIKE', "%$search%")
+                    ->orWhere('natureOfRequest', 'LIKE', "%$search%")
+                    ->orWhere('reqOffice', 'LIKE', "%$search%")
+                    ->orWhere('assignedTo', 'LIKE', "%$search%");
+            });
+        }
 
         $data = $query->get();
 
@@ -105,8 +118,11 @@ class ReceiveServiceController extends Controller
     //     return response()->json(['results' => $data]);
     // }
 
-    public function showServiceTask($startDate = null, $endDate = null)
+    public function showServiceTask(Request $request, $technician = null, $startDate = null, $endDate = null, $selectedStatus = null, $selectedSort = null, $search = null)
     {
+        $order = $request->input('order');
+
+
         $query = DB::table('user_requests')
             ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
             ->select('user_requests.*', 'receive_service.*')
@@ -117,6 +133,30 @@ class ReceiveServiceController extends Controller
             // Use '<' for the end date to exclude it from the range
             $query->where('user_requests.dateRequested', '>=', $startDate)
                 ->where('user_requests.dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
+        }
+
+        if ($selectedStatus && in_array($selectedStatus, ['Pending', 'Received', 'On Progress', 'To Release', 'To Rate'])) {
+            $query->where('status', $selectedStatus);
+        }
+
+        if ($technician != "notech") {
+            $query->where('user_requests.assignedTo', $technician);
+        }
+
+
+
+
+        if ($order && in_array($order, ['asc', 'desc'])) {
+            $query->orderByRaw("dateRequested $order");
+        }
+
+        if ($search) {
+            $search = preg_replace('/^E-/i', '', $search); // Remove 'E-' or 'e-' prefix
+            $query->where(function ($query) use ($search) {
+                $query->where('user_requests.id', 'LIKE', "%$search%")
+                    ->orWhere('user_requests.natureOfRequest', 'LIKE', "%$search%")
+                    ->orWhere('user_requests.assignedTo', 'LIKE', "%$search%");
+            });
         }
 
         $data = $query->get();

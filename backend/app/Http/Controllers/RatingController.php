@@ -12,13 +12,16 @@ use Illuminate\Support\Facades\DB;
 class RatingController extends Controller
 {
 
-    public function showTransanction($id, $startDate = null, $endDate = null)
+    public function showTransanction(Request $request, $id, $startDate = null, $endDate = null, $selectedStatus = null, $selectedSort = null, $search = null)
     {
+
+        $order = $request->input('order');
+
         $query = DB::table('user_requests')
             ->select('user_requests.*')
             ->whereNotIn('status', ['Pending', 'Received', 'On Progress', 'To Release', 'To Rate'])
-            ->where('user_id', $id)
-            ->orderBy('dateUpdated', 'desc'); // Removed the table alias here
+            ->where('user_id', $id);
+
 
         if ($startDate && $endDate) {
             // Use '<' for the end date to exclude it from the range
@@ -26,23 +29,62 @@ class RatingController extends Controller
                 ->where('user_requests.dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
         }
 
+        if ($order && in_array($order, ['asc', 'desc'])) {
+            $query->orderByRaw("dateUpdated $order");
+        }
+
+        if ($selectedStatus && in_array($selectedStatus, ['Closed', 'Cancelled'])) {
+            $query->where('status', $selectedStatus);
+        }
+
+        if ($search) {
+            $search = preg_replace('/^E-/i', '', $search); // Remove 'E-' or 'e-' prefix
+            $query->where(function ($query) use ($search) {
+                $query->where('id', 'LIKE', "%$search%")
+                    ->orWhere('natureOfRequest', 'LIKE', "%$search%")
+                    ->orWhere('assignedTo', 'LIKE', "%$search%");
+            });
+        }
+
+
+
         $data = $query->get();
 
         return response()->json(['results' => $data]);
     }
 
 
-    public function showServiceTransanction($startDate = null, $endDate = null)
+    public function showServiceTransanction(Request $request, $startDate = null, $endDate = null, $selectedStatus = null, $selectedSort = null, $search = null)
     {
+
+        $order = $request->input('order');
+
         $query = DB::table('user_requests')
             ->select('user_requests.*')
-            ->whereNotIn('status', ['Pending', 'Received', 'On Progress', 'To Release', 'To Rate'])
-            ->orderBy('user_requests.dateUpdated', 'desc');
+            ->whereNotIn('status', ['Pending', 'Received', 'On Progress', 'To Release', 'To Rate']);
+
 
         if ($startDate && $endDate) {
             // Use '<' for the end date to exclude it from the range
             $query->where('user_requests.dateRequested', '>=', $startDate)
                 ->where('user_requests.dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
+        }
+
+        if ($order && in_array($order, ['asc', 'desc'])) {
+            $query->orderByRaw("dateUpdated $order");
+        }
+
+        if ($selectedStatus && in_array($selectedStatus, ['Closed', 'Cancelled'])) {
+            $query->where('status', $selectedStatus);
+        }
+
+        if ($search) {
+            $search = preg_replace('/^E-/i', '', $search); // Remove 'E-' or 'e-' prefix
+            $query->where(function ($query) use ($search) {
+                $query->where('id', 'LIKE', "%$search%")
+                    ->orWhere('natureOfRequest', 'LIKE', "%$search%")
+                    ->orWhere('assignedTo', 'LIKE', "%$search%");
+            });
         }
 
         $data = $query->get();
@@ -102,6 +144,7 @@ class RatingController extends Controller
         }
 
         $request->status = 'Closed';
+        $request->dateUpdated = now();
         $request->save();
 
         return response()->json(['message' => 'Request has been closed']);

@@ -41,12 +41,12 @@ Route::get('/getOfficeAndDivision/{userID}', [RequestsController::class, 'getOff
 Route::post('add-request', [RequestsController::class, 'addRequest']);
 
 //Current Requests (user side)
-Route::get('request-list/{startDate?}/{endDate?}', [RequestsController::class, 'showRequest']);
+Route::get('request-list/{startDate?}/{endDate?}/{selectedStatus?}/{selectedSort?}/{search?}', [RequestsController::class, 'showRequest']);
 Route::put('closedNorate/{id}', [RatingController::class, 'closedNorate']);
 Route::delete('delete-request/{id}', [RequestsController::class, 'destroyRequest']);
 
 //Transaction (user side)
-Route::get('transaction-list/{id}/{startDate?}/{endDate?}', [RatingController::class, 'showTransanction']);
+Route::get('transaction-list/{id}/{startDate?}/{endDate?}/{selectedStatus?}/{selectedSort?}/{search?}/{order?}', [RatingController::class, 'showTransanction']);
 Route::get('closed-view/{id}', [RatingController::class, 'closedView']);
 Route::post('transanction-rate', [RatingController::class, 'rateTransaction']);
 Route::get('done-rate', [RatingController::class, 'doneRating']);
@@ -60,11 +60,11 @@ Route::put('/update-contact', [UserController::class, 'updateContactNumber']);
 
 //Receive Service (admin side)
 Route::put('delete-receive/{id}', [ReceiveServiceController::class, 'destroyService']);
-Route::get('pending-request/{startDate?}/{endDate?}', [ReceiveServiceController::class, 'pendingRequest']);
+Route::get('pending-request/{startDate?}/{endDate?}/{selectedSort?}/{search?}', [ReceiveServiceController::class, 'pendingRequest']);
 Route::post('received-request', [ReceiveServiceController::class, 'receivedRequest']);
 
 //Service Task (admin side)
-Route::get('service-task-list/{startDate?}/{endDate?}', [ReceiveServiceController::class, 'showServiceTask']);
+Route::get('service-task-list/{technician?}/{startDate?}/{endDate?}/{selectedStatus?}/{selectedSort?}/{search?}', [ReceiveServiceController::class, 'showServiceTask']);
 // Route::get('service-my-task-list/{fullName}', [ReceiveServiceController::class, 'showMyServiceTask']);
 Route::put('onprogress-request/{id}', [ReceiveServiceController::class, 'onprogressRequest']);
 Route::put('torelease-request/{id}', [ReceiveServiceController::class, 'toreleaseRequest']);
@@ -72,7 +72,7 @@ Route::post('torate-request', [ReceiveServiceController::class, 'torateRequest']
 Route::put('delete-serviced/{id}/{reqID}', [ReceiveServiceController::class, 'destroyServiceTask']);
 
 //Service Transaction
-Route::get('closed-transaction/{startDate?}/{endDate?}', [RatingController::class, 'showServiceTransanction']);
+Route::get('closed-transaction/{startDate?}/{endDate?}/{selectedStatus?}/{selectedSort?}/{search?}', [RatingController::class, 'showServiceTransanction']);
 
 //Account List in Account (admin side)
 Route::get('/users-list', [UserController::class, 'showUsersList']);

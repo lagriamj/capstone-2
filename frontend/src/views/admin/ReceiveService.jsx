@@ -5,7 +5,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import axios from "axios";
 import ReceiveServiceModal from "../../components/ReceiveServiceModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faTrash, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { Skeleton, message } from "antd";
 import { Popconfirm } from "antd";
 import {
@@ -22,6 +22,15 @@ const ReceiveService = () => {
   const [loading, setLoading] = useState(false);
   const [popconfirmVisible, setPopconfirmVisible] = useState([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSortOrder, setSelectedDateOrder] = useState("desc");
+  const [isDateSortingDropdownOpen, setIsDateSortingDropdownOpen] =
+    useState(false);
+
+  const handleDateOrderChange = (order) => {
+    setSelectedDateOrder(order);
+    setIsDateSortingDropdownOpen(false);
+  };
 
   const openModal = (data) => {
     setSelectedData(data);
@@ -48,17 +57,14 @@ const ReceiveService = () => {
   const isLargeScreen = windowWidth >= 1024;
 
   useEffect(() => {
-    // Initialize popconfirmVisible state with false for each row
     setPopconfirmVisible(new Array(data.length).fill(false));
   }, [data]);
 
   const showPopconfirm = (id) => {
-    // Use setPopconfirmVisible instead of setOpen
     const popconfirmVisibleCopy = [...popconfirmVisible];
     popconfirmVisibleCopy[id] = true;
     setPopconfirmVisible(popconfirmVisibleCopy);
     setTimeout(() => {
-      // Use setPopconfirmVisible instead of setOpen
       setPopconfirmVisible(false);
     }, 5000);
   };
@@ -68,13 +74,11 @@ const ReceiveService = () => {
     handleDelete(item);
     handleCancel(item);
     setTimeout(() => {
-      // Use setPopconfirmVisible instead of setOpen
       setConfirmLoading(false);
     }, 2000);
   };
 
   const handleCancel = (index) => {
-    // Use setPopconfirmVisible instead of setOpen
     const popconfirmVisibleCopy = [...popconfirmVisible];
     popconfirmVisibleCopy[index] = false;
     setPopconfirmVisible(popconfirmVisibleCopy);
@@ -87,7 +91,6 @@ const ReceiveService = () => {
       setData(newUserData);
     } catch (error) {
       console.error("Error deleting request:", error);
-      // Handle the error gracefully, e.g., show an error message to the user
     }
   };
 
@@ -107,24 +110,50 @@ const ReceiveService = () => {
 
   useEffect(() => {
     fetchData();
-  }, [startDate, endDate]);
+  }, [startDate, endDate, selectedSortOrder, searchQuery]);
 
   const fetchData = async () => {
-    setLoading(true);
     try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/pending-request/${startDate}/${endDate}`
-      );
-      if (response.status === 200) {
-        setLoading(false);
-        setData(response.data.results);
-      } else {
-        setLoading(false);
-        console.error("Failed to fetch utility settings. Response:", response);
+      setLoading(true);
+      const urlSegments = ["http://127.0.0.1:8000/api/pending-request"];
+
+      if (startDate) {
+        urlSegments.push(startDate);
       }
-    } catch (error) {
+      if (endDate) {
+        urlSegments.push(endDate);
+      }
+      if (selectedSortOrder) {
+        urlSegments.push(selectedSortOrder);
+      }
+      if (searchQuery) {
+        urlSegments.push(searchQuery);
+      }
+
+      const filteredUrlSegments = urlSegments.filter(
+        (segment) => segment !== null && segment !== ""
+      );
+
+      const url = filteredUrlSegments.join("/");
+
+      const regex = new RegExp(`/${selectedSortOrder}$`);
+      const cleanedUrl = url.replace(regex, "");
+
+      console.log("URL:", cleanedUrl);
+
+      const result = await axios.get(cleanedUrl, {
+        params: {
+          order: selectedSortOrder,
+        },
+      });
+
+      setData(result.data.results);
       setLoading(false);
-      console.error("Error fetching utility settings:", error);
+    } catch (err) {
+      console.log("Something went wrong:", err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -134,22 +163,21 @@ const ReceiveService = () => {
   const lastIndex = currentPage * recordsPage;
   const firstIndex = lastIndex - recordsPage;
   const records = data.slice(firstIndex, lastIndex);
-
   const npage = Math.ceil(data.length / recordsPage);
-  //const numbers = [...Array(npage + 1).keys()].slice(1);
 
-  const [searchQuery, setSearchQuery] = useState("");
+  useEffect(() => {
+    if (selectedSortOrder !== null) {
+      setCurrentPage(1);
+    }
+  }, [selectedSortOrder]);
 
-  const filteredRecords = records.filter((item) => {
-    const matchesSearchQuery =
-      item.natureOfRequest.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.assignedTo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.modeOfRequest.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.dateRequested.toLowerCase().includes(searchQuery.toLowerCase());
+  useEffect(() => {
+    if (searchQuery !== null) {
+      setCurrentPage(1);
+    }
+  }, [searchQuery]);
 
-    return matchesSearchQuery;
-  });
-
+  //-----------------------------------------------------
   const [pageInput, setPageInput] = useState("");
 
   const goToPage = () => {
@@ -157,9 +185,8 @@ const ReceiveService = () => {
 
     if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= npage) {
       setCurrentPage(pageNumber);
-      setPageInput(""); // Clear the input field after changing the page
+      setPageInput("");
     } else {
-      // Handle invalid page number input, e.g., show an error message to the user
       message.error("Invalid page number. Please enter a valid page number.");
     }
   };
@@ -169,12 +196,12 @@ const ReceiveService = () => {
   };
 
   const handlePageInputBlur = () => {
-    goToPage(); // Trigger page change when the input field loses focus
+    goToPage();
   };
 
   const handlePageInputKeyPress = (e) => {
     if (e.key === "Enter") {
-      goToPage(); // Trigger page change when the Enter key is pressed
+      goToPage();
     }
   };
 
@@ -219,7 +246,7 @@ const ReceiveService = () => {
                 <input
                   type="text"
                   placeholder="Search"
-                  className={`border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 w-full focus:outline-none text-base h-10`}
+                  className="border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 w-full focus:outline-none text-base h-10"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -274,9 +301,50 @@ const ReceiveService = () => {
                       Requesting Office
                     </th>
                     <th
-                      className={`pl-5 px-3 py-5 large:py-6 text-sm large:text-base  font-semibold tracking-wider text-left whitespace-nowrap`}
+                      className={`pl-5 px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
                     >
-                      Date
+                      Date Requested
+                      <button
+                        onClick={() =>
+                          setIsDateSortingDropdownOpen(
+                            !isDateSortingDropdownOpen
+                          )
+                        }
+                        className="text-main focus:outline-none ml-2"
+                        style={{
+                          backgroundColor: "transparent",
+                          border: "none",
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          icon={faFilter}
+                          className={`large:h-4 large:w-4 w-3 h-3 text-white`}
+                        />
+                      </button>
+                      {isDateSortingDropdownOpen && (
+                        <div className="absolute top-8 right-0 flex flex-col text-black bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
+                          <button
+                            onClick={() => handleDateOrderChange("asc")}
+                            className={`text-black font-medium py-2 px-4 rounded-lg ${
+                              selectedSortOrder === "asc"
+                                ? "bg-main text-white"
+                                : ""
+                            }`}
+                          >
+                            Ascending
+                          </button>
+                          <button
+                            onClick={() => handleDateOrderChange("desc")}
+                            className={`text-black font-medium py-2 px-4 rounded-lg ${
+                              selectedSortOrder === "desc"
+                                ? "bg-main text-white"
+                                : ""
+                            }`}
+                          >
+                            Descending
+                          </button>
+                        </div>
+                      )}
                     </th>
                     <th
                       className={`pl-5 px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
@@ -311,7 +379,7 @@ const ReceiveService = () => {
                         No Records Yet.
                       </td>
                     </tr>
-                  ) : filteredRecords.length === 0 ? (
+                  ) : records.length === 0 ? (
                     <tr className="h-[50vh]">
                       <td
                         colSpan="8"
@@ -321,7 +389,7 @@ const ReceiveService = () => {
                       </td>
                     </tr>
                   ) : (
-                    filteredRecords.map((setting, index) => (
+                    records.map((setting, index) => (
                       <tr key={setting.id}>
                         <td
                           className={`border-b-2 pl-5  py-2 large:py-3 large:text-lg text-sm  border-gray-200 text-left`}
@@ -469,9 +537,6 @@ const ReceiveService = () => {
       setCurrentPage(currentPage - 1);
     }
   }
-  //function changeCPage(id) {
-  //setCurrentPage(id);
-  //}
   function nextPage() {
     if (currentPage !== npage) {
       setCurrentPage(currentPage + 1);
