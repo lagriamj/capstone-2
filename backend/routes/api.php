@@ -82,6 +82,7 @@ Route::middleware('api')->group(function () {
     Route::post('/admin/register', [UserController::class, 'register']);
     Route::put('/admin/updateUser', [UserController::class, 'update']);
     Route::delete('/delete-user/{id}', [UserController::class, 'deleteUser']);
+    Route::post('/delete-selected-users', [UserController::class, 'deleteSelectedUsers']);
 
     //Office or Department in Utility Setting (admin side)
     Route::get('office-list', [UtilitySettingController::class, 'showOffice']);

@@ -328,4 +328,22 @@ class UserController extends Controller
             'message' => 'User deleted successfully.'
         ], 200);
     }
+
+    public function deleteSelectedUsers(Request $request)
+    {
+        $selectedUserIDs = $request->input('selectedUserIDs', []);
+
+        if (empty($selectedUserIDs)) {
+            return response()->json(['message' => 'No users selected for deletion'], 400);
+        }
+
+        try {
+            // Perform the bulk deletion
+            User::whereIn('userID', $selectedUserIDs)->delete();
+
+            return response()->json(['message' => 'Selected users deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error deleting selected users'], 500);
+        }
+    }
 }

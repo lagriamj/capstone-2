@@ -1,0 +1,23 @@
+
+.ant-table-thead th  {
+    background: #334D66 !important;
+   color: white !important;
+   font-family: 'Poppins', sans-serif !important; 
+   border: none !important;
+}
+
+
+
+.ant-table-cell {
+    font-family: 'Poppins', sans-serif !important;
+}
+
+.ant-table-thead svg {
+    color: white !important;
+}
+
+.ant-table-filter-dropdown-btns .ant-btn-primary {
+    background-color: #007bff; 
+    color: #fff; 
+    border-color: #007bff; 
+  }
