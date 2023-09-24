@@ -55,7 +55,7 @@ const LineGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
 };
 
 LineGraph.propTypes = {
-  data: PropTypes.object.isRequired,
+  data: PropTypes.any.isRequired,
   values1: PropTypes.any.isRequired,
   values2: PropTypes.any.isRequired,
   xValue: PropTypes.any.isRequired,

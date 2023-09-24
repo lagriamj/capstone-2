@@ -108,16 +108,10 @@ Route::delete('delete-technician/{id}', [TechnicianController::class, 'destroyTe
 Route::post('cancel-reason/{id}', [ReceiveServiceController::class, 'cancelReason']);
 Route::get('view-cancelled/{id}', [ReceiveServiceController::class, 'viewCancelRequest']);
 
-// Dashboard
-Route::get('pending-requests', [DashboardController::class, 'countPendingUserRequests']);
-Route::get('all-users', [DashboardController::class, 'countAllUsers']);
-Route::get('received-requests', [DashboardController::class, 'countReceivedUserRequests']);
-Route::get('closed-requests', [DashboardController::class, 'countClosedUserRequests']);
-Route::get('top-nature-request', [DashboardController::class, 'showCommonNatureOfRequest']);
 
-Route::get('overall-rating', [DashboardController::class, 'calculateTotalRatings']);
-Route::get('satisfied-rating', [DashboardController::class, 'calculateSatisfiedRatings']);
-Route::get('unsatisfied-rating', [DashboardController::class, 'calculateUnSatisfiedRatings']);
+// Dashboard
+Route::get('count-requests', [DashboardController::class, 'countUserRequests']);
+Route::get('calculate-rating', [DashboardController::class, 'calculateRatings']);
 
 Route::get('technician-performance/{startDate?}/{endDate?}', [DashboardController::class, 'getTechnicianPerformance']);
 Route::get('percent-accomplished/{startDate?}/{endDate?}', [DashboardController::class, 'getPercentAccomplished']);

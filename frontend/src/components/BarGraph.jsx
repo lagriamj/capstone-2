@@ -42,7 +42,7 @@ const BarGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
 };
 
 BarGraph.propTypes = {
-  data: PropTypes.any.isRequired,
+  data: PropTypes.any,
   values1: PropTypes.any.isRequired,
   values2: PropTypes.any.isRequired,
   xValue: PropTypes.any.isRequired,

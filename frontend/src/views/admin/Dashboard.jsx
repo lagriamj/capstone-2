@@ -24,10 +24,9 @@ const Dashboard = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isLoading, setIsLoading] = useState(true);
   const [counts, setCounts] = useState({
-    pending: 0,
-    allUsers: 0,
-    received: 0,
-    closed: 0,
+    countPending: 0,
+    countRequest: 0,
+    countClosed: 0,
   });
   const [requestDetails, setRequestDetails] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -46,62 +45,33 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    async function fetchCounts() {
+    async function fetchData() {
       try {
-        const pendingResponse = await fetch(
-          "http://127.0.0.1:8000/api/pending-requests"
+        // Make an asynchronous GET request to your Laravel route
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/count-requests"
         );
-        const allUsersResponse = await fetch(
-          "http://127.0.0.1:8000/api/all-users"
-        );
-        const receivedResponse = await fetch(
-          "http://127.0.0.1:8000/api/received-requests"
-        );
-        const closedResponse = await fetch(
-          "http://127.0.0.1:8000/api/closed-requests"
-        );
-
-        if (pendingResponse.ok) {
-          const pendingData = await pendingResponse.json();
-          setCounts((prevCounts) => ({
-            ...prevCounts,
-            pending: pendingData.count,
-          }));
-        }
-
-        if (allUsersResponse.ok) {
-          const allUsersData = await allUsersResponse.json();
-          setCounts((prevCounts) => ({
-            ...prevCounts,
-            allUsers: allUsersData.count,
-          }));
-        }
-
-        if (receivedResponse.ok) {
-          const receivedData = await receivedResponse.json();
-          setCounts((prevCounts) => ({
-            ...prevCounts,
-            received: receivedData.count,
-          }));
-        }
-
-        if (closedResponse.ok) {
-          const closedData = await closedResponse.json();
-          setCounts((prevCounts) => ({
-            ...prevCounts,
-            closed: closedData.count,
-          }));
-        }
-
-        // Hide the loading state once all counts are fetched
+        setCounts(response.data);
         setIsLoading(false);
       } catch (error) {
+        setIsLoading(false);
         console.error("Error fetching counts:", error);
-        setIsLoading(false); // Hide loading state on error
       }
     }
 
-    fetchCounts();
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   useEffect(() => {
@@ -157,100 +127,29 @@ const Dashboard = () => {
 
   const isWindowsHeightBelow768 = windowsHeight768 <= 768;
 
-  console.log("Screen Width: ");
+  const [ratingsAndNature, setRatingsAndNature] = useState({
+    topNature: [],
+    totalRatings: 0,
+    satisfiedRating: 0,
+    unsatisfiedRating: 0,
+  });
 
-  const [topNatures, setTopNatures] = useState([]);
-  console.log(`Browser Height: ${window.innerHeight}`);
-
-  useEffect(() => {
-    async function fetchTopNatures() {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/top-nature-request"
-      );
-      const topNaturesData = await response.json();
-      setTopNatures(topNaturesData.topNatures);
-    }
-
-    fetchTopNatures();
-  }, []);
-
-  const [totalRatings, setTotalRatings] = useState(null);
+  console.log(ratingsAndNature.topNature);
 
   useEffect(() => {
-    async function fetchOverAllRatings() {
+    async function fetchData() {
       try {
-        const response = await fetch(
-          "http://127.0.0.1:8000/api/overall-rating"
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/calculate-rating"
         );
-        if (response.ok) {
-          const data = await response.json();
-          setTotalRatings(data.total_ratings);
-        } else {
-          console.error(
-            "Failed to fetch ratings data. Server returned:",
-            response.status,
-            response.statusText
-          );
-        }
+        setRatingsAndNature(response.data);
       } catch (error) {
-        console.error("Error fetching ratings data:", error.message);
+        console.error("Error fetching ratings:", error);
       }
     }
 
-    fetchOverAllRatings();
-  }, []);
-
-  const [totalUnsatisfied, setTotalUnsatisfied] = useState(null);
-
-  useEffect(() => {
-    async function fetchUnsatisfiedRating() {
-      try {
-        const response = await fetch(
-          "http://127.0.0.1:8000/api/unsatisfied-rating"
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setTotalUnsatisfied(data.UnSatisfiedRating);
-        } else {
-          console.error(
-            "Failed to fetch ratings data. Server returned:",
-            response.status,
-            response.statusText
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching ratings data:", error.message);
-      }
-    }
-
-    fetchUnsatisfiedRating();
-  }, []);
-
-  const [totalSatisfied, setTotalSatisfied] = useState(null);
-
-  useEffect(() => {
-    async function fetchSatisfiedRating() {
-      try {
-        const response = await fetch(
-          "http://127.0.0.1:8000/api/satisfied-rating"
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setTotalSatisfied(data.SatisfiedRating);
-        } else {
-          console.error(
-            "Failed to fetch ratings data. Server returned:",
-            response.status,
-            response.statusText
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching ratings data:", error.message);
-      }
-    }
-
-    fetchSatisfiedRating();
-  }, []);
+    fetchData();
+  }, []); // The empty array [] ensures the effect runs only once
 
   const [startDate, setStartDate] = useState("");
   const [technicianData, setTechnicianData] = useState(null);
@@ -348,8 +247,6 @@ const Dashboard = () => {
     },
   ];
 
-  console.log("Total: " + totalAndClosed);
-
   const pieChartData = [
     {
       name: "Pending ",
@@ -379,11 +276,17 @@ const Dashboard = () => {
   ];
 
   const formattedTotalRatings =
-    totalRatings !== null ? totalRatings.toFixed(2) : null;
+    ratingsAndNature.totalRating !== null
+      ? ratingsAndNature.totalRatings?.toFixed(2)
+      : null;
   const formattedTotalSatisfied =
-    totalSatisfied !== null ? totalSatisfied.toFixed(2) : null;
+    ratingsAndNature.totalSatisfied !== null
+      ? ratingsAndNature.satisfiedRating?.toFixed(2)
+      : null;
   const formattedTotalUnsatisfied =
-    totalUnsatisfied !== null ? totalUnsatisfied.toFixed(2) : null;
+    ratingsAndNature.totalUnsatisfied !== null
+      ? ratingsAndNature.unsatisfiedRating?.toFixed(2)
+      : null;
 
   const RADIAN = Math.PI / 180;
   const renderCustomizedLabel = ({
@@ -448,8 +351,6 @@ const Dashboard = () => {
   const [modalTitle, setModalTitle] = useState(null);
 
   const handlePieClick = (entry) => {
-    console.log(clickedPortion);
-
     axios
       .get(
         `http://127.0.0.1:8000/api/status-description/${entry.name}/${startDate}/${endDate}`
@@ -562,7 +463,7 @@ const Dashboard = () => {
                         </label>
                       </div>
                       <h1 className="large:text-4xl lg:text-2xl font-bold flex items-center justify-center ml-auto mr-auto">
-                        {counts.pending}
+                        {counts.countPending}
                       </h1>
                     </div>
                     <div className="flex lg:w-[32%] lg:h-[18vh] mb-3 bg-[#dcfce7] shadow-md rounded-lg">
@@ -576,7 +477,7 @@ const Dashboard = () => {
                         </label>
                       </div>
                       <h1 className="large:text-4xl lg:text-2xl font-bold flex items-center justify-center ml-auto mr-auto">
-                        {counts.received}
+                        {counts.countReceived}
                       </h1>
                     </div>
                     <div className="flex lg:w-[32%] lg:h-[18vh] mb-3 bg-[#f4e8ff] shadow-md rounded-lg">
@@ -590,14 +491,14 @@ const Dashboard = () => {
                         </label>
                       </div>
                       <h1 className="large:text-4xl lg:text-2xl font-bold flex items-center justify-center ml-auto mr-auto">
-                        {counts.closed}
+                        {counts.countClosed}
                       </h1>
                     </div>
                   </div>
                 </div>
 
                 <div className="lg:col-span-5 flex flex-col px-4  row-span-2 rounded-lg shadow-md  bg-white">
-                  <div className="w-full flex lg:flex-row flex-col gap-2 px-2 py-3 mediumLg:pt-1 justify-end">
+                  <div className="w-full  flex lg:flex-row flex-col gap-2 px-2 py-3 mediumLg:pt-1 justify-end">
                     {" "}
                     <div className="px-3 gotoLarge:py-3 py-1 relative whitespace-nowrap flex items-center gap-2 pb-2 font-sans font-semibold text-lg mr-auto">
                       <h1>Requests Statistics </h1>
@@ -675,7 +576,7 @@ const Dashboard = () => {
                         className="border-2 border-gray-700  rounded-lg px-1 large:text-lg mediumLg:text-sm w-36 lg:text-base "
                       />
                     </div>
-                    <div className="flex gap-1 items-center lg:justify-center justify-end lg:mr-0 mr-2">
+                    <div className="flex gap-1 items-center lg:justify-center justify-end lg:mb-0 mb-auto lg:mr-0 mr-2">
                       <label
                         htmlFor="endDate"
                         className="large:text-lg mediumLg:text-sm lg:text-base"
@@ -700,28 +601,28 @@ const Dashboard = () => {
                           ? technicianData
                           : selectedDataSources.includes("requestsByDate")
                           ? requestsByDate
-                          : ""
+                          : technicianData
                       }
                       values1={
                         selectedDataSources.includes("technicianData")
                           ? "closed"
                           : selectedDataSources.includes("requestsByDate")
                           ? "closedBydate"
-                          : ""
+                          : "closed"
                       }
                       values2={
                         selectedDataSources.includes("technicianData")
                           ? "unclosed"
                           : selectedDataSources.includes("requestsByDate")
                           ? "unclosedBydate"
-                          : ""
+                          : "unclosed"
                       }
                       xValue={
                         selectedDataSources.includes("technicianData")
                           ? "assignedTo"
                           : selectedDataSources.includes("requestsByDate")
                           ? "date"
-                          : ""
+                          : "assignedTo"
                       }
                       windowsHeight768={isWindowsHeightBelow768}
                     />
@@ -733,28 +634,28 @@ const Dashboard = () => {
                           ? technicianData
                           : selectedDataSources.includes("requestsByDate")
                           ? requestsByDate
-                          : ""
+                          : technicianData
                       }
                       values1={
                         selectedDataSources.includes("technicianData")
                           ? "closed"
                           : selectedDataSources.includes("requestsByDate")
                           ? "closedBydate"
-                          : ""
+                          : "closed"
                       }
                       values2={
                         selectedDataSources.includes("technicianData")
                           ? "unclosed"
                           : selectedDataSources.includes("requestsByDate")
                           ? "unclosedBydate"
-                          : ""
+                          : "unclosed"
                       }
                       xValue={
                         selectedDataSources.includes("technicianData")
                           ? "assignedTo"
                           : selectedDataSources.includes("requestsByDate")
                           ? "date"
-                          : ""
+                          : "assignedTo"
                       }
                       windowsHeight768={isWindowsHeightBelow768}
                     />
@@ -857,22 +758,24 @@ const Dashboard = () => {
                       Top 3 Nature of Requests
                     </h1>
                     <ul className="flex flex-col gap-4 gap-y-10 pt-4 gotoLarge:gap-y-12 gotoLarge:pt-14 font-medium   mediumLg:gap-y-4 mediumLg:pt-6 large:gap-y-14 large:pt-10 p-4 ">
-                      {topNatures.map((natureOfRequest, index) => (
-                        <li className="flex  gap-4" key={natureOfRequest.id}>
-                          <span>
-                            {index === 0 ? (
-                              <Filter1Icon />
-                            ) : index === 1 ? (
-                              <Filter2Icon />
-                            ) : index === 2 ? (
-                              <Filter3Icon />
-                            ) : (
-                              ""
-                            )}
-                          </span>{" "}
-                          {natureOfRequest.natureOfRequest}
-                        </li>
-                      ))}
+                      {ratingsAndNature.topNature.map(
+                        (natureOfRequest, index) => (
+                          <li className="flex  gap-4" key={index}>
+                            <span key={index}>
+                              {index === 0 ? (
+                                <Filter1Icon />
+                              ) : index === 1 ? (
+                                <Filter2Icon />
+                              ) : index === 2 ? (
+                                <Filter3Icon />
+                              ) : (
+                                ""
+                              )}
+                            </span>{" "}
+                            {natureOfRequest.natureOfRequest}
+                          </li>
+                        )
+                      )}
                     </ul>
                   </div>
                 </div>
