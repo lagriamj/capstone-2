@@ -1,13 +1,12 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable no-unused-vars */
 import "../index.css";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faIdCard, faLock } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import HashLoader from "react-spinners/HashLoader";
 import { useAuth } from "../AuthContext";
 import { Button, message } from "antd";
 
@@ -101,12 +100,10 @@ function Login() {
         }
       } else {
         setError(data.message);
-        console.log("Error logging in: " + error);
       }
     } catch (error) {
       console.log(error);
-      setError("Invalid Government ID or Password");
-      console.log("Error logging in: " + error);
+      message.error(error.response.data.message);
     } finally {
       setLoading(false);
     }
@@ -151,7 +148,6 @@ function Login() {
               onSubmit={handleSubmit}
               className="w-full lg:mt-10 mt-5 flex flex-col items-center justify-center gap-y-5"
             >
-              {error && <div className="text-red-700 text-lg">{error}</div>}
               <div className="flex items-start justify-center flex-col w-3/4">
                 <label
                   className="flex font-semibold text-lg"

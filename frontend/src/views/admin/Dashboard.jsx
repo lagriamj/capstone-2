@@ -75,6 +75,7 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
+    fetchRequestDetails();
     async function fetchRequestDetails() {
       try {
         const requestDetailsResponse = await fetch(
@@ -91,8 +92,6 @@ const Dashboard = () => {
         console.error("Error fetching request details:", error);
       }
     }
-
-    fetchRequestDetails();
   }, []);
 
   const openModal = (data) => {
@@ -111,8 +110,6 @@ const Dashboard = () => {
 
   const isLargeScreen = windowWidth >= 1024;
 
-  const [windowsHeight768, setWindowsHeight768] = useState(window.innerHeight);
-
   useEffect(() => {
     const handleResize = () => {
       setWindowsHeight768(window.innerHeight);
@@ -124,6 +121,8 @@ const Dashboard = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  const [windowsHeight768, setWindowsHeight768] = useState(window.innerHeight);
 
   const isWindowsHeightBelow768 = windowsHeight768 <= 768;
 
@@ -180,6 +179,12 @@ const Dashboard = () => {
     setEndDate(defaultEndDateString);
   }, []);
 
+  useEffect(() => {
+    fetchPiegraphDetails();
+    fetchDataRequest();
+    fetchTotalAndClosed();
+  }, [startDate, endDate]);
+
   const fetchDataRequest = async () => {
     try {
       const techResponse = await axios.get(
@@ -217,12 +222,6 @@ const Dashboard = () => {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    fetchPiegraphDetails();
-    fetchDataRequest();
-    fetchTotalAndClosed();
-  }, [startDate, endDate]);
 
   {
     /*const formatDate = (dateString) => {

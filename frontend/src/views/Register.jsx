@@ -180,18 +180,7 @@ const Register = () => {
           }
         });
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        setErrorMessage(
-          `The government ID ${userGovernmentID} is not available`
-        );
-      } else {
-        setErrorMessage("An error occurred.");
-      }
-      console.error(error);
+      setErrorMessage(error.response.data.message);
       setLoading(false);
     }
   };
@@ -259,9 +248,9 @@ const Register = () => {
         </div>
 
         {/* Right Column */}
-        <div className="w-full lg:w-1/2 h-screen  bg-gray-200 py-5 flex flex-col items-center justify-center overflow-auto ml-auto">
+        <div className="w-full lg:w-1/2 gotoLarge:h-screen h-auto  bg-gray-200 py-5 flex flex-col items-center justify-center overflow-auto ml-auto">
           <div
-            className={` bg-white lg:w-[80%] w-[90%] py-5 h-auto rounded-2xl shadow-xl ${
+            className={` bg-white lg:w-[80%] w-[90%] py-5 gotoLarge:h-auto h-auto rounded-2xl shadow-xl ${
               isLargeScreen ? "text-4xl" : "text-lg"
             }`}
           >
