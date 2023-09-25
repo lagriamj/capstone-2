@@ -5,14 +5,18 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import { Input, Popconfirm, Table, message } from "antd";
+import { Button, Input, Modal, Popconfirm, Table, message } from "antd";
 import Fab from "@mui/material/Fab";
 import Box from "@mui/material/Box";
 import AddIcon from "@mui/icons-material/Add";
 import AddUserModal from "../../components/AddUserModal";
 import UpdateUserModal from "../../components/UpdateUserModal";
-import { QuestionCircleOutlined, SearchOutlined } from "@ant-design/icons";
-import "./antDesignTable.css";
+import {
+  QuestionCircleOutlined,
+  SearchOutlined,
+  WarningFilled,
+} from "@ant-design/icons";
+import "./../../assets/antDesignTable.css";
 
 const UsersList = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -309,6 +313,20 @@ const UsersList = () => {
     },
   ];
 
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const showDeleteConfirmationModal = () => {
+    setIsDeleteModalVisible(true);
+  };
+
+  const handleOkDelete = () => {
+    onDeleteSelectedUsers();
+    setIsDeleteModalVisible(false);
+  };
+
+  const handleCancelDelete = () => {
+    setIsDeleteModalVisible(false);
+  };
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -404,11 +422,34 @@ const UsersList = () => {
               </div>
 
               <button
-                onClick={onDeleteSelectedUsers}
+                onClick={showDeleteConfirmationModal}
                 className="text-white bg-red-700   rounded-lg px-3 py-2 text-lg font-medium"
               >
                 Delete Selected
               </button>
+              <Modal
+                title="Confirm Deletion"
+                open={isDeleteModalVisible}
+                onOk={handleOkDelete}
+                onCancel={handleCancelDelete}
+                footer={[
+                  <Button key="cancel" onClick={handleCancelDelete}>
+                    Cancel
+                  </Button>,
+                  <Button
+                    key="ok"
+                    className="bg-red-700 text-white"
+                    onClick={handleOkDelete}
+                  >
+                    Confirm
+                  </Button>,
+                ]}
+              >
+                <p className="flex items-center justify-center gap-4">
+                  <WarningFilled className="text-red-700 text-4xl" /> Are you
+                  sure you want to delete the selected items?
+                </p>
+              </Modal>
             </div>
             <div className={` h-auto shadow-xl  pb-5  rounded-lg w-full`}>
               <Table

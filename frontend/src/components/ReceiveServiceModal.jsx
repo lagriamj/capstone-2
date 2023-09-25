@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+import Select from "react-select";
 import PropTypes from "prop-types";
 import { Button, Modal } from "antd";
 import { message } from "antd";
@@ -91,6 +91,26 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
 
   console.log(formData);
 
+  const [selectedTechnician, setSelectedTechnician] = useState(null);
+
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      border: "none",
+      boxShadow: "none",
+      height: "100%",
+      width: "100%",
+      outline: "none",
+      display: "flex",
+      overflowX: "auto",
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      backgroundColor: state.isSelected ? "#343467" : "white",
+      color: state.isSelected ? "white" : "black",
+    }),
+  };
+
   return (
     <Modal
       open={isOpen}
@@ -102,14 +122,14 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
           <span>REQUEST ID: E-{data.id}</span>
         </div>
       }
-      centered
+      centered={true}
       footer={null}
       closable={false}
     >
       <div className="relative p-6 text-lg">
         {/* Display your data in a 4x5 grid */}
         {data && (
-          <div className="grid lg:grid-cols-4 gap-4 grid-cols-1">
+          <div className="grid lg:grid-cols-4 gap-y-4 gap-x-12 grid-cols-1">
             <div className="col-span-1">
               <label
                 className="block text-sm font-bold mb-2"
@@ -118,7 +138,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Requesting Office
               </label>
               <input
-                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
                 type="text"
                 id="reqOffice"
                 name="reqOffice"
@@ -134,7 +154,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Division
               </label>
               <input
-                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
                 type="text"
                 id="division"
                 name="division"
@@ -150,7 +170,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Date Request
               </label>
               <input
-                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
                 type="text"
                 id="dateRequested"
                 name="dateRequested"
@@ -166,7 +186,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Mode Request
               </label>
               <input
-                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
                 type="text"
                 id="modeOfRequest"
                 name="modeOfRequest"
@@ -182,7 +202,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Nature Request
               </label>
               <input
-                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className=" border-b-2  border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
                 type="text"
                 id="natureOfRequest"
                 name="natureOfRequest"
@@ -198,7 +218,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Requested By
               </label>
               <input
-                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
                 type="text"
                 id="fullName"
                 name="fullName"
@@ -214,7 +234,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 Authorized By
               </label>
               <input
-                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
                 type="text"
                 id="authorizedBy"
                 name="authorizedBy"
@@ -222,7 +242,52 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 readOnly
               />
             </div>
-            <div className="col-span-1">
+            <div className="col-span-1 lg:row-start-3">
+              <label className="block text-sm font-bold mb-2" htmlFor="unit">
+                Unit
+              </label>
+              <input
+                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
+                type="text"
+                id="unit"
+                name="unit"
+                value={data.unit}
+                readOnly
+              />
+            </div>
+            <div className="col-span-1 lg:row-start-3">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="propertyNo"
+              >
+                Property No
+              </label>
+              <input
+                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
+                type="text"
+                id="propertyNo"
+                name="propertyNo"
+                value={data.propertyNo}
+                readOnly
+              />
+            </div>
+            <div className="col-span-1 lg:row-start-3">
+              <label
+                className="block text-sm font-bold mb-2"
+                htmlFor="serialNo"
+              >
+                Serial No
+              </label>
+              <input
+                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
+                type="text"
+                id="serialNo"
+                name="serialNo"
+                value={data.serialNo}
+                readOnly
+              />
+            </div>
+            <div className="col-span-full">
               <label
                 className="block text-sm font-bold mb-2"
                 htmlFor="specialIns"
@@ -239,51 +304,6 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 value={data.specialIns}
               ></textarea>
             </div>
-            <div className="col-span-1">
-              <label className="block text-sm font-bold mb-2" htmlFor="unit">
-                Unit
-              </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="unit"
-                name="unit"
-                value={data.unit}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
-              >
-                Property No
-              </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="propertyNo"
-                name="propertyNo"
-                value={data.propertyNo}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="serialNo"
-              >
-                Serial No
-              </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="serialNo"
-                name="serialNo"
-                value={data.serialNo}
-                readOnly
-              />
-            </div>
 
             {/* Add more columns as needed */}
           </div>
@@ -293,7 +313,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
         <div className="relative p-6 mb-10 text-lg">
           {/* ADMIN SIDE */}
           {data && (
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid lg:grid-cols-4 gap-y-4 gap-x-12">
               <div className="col-span-1">
                 <label
                   className="block text-sm font-bold mb-2"
@@ -302,7 +322,8 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                   Received By
                 </label>
                 <input
-                  className="shadow-md  appearance-none border-2 border-gray-800 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
+                  placeholder="Received By"
                   type="text"
                   id="receivedBy"
                   name="receivedBy"
@@ -319,7 +340,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                   Date Received
                 </label>
                 <input
-                  className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
                   id="dateReceived"
                   name="dateReceived"
                   value={daytime}
@@ -336,26 +357,30 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                 >
                   Assigned To
                 </label>
-                <select
-                  className="shadow-md appearance-none border-2 border-gray-800 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                <Select
                   name="assignedTo"
                   id="assignedTo"
                   required
-                  onChange={(e) => {
-                    changeUserFieldHandler(e);
+                  className=" w-full border-b-2 border-gray-400    px-4 focus:outline-none"
+                  value={selectedTechnician}
+                  onChange={(selectedOption) => {
+                    setSelectedTechnician(selectedOption); // Update selected option
+                    changeUserFieldHandler({
+                      target: {
+                        name: "assignedTo",
+                        value: selectedOption.value,
+                      },
+                    });
                   }}
-                >
-                  <option value="">Select a technician</option>
-                  {technicians.map((technician) => (
-                    <option
-                      key={technician.id}
-                      value={`${technician.userFirstName} ${technician.userLastName}`}
-                    >
-                      {technician.userFirstName} {technician.userLastName}
-                    </option>
-                  ))}
-                </select>
+                  options={technicians.map((option) => ({
+                    value: option.userFirstName + " " + option.userLastName,
+                    label: option.userFirstName + " " + option.userLastName,
+                  }))}
+                  placeholder="select..."
+                  styles={customStyles}
+                />
               </div>
+
               <div className="col-span-1">
                 <label
                   className="block text-sm font-bold mb-2"
@@ -364,7 +389,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                   Date Procured
                 </label>
                 <input
-                  className="shadow-md bg-gray-200 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
                   type="date"
                   id="dateProcured"
                   name="dateProcured"
@@ -376,18 +401,18 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
           )}
         </div>
         <div className="flex ml-auto w-full  gap-2 justify-end border-t-2 pt-5 pr-6">
-          <button
-            className="bg-gray-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
-            type="submit"
+          <Button
+            className="bg-gray-800 text-white h-12 font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
+            htmlType="submit"
             onClick={onClose}
           >
             Cancel
-          </button>
+          </Button>
           <Button
             loading={isSubmitting}
             type="primary"
             htmlType="submit"
-            className="bg-gray-800  py-7  font-semibold flex items-center justify-center text-white text-base font-sans w-28 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out "
+            className="bg-gray-800  h-12  font-semibold flex items-center justify-center text-white text-base font-sans w-28 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out "
           >
             {isSubmitting ? "Updating" : "Update"}
           </Button>

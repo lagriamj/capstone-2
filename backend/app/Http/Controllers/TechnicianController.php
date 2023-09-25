@@ -10,7 +10,7 @@ class TechnicianController extends Controller
 {
     public function showTechnician()
     {
-        $adminUsers = User::where('role', 'admin')->get(['userFirstName', 'userLastName']);
+        $adminUsers = User::where('role', 'admin')->get(['userFirstName', 'userLastName', 'userID']);
 
         return response()->json([
             'results' => $adminUsers

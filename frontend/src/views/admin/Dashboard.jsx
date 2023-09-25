@@ -672,6 +672,7 @@ const Dashboard = () => {
                           cy="50%"
                           fill="color"
                           label={renderCustomizedLabel}
+                          labelLine={false}
                         />
                         <Tooltip />
                         <Legend />

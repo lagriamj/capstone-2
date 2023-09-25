@@ -6,7 +6,7 @@ import axios from "axios";
 import ReceiveServiceModal from "../../components/ReceiveServiceModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faTrash, faFilter } from "@fortawesome/free-solid-svg-icons";
-import { Skeleton, message } from "antd";
+import { Skeleton } from "antd";
 import { Popconfirm } from "antd";
 import {
   LeftOutlined,
@@ -186,8 +186,6 @@ const ReceiveService = () => {
     if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= npage) {
       setCurrentPage(pageNumber);
       setPageInput("");
-    } else {
-      message.error("Invalid page number. Please enter a valid page number.");
     }
   };
 

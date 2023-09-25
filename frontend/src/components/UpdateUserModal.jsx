@@ -2,7 +2,7 @@ import { Modal, Button, Form, Input, Select, message, Row, Col } from "antd";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { useAuth } from "../AuthContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminPassConfirmationModal from "./AdminPassConfirmationModal";
 
 const UpdateUserModal = ({
@@ -38,6 +38,26 @@ const UpdateUserModal = ({
       console.log(error);
     }
   };
+
+  const [officeOptions, setOfficeOptions] = useState([]);
+
+  useEffect(() => {
+    fetchOfficeList();
+  }, []);
+
+  const fetchOfficeList = async () => {
+    try {
+      const result = await axios.get("http://127.0.0.1:8000/api/office-list");
+      console.log(result.data.results);
+      setOfficeOptions(result.data.results);
+      console.log(officeOptions);
+    } catch (err) {
+      console.log("Something went wrong:", err);
+    }
+  };
+
+  const customFilterOption = (inputValue, option) =>
+    option.value?.toLowerCase().includes(inputValue.toLowerCase());
 
   return (
     <Modal
@@ -98,13 +118,19 @@ const UpdateUserModal = ({
               <Input size="large" />
             </Form.Item>
           </Col>
-          <Col span={`${isLargeScreen ? 12 : 24}`}>
+          <Col span={12}>
             <Form.Item
               name="office"
               label="Office"
-              rules={[{ required: true, message: "Please enter the office" }]}
+              rules={[{ required: true, message: "Please select the office" }]}
             >
-              <Input size="large" />
+              <Select size="large" showSearch filterOption={customFilterOption}>
+                {officeOptions.map((option) => (
+                  <Option key={option.id} value={option.office}>
+                    {option.office}
+                  </Option>
+                ))}
+              </Select>
             </Form.Item>
           </Col>
           <Col span={`${isLargeScreen ? 12 : 24}`}>

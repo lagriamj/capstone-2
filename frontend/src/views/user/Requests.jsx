@@ -194,13 +194,15 @@ const Requests = () => {
   };
 
   const customStyles = {
-    control: (provided, state) => ({
+    control: (provided) => ({
       ...provided,
-      border: state.isFocused ? "2px solid #cbd5e0" : "2px solid #cbd5e0",
-      backgroundColor: "#f9fafb",
+      border: "none",
       boxShadow: "none",
-      height: "47px",
+      height: "100%",
+      width: "100%",
       outline: "none",
+      display: "flex",
+      overflowX: "auto",
     }),
     option: (provided, state) => ({
       ...provided,
@@ -223,19 +225,25 @@ const Requests = () => {
         {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
         <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">
           <div
-            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] shadow-xl p-10 h-auto lg:ml-auto lg:mx-4 mt-20 lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
+            className={` w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] shadow-xl  h-auto lg:ml-auto lg:mx-4 mt-20 lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
-            <h1 className=" text-3xl text-center my-10 font-bold ">
-              CITC TECHNICAL SERVICE REQUEST SLIP
-            </h1>
+            <div className="bg-secondary py-6 pl-4  text-white flex items-center justify-center">
+              <h1 className=" mediumLg:text-xl text-lg text-left   font-medium italic ">
+                CITC TECHNICAL SERVICE REQUEST SLIP
+              </h1>
+              <div className="font-normal ml-auto mr-10">
+                <NoteModal display={true} />
+              </div>
+            </div>
+
             <form
               action=""
               onSubmit={onSubmitChange}
-              className="w-11/12 h-auto flex lg:flex-wrap items-center justify-between  text-xl gap-10 mt-10 flex-col lg:flex-row  "
+              className="w-11/12 h-screen grid lg:grid-cols-3 grid-cols-1 items-center justify-between lg:pl-10  text-xl gap-y-10 gap-x-12 mt-10 "
             >
-              <div className="flex flex-col lg:w-1/4 ">
-                <label htmlFor="reqOffice" className="font-semibold text-lg ">
-                  Requesting Office:
+              <div className="flex items-center  gap-2 justify-center w-full ">
+                <label htmlFor="reqOffice" className="font-normal text-lg ">
+                  Office:
                 </label>
                 <input
                   type="text"
@@ -243,11 +251,11 @@ const Requests = () => {
                   name="reqOffice"
                   value={formOffice}
                   readOnly
-                  className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                  className=" w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
                 />
               </div>
-              <div className="flex flex-col lg:w-1/4 ">
-                <label htmlFor="division" className="font-semibold text-lg ">
+              <div className="flex items-center gap-2 justify-center  w-full ">
+                <label htmlFor="division" className="font-normal text-lg ">
                   Division:
                 </label>
                 <input
@@ -256,32 +264,27 @@ const Requests = () => {
                   name="division"
                   value={formDivision}
                   readOnly
-                  className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                  className=" w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
                 />
               </div>
-              <div className="flex flex-col lg:w-1/4 ">
-                <label
-                  htmlFor="dateRequested"
-                  className="font-semibold text-lg "
-                >
-                  Date Requested:
+              <div className="flex items-center justify-center gap-2 w-full ">
+                <label htmlFor="dateRequested" className="font-normal text-lg ">
+                  Date:
                 </label>
                 <input
                   required
                   value={daytime}
-                  className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                  className=" w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
                   readOnly
                 />
               </div>
-              <div className="flex flex-col w-full lg:w-1/4">
-                <label className="font-semibold text-lg">
-                  Nature of Request:
-                </label>
-                <div className="relative">
+              <div className="flex items-center justify-start gap-2 w-full">
+                <label className="font-normal text-lg">Nature:</label>
+                <div className="relative w-full">
                   <Select // Use react-select
                     required
                     name="natureOfRequest"
-                    className="w-full  border-2 border-gray-400 bg-gray-50 rounded-md focus:outline-none"
+                    className=" w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
                     value={selectedNatureOfRequest} // Set selected value
                     onChange={(selectedOption) => {
                       setSelectedNatureOfRequest(selectedOption); // Update selected option
@@ -302,13 +305,14 @@ const Requests = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col w-full lg:w-1/4">
-                <label className="font-semibold text-lg">Unit:</label>
-                <div className="relative">
+              <div className="flex items-center justify-start gap-2 w-full">
+                <label className="font-normal text-lg">Unit:</label>
+                <div className="relative w-full">
                   <Select // Use react-select
                     required
+                    classNamePrefix={"select"}
                     name="unit"
-                    className="w-full  border-2 border-gray-400 bg-gray-50 rounded-md focus:outline-none"
+                    className=" w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
                     value={selectedUnit} // Set selected value
                     onChange={(selectedOption) => {
                       setSelectedUnit(selectedOption); // Update selected option
@@ -328,66 +332,61 @@ const Requests = () => {
                   />
                 </div>
               </div>
-              <div className="flex flex-col w-full lg:w-1/4 ">
+              <div className="flex items-center justify-center gap-2 w-full  ">
                 <div className="flex items-center gap-2">
-                  <label className="font-semibold text-lg">Property No:</label>
-                  <NoteModal display={true} />
+                  <label className="font-normal text-lg">Property No:</label>
                 </div>
                 <input
                   required
                   type="text"
                   id="propertyNo"
                   name="propertyNo"
-                  className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                  className=" w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
                   onChange={(e) => {
                     changeUserFieldHandler(e);
                   }}
                 />
               </div>
-              <div className="flex lg:flex-row flex-col justify-between  w-full gap-10 ">
-                <div className="flex flex-col lg:w-1/4 ">
-                  <label htmlFor="serialNo" className="font-semibold text-lg ">
-                    Serial No:
-                  </label>
-                  <input
-                    required
-                    type="text"
-                    id="serialNo"
-                    name="serialNo"
-                    className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                    onChange={(e) => {
-                      changeUserFieldHandler(e);
-                    }}
-                  />
-                </div>
 
-                <div className="flex flex-col lg:w-1/4 ">
-                  <label
-                    htmlFor="dateProcured"
-                    className="font-semibold text-lg "
-                  >
-                    Date Procured:
-                  </label>
-                  <input
-                    type="date"
-                    id="dateProcured"
-                    name="dateProcured"
-                    className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                    onChange={(e) => {
-                      changeUserFieldHandler(e);
-                    }}
-                  />
-                </div>
-                <div className="flex flex-col lg:w-1/4 ">
-                  <input
-                    hidden
-                    className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                  />
-                </div>
+              <div className="flex items-center justify-center gap-2 w-full ">
+                <label htmlFor="serialNo" className="font-normal text-lg ">
+                  Serial No:
+                </label>
+                <input
+                  required
+                  type="text"
+                  id="serialNo"
+                  name="serialNo"
+                  className=" w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
+                  onChange={(e) => {
+                    changeUserFieldHandler(e);
+                  }}
+                />
               </div>
 
-              <div className="flex flex-col w-full ">
-                <label htmlFor="message" className="font-semibold text-lg">
+              <div className="flex items-center justify-center gap-2 w-full ">
+                <label htmlFor="dateProcured" className="font-normal text-lg ">
+                  Date Procured:
+                </label>
+                <input
+                  type="date"
+                  id="dateProcured"
+                  name="dateProcured"
+                  className=" w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
+                  onChange={(e) => {
+                    changeUserFieldHandler(e);
+                  }}
+                />
+              </div>
+              <div className="flex flex-col lg:w-1/4 ">
+                <input
+                  hidden
+                  className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
+                />
+              </div>
+
+              <div className="flex flex-col col-span-full w-full ">
+                <label htmlFor="message" className="font-normal text-lg">
                   Special Instruction{" "}
                 </label>
                 <textarea
@@ -402,31 +401,36 @@ const Requests = () => {
                   }}
                 ></textarea>
               </div>
-              <div className="flex flex-col lg:w-1/4 ">
-                <label
-                  htmlFor="authorizedBy"
-                  className="font-semibold text-lg "
+              <div className="col-span-full flex lg:flex-row flex-col lg:gap-0 gap-4">
+                <div className="flex items-center justify-center gap-2 w-full lg:w-[40%] ">
+                  <label
+                    htmlFor="authorizedBy"
+                    className="font-normal lg:whitespace-nowrap text-lg "
+                  >
+                    Authorized By:
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    id="authorizedBy"
+                    name="authorizedBy"
+                    value={author}
+                    className="  w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
+                    readOnly
+                  />
+                </div>
+                <Button
+                  loading={loading}
+                  htmlType="submit"
+                  className="bg-main h-14 text-lg font-sans font-semibold text-white hover:bg-opacity-90 hover:text-white flex gap-3 items-center rounded-lg ml-auto"
                 >
-                  Authorized By:
-                </label>
-                <input
-                  required
-                  type="text"
-                  id="authorizedBy"
-                  name="authorizedBy"
-                  value={author}
-                  className=" w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                  readOnly
-                />
+                  <FontAwesomeIcon
+                    icon={faCheck}
+                    style={{ color: "#ffffff" }}
+                  />
+                  {loading ? "Requesting" : "Request Service"}
+                </Button>
               </div>
-              <Button
-                loading={loading}
-                htmlType="submit"
-                className="bg-main h-20 text-lg font-sans font-semibold text-white hover:bg-opacity-90 hover:text-white flex gap-3 items-center rounded-lg ml-auto"
-              >
-                <FontAwesomeIcon icon={faCheck} style={{ color: "#ffffff" }} />
-                {loading ? "Requesting" : "Request Service"}
-              </Button>
               <p></p>
             </form>
           </div>

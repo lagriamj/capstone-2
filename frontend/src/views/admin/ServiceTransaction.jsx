@@ -6,7 +6,7 @@ import axios from "axios";
 import ClosedModal from "../../components/ClosedModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faSearch, faStar } from "@fortawesome/free-solid-svg-icons";
-import { Skeleton, message } from "antd";
+import { Skeleton } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import ViewCancel from "../../components/ViewCancel";
 import DoneRateModal from "../../components/DoneRateModal";
@@ -218,10 +218,7 @@ const ServiceTransaction = () => {
 
     if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= npage) {
       setCurrentPage(pageNumber);
-      setPageInput(""); // Clear the input field after changing the page
-    } else {
-      // Handle invalid page number input, e.g., show an error message to the user
-      message.error("Invalid page number. Please enter a valid page number.");
+      setPageInput(pageNumber); // Clear the input field after changing the page
     }
   };
 
