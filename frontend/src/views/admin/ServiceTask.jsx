@@ -207,11 +207,8 @@ const ServiceTask = () => {
     }
   };
 
-  const toggleTechnicianDropDown = () => {
-    setIsTechnicianDropDownOpen(!isTechnicianDropDownOpen);
-  };
-
   const handleTechnicianCheckboxChange = (e) => {
+    setIsTechnicianDropDownOpen(false);
     const selectedTechnician = e.target.value;
 
     setSelectedTechnicianFilter((prevFilters) => {
@@ -245,11 +242,8 @@ const ServiceTask = () => {
     });
   };
 
-  const toggleStatusDropdown = () => {
-    setIsStatusDropdownOpen(!isStatusDropdownOpen);
-  };
-
   const handleStatusCheckboxChange = (e) => {
+    setIsStatusDropdownOpen(false);
     const selectedStatus = e.target.value;
 
     setSelectedStatusFilters((prevFilters) => {
@@ -349,6 +343,8 @@ const ServiceTask = () => {
       clearInterval(intervalId);
     };
   }, []);
+
+  const totalRequests = data.length;
 
   return (
     <HelmetProvider>
@@ -482,7 +478,11 @@ const ServiceTask = () => {
                       Assigned To
                       <div className="relative inline-block">
                         <button
-                          onClick={toggleTechnicianDropDown}
+                          onClick={() =>
+                            setIsTechnicianDropDownOpen(
+                              !isTechnicianDropDownOpen
+                            )
+                          }
                           className="text-main focus:outline-none ml-2"
                           style={{
                             backgroundColor: "transparent",
@@ -564,7 +564,9 @@ const ServiceTask = () => {
                       Status
                       <div className="relative inline-block">
                         <button
-                          onClick={toggleStatusDropdown}
+                          onClick={() =>
+                            setIsStatusDropdownOpen(!isStatusDropdownOpen)
+                          }
                           className="text-main focus:outline-none ml-2"
                           style={{
                             backgroundColor: "transparent",
@@ -816,7 +818,7 @@ const ServiceTask = () => {
             <nav className={`  mt-2 `}>
               <ul className="flex gap-2 items-center">
                 <li className="flex-auto  mr-5 text-base font-bold">
-                  Page {currentPage} of {npage}
+                  Page {currentPage} of {npage} | Total: {totalRequests}
                 </li>
                 <li>
                   <a

@@ -5,6 +5,7 @@ import Select from "react-select";
 import PropTypes from "prop-types";
 import { Button, Modal } from "antd";
 import { message } from "antd";
+import { useAuth } from "../AuthContext";
 
 const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
   if (!isOpen) return null;
@@ -20,10 +21,11 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
   const daytime = new Date().toLocaleString(undefined, options);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { fullName } = useAuth();
 
   const [formData, setFormData] = useState({
     request_id: data.id,
-    receivedBy: "n/a",
+    receivedBy: fullName,
     assignedTo: "n/a",
     serviceBy: "n/a",
     toRecommend: "n/a",
@@ -327,9 +329,11 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                   type="text"
                   id="receivedBy"
                   name="receivedBy"
+                  value={fullName}
                   onChange={(e) => {
                     changeUserFieldHandler(e);
                   }}
+                  readOnly
                 />
               </div>
               <div className="col-span-1">
@@ -361,7 +365,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
                   name="assignedTo"
                   id="assignedTo"
                   required
-                  className=" w-full border-b-2 border-gray-400    px-4 focus:outline-none"
+                  className=" w-full border-b-2 border-gray-400    focus:outline-none"
                   value={selectedTechnician}
                   onChange={(selectedOption) => {
                     setSelectedTechnician(selectedOption); // Update selected option

@@ -69,6 +69,27 @@ const DoneRateModal = ({ isOpen, onClose, id }) => {
     });
   };
 
+  const calculateTotalRate = () => {
+    if (!data.length) return 0; // Return 0 if there are no rating data
+
+    const totalRating = data.reduce((acc, item) => {
+      return (
+        acc +
+        parseInt(item.q1) +
+        parseInt(item.q2) +
+        parseInt(item.q3) +
+        parseInt(item.q4) +
+        parseInt(item.q5) +
+        parseInt(item.q6) +
+        parseInt(item.q7) +
+        parseInt(item.q8)
+      );
+    }, 0);
+
+    return (totalRating / 40) * 100;
+  };
+  const totalRate = calculateTotalRate();
+
   const RatingDetails = () => {
     if (loading) {
       return <Skeleton active />;
@@ -76,7 +97,10 @@ const DoneRateModal = ({ isOpen, onClose, id }) => {
       return <p>No Records Yet.</p>;
     } else {
       return data.map((item, index) => (
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4" key={index}>
+        <div
+          className="lg:grid flex flex-col  lg:grid-cols-4 gap-4"
+          key={index}
+        >
           <div className="col-span-1">
             <label
               className="block text-sm font-bold mb-2 text-black"
@@ -93,7 +117,7 @@ const DoneRateModal = ({ isOpen, onClose, id }) => {
               Department: {item.department || "No data"}
             </label>
           </div>
-          <div className="col-span-1">
+          <div className="col-span-2">
             <label
               className="block text-sm font-bold mb-2 text-black"
               htmlFor={`reqOffice`}
@@ -170,46 +194,89 @@ const DoneRateModal = ({ isOpen, onClose, id }) => {
             </label>
             {renderRatingIcon(item.q8)}
           </div>
-          <div className="col-span-1">
+          <div className="col-span-1 w-full">
             <label
               className="block text-sm font-bold mb-2"
               htmlFor="dateRequested"
             >
               Commendation
             </label>
-            <div>{item.commendation || "No data"}</div>
+            <TextTruncate
+              text={item.commendation || "No data"}
+              maxLength={150}
+            />
           </div>
-          <div className="col-span-1">
+          <div className="col-span-1 w-full">
             <label
               className="block text-sm font-bold mb-2"
               htmlFor="dateRequested"
             >
               Suggestion
             </label>
-            <div>{item.suggestion || "No data"}</div>
+            <TextTruncate text={item.suggestion || "No data"} maxLength={150} />
           </div>
-          <div className="col-span-1">
+          <div className="col-span-1 w-full">
             <label
               className="block text-sm font-bold mb-2"
               htmlFor="dateRequested"
             >
               Request
             </label>
-            <div>{item.request || "No data"}</div>
+            <TextTruncate text={item.request || "No data"} maxLength={150} />
           </div>
-          <div className="col-span-1">
+          <div className="col-span-1 w-full">
             <label
               className="block text-sm font-bold mb-2"
               htmlFor="dateRequested"
             >
               Complaint
             </label>
-            <div>{item.complaint || "No data"}</div>
+            <TextTruncate text={item.complaint || "No data"} maxLength={150} />
           </div>
         </div>
       ));
     }
   };
+
+  function TextTruncate({ text, maxLength }) {
+    const [isTruncated, setIsTruncated] = useState(true);
+
+    const toggleTruncate = () => {
+      setIsTruncated(!isTruncated);
+    };
+
+    return (
+      <div>
+        {isTruncated ? (
+          <div>
+            {text.length > maxLength ? (
+              <>
+                {text.slice(0, maxLength)}
+                <span
+                  onClick={toggleTruncate}
+                  style={{ cursor: "pointer", color: "blue" }}
+                >
+                  ...Show more
+                </span>
+              </>
+            ) : (
+              text
+            )}
+          </div>
+        ) : (
+          <div>
+            {text}
+            <span
+              onClick={toggleTruncate}
+              style={{ cursor: "pointer", color: "blue" }}
+            >
+              Show less
+            </span>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <Modal
@@ -226,6 +293,10 @@ const DoneRateModal = ({ isOpen, onClose, id }) => {
       closable={false}
     >
       <div className="relative p-6 text-lg">{RatingDetails()}</div>
+      <div className="relative p-6 text-lg">
+        {" "}
+        Total Rate: {totalRate.toFixed(2)}%{" "}
+      </div>
 
       <div className="flex ml-auto w-full  gap-2 justify-end border-t-2 pt-5 pr-6">
         <button
@@ -245,6 +316,8 @@ DoneRateModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   datas: PropTypes.number,
   id: PropTypes.number,
+  text: PropTypes.string,
+  maxLength: PropTypes.number,
 };
 
 export default DoneRateModal;

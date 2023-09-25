@@ -231,7 +231,7 @@ const Requests = () => {
               <h1 className=" mediumLg:text-xl text-lg text-left   font-medium italic ">
                 CITC TECHNICAL SERVICE REQUEST SLIP
               </h1>
-              <div className="font-normal ml-auto mr-10">
+              <div className="font-normal mr-auto ml-6">
                 <NoteModal display={true} />
               </div>
             </div>
@@ -284,7 +284,7 @@ const Requests = () => {
                   <Select // Use react-select
                     required
                     name="natureOfRequest"
-                    className=" w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
+                    className=" w-full border-b-2 border-gray-400    focus:outline-none"
                     value={selectedNatureOfRequest} // Set selected value
                     onChange={(selectedOption) => {
                       setSelectedNatureOfRequest(selectedOption); // Update selected option
@@ -312,7 +312,7 @@ const Requests = () => {
                     required
                     classNamePrefix={"select"}
                     name="unit"
-                    className=" w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
+                    className=" w-full border-b-2 border-gray-400    focus:outline-none"
                     value={selectedUnit} // Set selected value
                     onChange={(selectedOption) => {
                       setSelectedUnit(selectedOption); // Update selected option

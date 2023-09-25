@@ -17,7 +17,7 @@ import { useAuth } from "../AuthContext";
 import { useActiveTab } from "../ActiveTabContext";
 import { useActiveSubTab } from "../ActiveSubTabContext";
 import axios from "axios";
-import { message } from "antd";
+import { Button, Modal, message } from "antd";
 
 const AdminDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -25,23 +25,27 @@ const AdminDrawer = () => {
   const { activeSubTab, setActiveSub } = useActiveSubTab();
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const [isLogout, setIsLogout] = useState(false);
 
   const handleItemClickAccount = (item) => {
     setActiveSub(item);
   };
 
   const handleLogout = async () => {
+    setIsLogout(true);
     try {
       const response = await axios.post("http://127.0.0.1:8000/api/logout");
 
       if (response.status === 200) {
         message.success("Logout Successfull");
+        setIsLogout(false);
         logout();
         navigate("/login");
         setActive("dashboard");
       }
     } catch (error) {
       console.log(error);
+      setIsLogout(false);
     }
   };
 
@@ -62,8 +66,22 @@ const AdminDrawer = () => {
     setIsDropdownUtilityOpen(!isDropdownUtilityOpen);
   };
 
+  const [logoutModal, setLogoutModal] = useState(false);
+  const showLogoutConfirmationModal = () => {
+    setLogoutModal(true);
+    setOpen(false);
+  };
+
+  const handleOkLogout = () => {
+    handleLogout();
+  };
+
+  const handleCancelLogout = () => {
+    setLogoutModal(false);
+  };
+
   return (
-    <div className=" w-screen z-50 bg-main py-4 flex items-center justify-center fixed top-0">
+    <div className=" w-screen z-40 bg-main py-4 flex items-center justify-center fixed top-0">
       <div className="flex">
         <img className="w-10 h-10" src="/cityhalllogo.png" alt="" />
         <img className="w-10 h-10" src="/citclogo.png" alt="" />
@@ -74,6 +92,28 @@ const AdminDrawer = () => {
         onClick={() => setOpen(true)}
         className="flex absolute right-0 mr-10 h-7 w-7 cursor-pointer"
       />
+      <Modal
+        title="Confirm Logout"
+        className="z-50"
+        open={logoutModal}
+        footer={[
+          <Button key="cancel" onClick={handleCancelLogout}>
+            Cancel
+          </Button>,
+          <Button
+            loading={isLogout}
+            key="ok"
+            className="bg-red-700 text-white"
+            onClick={handleOkLogout}
+          >
+            {isLogout ? "Logging out" : "Logout"}
+          </Button>,
+        ]}
+      >
+        <p className="flex items-center justify-center gap-4">
+          Are you sure you want to logout?
+        </p>
+      </Modal>
       <Drawer
         open={open}
         onClose={() => setOpen(false)}
@@ -259,7 +299,7 @@ const AdminDrawer = () => {
                 </div>
               </li>
               <li
-                onClick={handleLogout}
+                onClick={showLogoutConfirmationModal}
                 className="flex gap-3 items-center py-3 px-4 rounded-lg w-full transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold"
               >
                 <FontAwesomeIcon icon={faRightFromBracket} className="h-5" />

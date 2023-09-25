@@ -217,6 +217,8 @@ const ReceiveService = () => {
     };
   }, []);
 
+  const totalRequests = data.length;
+
   const isScreenWidth1366 = windowWidth1366 === 1366;
 
   return (
@@ -481,7 +483,7 @@ const ReceiveService = () => {
             <nav className={`  mt-2 `}>
               <ul className="flex gap-2 items-center">
                 <li className="flex-auto  mr-5 text-base font-bold">
-                  Page {currentPage} of {npage}
+                  Page {currentPage} of {npage} | Total: {totalRequests}
                 </li>
                 <li>
                   <a

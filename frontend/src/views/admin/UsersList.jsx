@@ -387,6 +387,7 @@ const UsersList = () => {
           onCancel={handleCancel}
           onOk={handleOk}
           refreshData={fetchUsers}
+          isLargeScreen={isLargeScreen}
         />
         {isUpdateUserModalVisible && selectedUserForUpdate && (
           <UpdateUserModal
@@ -421,12 +422,14 @@ const UsersList = () => {
                 />
               </div>
 
-              <button
-                onClick={showDeleteConfirmationModal}
-                className="text-white bg-red-700   rounded-lg px-3 py-2 text-lg font-medium"
-              >
-                Delete Selected
-              </button>
+              {selectedRowKeys.length > 0 && (
+                <button
+                  onClick={showDeleteConfirmationModal}
+                  className="text-white bg-red-700   rounded-lg px-3 py-2 text-lg font-medium transition duration-300 ease-in-out"
+                >
+                  Delete Selected
+                </button>
+              )}
               <Modal
                 title="Confirm Deletion"
                 open={isDeleteModalVisible}

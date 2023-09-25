@@ -4,7 +4,13 @@ import PropTypes from "prop-types";
 import { useAuth } from "../AuthContext";
 import { useEffect, useState } from "react";
 
-const AddUserModal = ({ visible, onCancel, onOk, refreshData }) => {
+const AddUserModal = ({
+  visible,
+  onCancel,
+  onOk,
+  refreshData,
+  isLargeScreen,
+}) => {
   const { Option } = Select;
   const [form] = Form.useForm();
   const { userRole } = useAuth();
@@ -60,18 +66,12 @@ const AddUserModal = ({ visible, onCancel, onOk, refreshData }) => {
       onCancel={onCancel}
       onOk={onOk}
       title="Create New User Account"
-      width="50%"
+      width={`${isLargeScreen ? "50%" : "90%"}`}
       footer={null}
     >
-      <Form
-        form={form}
-        name="addUserForm"
-        //labelCol={{ span: 12 }} // Set the label width to take the full width
-        //wrapperCol={{ span: 12 }} // Set the input field width to take the full width
-        layout="vertical"
-      >
+      <Form form={form} name="addUserForm" layout="vertical">
         <Row gutter={16}>
-          <Col span={12}>
+          <Col span={`${isLargeScreen ? 12 : 24}`}>
             <Form.Item
               name="userFirstName"
               label="First Name"
@@ -82,7 +82,7 @@ const AddUserModal = ({ visible, onCancel, onOk, refreshData }) => {
               <Input size="large" />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={`${isLargeScreen ? 12 : 24}`}>
             <Form.Item
               name="userLastName"
               label="Last Name"
@@ -93,7 +93,7 @@ const AddUserModal = ({ visible, onCancel, onOk, refreshData }) => {
               <Input size="large" />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={`${isLargeScreen ? 12 : 24}`}>
             <Form.Item
               name="userGovernmentID"
               label="Government ID"
@@ -104,7 +104,7 @@ const AddUserModal = ({ visible, onCancel, onOk, refreshData }) => {
               <Input size="large" />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={`${isLargeScreen ? 12 : 24}`}>
             <Form.Item
               name="userEmail"
               label="Email"
@@ -114,7 +114,7 @@ const AddUserModal = ({ visible, onCancel, onOk, refreshData }) => {
               <Input size="large" />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={`${isLargeScreen ? 12 : 24}`}>
             <Form.Item
               name="userContactNumber"
               label="Contact Number"
@@ -140,7 +140,7 @@ const AddUserModal = ({ visible, onCancel, onOk, refreshData }) => {
               />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={`${isLargeScreen ? 12 : 24}`}>
             <Form.Item
               name="userStatus"
               label="Status"
@@ -152,7 +152,7 @@ const AddUserModal = ({ visible, onCancel, onOk, refreshData }) => {
               </Select>
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={`${isLargeScreen ? 12 : 24}`}>
             <Form.Item
               name="office"
               label="Office"
@@ -167,7 +167,7 @@ const AddUserModal = ({ visible, onCancel, onOk, refreshData }) => {
               </Select>
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={`${isLargeScreen ? 12 : 24}`}>
             <Form.Item
               name="division"
               label="Division"
@@ -176,7 +176,7 @@ const AddUserModal = ({ visible, onCancel, onOk, refreshData }) => {
               <Input size="large" />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={`${isLargeScreen ? 12 : 24}`}>
             <Form.Item
               name="role"
               label="Role"
@@ -188,7 +188,7 @@ const AddUserModal = ({ visible, onCancel, onOk, refreshData }) => {
               </Select>
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={`${isLargeScreen ? 12 : 24}`}>
             <Form.Item
               name="userPassword"
               label="Password"
@@ -203,12 +203,12 @@ const AddUserModal = ({ visible, onCancel, onOk, refreshData }) => {
               <Input.Password size="large" />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={`${isLargeScreen ? 12 : 24}`}>
             <Form.Item name="adminUserRole" hidden initialValue={userRole}>
               <Input size="large" />
             </Form.Item>
           </Col>
-          <Col span={24}>
+          <Col span={`${isLargeScreen ? 12 : 24}`}>
             <Form.Item>
               <Button
                 loading={isCreating}
@@ -232,6 +232,7 @@ AddUserModal.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onOk: PropTypes.func.isRequired,
   refreshData: PropTypes.func.isRequired,
+  isLargeScreen: PropTypes.bool.isRequired,
 };
 
 export default AddUserModal;

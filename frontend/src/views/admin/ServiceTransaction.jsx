@@ -164,11 +164,8 @@ const ServiceTransaction = () => {
     });
   };
 
-  const toggleStatusDropdown = () => {
-    setIsStatusDropdownOpen(!isStatusDropdownOpen);
-  };
-
   const handleStatusCheckboxChange = (e) => {
+    setIsStatusDropdownOpen(false);
     const selectedStatus = e.target.value;
 
     setSelectedStatusFilters((prevFilters) => {
@@ -262,6 +259,8 @@ const ServiceTransaction = () => {
         console.error("Error fetching data:", error);
       });
   }, []);
+
+  const totalRequests = data.length;
 
   const isScreenWidth1366 = windowWidth1366 === 1366;
 
@@ -447,7 +446,9 @@ const ServiceTransaction = () => {
                       Status
                       <div className="relative inline-block">
                         <button
-                          onClick={toggleStatusDropdown}
+                          onClick={() =>
+                            setIsStatusDropdownOpen(!isStatusDropdownOpen)
+                          }
                           className="text-main focus:outline-none ml-2"
                           style={{
                             backgroundColor: "transparent",
@@ -678,7 +679,7 @@ const ServiceTransaction = () => {
             <nav className={`  mt-2 `}>
               <ul className="flex gap-2 items-center">
                 <li className="flex-auto  mr-5 text-base font-bold">
-                  Page {currentPage} of {npage}
+                  Page {currentPage} of {npage} | Total: {totalRequests}
                 </li>
                 <li>
                   <a

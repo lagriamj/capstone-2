@@ -184,7 +184,7 @@ const AdminAccount = () => {
         className={`className="flex  flex-col gotoLarge:px-6 large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
       >
         {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
-        <div className="flex flex-col flex-grow  lg:pb-10 bg-white gap-2 w-full">
+        <div className="flex flex-col items-center justify-center flex-grow  lg:pb-10 bg-white gap-2 w-full">
           <div
             className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%]  large:h-[90vh]  h-auto lg:ml-auto lg:mx-4 mt-20 lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >

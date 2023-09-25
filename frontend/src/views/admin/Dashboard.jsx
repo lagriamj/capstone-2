@@ -432,6 +432,46 @@ const Dashboard = () => {
     setTableColumns(columnsForPie);
   }, []);
 
+  function TextTruncate({ text, maxLength }) {
+    const [isTruncated, setIsTruncated] = useState(true);
+
+    const toggleTruncate = () => {
+      setIsTruncated(!isTruncated);
+    };
+
+    return (
+      <div>
+        {isTruncated ? (
+          <div>
+            {text.length > maxLength ? (
+              <>
+                {text.slice(0, maxLength)}
+                <span
+                  onClick={toggleTruncate}
+                  style={{ cursor: "pointer", color: "blue" }}
+                >
+                  ...Show more
+                </span>
+              </>
+            ) : (
+              text
+            )}
+          </div>
+        ) : (
+          <div>
+            {text}
+            <span
+              onClick={toggleTruncate}
+              style={{ cursor: "pointer", color: "blue" }}
+            >
+              Show less
+            </span>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -818,7 +858,7 @@ const Dashboard = () => {
         }
         open={isModalVisible}
         onCancel={handleCancel}
-        width="50%"
+        width={`${isLargeScreen ? "60%" : "90%"}`}
         footer={[
           <Button key="close" onClick={handleCancel}>
             Close
@@ -826,7 +866,7 @@ const Dashboard = () => {
         ]}
       >
         {selectedData && (
-          <div className="grid grid-cols-2 gap-x-2 mediumLg:text-xl gap-y-2 border-t-2 border-gray-400 pt-6 font-sans">
+          <div className="lg:grid lg:grid-cols-2 flex flex-col gap-x-2 mediumLg:text-xl gap-y-2 border-t-2 border-gray-400 pt-6 font-sans">
             <div className="grid grid-cols-2">
               <label className="font-semibold">Full Name: </label>
               <label>{selectedData.fullName}</label>
@@ -873,7 +913,10 @@ const Dashboard = () => {
             </div>
             <div className="col-span-2 mt-5">
               <label className="font-semibold">Special Instruction: </label>
-              <label>{selectedData.specialIns}</label>
+              <TextTruncate
+                text={selectedData.specialIns || "No data"}
+                maxLength={150}
+              />
             </div>
           </div>
         )}

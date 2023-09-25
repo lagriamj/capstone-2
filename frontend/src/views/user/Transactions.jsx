@@ -182,11 +182,8 @@ const Transactions = () => {
     setRatings(response.data.results);
   };
 
-  const toggleStatusDropdown = () => {
-    setIsStatusDropdownOpen(!isStatusDropdownOpen);
-  };
-
   const handleStatusCheckboxChange = (e) => {
+    setIsStatusDropdownOpen(false);
     const selectedStatus = e.target.value;
 
     setSelectedStatusFilters((prevFilters) => {
@@ -308,6 +305,8 @@ const Transactions = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  const totalRequests = data.length;
 
   const isScreenWidth1366 = windowWidth1366 === 1366;
 
@@ -509,7 +508,9 @@ const Transactions = () => {
                       Status
                       <div className="relative inline-block">
                         <button
-                          onClick={toggleStatusDropdown}
+                          onClick={() =>
+                            setIsStatusDropdownOpen(!isStatusDropdownOpen)
+                          }
                           className="text-main focus:outline-none ml-2"
                           style={{
                             backgroundColor: "transparent",
@@ -519,7 +520,9 @@ const Transactions = () => {
                           <FontAwesomeIcon
                             icon={faFilter}
                             className={`${
-                              isScreenWidth1366 ? "h-3 w-3" : "h-4 w-4"
+                              isScreenWidth1366
+                                ? "h-3 w-3 text-white"
+                                : "h-4 w-4 text-white"
                             }`}
                           />
                         </button>
@@ -780,7 +783,7 @@ const Transactions = () => {
             <nav className={`  mt-2 px-4`}>
               <ul className="flex gap-2 items-center">
                 <li className="flex-auto  mr-5 text-base font-bold">
-                  Page {currentPage} of {npage}
+                  Page {currentPage} of {npage} | Total: {totalRequests}
                 </li>
                 <li>
                   <a

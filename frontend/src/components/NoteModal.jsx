@@ -5,7 +5,7 @@ export default function NoteModal(display) {
   return (
     <>
       <button
-        className=" text-white underline font-bold uppercase text-sm  rounded  outline-none focus:outline-none ease-linear transition-all duration-150"
+        className=" text-yellow-300 underline font-bold uppercase text-sm lg:text-lg    rounded  outline-none focus:outline-none ease-linear transition-all duration-150"
         type="button"
         onClick={() => setShowModal(true)}
       >
@@ -13,7 +13,7 @@ export default function NoteModal(display) {
       </button>
       {showModal ? (
         <>
-          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+          <div className="justify-center items-center flex overflow-x-hidden  overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
             <div className="relative w-auto my-6 mx-auto max-w-3xl">
               {/*content*/}
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white text-black outline-none focus:outline-none">

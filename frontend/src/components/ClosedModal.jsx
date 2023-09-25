@@ -141,14 +141,15 @@ const ClosedModal = ({ isOpen, onClose, datas, refreshData }) => {
               readOnly
             />
           </div>
-          <div className="col-span-1">
+          <div className="col-span-1 col-start-4 row-span-2">
             <label className="block text-sm font-bold mb-2" htmlFor="fullName">
               Special Instruction
             </label>
 
-            <input
-              className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            <textarea
+              className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full  py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               type="text"
+              rows={5}
               id="specialIns"
               name="specialIns"
               value={item.specialIns || "No data"}
@@ -302,53 +303,59 @@ const ClosedModal = ({ isOpen, onClose, datas, refreshData }) => {
               readOnly
             />
           </div>
-          <div className="col-span-1">
+          <div className="col-start-3 row-span-2">
             <label
               className="block text-sm font-bold mb-2"
               htmlFor="propertyNo"
             >
               Findings/Particulars
             </label>
-            <input
-              className="shadow-md bg-gray-200 appearance-none border rounded-lg w-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              type="text"
-              id="findings"
-              name="findings"
-              value={item.findings || "No data"}
-              readOnly
-            />
-            <input
-              className="shadow-md bg-gray-200 appearance-none border rounded-lg py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              type="text"
-              id="rootCause"
-              name="rootCause"
-              value={item.rootCause || "No data"}
-              readOnly
-            />
+            <div className="flex flex-col gap-3">
+              <input
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="findings"
+                name="findings"
+                value={item.findings || "No data"}
+                readOnly
+              />
+              <textarea
+                rows={5}
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg py-2 px-3  text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="rootCause"
+                name="rootCause"
+                value={item.rootCause || "No data"}
+                readOnly
+              />
+            </div>
           </div>
-          <div className="col-span-1">
+          <div className="col-start-4 row-span-2">
             <label
               className="block text-sm font-bold mb-2"
               htmlFor="propertyNo"
             >
               Action Taken
             </label>
-            <input
-              className="shadow-md bg-gray-200 appearance-none border rounded-lg w-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              type="text"
-              id="actionTaken"
-              name="actionTaken"
-              value={item.actionTaken || "No data"}
-              readOnly
-            />
-            <input
-              className="shadow-md bg-gray-200 appearance-none border rounded-lg py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              type="text"
-              id="remarks"
-              name="remarks"
-              value={item.remarks || "No data"}
-              readOnly
-            />
+            <div className="flex flex-col gap-3">
+              <input
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                type="text"
+                id="actionTaken"
+                name="actionTaken"
+                value={item.actionTaken || "No data"}
+                readOnly
+              />
+              <textarea
+                className="shadow-md bg-gray-200 appearance-none border rounded-lg py-2 px-3  text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                rows={5}
+                type="text"
+                id="remarks"
+                name="remarks"
+                value={item.remarks || "No data"}
+                readOnly
+              />
+            </div>
           </div>
           <div className="col-span-1">
             <label

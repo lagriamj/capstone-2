@@ -230,7 +230,7 @@ const Register = () => {
           <HashLoader color="#ffffff" size={80} />
         </div>
       )}
-      <div className="flex overflow-auto">
+      <div className="flex h-auto overflow-auto">
         {/* Left Column */}
         <div className="lg:w-1/2 h-screen box-border bg-main hidden lg:flex md:w-1/6 justify-center items-start lg:pt-16 fixed">
           <div className=" w-full flex flex-col items-center text-center gap-3">
@@ -248,9 +248,9 @@ const Register = () => {
         </div>
 
         {/* Right Column */}
-        <div className="w-full lg:w-1/2 gotoLarge:h-screen h-auto  bg-gray-200 py-5 flex flex-col items-center justify-center overflow-auto ml-auto">
+        <div className="w-full lg:w-1/2 gotoLarge:h-screen h-auto   py-5 flex flex-col items-center justify-center overflow-auto ml-auto">
           <div
-            className={` bg-white lg:w-[80%] w-[90%] py-5 gotoLarge:h-auto h-auto rounded-2xl shadow-xl ${
+            className={` bg-white lg:w-[80%] w-[90%] py-5 gotoLarge:h-auto h-auto rounded-2xl shadow-2xl ${
               isLargeScreen ? "text-4xl" : "text-lg"
             }`}
           >
@@ -536,6 +536,7 @@ const Register = () => {
               onClose={handleCloseModal}
               onAgree={handleAgree}
               onDisagree={handleDisagree}
+              isLargeScreen={isLargeScreen}
             />
             <div className="flex items-center justify-center flex-col w-full mt-2">
               <p className="font-medium text-lg">

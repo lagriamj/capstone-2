@@ -13,31 +13,49 @@ import {
 import { useAuth } from "../AuthContext";
 import { useActiveTab } from "../ActiveTabContext";
 import axios from "axios";
-import { message } from "antd";
+import { Button, Modal, message } from "antd";
 
 const DrawerComponent = () => {
   const [open, setOpen] = useState(false);
   const { activeTab, setActive } = useActiveTab();
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const [isLogout, setIsLogout] = useState(false);
 
   const handleItemClick = (item) => {
     setActive(item);
   };
 
   const handleLogout = async () => {
+    setIsLogout(true);
     try {
       const response = await axios.post("http://127.0.0.1:8000/api/logout");
 
       if (response.status === 200) {
         message.success("Logout Successfull");
+        setIsLogout(false);
         logout();
         navigate("/login");
-        setActive("request");
+        setActive("dashboard");
       }
     } catch (error) {
       console.log(error);
+      setIsLogout(false);
     }
+  };
+
+  const [logoutModal, setLogoutModal] = useState(false);
+  const showLogoutConfirmationModal = () => {
+    setLogoutModal(true);
+    setOpen(false);
+  };
+
+  const handleOkLogout = () => {
+    handleLogout();
+  };
+
+  const handleCancelLogout = () => {
+    setLogoutModal(false);
   };
 
   return (
@@ -52,6 +70,27 @@ const DrawerComponent = () => {
         onClick={() => setOpen(true)}
         className="flex absolute right-0 mr-10 h-7 w-7 cursor-pointer"
       />
+      <Modal
+        title="Confirm Logout"
+        open={logoutModal}
+        footer={[
+          <Button key="cancel" onClick={handleCancelLogout}>
+            Cancel
+          </Button>,
+          <Button
+            loading={isLogout}
+            key="ok"
+            className="bg-red-700 text-white"
+            onClick={handleOkLogout}
+          >
+            {isLogout ? "Logging out" : "Logout"}
+          </Button>,
+        ]}
+      >
+        <p className="flex items-center justify-center gap-4">
+          Are you sure you want to logout?
+        </p>
+      </Modal>
       <Drawer
         open={open}
         onClose={() => setOpen(false)}
@@ -118,7 +157,7 @@ const DrawerComponent = () => {
                   <Link to={"/account"}>Account</Link>
                 </li>
                 <li
-                  onClick={handleLogout}
+                  onClick={showLogoutConfirmationModal}
                   className="flex gap-3 items-center py-3 px-4 rounded-lg w-full hover:bg-white hover:text-main hover:font-semibold"
                 >
                   <FontAwesomeIcon icon={faRightFromBracket} className="h-5" />

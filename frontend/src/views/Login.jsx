@@ -128,8 +128,8 @@ function Login() {
       </div>
 
       {/* Right side */}
-      <div className="lg:w-1/2 w-full h-screen bg-gray-200 flex items-center justify-center font-sans">
-        <div className="flex flex-col bg-white lg:w-[70%] w-[90%] h-auto pb-10 rounded-2xl shadow-xl text-4xl">
+      <div className="lg:w-1/2 w-full h-screen   flex items-center justify-center font-sans">
+        <div className="flex flex-col bg-white lg:w-[70%] w-[90%] h-auto pb-10 rounded-2xl shadow-2xl text-4xl">
           <div className="w-full  flex flex-col gap-4">
             <div className="lg:hidden flex my-5 gap-4 items-center justify-center">
               <img className="w-20 h-20" src="/cityhalllogo.png" alt="" />

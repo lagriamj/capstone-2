@@ -10,26 +10,30 @@ import {
 import { useAuth } from "../AuthContext";
 import { useActiveTab } from "../ActiveTabContext";
 import axios from "axios";
-import { message } from "antd";
+import { Button, Modal, message } from "antd";
 import { useEffect, useState } from "react";
 
 const Sidebar = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const { activeTab, setActive } = useActiveTab();
+  const [isLogout, setIsLogout] = useState(false);
 
   const handleLogout = async () => {
+    setIsLogout(true);
     try {
       const response = await axios.post("http://127.0.0.1:8000/api/logout");
 
       if (response.status === 200) {
         message.success("Logout Successfull");
+        setIsLogout(false);
         logout();
         navigate("/login");
-        setActive("request");
+        setActive("dashboard");
       }
     } catch (error) {
       console.log(error);
+      setIsLogout(false);
     }
   };
 
@@ -53,10 +57,44 @@ const Sidebar = () => {
 
   const isScreenWidth1366 = windowWidth === 1366;
 
+  const [logoutModal, setLogoutModal] = useState(false);
+  const showLogoutConfirmationModal = () => {
+    setLogoutModal(true);
+  };
+
+  const handleOkLogout = () => {
+    handleLogout();
+  };
+
+  const handleCancelLogout = () => {
+    setLogoutModal(false);
+  };
+
   return (
     <div
       className={`sidebar flex flex-col bg-main h-screen w-[17%] font-sans text-white text-lg  fixed top-0 left-0`}
     >
+      <Modal
+        title="Confirm Logout"
+        open={logoutModal}
+        footer={[
+          <Button key="cancel" onClick={handleCancelLogout}>
+            Cancel
+          </Button>,
+          <Button
+            loading={isLogout}
+            key="ok"
+            className="bg-red-700 text-white"
+            onClick={handleOkLogout}
+          >
+            {isLogout ? "Logging out" : "Logout"}
+          </Button>,
+        ]}
+      >
+        <p className="flex items-center justify-center gap-4">
+          Are you sure you want to logout?
+        </p>
+      </Modal>
       <div className="w-full flex gap-4 items-center justify-center py-4 px-3 my-2">
         <img className="w-1/3 h-[95%]" src="/cityhalllogo.png" alt="" />
         <img className="w-1/3 h-[95%]" src="/citclogo.png" alt="" />
@@ -133,7 +171,7 @@ const Sidebar = () => {
               <Link to={"/account"}>Account</Link>
             </li>
             <li
-              onClick={handleLogout}
+              onClick={showLogoutConfirmationModal}
               className="flex gap-3 items-center py-3 px-2 rounded-lg w-full hover:bg-white hover:text-main hover:font-semibold"
             >
               <FontAwesomeIcon

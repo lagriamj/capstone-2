@@ -16,11 +16,12 @@ import { useActiveTab } from "../ActiveTabContext";
 import { useEffect, useState } from "react";
 import { useActiveSubTab } from "../ActiveSubTabContext";
 import axios from "axios";
-import { message } from "antd";
+import { Button, Modal, message } from "antd";
 
 const AdminSidebar = () => {
   const { activeTab, setActive } = useActiveTab();
   const { activeSubTab, setActiveSub } = useActiveSubTab();
+  const [isLogout, setIsLogout] = useState(false);
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -28,17 +29,20 @@ const AdminSidebar = () => {
     setActiveSub(item);
   };
   const handleLogout = async () => {
+    setIsLogout(true);
     try {
       const response = await axios.post("http://127.0.0.1:8000/api/logout");
 
       if (response.status === 200) {
         message.success("Logout Successfull");
+        setIsLogout(false);
         logout();
         navigate("/login");
         setActive("dashboard");
       }
     } catch (error) {
       console.log(error);
+      setIsLogout(false);
     }
   };
 
@@ -75,12 +79,46 @@ const AdminSidebar = () => {
 
   const isScreenWidth1366 = windowWidth <= 1366;
 
+  const [logoutModal, setLogoutModal] = useState(false);
+  const showLogoutConfirmationModal = () => {
+    setLogoutModal(true);
+  };
+
+  const handleOkLogout = () => {
+    handleLogout();
+  };
+
+  const handleCancelLogout = () => {
+    setLogoutModal(false);
+  };
+
   return (
     <div
       className={`sidebar flex flex-col bg-main h-screen w-[17%] font-sans overflow-auto text-white ${
         isScreenWidth1366 ? "text-sm" : "text-lg"
       } fixed top-0 left-0`}
     >
+      <Modal
+        title="Confirm Logout"
+        open={logoutModal}
+        footer={[
+          <Button key="cancel" onClick={handleCancelLogout}>
+            Cancel
+          </Button>,
+          <Button
+            loading={isLogout}
+            key="ok"
+            className="bg-red-700 text-white"
+            onClick={handleOkLogout}
+          >
+            {isLogout ? "Logging out" : "Logout"}
+          </Button>,
+        ]}
+      >
+        <p className="flex items-center justify-center gap-4">
+          Are you sure you want to logout?
+        </p>
+      </Modal>
       <div className="w-full flex gap-4 items-center justify-center py-4 px-3 my-2">
         <img className="w-1/3 h-[95%]" src="/cityhalllogo.png" alt="" />
         <img className="w-1/3 h-[95%]" src="/citclogo.png" alt="" />
@@ -283,7 +321,7 @@ const AdminSidebar = () => {
               </div>
             </li>
             <li
-              onClick={handleLogout}
+              onClick={showLogoutConfirmationModal}
               className="flex gap-3 items-center py-3 px-4 rounded-lg w-full transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold"
             >
               <FontAwesomeIcon
