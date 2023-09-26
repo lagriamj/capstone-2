@@ -256,7 +256,7 @@ class ReceiveServiceController extends Controller
         return response()->json($data, 201);
     }
 
-    public function destroyReceiveTask($id, $request_id)
+    public function destroyServiceTask($id, $request_id)
     {
         $receivedID = ReceiveService::find($id);
         $requestID = Requests::find($request_id);
