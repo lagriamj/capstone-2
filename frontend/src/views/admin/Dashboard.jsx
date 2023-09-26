@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import AdminSidebar from "../../components/AdminSidebar";
 import AdminDrawer from "../../components/AdminDrawer";
 import { Helmet, HelmetProvider } from "react-helmet-async";
@@ -17,8 +17,8 @@ import Filter2Icon from "@mui/icons-material/Filter2";
 import Filter3Icon from "@mui/icons-material/Filter3";
 import axios from "axios";
 import { Tooltip, Legend, ResponsiveContainer, PieChart, Pie } from "recharts";
-import LineGraph from "../../components/LineGraph";
 import BarGraph from "../../components/BarGraph";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -31,6 +31,19 @@ const Dashboard = () => {
   const [requestDetails, setRequestDetails] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
+  const navigate = useNavigate();
+
+  const handleNewRequestClick = () => {
+    navigate("/receive-service"); // Navigate to the specified route
+  };
+
+  const handleServiceTaskClick = () => {
+    navigate("/service-task"); // Navigate to the specified route
+  };
+
+  const handleClosedClick = () => {
+    navigate("/service-transaction"); // Navigate to the specified route
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -323,9 +336,8 @@ const Dashboard = () => {
     return null;
   };
 
-  const [graphType, setGraphType] = useState("bar");
-
   const [isFilterModalVisible, setIsFilterModalVisible] = useState(false);
+  const modalRef = useRef(null);
 
   const [selectedDataSources, setSelectedDataSources] = useState([
     "technicianData", // Default selection
@@ -335,8 +347,27 @@ const Dashboard = () => {
     setIsFilterModalVisible(!isFilterModalVisible);
   };
 
+  const handleOutsideClick = (event) => {
+    if (modalRef.current && !modalRef.current.contains(event.target)) {
+      setIsFilterModalVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isFilterModalVisible) {
+      document.addEventListener("mousedown", handleOutsideClick);
+    } else {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [isFilterModalVisible]);
+
   const toggleDataSource = (dataSource) => {
     setSelectedDataSources([dataSource]);
+    setIsFilterModalVisible(false);
   };
 
   const formatter = (value) => {
@@ -491,8 +522,11 @@ const Dashboard = () => {
               <div className="w-full lg:h-screen h-auto flex flex-col  lg:grid lg:grid-cols-7 lg:grid-rows-5 gap-x-3 ">
                 <div className="lg:grid lg:col-span-5 text-black font-sans">
                   <div className="flex lg:flex-row flex-col w-full  lg:justify-between ">
-                    <div className="flex lg:w-[32%] lg:h-[18vh] lg:mb-0 mb-3 bg-[#fff4de] shadow-md rounded-lg">
-                      <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
+                    <div
+                      onClick={handleNewRequestClick}
+                      className="flex lg:w-[32%] lg:h-[18vh] lg:mb-0 mb-3 cursor-pointer bg-[#fff4de] shadow-md rounded-lg"
+                    >
+                      <div className="flex flex-col w-[60%] font-medium cursor-pointer items-center justify-center px-2">
                         <FontAwesomeIcon
                           icon={faTicket}
                           className="text-[#ff947a] h-12 w-12 large:h-20 large:w-20"
@@ -505,8 +539,11 @@ const Dashboard = () => {
                         {counts.countPending}
                       </h1>
                     </div>
-                    <div className="flex lg:w-[32%] lg:h-[18vh] mb-3 bg-[#dcfce7] shadow-md rounded-lg">
-                      <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
+                    <div
+                      onClick={handleServiceTaskClick}
+                      className="flex lg:w-[32%] lg:h-[18vh] mb-3 cursor-pointer bg-[#dcfce7] shadow-md rounded-lg"
+                    >
+                      <div className="flex flex-col w-[60%] font-medium cursor-pointer items-center justify-center px-2">
                         <FontAwesomeIcon
                           icon={faTableList}
                           className="text-[#3cd958] h-12 w-12 large:h-20 large:w-20"
@@ -519,8 +556,11 @@ const Dashboard = () => {
                         {counts.countReceived}
                       </h1>
                     </div>
-                    <div className="flex lg:w-[32%] lg:h-[18vh] mb-3 bg-[#f4e8ff] shadow-md rounded-lg">
-                      <div className="flex flex-col w-1/2 font-medium items-center justify-center px-2">
+                    <div
+                      onClick={handleClosedClick}
+                      className="flex lg:w-[32%] lg:h-[18vh] mb-3 cursor-pointer bg-[#f4e8ff] shadow-md rounded-lg"
+                    >
+                      <div className="flex flex-col w-[60%] font-medium  items-center justify-center px-2">
                         <FontAwesomeIcon
                           icon={faClipboardCheck}
                           className="text-[#bf83ff] h-12 w-12 large:h-20 large:w-20"
@@ -547,7 +587,10 @@ const Dashboard = () => {
                         style={{ cursor: "pointer" }}
                       />
                       {isFilterModalVisible && (
-                        <div className="absolute right-0 top-9 z-50 overflow-auto text-start bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
+                        <div
+                          ref={modalRef}
+                          className="absolute right-0 top-9 z-50 overflow-auto text-start bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg"
+                        >
                           <label className="block px-4 py-2">
                             <input
                               type="checkbox"
@@ -582,24 +625,6 @@ const Dashboard = () => {
                       )}
                     </div>
                     <div className="flex gap-1 items-center lg:justify-center justify-end lg:mr-0 mr-2">
-                      <div className="flex gap-1 items-center lg:justify-center mr-auto lg:mr-2">
-                        <label
-                          htmlFor="graphType"
-                          className="large:text-lg mediumLg:text-sm lg:text-base"
-                        >
-                          Type
-                        </label>
-                        <select
-                          id="graphType"
-                          name="graphType"
-                          value={graphType}
-                          onChange={(e) => setGraphType(e.target.value)}
-                          className="border-2 border-gray-700 rounded-lg px-1 large:text-lg mediumLg:text-sm lg:text-base"
-                        >
-                          <option value="bar">Bar </option>
-                          <option value="line">Line </option>
-                        </select>
-                      </div>
                       <label
                         htmlFor="startDate"
                         className="large:text-lg mediumLg:text-sm lg:text-base"
@@ -633,72 +658,37 @@ const Dashboard = () => {
                     </div>
                   </div>
 
-                  {graphType === "line" && (
-                    <LineGraph
-                      data={
-                        selectedDataSources.includes("technicianData")
-                          ? technicianData
-                          : selectedDataSources.includes("requestsByDate")
-                          ? requestsByDate
-                          : technicianData
-                      }
-                      values1={
-                        selectedDataSources.includes("technicianData")
-                          ? "closed"
-                          : selectedDataSources.includes("requestsByDate")
-                          ? "closedBydate"
-                          : "closed"
-                      }
-                      values2={
-                        selectedDataSources.includes("technicianData")
-                          ? "unclosed"
-                          : selectedDataSources.includes("requestsByDate")
-                          ? "unclosedBydate"
-                          : "unclosed"
-                      }
-                      xValue={
-                        selectedDataSources.includes("technicianData")
-                          ? "assignedTo"
-                          : selectedDataSources.includes("requestsByDate")
-                          ? "date"
-                          : "assignedTo"
-                      }
-                      windowsHeight768={isWindowsHeightBelow768}
-                    />
-                  )}
-                  {graphType === "bar" && (
-                    <BarGraph
-                      data={
-                        selectedDataSources.includes("technicianData")
-                          ? technicianData
-                          : selectedDataSources.includes("requestsByDate")
-                          ? requestsByDate
-                          : technicianData
-                      }
-                      values1={
-                        selectedDataSources.includes("technicianData")
-                          ? "closed"
-                          : selectedDataSources.includes("requestsByDate")
-                          ? "closedBydate"
-                          : "closed"
-                      }
-                      values2={
-                        selectedDataSources.includes("technicianData")
-                          ? "unclosed"
-                          : selectedDataSources.includes("requestsByDate")
-                          ? "unclosedBydate"
-                          : "unclosed"
-                      }
-                      xValue={
-                        selectedDataSources.includes("technicianData")
-                          ? "assignedTo"
-                          : selectedDataSources.includes("requestsByDate")
-                          ? "date"
-                          : "assignedTo"
-                      }
-                      windowsHeight768={isWindowsHeightBelow768}
-                    />
-                  )}
+                  <BarGraph
+                    data={
+                      selectedDataSources.includes("technicianData")
+                        ? technicianData
+                        : selectedDataSources.includes("requestsByDate")
+                        ? requestsByDate
+                        : technicianData
+                    }
+                    values1={
+                      selectedDataSources.includes("technicianData")
+                        ? "closed"
+                        : selectedDataSources.includes("requestsByDate")
+                        ? "closedBydate"
+                        : "closed"
+                    }
+                    values2={
+                      selectedDataSources.includes("technicianData")
+                        ? "unclosed"
+                        : selectedDataSources.includes("requestsByDate")
+                        ? "unclosedBydate"
+                        : "unclosed"
+                    }
+                    xValue={
+                      selectedDataSources.includes("technicianData")
+                        ? "assignedTo"
+                        : selectedDataSources.includes("requestsByDate")
+                        ? "date"
+                        : "assignedTo"
+                    }
+                    windowsHeight768={isWindowsHeightBelow768}
+                  />
                 </div>
                 <div className="lg:col-span-full flex lg:flex-row flex-col justify-between mediumLg:mt-2 large:mt-3 mt-4 gap-3 row-span-2  rounded-lg row-start-4 ">
                   <div className="bg-white lg:w-[30%] w-full rounded-lg shadow-md">
@@ -852,21 +842,44 @@ const Dashboard = () => {
       </div>
       <Modal
         title={
-          <h1 className="text-xl my-4 pb-2 font-bold font-sans">
-            Request ID: E-{selectedData?.id}
-          </h1>
+          <div className="flex lg:flex-row flex-col items-center">
+            <h1 className="text-xl my-4 pb-2 font-bold font-sans">
+              Request ID: E-{selectedData?.id}
+            </h1>
+            <div className="flex gap-2 lg:ml-auto">
+              <label className="text-lg my-4 pb-2 font-bold font-sans">
+                Date of Request:{" "}
+              </label>
+              <label className="text-lg my-4 pb-2 font-bold font-sans">
+                {selectedData?.dateRequested}
+              </label>
+            </div>
+          </div>
         }
         open={isModalVisible}
         onCancel={handleCancel}
-        width={`${isLargeScreen ? "60%" : "90%"}`}
+        width={`${isLargeScreen ? "65%" : "90%"}`}
         footer={[
-          <Button key="close" onClick={handleCancel}>
+          <Button
+            key=""
+            onClick={() => {
+              navigate("/receive-service");
+            }}
+            className="bg-main text-white h-9 "
+          >
+            Go To
+          </Button>,
+          <Button
+            key="close"
+            onClick={handleCancel}
+            className="bg-white text-black border-2 border-main h-9"
+          >
             Close
           </Button>,
         ]}
       >
         {selectedData && (
-          <div className="lg:grid lg:grid-cols-2 flex flex-col gap-x-2 mediumLg:text-xl gap-y-2 border-t-2 border-gray-400 pt-6 font-sans">
+          <div className="lg:grid lg:grid-cols-2 flex flex-col gap-x-2 mediumLg:text-xl gap-y-4 border-t-2 border-gray-400 pt-6 font-sans">
             <div className="grid grid-cols-2">
               <label className="font-semibold">Full Name: </label>
               <label>{selectedData.fullName}</label>
@@ -884,10 +897,6 @@ const Dashboard = () => {
               <label>{selectedData.natureOfRequest}</label>
             </div>
             <div className="grid grid-cols-2">
-              <label className="font-semibold">Date of Request: </label>
-              <label>{selectedData.dateRequested}</label>
-            </div>
-            <div className="grid grid-cols-2">
               <label className="font-semibold">Mode of Request: </label>
               <label>{selectedData.modeOfRequest}</label>
             </div>
@@ -903,10 +912,7 @@ const Dashboard = () => {
               <label className="font-semibold">Serial No: </label>
               <label>{selectedData.serialNo}</label>
             </div>
-            <div className="grid grid-cols-2">
-              <label className="font-semibold">Authorized By: </label>
-              <label>{selectedData.authorizedBy}</label>
-            </div>
+
             <div className="grid grid-cols-2">
               <label className="font-semibold">Date Procured: </label>
               <label>{selectedData.dateProcured}</label>
@@ -917,6 +923,10 @@ const Dashboard = () => {
                 text={selectedData.specialIns || "No data"}
                 maxLength={150}
               />
+            </div>
+            <div className="flex gap-3 mt-4">
+              <label className="font-semibold">Authorized By: </label>
+              <label>{selectedData.authorizedBy}</label>
             </div>
           </div>
         )}

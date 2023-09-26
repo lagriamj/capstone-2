@@ -63,6 +63,46 @@ export default function CurrentRequestModal({
 
   const activeIndex = steps.indexOf(itemData.status);
 
+  function TextTruncate({ text, maxLength }) {
+    const [isTruncated, setIsTruncated] = useState(true);
+
+    const toggleTruncate = () => {
+      setIsTruncated(!isTruncated);
+    };
+
+    return (
+      <div>
+        {isTruncated ? (
+          <div>
+            {text.length > maxLength ? (
+              <>
+                {text.slice(0, maxLength)}
+                <span
+                  onClick={toggleTruncate}
+                  style={{ cursor: "pointer", color: "blue" }}
+                >
+                  ...Show more
+                </span>
+              </>
+            ) : (
+              text
+            )}
+          </div>
+        ) : (
+          <div>
+            {text}
+            <span
+              onClick={toggleTruncate}
+              style={{ cursor: "pointer", color: "blue" }}
+            >
+              Show less
+            </span>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <>
       <Modal
@@ -157,7 +197,8 @@ export default function CurrentRequestModal({
           </div>
           <div className=" w-full">
             <div className="w-full">
-              {renderDataRow(label[8], itemData.specialIns)}
+              <div className="text-lg font-semibold">{label[8]}</div>
+              <TextTruncate text={itemData.specialIns} maxLength={150} />
             </div>
           </div>
           <div className=" w-full">
@@ -177,4 +218,6 @@ CurrentRequestModal.propTypes = {
   itemData: PropTypes.object.isRequired, // Ensure that 'itemData' is a required object prop
   isLargeScreen: PropTypes.bool.isRequired,
   isScreenWidth1366: PropTypes.bool.isRequired,
+  text: PropTypes.string,
+  maxLength: PropTypes.number,
 };
