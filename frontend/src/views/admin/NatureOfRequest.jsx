@@ -414,6 +414,7 @@ const NatureOfRequest = () => {
 
                   <div className="flex justify-end">
                     <Button
+                      className="bg-red-700 text-white"
                       variant="outlined"
                       onClick={handleCancel}
                       style={{

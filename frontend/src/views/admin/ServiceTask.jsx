@@ -135,6 +135,8 @@ const ServiceTask = () => {
     }
   };
 
+  console.log(data);
+
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
@@ -796,6 +798,7 @@ const ServiceTask = () => {
                   onClose={closeModal}
                   data={selectedData}
                   refreshData={fetchData}
+                  isLargeScreen={isLargeScreen}
                 />
               )}
               {modalType === "ServiceReleased" && (

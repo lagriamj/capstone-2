@@ -195,7 +195,8 @@ const RateModal = ({
           </div>
           <div className="col-span-5 lg:col-span-2">
             <label htmlFor="name" className=" font-semibold">
-              2. Quality of Service (Kalidad serbisyo)
+              5. Employee Attitude towards Client (Saktong pamatasan sa
+              empleyado)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
               {[1, 2, 3, 4, 5].map((value) => (
@@ -205,7 +206,7 @@ const RateModal = ({
           </div>
           <div className="col-span-5 lg:col-span-2">
             <label htmlFor="name" className=" font-semibold">
-              3. Access and Facilities (Paagi ug pag-gamit sa pasilidad)
+              2. Quality of Service (Kalidad serbisyo)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
               {[1, 2, 3, 4, 5].map((value) => (
@@ -215,7 +216,7 @@ const RateModal = ({
           </div>
           <div className="col-span-5 lg:col-span-2">
             <label htmlFor="name" className=" font-semibold">
-              4. Communication (Kahanas sa pag abi-abi)
+              7. Transaction Costs (Kantidad sa serbisyo)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
               {[1, 2, 3, 4, 5].map((value) => (
@@ -225,8 +226,7 @@ const RateModal = ({
           </div>
           <div className="col-span-5 lg:col-span-2">
             <label htmlFor="name" className=" font-semibold">
-              5. Employee Attitude towards Client (Saktong pamatasan sa
-              empleyado)
+              3. Access and Facilities (Paagi ug pag-gamit sa pasilidad)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
               {[1, 2, 3, 4, 5].map((value) => (
@@ -246,7 +246,7 @@ const RateModal = ({
           </div>
           <div className="col-span-5 lg:col-span-2">
             <label htmlFor="name" className=" font-semibold">
-              7. Transaction Costs (Kantidad sa serbisyo)
+              4. Communication (Kahanas sa pag abi-abi)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
               {[1, 2, 3, 4, 5].map((value) => (

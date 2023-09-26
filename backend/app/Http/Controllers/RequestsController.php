@@ -77,7 +77,7 @@ class RequestsController extends Controller
             'reqOffice' => 'required',
             'division' => 'required',
             'natureOfRequest' => 'required',
-            'modeOfRequest' => '',
+            'modeOfRequest' => 'required',
             'unit' => 'required',
             'propertyNo' => 'required',
             'serialNo' => 'required',
@@ -91,7 +91,6 @@ class RequestsController extends Controller
 
         $validatedData['dateRequested'] = now();
         $validatedData['dateUpdated'] = now();
-        $validatedData['modeOfRequest'] = "Online";
 
         $request = Requests::create($validatedData);
 

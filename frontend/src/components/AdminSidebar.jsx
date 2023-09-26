@@ -100,6 +100,7 @@ const AdminSidebar = () => {
     >
       <Modal
         title="Confirm Logout"
+        onCancel={handleCancelLogout}
         open={logoutModal}
         footer={[
           <Button key="cancel" onClick={handleCancelLogout}>

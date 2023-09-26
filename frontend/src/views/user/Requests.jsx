@@ -76,7 +76,7 @@ const Requests = () => {
     reqOffice: "",
     division: "",
     natureOfRequest: "",
-    modeOfRequest: "",
+    modeOfRequest: "Online",
     unit: "",
     propertyNo: "",
     serialNo: "",
@@ -160,8 +160,6 @@ const Requests = () => {
       setLoading(false);
     }
   };
-
-  console.log("data", formData);
 
   const [data, setData] = useState([]);
 

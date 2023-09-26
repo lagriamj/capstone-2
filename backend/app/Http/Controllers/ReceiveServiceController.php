@@ -230,6 +230,7 @@ class ReceiveServiceController extends Controller
     {
         $validatedData = $request->validate([
             'receivedReq_id' => 'required',
+            'request_id' => 'required',
             'approvedBy' => 'required',
             'noteBy' => 'required',
             'releasedBy' => 'required',
@@ -237,7 +238,7 @@ class ReceiveServiceController extends Controller
 
         ]);
 
-        $receivedReqId = $request->input('request_id');
+
 
         $validatedData['dateApproved'] = now();
         $validatedData['dateNoted'] = now();

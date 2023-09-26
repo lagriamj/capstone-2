@@ -10,9 +10,7 @@ const TermsAndConditionsModal = ({
 }) => {
   return (
     <Modal
-      title={
-        <span className="flex w-full py-2 text-lg">Confidential Agreement</span>
-      }
+      title={<span className="flex w-full py-2 text-lg"></span>}
       open={isOpen}
       onCancel={() => onClose()}
       width={`${isLargeScreen ? "60%" : "90%"}`}
@@ -20,8 +18,8 @@ const TermsAndConditionsModal = ({
         <Button
           key="disagree"
           onClick={onDisagree}
-          style={{ height: "2.5rem", width: "5.5rem" }}
-          className="bg-white text-black border-2 border-main hover:bg-main hover:text-white ease-in-out transition duration-500 font-sans inline-flex items-center justify-center"
+          style={{ height: "2.5rem", width: "5.5rem", backgroundColor: "red" }}
+          className="bg-white text-white border-2 border-main hover:bg-main hover:text-white ease-in-out transition duration-500 font-sans inline-flex items-center justify-center"
         >
           Disagree
         </Button>,
@@ -64,7 +62,7 @@ TermsAndConditionsModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   onAgree: PropTypes.func.isRequired,
   onDisagree: PropTypes.func.isRequired,
-  isLargeScreen: PropTypes.func.isRequired,
+  isLargeScreen: PropTypes.bool.isRequired,
 };
 
 export default TermsAndConditionsModal;

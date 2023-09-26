@@ -1,14 +1,27 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Select from "react-select";
+
 import PropTypes from "prop-types";
-import { Button, Modal } from "antd";
+import { Button, Modal, Form, Input, Row, Col, Select } from "antd";
 import { message } from "antd";
 import { useAuth } from "../AuthContext";
 
 const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
   if (!isOpen) return null;
+
+  const { TextArea } = Input;
+
+  const [selectedTechnician, setSelectedTechnician] = useState("");
+  console.log(selectedTechnician);
+
+  const handleChangeAssignedTo = (value) => {
+    console.log("Selected Technician:", value);
+    setSelectedTechnician(value);
+  };
+
+  const [form] = Form.useForm();
+  const { Option } = Select;
 
   const options = {
     year: "numeric",
@@ -22,37 +35,23 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { fullName } = useAuth();
+  const [dataForm, setDataForm] = useState(null);
+  console.log(dataForm);
 
-  const [formData, setFormData] = useState({
-    request_id: data.id,
-    receivedBy: fullName,
-    assignedTo: "n/a",
-    serviceBy: "n/a",
-    toRecommend: "n/a",
-    findings: "n/a",
-    rootCause: "n/a",
-    actionTaken: "n/a",
-    remarks: "n/a",
-  });
-  // eslint-disable-next-line no-unused-vars
-  const [error, setError] = useState("");
-  console.log(data.id);
-
-  const changeUserFieldHandler = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-    console.log(formData);
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setIsSubmitting(true);
+    const values = await form.validateFields();
+    const modifiedValues = {
+      ...values,
+      serviceBy: "n/a",
+      assignedTo: selectedTechnician,
+    };
+    setDataForm(values);
+    setSelectedTechnician(values.assignedTo);
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/api/received-request",
-        formData
+        modifiedValues
       );
 
       if (response.status === 201) {
@@ -69,11 +68,9 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
         setIsSubmitting(false);
         console.error("Request failed with status:", error.response.status);
         console.log("Response error data:", error.response.data);
-        setError("An error occurred while processing the request.");
       } else {
         setIsSubmitting(false);
         console.error("Error creating received request:", error);
-        setError("An error occurred. Please try again later.");
       }
     }
   };
@@ -91,27 +88,8 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
     fetchTechnicians();
   }, []);
 
-  console.log(formData);
-
-  const [selectedTechnician, setSelectedTechnician] = useState(null);
-
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      border: "none",
-      boxShadow: "none",
-      height: "100%",
-      width: "100%",
-      outline: "none",
-      display: "flex",
-      overflowX: "auto",
-    }),
-    option: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isSelected ? "#343467" : "white",
-      color: state.isSelected ? "white" : "black",
-    }),
-  };
+  const customFilterOption = (inputValue, option) =>
+    option.value?.toLowerCase().includes(inputValue.toLowerCase());
 
   return (
     <Modal
@@ -131,297 +109,235 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
       <div className="relative p-6 text-lg">
         {/* Display your data in a 4x5 grid */}
         {data && (
-          <div className="grid lg:grid-cols-4 gap-y-4 gap-x-12 grid-cols-1">
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="reqOffice"
-              >
+          <Row gutter={[16, 16]}>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2 text-black">
                 Requesting Office
               </label>
-              <input
-                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
-                type="text"
-                id="reqOffice"
-                name="reqOffice"
-                value={data.reqOffice}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="reqOffice"
-              >
-                Division
-              </label>
-              <input
-                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
-                type="text"
-                id="division"
-                name="division"
-                value={data.division}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="dateRequested"
-              >
+              <Input value={data.reqOffice} readOnly className="h-[40px] " />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">Division</label>
+              <Input value={data.division} readOnly className="h-[40px] " />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">
                 Date Request
               </label>
-              <input
-                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
-                type="text"
-                id="dateRequested"
-                name="dateRequested"
+              <Input
                 value={data.dateRequested}
                 readOnly
+                className="h-[40px] "
               />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="modeOfRequest"
-              >
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">
                 Mode Request
               </label>
-              <input
-                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
-                type="text"
-                id="modeOfRequest"
-                name="modeOfRequest"
+              <Input
                 value={data.modeOfRequest}
                 readOnly
+                className="h-[40px] "
               />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="natureOfRequest"
-              >
-                Nature Request
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">
+                Nature of Request
               </label>
-              <input
-                className=" border-b-2  border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
-                type="text"
-                id="natureOfRequest"
-                name="natureOfRequest"
+              <Input
                 value={data.natureOfRequest}
                 readOnly
+                className="h-[40px] "
               />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="fullName"
-              >
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">
                 Requested By
               </label>
-              <input
-                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
-                type="text"
-                id="fullName"
-                name="fullName"
-                value={data.fullName}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="authorizedBy"
-              >
+              <Input value={data.fullName} readOnly className="h-[40px] " />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">
                 Authorized By
               </label>
-              <input
-                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
-                type="text"
-                id="authorizedBy"
-                name="authorizedBy"
-                value={data.authorizedBy}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1 lg:row-start-3">
-              <label className="block text-sm font-bold mb-2" htmlFor="unit">
-                Unit
+              <Input value={data.authorizedBy} readOnly className="h-[40px] " />
+            </Col>
+            <Col xs={24} lg={24}>
+              <label className="block text-sm font-bold mb-2">
+                Special Instructions
               </label>
-              <input
-                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
-                type="text"
-                id="unit"
-                name="unit"
-                value={data.unit}
+              <TextArea
+                rows={5}
+                value={data.specialIns}
                 readOnly
+                className="h-[40px] "
               />
-            </div>
-            <div className="col-span-1 lg:row-start-3">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
-              >
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">Unit</label>
+              <Input value={data.unit} readOnly className="h-[40px] " />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">
                 Property No
               </label>
-              <input
-                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
-                type="text"
-                id="propertyNo"
-                name="propertyNo"
-                value={data.propertyNo}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1 lg:row-start-3">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="serialNo"
-              >
-                Serial No
-              </label>
-              <input
-                className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
-                type="text"
-                id="serialNo"
-                name="serialNo"
-                value={data.serialNo}
-                readOnly
-              />
-            </div>
-            <div className="col-span-full">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="specialIns"
-              >
-                Special Ins
-              </label>
-              <textarea
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                name="SpecialIns"
-                id="SpecialIns"
-                cols="10"
-                rows="5"
-                readOnly
-                value={data.specialIns}
-              ></textarea>
-            </div>
+              <Input value={data.propertyNo} readOnly className="h-[40px] " />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">Serial No</label>
+              <Input value={data.serialNo} readOnly className="h-[40px] " />
+            </Col>
 
             {/* Add more columns as needed */}
-          </div>
+          </Row>
         )}
       </div>
-      <form onSubmit={handleSubmit}>
-        <div className="relative p-6 mb-10 text-lg">
+      <Form
+        form={form}
+        onFinish={handleSubmit}
+        initialValues={{
+          request_id: data.id,
+          receivedBy: fullName,
+          assignedTo: selectedTechnician,
+          serviceBy: "n/a",
+          dateProcured: data.dateProcured,
+          dateReceived: daytime,
+          toRecommend: "n/a",
+          findings: "n/a",
+          rootCause: "n/a",
+          actionTaken: "n/a",
+          remarks: "n/a",
+        }}
+        layout="vertical"
+      >
+        <div className="relative p-6  text-lg">
           {/* ADMIN SIDE */}
           {data && (
-            <div className="grid lg:grid-cols-4 gap-y-4 gap-x-12">
-              <div className="col-span-1">
-                <label
-                  className="block text-sm font-bold mb-2"
-                  htmlFor="receivedBy"
-                >
-                  Received By
-                </label>
-                <input
-                  className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
-                  placeholder="Received By"
-                  type="text"
-                  id="receivedBy"
+            <Row gutter={[16, 16]}>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold">
+                      Received By
+                    </label>
+                  }
                   name="receivedBy"
-                  value={fullName}
-                  onChange={(e) => {
-                    changeUserFieldHandler(e);
-                  }}
-                  readOnly
-                />
-              </div>
-              <div className="col-span-1">
-                <label
-                  className="block text-sm font-bold mb-2"
-                  htmlFor="dateReceived"
                 >
-                  Date Received
-                </label>
-                <input
-                  className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
-                  id="dateReceived"
+                  <Input readOnly value={data.fullName} className="h-[40px] " />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold ">
+                      Date Received
+                    </label>
+                  }
                   name="dateReceived"
-                  value={daytime}
-                  required
-                  onChange={(e) => {
-                    changeUserFieldHandler(e);
-                  }}
-                />
-              </div>
-              <div className="col-span-1">
-                <label
-                  className="block text-sm font-bold mb-2"
-                  htmlFor="assignedTo"
                 >
-                  Assigned To
-                </label>
-                <Select
-                  name="assignedTo"
-                  id="assignedTo"
-                  required
-                  className=" w-full border-b-2 border-gray-400    focus:outline-none"
-                  value={selectedTechnician}
-                  onChange={(selectedOption) => {
-                    setSelectedTechnician(selectedOption); // Update selected option
-                    changeUserFieldHandler({
-                      target: {
-                        name: "assignedTo",
-                        value: selectedOption.value,
-                      },
-                    });
-                  }}
-                  options={technicians.map((option) => ({
-                    value: option.userFirstName + " " + option.userLastName,
-                    label: option.userFirstName + " " + option.userLastName,
-                  }))}
-                  placeholder="select..."
-                  styles={customStyles}
-                />
-              </div>
-
-              <div className="col-span-1">
-                <label
-                  className="block text-sm font-bold mb-2"
-                  htmlFor="dateProcured"
+                  <Input readOnly value={daytime} className="h-[40px] " />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold">
+                      Assigned To
+                    </label>
+                  }
+                  name={["assignedTo", "technician"]}
                 >
-                  Date Procured
-                </label>
-                <input
-                  className=" border-b-2 border-gray-400 bg-white appearance-none outline-none  w-full py-2 px-3 text-gray-700 leading-tight"
-                  type="date"
-                  id="dateProcured"
+                  <Select
+                    size="large"
+                    showSearch
+                    filterOption={customFilterOption}
+                    className="h-[40px] "
+                    onChange={handleChangeAssignedTo}
+                    value={selectedTechnician}
+                  >
+                    {technicians.map((option) => (
+                      <Option
+                        key={option.userID}
+                        value={`${option.userFirstName} ${option.userLastName}`}
+                      >
+                        {`${option.userFirstName} ${option.userLastName}`}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold ">
+                      Date Procured
+                    </label>
+                  }
                   name="dateProcured"
-                  value={data.dateProcured}
-                  readOnly
-                />
-              </div>
-            </div>
-          )}
+                >
+                  <Input
+                    readOnly
+                    value={data.dateProcured}
+                    className="h-[40px] "
+                  />
+                </Form.Item>
+              </Col>
+              <Col>
+                <Form.Item name="request_id">
+                  <Input readOnly hidden />
+                </Form.Item>
+              </Col>
+              <Col>
+                <Form.Item name="servicedBy">
+                  <Input readOnly hidden />
+                </Form.Item>
+              </Col>
+              <Col>
+                <Form.Item name="actionTaken">
+                  <Input readOnly hidden />
+                </Form.Item>
+              </Col>
+              <Col>
+                <Form.Item name="findings">
+                  <Input readOnly hidden />
+                </Form.Item>
+              </Col>
+              <Col>
+                <Form.Item name="remarks">
+                  <Input readOnly hidden />
+                </Form.Item>
+              </Col>
+              <Col>
+                <Form.Item name="rootCause">
+                  <Input readOnly hidden />
+                </Form.Item>
+              </Col>
+              <Col>
+                <Form.Item name="toRecommend">
+                  <Input readOnly hidden />
+                </Form.Item>
+              </Col>
+            </Row>
+          )}{" "}
+          <div className="flex ml-auto w-full h-10 gap-2 justify-end border-t-2 pt-5 pr-6">
+            <Button
+              className="bg-red-700 text-white h-12 font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
+              htmlType="submit"
+              onClick={onClose}
+            >
+              Cancel
+            </Button>
+            <Button
+              loading={isSubmitting}
+              type="primary"
+              htmlType="submit"
+              className="bg-gray-800  h-12  font-semibold flex items-center justify-center text-white text-base font-sans w-28 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out "
+            >
+              {isSubmitting ? "Updating" : "Update"}
+            </Button>
+          </div>
         </div>
-        <div className="flex ml-auto w-full  gap-2 justify-end border-t-2 pt-5 pr-6">
-          <Button
-            className="bg-gray-800 text-white h-12 font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
-            htmlType="submit"
-            onClick={onClose}
-          >
-            Cancel
-          </Button>
-          <Button
-            loading={isSubmitting}
-            type="primary"
-            htmlType="submit"
-            className="bg-gray-800  h-12  font-semibold flex items-center justify-center text-white text-base font-sans w-28 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out "
-          >
-            {isSubmitting ? "Updating" : "Update"}
-          </Button>
-        </div>
-      </form>
+      </Form>
     </Modal>
   );
 };

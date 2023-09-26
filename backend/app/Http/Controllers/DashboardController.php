@@ -97,7 +97,7 @@ class DashboardController extends Controller
     public function getTechnicianPerformance($startDate = null, $endDate = null)
     {
         if ($startDate === null) {
-            $startDate = date('Y-m-d', strtotime('-11 days')); // Default to 2 days ago
+            $startDate = date('Y-m-d', strtotime('-11 days')); // Default to 10 days ago
         }
 
         if ($endDate === null) {
@@ -123,7 +123,7 @@ class DashboardController extends Controller
     public function getPercentAccomplished($startDate = null, $endDate = null)
     {
         if ($startDate === null) {
-            $startDate = date('Y-m-d', strtotime('-11 days')); // Default to 2 days ago
+            $startDate = date('Y-m-d', strtotime('-11 days')); // Default to 10 days ago
         }
 
         if ($endDate === null) {

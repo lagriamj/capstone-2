@@ -1,44 +1,32 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
-import { Modal } from "antd";
+import { Button, Modal, Form, Input, Row, Col } from "antd";
 import { message } from "antd";
-import PropagateLoader from "react-spinners/PropagateLoader";
 
 const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
   if (!isOpen) return null;
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { TextArea } = Input;
+  const [form] = Form.useForm();
 
   const daytime = new Date().toLocaleString(undefined);
   console.log("request_id", data.request_id);
 
-  const [formData, setFormData] = useState({
-    request_id: data.request_id,
-    receivedReq_id: data.id,
-    approvedBy: "",
-    noteBy: "",
-    releasedBy: "",
-    received_By: "",
-  });
+  // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState("");
   console.log(data.id);
 
-  const changeUserFieldHandler = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setIsSubmitting(true);
+
+    const values = await form.validateFields();
+
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/api/torate-request",
-        formData
+        values
       );
 
       if (response.status === 201) {
@@ -46,6 +34,7 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
         message.success("Updated Successfully");
         onClose();
         refreshData();
+        console.log(values);
       } else {
         setIsSubmitting(false);
         console.error("Received an unexpected response:", response);
@@ -64,7 +53,7 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
     }
   };
 
-  console.log(formData);
+  console.log(data);
 
   return (
     <Modal
@@ -83,519 +72,305 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
     >
       <div className="relative p-6 text-lg">
         {data && (
-          <div className="grid grid-cols-4 gap-4">
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2 text-black"
-                htmlFor="propertyNo"
-              >
+          <Row gutter={[16, 16]}>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2 text-black">
                 Requesting Office
               </label>
-              <input
-                className="shadow-md appearance-none border-2  rounded-lg w-full py-2 px-3 bg-gray-200  text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="reqOffice"
-                name="reqOffice"
-                value={data.reqOffice}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="reqOffice"
-              >
-                Division
-              </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="division"
-                name="division"
-                value={data.division}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="dateRequested"
-              >
+              <Input value={data.reqOffice} readOnly className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">Division</label>
+              <Input value={data.division} readOnly className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">
                 Date Request
               </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="dateRequested"
-                name="dateRequested"
-                value={data.dateRequested}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="natureOfRequest"
-              >
+              <Input value={data.dateRequested} readOnly className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">
                 Mode Request
               </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="modeOfRequest"
-                name="modeOfRequest"
-                value={data.modeOfRequest}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="fullName"
-              >
-                Nature Request
+              <Input value={data.modeOfRequest} readOnly className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">
+                Nature of Request
               </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="natureOfRequest"
-                name="natureOfRequest"
+              <Input
                 value={data.natureOfRequest}
                 readOnly
+                className="h-[40px]"
               />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="fullName"
-              >
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">
                 Requested By
               </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="fullName"
-                name="fullName"
-                value={data.fullName}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="fullName"
-              >
+              <Input value={data.fullName} readOnly className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">
                 Authorized By
               </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="authorizedBy"
-                name="authorizedBy"
-                value={data.authorizedBy}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="fullName"
-              >
-                Special Instruction
+              <Input value={data.authorizedBy} readOnly className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={24}>
+              <label className="block text-sm font-bold mb-2">
+                Special Instructions
               </label>
-
-              <textarea
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                name="SpecialIns"
-                id="SpecialIns"
-                cols="10"
-                rows="5"
-                readOnly
+              <TextArea
+                rows={4}
                 value={data.specialIns}
-              ></textarea>
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="fullName"
-              >
-                Unit
-              </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="unit"
-                name="unit"
-                value={data.unit}
                 readOnly
+                className="h-[40px]"
               />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="fullName"
-              >
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">Unit</label>
+              <Input value={data.unit} readOnly className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">
                 Property No
               </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="propertyNo"
-                name="propertyNo"
-                value={data.propertyNo}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="fullName"
-              >
-                Serial No
-              </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="serialNo"
-                name="serialNo"
-                value={data.serialNo}
-                readOnly
-              />
-            </div>
-
-            {/* Add more columns as needed */}
-          </div>
+              <Input value={data.propertyNo} readOnly className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">Serial No</label>
+              <Input value={data.serialNo} readOnly className="h-[40px]" />
+            </Col>
+          </Row>
         )}
       </div>
       <div className="relative p-6 text-lg">
         {/* ADMIN SIDE */}
         {data && (
-          <div className="grid grid-cols-4 gap-4">
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
-              >
+          <Row gutter={[16, 16]}>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2 text-black">
                 Received By
               </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="receivedBy"
-                name="receivedBy"
-                value={data.receivedBy}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
-              >
-                Date Received
-              </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="dateReceived"
-                name="dateReceived"
-                value={data.dateReceived}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
-              >
-                Assigned To
-              </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="assignedTo"
-                name="assignedTo"
-                value={data.assignedTo}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
-              >
+              <Input value={data.receivedBy} readOnly className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2 text-black">
                 Date Procured
               </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="date"
-                id="dateProcured"
-                name="dateProcured"
-                value={data.dateProcured}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
-              >
+              <Input value={data.dateProcured} readOnly className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2 text-black">
+                Serviced By
+              </label>
+              <Input value={data.serviceBy} readOnly className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2 text-black">
                 Date Service
               </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="serviceBy"
-                name="serviceBy"
-                value={data.serviceBy}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
-              >
-                Date Service
-              </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="dateServiced"
-                name="dateServiced"
-                value={data.dateServiced}
-                readOnly
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
-              >
+              <Input value={data.dateServiced} readOnly className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={12}>
+              <label className="block text-sm font-bold mb-2 text-black">
                 Findings/Particulars
               </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="findings"
-                name="findings"
-                value={data.findings}
-                readOnly
-              />
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="rootCause"
-                name="rootCause"
+              <Input value={data.findings} className="lg:w-1/2 w-full mb-2" />
+              <TextArea
+                rows={4}
                 value={data.rootCause}
                 readOnly
+                className="h-[40px]"
               />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
-              >
+            </Col>
+            <Col xs={24} lg={12}>
+              <label className="block text-sm font-bold mb-2 text-black">
                 Action Taken
               </label>
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg w-20 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="actionTaken"
-                name="actionTaken"
+              <Input
                 value={data.actionTaken}
-                readOnly
+                className="lg:w-1/2 w-full mb-2"
               />
-              <input
-                className="shadow-md bg-gray-200 appearance-none border rounded-lg py-2 px-3 ml-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="remarks"
-                name="remarks"
+              <TextArea
+                rows={4}
                 value={data.remarks}
                 readOnly
+                className="h-[40px]"
               />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
-              >
+            </Col>
+            <Col xs={24} lg={24}>
+              <label className="block text-sm font-bold mb-2 text-black">
                 Recommendation
               </label>
-
-              <input
-                className="shadow-md bg-gray-200 appearance-none border w-full rounded-lg py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="toRecommend"
-                name="toRecommend"
+              <TextArea
+                rows={3}
                 value={data.toRecommend}
                 readOnly
+                className="h-[40px]"
               />
-            </div>
-          </div>
+            </Col>
+          </Row>
         )}
-        <form onSubmit={handleSubmit}>
-          <div className="mt-10 grid grid-cols-4 gap-4">
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
-              >
-                Approved By
-              </label>
-              <input
-                className="shadow-md border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="approvedBy"
+        <Form
+          form={form}
+          onFinish={handleSubmit}
+          initialValues={{
+            request_id: data.request_id,
+            receivedReq_id: data.id,
+            dateApproved: daytime,
+            dateReleased: daytime,
+            dateNoted: daytime,
+            date_Received: daytime,
+            approvedBy: "",
+            noteBy: "",
+            releasedBy: "",
+            received_By: "",
+          }}
+          layout="vertical"
+          className="mt-8"
+        >
+          <Row gutter={[16, 16]}>
+            <Col xs={24} lg={6}>
+              <Form.Item
+                label={
+                  <label className="block text-sm font-bold">Approved By</label>
+                }
+                rules={[
+                  {
+                    required: true,
+                    message: "This field is required",
+                  },
+                ]}
                 name="approvedBy"
-                defaultValue={data.approvedBy}
-                required
-                onChange={(e) => {
-                  changeUserFieldHandler(e);
-                }}
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
               >
-                Date Approved
-              </label>
-              <input
-                className="shadow-md border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="dateApproved"
+                <Input value={data.approvedBy} className="h-[40px]" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} lg={6}>
+              <Form.Item
+                label={
+                  <label className="block text-sm font-bold">
+                    Date Approved
+                  </label>
+                }
                 name="dateApproved"
-                value={daytime}
-                disabled
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
               >
-                Released By
-              </label>
-              <input
-                className="shadow-md border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="releasedBy"
+                <Input readOnly value={daytime} className="h-[40px]" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} lg={6}>
+              <Form.Item
+                label={
+                  <label className="block text-sm font-bold">Released By</label>
+                }
+                rules={[
+                  {
+                    required: true,
+                    message: "This field is required",
+                  },
+                ]}
                 name="releasedBy"
-                defaultValue={data.releasedBy}
-                required
-                onChange={(e) => {
-                  changeUserFieldHandler(e);
-                }}
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
               >
-                Date Released
-              </label>
-              <input
-                className="shadow-md border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="dateReleased"
+                <Input value={data.releasedBy} className="h-[40px]" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} lg={6}>
+              <Form.Item
+                label={
+                  <label className="block text-sm font-bold">
+                    Date Released
+                  </label>
+                }
                 name="dateReleased"
-                value={daytime}
-                disabled
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
               >
-                Noted By
-              </label>
-              <input
-                className="shadow-md border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="noteBy"
+                <Input readOnly value={daytime} className="h-[40px]" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} lg={6}>
+              <Form.Item
+                label={
+                  <label className="block text-sm font-bold">Noted By</label>
+                }
+                rules={[
+                  {
+                    required: true,
+                    message: "This field is required",
+                  },
+                ]}
                 name="noteBy"
-                defaultValue={data.noteBy}
-                required
-                onChange={(e) => {
-                  changeUserFieldHandler(e);
-                }}
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
               >
-                Date Noted
-              </label>
-              <input
-                className="shadow-md border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="dateNoted"
+                <Input value={data.noteBy} className="h-[40px]" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} lg={6}>
+              <Form.Item
+                label={
+                  <label className="block text-sm font-bold">Date Noted</label>
+                }
                 name="dateNoted"
-                value={daytime}
-                disabled
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
               >
-                Received By
-              </label>
-              <input
-                className="shadow-md border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="received_By"
+                <Input readOnly value={daytime} className="h-[40px]" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} lg={6}>
+              <Form.Item
+                label={
+                  <label className="block text-sm font-bold">Received By</label>
+                }
+                rules={[
+                  {
+                    required: true,
+                    message: "This field is required",
+                  },
+                ]}
                 name="received_By"
-                defaultValue={data.received_By}
-                required
-                onChange={(e) => {
-                  changeUserFieldHandler(e);
-                }}
-              />
-            </div>
-            <div className="col-span-1">
-              <label
-                className="block text-sm font-bold mb-2"
-                htmlFor="propertyNo"
               >
-                Date Received
-              </label>
-              <input
-                className="shadow-md border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                type="text"
-                id="date_Received"
+                <Input value={data.received_By} className="h-[40px]" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} lg={6}>
+              <Form.Item
+                label={
+                  <label className="block text-sm font-bold">
+                    Date Received
+                  </label>
+                }
                 name="date_Received"
-                value={daytime}
-                disabled
-              />
-            </div>
-          </div>
+              >
+                <Input readOnly value={daytime} className="h-[40px]" />
+              </Form.Item>
+            </Col>
+            <Col>
+              <Form.Item name="receivedReq_id">
+                <Input readOnly hidden className="h-[40px]" />
+              </Form.Item>
+            </Col>
+            <Col>
+              <Form.Item name="request_id">
+                <Input readOnly hidden className="h-[40px]" />
+              </Form.Item>
+            </Col>
+          </Row>
           <div className="flex ml-auto w-full  gap-2 justify-end border-t-2 pt-5 pr-6">
             <button
-              className="bg-gray-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
+              className="bg-red-700 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
               type="submit"
               onClick={onClose}
             >
               Cancel
             </button>
-            <button
-              className="bg-gray-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
-              type="submit"
+            <Button
+              loading={isSubmitting}
+              type="primary"
+              htmlType="submit"
+              className="bg-gray-800  py-7  font-semibold flex items-center justify-center text-white text-base font-sans w-28 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out "
             >
-              {isSubmitting ? (
-                <PropagateLoader color="#FFFFFF" size={10} className="mb-3" />
-              ) : (
-                "Update"
-              )}
-            </button>
+              {isSubmitting ? "Updating" : "Update"}
+            </Button>
           </div>
-        </form>
+        </Form>
       </div>
       {/* Footer */}
     </Modal>

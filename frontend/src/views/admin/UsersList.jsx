@@ -175,6 +175,34 @@ const UsersList = () => {
     );
   });
 
+  const [officeOptions, setOfficeOptions] = useState("");
+  const [officeFilters, setOfficeFilters] = useState([]);
+
+  useEffect(() => {
+    fetchOfficeList();
+  }, []);
+
+  const fetchOfficeList = async () => {
+    try {
+      const result = await axios.get("http://127.0.0.1:8000/api/office-list");
+      console.log(result.data.results);
+      setOfficeOptions(result.data.results);
+    } catch (err) {
+      console.log("Something went wrong:", err);
+    }
+  };
+
+  console.log(officeOptions.office);
+
+  useEffect(() => {
+    // Create dynamic filters based on the officeOptions data.
+    const dynamicFilters = officeOptions.map((office) => ({
+      text: office.office,
+      value: office.office,
+    }));
+    setOfficeFilters(dynamicFilters);
+  }, [officeOptions]);
+
   // Define columns for the table
   const columns = [
     {
@@ -201,28 +229,7 @@ const UsersList = () => {
       dataIndex: "office",
       key: "office",
 
-      filters: [
-        {
-          text: "CEMG",
-          value: "CEMG",
-        },
-        {
-          text: "CITC",
-          value: "CITC",
-        },
-        {
-          text: "CCE",
-          value: "CCE",
-        },
-        {
-          text: "CEE",
-          value: "CEE",
-        },
-        {
-          text: "CAE",
-          value: "CAE",
-        },
-      ],
+      filters: officeFilters,
       filterSearch: true,
       onFilter: (value, record) => record.office === value,
     },
