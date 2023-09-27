@@ -192,16 +192,22 @@ const UsersList = () => {
     }
   };
 
-  console.log(officeOptions.office);
+  console.log(officeOptions);
 
   useEffect(() => {
-    // Create dynamic filters based on the officeOptions data.
-    const dynamicFilters = officeOptions.map((office) => ({
-      text: office.office,
-      value: office.office,
-    }));
-    setOfficeFilters(dynamicFilters);
+    // Check if officeOptions is an array before mapping over it
+    if (Array.isArray(officeOptions)) {
+      // Create dynamic filters based on the officeOptions data.
+      const dynamicFilters = officeOptions.map((office) => ({
+        text: office.office,
+        value: office.office,
+      }));
+      setOfficeFilters(dynamicFilters);
+    }
   }, [officeOptions]);
+
+  console.log(officeOptions);
+  console.log(officeFilters);
 
   // Define columns for the table
   const columns = [
