@@ -48,7 +48,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
     setServiceByValue(values.serviceBy);
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/onprogress-request/${data.id}`,
+        `http://127.0.0.1:8000/api/onprogress-request/${data.request_id}`,
         modifiedValues
       );
 

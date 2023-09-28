@@ -7,13 +7,13 @@ import { Button, Modal, Form, Input, Row, Col, Select } from "antd";
 import { message } from "antd";
 import { useAuth } from "../AuthContext";
 
-const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
+const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
   if (!isOpen) return null;
 
   const { TextArea } = Input;
 
   const [selectedTechnician, setSelectedTechnician] = useState("");
-  console.log(selectedTechnician);
+  console.log(",", selectedTechnician);
 
   const handleChangeAssignedTo = (value) => {
     console.log("Selected Technician:", value);
@@ -40,17 +40,16 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    const values = await form.validateFields();
-    const modifiedValues = {
-      ...values,
-      serviceBy: "n/a",
-      assignedTo: selectedTechnician,
-    };
-    setDataForm(values);
-    setSelectedTechnician(values.assignedTo);
+
     try {
+      const values = await form.validateFields();
+      const modifiedValues = {
+        ...values,
+        assignedTo: selectedTechnician,
+      };
+
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/received-request",
+        `http://127.0.0.1:8000/api/received-request/${data.request_id}`,
         modifiedValues
       );
 
@@ -58,20 +57,21 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
         console.log("Request received successfully.");
         setIsSubmitting(false);
         message.success("Updated Successfully");
-        window.location.href = "/service-task";
+        onClose();
+        refreshData();
       } else {
-        setIsSubmitting(false);
         console.error("Received an unexpected response:", response);
+        setIsSubmitting(false);
       }
     } catch (error) {
       if (error.response) {
-        setIsSubmitting(false);
         console.error("Request failed with status:", error.response.status);
         console.log("Response error data:", error.response.data);
       } else {
-        setIsSubmitting(false);
         console.error("Error creating received request:", error);
       }
+
+      setIsSubmitting(false);
     }
   };
 
@@ -99,7 +99,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
       title={
         <div className="flex justify-between items-center">
           <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
-          <span>REQUEST ID: E-{data.id}</span>
+          <span>REQUEST ID: E-{data.request_id}</span>
         </div>
       }
       centered={true}
@@ -196,17 +196,11 @@ const ReceiveServiceModal = ({ isOpen, onClose, data }) => {
         form={form}
         onFinish={handleSubmit}
         initialValues={{
-          request_id: data.id,
+          request_id: data.request_id,
           receivedBy: fullName,
           assignedTo: selectedTechnician,
-          serviceBy: "n/a",
           dateProcured: data.dateProcured,
           dateReceived: daytime,
-          toRecommend: "n/a",
-          findings: "n/a",
-          rootCause: "n/a",
-          actionTaken: "n/a",
-          remarks: "n/a",
         }}
         layout="vertical"
       >

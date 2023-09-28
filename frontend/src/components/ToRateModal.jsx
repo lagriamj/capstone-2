@@ -263,7 +263,7 @@ const ToRateModal = ({ isOpen, onClose, datas, refreshData }) => {
             </label>
             <input
               className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              type="date"
+              type="text"
               id="dateProcured"
               name="dateProcured"
               value={item.dateProcured || "No data"}
@@ -521,7 +521,7 @@ const ToRateModal = ({ isOpen, onClose, datas, refreshData }) => {
       title={
         <div className="flex justify-between items-center">
           <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
-          <span>REQUEST ID: {datas.id}</span>
+          <span>REQUEST ID: {datas.request_id}</span>
         </div>
       }
       centered

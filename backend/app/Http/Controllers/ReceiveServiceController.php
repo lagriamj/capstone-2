@@ -8,6 +8,7 @@ use App\Models\Requests;
 use App\Models\CancelReason;
 use App\Models\ReleaseRequests;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Response;
 
 
 class ReceiveServiceController extends Controller
@@ -47,25 +48,15 @@ class ReceiveServiceController extends Controller
     }
 
 
-    public function receivedRequest(Request $request)
+    public function receivedRequest(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'request_id' => 'required',
-            'receivedBy' => 'required',
-            'assignedTo' => 'required',
-            'serviceBy' => 'required',
-            'toRecommend' => 'required',
-            'findings' => 'required',
-            'rootCause' => 'required',
-            'actionTaken' => 'required',
-            'remarks' => 'required',
-        ]);
-
-        $validatedData['dateReceived'] = now();
-        $validatedData['dateServiced'] = now();
-
-        // Create a new ReceiveService record
-        $data = ReceiveService::create($validatedData);
+        DB::table('receive_service')
+            ->where('request_id', $id)
+            ->update([
+                'receivedBy' => $request->input('receivedBy'),
+                'assignedTo' => $request->input('assignedTo'),
+                'dateReceived' => now(),
+            ]);
 
         DB::table('user_requests')
             ->where('id', $request->input('request_id'))
@@ -75,8 +66,10 @@ class ReceiveServiceController extends Controller
                 'status' => 'Received',
             ]);
 
-        return response()->json($data, 201);
+        // Return a JSON response with a 201 status code indicating success
+        return response()->json(['message' => 'Request updated successfully'], 201);
     }
+
 
     public function destroyService($id)
     {
@@ -118,47 +111,17 @@ class ReceiveServiceController extends Controller
     //     return response()->json(['results' => $data]);
     // }
 
-    public function showServiceTask(Request $request, $technician = null, $startDate = null, $endDate = null, $selectedStatus = null, $selectedSort = null, $search = null)
+    public function showServiceTask(Request $request, $startDate = null, $endDate = null)
     {
-        $order = $request->input('order');
-
-
         $query = DB::table('user_requests')
             ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
             ->select('user_requests.*', 'receive_service.*')
-            ->whereNotIn('user_requests.status', ['Pending', 'Closed', 'Cancelled']);
+            ->whereNotIn('user_requests.status', ['Purge']);
 
-        // Check if startDate and endDate parameters are provided and valid
         if ($startDate && $endDate) {
-            // Use '<' for the end date to exclude it from the range
             $query->where('user_requests.dateRequested', '>=', $startDate)
                 ->where('user_requests.dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
         }
-
-        if ($selectedStatus && in_array($selectedStatus, ['Pending', 'Received', 'On Progress', 'To Release', 'To Rate'])) {
-            $query->where('status', $selectedStatus);
-        }
-
-        if ($technician != "notech") {
-            $query->where('user_requests.assignedTo', $technician);
-        }
-
-
-
-
-        if ($order && in_array($order, ['asc', 'desc'])) {
-            $query->orderByRaw("dateRequested $order");
-        }
-
-        if ($search) {
-            $search = preg_replace('/^E-/i', '', $search); // Remove 'E-' or 'e-' prefix
-            $query->where(function ($query) use ($search) {
-                $query->where('user_requests.id', 'LIKE', "%$search%")
-                    ->orWhere('user_requests.natureOfRequest', 'LIKE', "%$search%")
-                    ->orWhere('user_requests.assignedTo', 'LIKE', "%$search%");
-            });
-        }
-
         $data = $query->get();
 
         return response()->json(['results' => $data]);
@@ -167,23 +130,14 @@ class ReceiveServiceController extends Controller
 
     public function onprogressRequest(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'request_id' => 'required',
-            'receivedBy' => 'required',
-            'dateReceived' => 'required',
-            'assignedTo' => 'required',
-            'serviceBy' => 'required',
-            'toRecommend' => 'required',
-            'findings' => 'required',
-            'rootCause' => 'required',
-            'actionTaken' => 'required',
-            'remarks' => 'required',
-        ]);
 
-        $validatedData['dateServiced'] = now();
 
-        $receiveService = ReceiveService::findOrFail($id);
-        $receiveService->update($validatedData);
+        DB::table('receive_service')
+            ->where('request_id', $id)
+            ->update([
+                'serviceBy' => $request->input('serviceBy'),
+                'dateServiced' => now(),
+            ]);
 
         DB::table('user_requests')
             ->where('id', $request->input('request_id'))
@@ -193,27 +147,21 @@ class ReceiveServiceController extends Controller
                 'status' => 'On Progress',
             ]);
 
-        return response()->json(['message' => 'ReceiveService updated successfully', 'data' => $receiveService]);
+        return response()->json(['message' => 'ReceiveService updated successfully']);
     }
 
     public function toreleaseRequest(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'request_id' => 'required',
-            'receivedBy' => 'required',
-            'dateReceived' => 'required',
-            'assignedTo' => 'required',
-            'serviceBy' => 'required',
-            'dateServiced' => 'required',
-            'toRecommend' => 'required',
-            'findings' => 'required',
-            'rootCause' => 'required',
-            'actionTaken' => 'required',
-            'remarks' => 'required',
-        ]);
 
-        $receiveService = ReceiveService::findOrFail($id);
-        $receiveService->update($validatedData);
+        DB::table('receive_service')
+            ->where('request_id', $id)
+            ->update([
+                'toRecommend' => $request->input('toRecommend'),
+                'findings' => $request->input('findings'),
+                'rootCause' => $request->input('rootCause'),
+                'actionTaken' => $request->input('actionTaken'),
+                'remarks' => $request->input('remarks'),
+            ]);
 
         DB::table('user_requests')
             ->where('id', $request->input('request_id'))
@@ -223,10 +171,10 @@ class ReceiveServiceController extends Controller
                 'status' => 'To Release',
             ]);
 
-        return response()->json(['message' => 'ReceiveService updated successfully', 'data' => $receiveService]);
+        return response()->json(['message' => 'ReceiveService updated successfully']);
     }
 
-    public function torateRequest(Request $request)
+    public function torateRequest(Request $request, $id)
     {
         $validatedData = $request->validate([
             'receivedReq_id' => 'required',
@@ -245,14 +193,16 @@ class ReceiveServiceController extends Controller
         $validatedData['dateReleased'] = now();
         $validatedData['date_Received'] = now();
 
+        $data = ReleaseRequests::create($validatedData);
+
         DB::table('user_requests')
-            ->where('id', $request->input('request_id'))
+            ->where('id', $id)
             ->update([
                 'dateUpdated' => now(),
                 'status' => 'To Rate',
             ]);
 
-        $data = ReleaseRequests::create($validatedData);
+
         return response()->json($data, 201);
     }
 

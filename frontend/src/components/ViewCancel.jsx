@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { Modal } from "antd";
 import { Skeleton } from "antd";
 
-const ViewCancel = ({ isOpen, onClose, datas }) => {
+const ViewCancel = ({ isOpen, onClose, datas, role }) => {
   if (!isOpen) return null;
 
   const [loading, setLoading] = useState(true);
@@ -17,12 +17,20 @@ const ViewCancel = ({ isOpen, onClose, datas }) => {
     fetchData();
   }, [datas]); // Trigger fetch when datas prop changes
 
+  const getApiEndpoint = () => {
+    // Determine the API endpoint based on the user's role
+    if (role === "admin") {
+      return `http://127.0.0.1:8000/api/view-cancelled/${datas.request_id}`;
+    } else if (role === "user") {
+      return `http://127.0.0.1:8000/api/view-cancelled/${datas.id}`;
+    }
+    // Handle other roles or scenarios as needed
+  };
+
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/view-cancelled/${datas.id}`
-      );
+      const response = await axios.get(getApiEndpoint());
       if (response.status === 200) {
         setLoading(false);
         setData(response.data.results);

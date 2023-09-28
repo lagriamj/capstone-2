@@ -44,7 +44,7 @@ Route::middleware('api')->group(function () {
     Route::post('add-request', [RequestsController::class, 'addRequest']);
 
     //Current Requests (user side)
-    Route::get('request-list/{startDate?}/{endDate?}/{selectedStatus?}/{selectedSort?}/{search?}', [RequestsController::class, 'showRequest']);
+    Route::get('request-list/{userID}/{startDate?}/{endDate?}', [RequestsController::class, 'showRequest']);
     Route::put('closedNorate/{id}', [RatingController::class, 'closedNorate']);
     Route::delete('delete-request/{id}', [RequestsController::class, 'destroyRequest']);
 
@@ -64,14 +64,17 @@ Route::middleware('api')->group(function () {
     //Receive Service (admin side)
     Route::put('delete-receive/{id}', [ReceiveServiceController::class, 'destroyService']);
     Route::get('pending-request/{startDate?}/{endDate?}/{selectedSort?}/{search?}', [ReceiveServiceController::class, 'pendingRequest']);
-    Route::post('received-request', [ReceiveServiceController::class, 'receivedRequest']);
+    Route::post('received-request/{id}', [ReceiveServiceController::class, 'receivedRequest']);
 
     //Service Task (admin side)
-    Route::get('service-task-list/{technician?}/{startDate?}/{endDate?}/{selectedStatus?}/{selectedSort?}/{search?}', [ReceiveServiceController::class, 'showServiceTask']);
+    Route::get('service-task-list/{startDate?}/{endDate?}/{search?}', [ReceiveServiceController::class, 'showServiceTask']);
+    Route::get('received-details/{startDate?}/{endDate?}', [ReceiveServiceController::class, 'showReceived']);
+
+
     // Route::get('service-my-task-list/{fullName}', [ReceiveServiceController::class, 'showMyServiceTask']);
     Route::put('onprogress-request/{id}', [ReceiveServiceController::class, 'onprogressRequest']);
     Route::put('torelease-request/{id}', [ReceiveServiceController::class, 'toreleaseRequest']);
-    Route::post('torate-request', [ReceiveServiceController::class, 'torateRequest']);
+    Route::post('torate-request/{id}', [ReceiveServiceController::class, 'torateRequest']);
     Route::put('delete-serviced/{id}/{reqID}', [ReceiveServiceController::class, 'destroyServiceTask']);
 
     //Service Transaction

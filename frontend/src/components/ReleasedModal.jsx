@@ -25,7 +25,7 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/torate-request",
+        `http://127.0.0.1:8000/api/torate-request/${data.request_id}`,
         values
       );
 
@@ -63,7 +63,7 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
       title={
         <div className="flex justify-between items-center">
           <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
-          <span>REQUEST ID: {data.id}</span>
+          <span>REQUEST ID: {data.request_id}</span>
         </div>
       }
       centered
@@ -217,7 +217,7 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
           form={form}
           onFinish={handleSubmit}
           initialValues={{
-            request_id: data.request_id,
+            request_id: data.id,
             receivedReq_id: data.id,
             dateApproved: daytime,
             dateReleased: daytime,

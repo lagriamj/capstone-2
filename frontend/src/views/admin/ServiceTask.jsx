@@ -7,6 +7,9 @@ import ServiceTaskModal from "../../components/ServiceTaskModal";
 import ServiceReleaseModal from "../../components/ServiceReleaseModal";
 import ReleasedModal from "../../components/ReleasedModal";
 import ToRateModal from "../../components/ToRateModal";
+import ReceiveServiceModal from "../../components/ReceiveServiceModal";
+import ReasonModal from "../../components/ReasonModal";
+import ViewCancel from "../../components/ViewCancel";
 //import ClosedModal from "../../components/ClosedModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -18,6 +21,7 @@ import {
   RightOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../AuthContext";
+import { message } from "antd";
 
 const ServiceTask = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -29,6 +33,7 @@ const ServiceTask = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalType, setModalType] = useState(null);
   const { fullName } = useAuth();
+  const { userRole } = useAuth();
 
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
   const [selectedStatusFilters, setSelectedStatusFilters] =
@@ -58,13 +63,17 @@ const ServiceTask = () => {
 
   const openModal = (data) => {
     setSelectedData(data);
-    if (data.status === "Received") {
-      setModalType("ServiceOnProgress");
+    if (data.status === "Pending") {
+      setModalType("ServicePending");
+    } else if (data.status === "Received") {
+      setModalType("ServiceReceived");
     } else if (data.status === "On Progress") {
-      setModalType("ServiceToRelease");
+      setModalType("ServiceOnProgress");
     } else if (data.status === "To Release") {
-      setModalType("ServiceReleased");
+      setModalType("ServiceToRelease");
     } else if (data.status === "To Rate") {
+      setModalType("ServiceToRate");
+    } else if (data.status === "Closed") {
       setModalType("ServiceClosed");
     }
     setModalOpen(true);
@@ -90,17 +99,14 @@ const ServiceTask = () => {
   const isLargeScreen = windowWidth >= 1024;
 
   useEffect(() => {
-    // Initialize popconfirmVisible state with false for each row
     setPopconfirmVisible(new Array(data.length).fill(false));
   }, [data]);
 
   const showPopconfirm = (id) => {
-    // Use setPopconfirmVisible instead of setOpen
     const popconfirmVisibleCopy = [...popconfirmVisible];
     popconfirmVisibleCopy[id] = true;
     setPopconfirmVisible(popconfirmVisibleCopy);
     setTimeout(() => {
-      // Use setPopconfirmVisible instead of setOpen
       setPopconfirmVisible(false);
     }, 5000);
   };
@@ -110,13 +116,11 @@ const ServiceTask = () => {
     handleDelete(id, reqID);
     handleCancel(id);
     setTimeout(() => {
-      // Use setPopconfirmVisible instead of setOpen
       setConfirmLoading(false);
     }, 2000);
   };
 
   const handleCancel = (index) => {
-    // Use setPopconfirmVisible instead of setOpen
     const popconfirmVisibleCopy = [...popconfirmVisible];
     popconfirmVisibleCopy[index] = false;
     setPopconfirmVisible(popconfirmVisibleCopy);
@@ -131,11 +135,12 @@ const ServiceTask = () => {
       setData(newUserData);
     } catch (error) {
       console.error("Error deleting request:", error);
-      // Handle the error gracefully, e.g., show an error message to the user
     }
   };
 
-  console.log(data);
+  const updateTable = () => {
+    fetchData();
+  };
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -153,52 +158,13 @@ const ServiceTask = () => {
 
   useEffect(() => {
     fetchData();
-  }, [
-    selectedTechnicianFilter,
-    startDate,
-    endDate,
-    selectedStatusFilters,
-    selectedSortOrder,
-    searchQuery,
-  ]);
+  }, [startDate, endDate]);
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      const urlSegments = ["http://127.0.0.1:8000/api/service-task-list"];
-
-      if (selectedTechnicianFilter) {
-        urlSegments.push(selectedTechnicianFilter);
-      }
-      if (startDate) {
-        urlSegments.push(startDate);
-      }
-      if (endDate) {
-        urlSegments.push(endDate);
-      }
-      if (selectedStatusFilters) {
-        urlSegments.push(selectedStatusFilters);
-      }
-      if (selectedSortOrder) {
-        urlSegments.push(selectedSortOrder);
-      }
-      if (searchQuery) {
-        urlSegments.push(searchQuery);
-      }
-
-      const filteredUrlSegments = urlSegments.filter(
-        (segment) => segment !== null && segment !== ""
-      );
-      const url = filteredUrlSegments.join("/");
-      const regex = new RegExp(`/${selectedSortOrder}$`);
-      const cleanedUrl = url.replace(regex, "");
-
-      const result = await axios.get(cleanedUrl, {
-        params: {
-          order: selectedSortOrder,
-        },
-      });
-      console.log("ssss", selectedTechnicianFilter);
+      const url = `http://127.0.0.1:8000/api/service-task-list/${startDate}/${endDate}`;
+      const result = await axios.get(url);
       setData(result.data.results);
       setLoading(false);
     } catch (err) {
@@ -209,20 +175,42 @@ const ServiceTask = () => {
     }
   };
 
+  const [cancel, setCancel] = useState(false);
+  const [viewCancel, setViewCancel] = useState(false);
+  const handleCancelRequest = (data) => {
+    setViewCancel(data);
+    setCancel(true);
+  };
+
+  const [isReasonModalOpen, setIsReasonModalOpen] = useState(false);
+  const [selectedReason, setSelectedReason] = useState(null);
+
+  const handleReasonModalSubmit = () => {
+    setIsReasonModalOpen(false);
+    fetchData();
+    message.success("Request Cancelled Successfully");
+  };
+
+  const handleOpenReasonModalClick = (id) => {
+    setSelectedReason(id);
+  };
+
+  const handleCloseReasonModalClick = () => {
+    setSelectedReason(null);
+  };
+
   const handleTechnicianCheckboxChange = (e) => {
     setIsTechnicianDropDownOpen(false);
     const selectedTechnician = e.target.value;
 
     setSelectedTechnicianFilter((prevFilters) => {
       if (prevFilters.length === 1 && prevFilters[0] === selectedTechnician) {
-        return []; // Unselect if the same option is clicked
+        return [];
       } else {
         return [selectedTechnician];
       }
     });
   };
-
-  console.log("Selected Technician:" + selectedTechnicianFilter);
 
   if (selectedTechnicianFilter.length == 0) {
     setSelectedTechnicianFilter(["notech"]);
@@ -234,10 +222,9 @@ const ServiceTask = () => {
 
   const handleModeCheckboxChange = (e) => {
     const selectedMode = e.target.value;
-
     setSelectedModeFilters((prevFilters) => {
       if (prevFilters.length === 1 && prevFilters[0] === selectedMode) {
-        return []; // Unselect if the same option is clicked
+        return [];
       } else {
         return [selectedMode];
       }
@@ -250,7 +237,7 @@ const ServiceTask = () => {
 
     setSelectedStatusFilters((prevFilters) => {
       if (prevFilters.length === 1 && prevFilters[0] === selectedStatus) {
-        return []; // Unselect if the same option is clicked
+        return [];
       } else {
         return [selectedStatus];
       }
@@ -259,11 +246,9 @@ const ServiceTask = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPage = 10;
-
   const lastIndex = currentPage * recordsPage;
   const firstIndex = lastIndex - recordsPage;
   const records = data.slice(firstIndex, lastIndex);
-
   const npage = Math.ceil(data.length / recordsPage);
 
   useEffect(() => {
@@ -291,7 +276,7 @@ const ServiceTask = () => {
 
     if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= npage) {
       setCurrentPage(pageNumber);
-      setPageInput(currentPage); // Clear the input field after changing the page
+      setPageInput(currentPage);
     }
   };
 
@@ -300,12 +285,12 @@ const ServiceTask = () => {
   };
 
   const handlePageInputBlur = () => {
-    goToPage(); // Trigger page change when the input field loses focus
+    goToPage();
   };
 
   const handlePageInputKeyPress = (e) => {
     if (e.key === "Enter") {
-      goToPage(); // Trigger page change when the Enter key is pressed
+      goToPage();
     }
   };
 
@@ -324,22 +309,16 @@ const ServiceTask = () => {
   }, []);
 
   const isScreenWidth1366 = windowWidth1366 === 1366;
-
   useEffect(() => {
-    // Function to update windowWidth whenever the window is resized
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
 
-    // Add a listener for the "resize" event
     window.addEventListener("resize", handleResize);
-
-    // Periodically check the screen width (e.g., every 1 second)
     const intervalId = setInterval(() => {
       setWindowWidth(window.innerWidth);
     }, 1000);
 
-    // Clean up the listener and interval when the component unmounts
     return () => {
       window.removeEventListener("resize", handleResize);
       clearInterval(intervalId);
@@ -621,14 +600,50 @@ const ServiceTask = () => {
                             <label className="block px-4 py-2">
                               <input
                                 type="checkbox"
-                                value="toRelease"
+                                value="To Release"
                                 checked={selectedStatusFilters.includes(
-                                  "toRelease"
+                                  "To Release"
                                 )}
                                 onChange={handleStatusCheckboxChange}
                                 className="mr-2"
                               />
                               To Release
+                            </label>
+                            <label className="block px-4 py-2">
+                              <input
+                                type="checkbox"
+                                value="To Rate"
+                                checked={selectedStatusFilters.includes(
+                                  "To Rate"
+                                )}
+                                onChange={handleStatusCheckboxChange}
+                                className="mr-2"
+                              />
+                              To Rate
+                            </label>
+                            <label className="block px-4 py-2">
+                              <input
+                                type="checkbox"
+                                value="Closed"
+                                checked={selectedStatusFilters.includes(
+                                  "Closed"
+                                )}
+                                onChange={handleStatusCheckboxChange}
+                                className="mr-2"
+                              />
+                              Closed
+                            </label>
+                            <label className="block px-4 py-2">
+                              <input
+                                type="checkbox"
+                                value="Cancelled"
+                                checked={selectedStatusFilters.includes(
+                                  "Cancelled"
+                                )}
+                                onChange={handleStatusCheckboxChange}
+                                className="mr-2"
+                              />
+                              Cancelled
                             </label>
                           </div>
                         )}
@@ -722,13 +737,23 @@ const ServiceTask = () => {
                           </p>
                         </td>
                         <td className="border-b-2 pr-2 py-2 large:py-3 border-gray-200 text-center">
-                          <div className="flex  gap-1">
-                            {setting.status === "To Rate" ? (
+                          <div className="flex gap-1">
+                            {setting.status === "To Rate" ||
+                            setting.status === "Closed" ? (
                               <button
                                 className={`text-white ${
                                   isScreenWidth1366 ? "text-xs" : " text-base"
                                 } bg-blue-500 font-medium px-5 py-2 rounded-lg`}
                                 onClick={() => openModal(setting)}
+                              >
+                                View
+                              </button>
+                            ) : setting.status === "Cancelled" ? (
+                              <button
+                                className={`text-white ${
+                                  isScreenWidth1366 ? "text-xs" : " text-base"
+                                } bg-blue-500 font-medium px-5 py-2 rounded-lg`}
+                                onClick={() => handleCancelRequest(setting)}
                               >
                                 View
                               </button>
@@ -769,7 +794,9 @@ const ServiceTask = () => {
                               okText="Yes"
                             >
                               <button
-                                onClick={() => showPopconfirm(setting.id)}
+                                onClick={() =>
+                                  handleOpenReasonModalClick(setting.id)
+                                }
                                 className="text-white text-base bg-red-700 py-2 px-4 rounded-lg"
                               >
                                 <FontAwesomeIcon icon={faTrash} />
@@ -781,9 +808,37 @@ const ServiceTask = () => {
                     ))
                   )}
                 </tbody>
+                {selectedReason && (
+                  <ReasonModal
+                    display={true}
+                    itemData={data.find((item) => item.id === selectedReason)}
+                    onClose={handleCloseReasonModalClick} // Pass the callback here
+                    isLargeScreen={isLargeScreen}
+                    refreshData={fetchData}
+                    role={userRole}
+                    onSubmit={handleReasonModalSubmit}
+                  />
+                )}
+                {cancel && (
+                  <ViewCancel
+                    isOpen={cancel}
+                    onClose={() => setCancel(false)}
+                    datas={viewCancel}
+                    role={userRole} // Pass the selectedItemId as a prop
+                  />
+                )}
               </table>
 
-              {modalType === "ServiceOnProgress" && (
+              {modalType === "ServicePending" && (
+                <ReceiveServiceModal
+                  isOpen={isModalOpen}
+                  onClose={closeModal}
+                  data={selectedData}
+                  refreshData={updateTable}
+                />
+              )}
+
+              {modalType === "ServiceReceived" && (
                 <ServiceTaskModal
                   isOpen={isModalOpen}
                   onClose={closeModal}
@@ -792,7 +847,7 @@ const ServiceTask = () => {
                 />
               )}
 
-              {modalType === "ServiceToRelease" && (
+              {modalType === "ServiceOnProgress" && (
                 <ServiceReleaseModal
                   isOpen={isModalOpen}
                   onClose={closeModal}
@@ -801,11 +856,19 @@ const ServiceTask = () => {
                   isLargeScreen={isLargeScreen}
                 />
               )}
-              {modalType === "ServiceReleased" && (
+              {modalType === "ServiceToRelease" && (
                 <ReleasedModal
                   isOpen={isModalOpen}
                   onClose={closeModal}
                   data={selectedData}
+                  refreshData={fetchData}
+                />
+              )}
+              {modalType === "ServiceToRate" && (
+                <ToRateModal
+                  isOpen={isModalOpen}
+                  onClose={closeModal}
+                  datas={selectedData}
                   refreshData={fetchData}
                 />
               )}

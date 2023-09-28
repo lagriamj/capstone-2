@@ -10,12 +10,11 @@ use Carbon\Carbon;
 
 class RequestsController extends Controller
 {
-    public function showRequest(Request $request, $startDate = null, $endDate = null, $selectedStatus = null, $selectedSort = null, $search = null)
+    public function showRequest(Request $request, $userID, $startDate = null, $endDate = null)
     {
-        $userID = $request->input('user_id');
-        $order = $request->input('order');
         $query = Requests::where('status', '!=', 'Cancelled')
-            ->where('status', '!=', 'Closed');
+            ->where('status', '!=', 'Closed')
+            ->where('status', '!=', 'Purge');
 
         $startDateTime = Carbon::now();
         $startDateTime->setTime(1, 5, 0);
@@ -23,13 +22,13 @@ class RequestsController extends Controller
         $endDateTime = Carbon::now();
         $endDateTime->setTime(23, 59, 0);
 
-        $recordsToDelete = Requests::where('status', 'Pending')
+        $recordsToPurge  = Requests::where('status', 'Pending')
             ->where('dateRequested', '<', $startDateTime)
             ->where('dateRequested', '<', $endDateTime)
             ->get();
 
-        foreach ($recordsToDelete as $record) {
-            $record->delete();
+        foreach ($recordsToPurge as $record) {
+            $record->update(['status' => 'Purge']);
         }
 
         if ($userID) {
@@ -41,28 +40,7 @@ class RequestsController extends Controller
                 ->where('dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
         }
 
-        if ($selectedStatus && in_array($selectedStatus, ['Pending', 'Received', 'On Progress', 'To Release', 'To Rate'])) {
-            $query->where('status', $selectedStatus);
-        }
-
-
-        if ($order && in_array($order, ['asc', 'desc'])) {
-            $query->orderByRaw("dateRequested $order");
-        }
-
-        if ($search) {
-            $search = preg_replace('/^E-/i', '', $search); // Remove 'E-' or 'e-' prefix
-            $query->where(function ($query) use ($search) {
-                $query->where('id', 'LIKE', "%$search%")
-                    ->orWhere('natureOfRequest', 'LIKE', "%$search%")
-                    ->orWhere('assignedTo', 'LIKE', "%$search%");
-            });
-        }
-
-
-
         $requests = $query->get();
-
         return response()->json([
             'results' => $requests
         ], 200);
@@ -86,16 +64,37 @@ class RequestsController extends Controller
             'specialIns' => 'nullable',
             'status' => 'required',
             'assignedTo' => 'required',
-
         ]);
 
-        $validatedData['dateRequested'] = now();
-        $validatedData['dateUpdated'] = now();
+        // Add the created_at and updated_at timestamps
+        $now = now();
+        $validatedData['dateRequested'] = $now;
+        $validatedData['dateUpdated'] = $now;
 
-        $request = Requests::create($validatedData);
+        // Create the Requests record with timestamps
+        $requestRecord = Requests::create($validatedData);
 
-        return response()->json($request, 201);
+        // Insert data into the receive_service table with the obtained request_id
+        DB::table('receive_service')->insert([
+            'request_id' => $requestRecord->id,
+            'receivedBy' => 'n/a',
+            'dateReceived' => $now,
+            'assignedTo' => 'n/a',
+            'serviceBy' => 'n/a',
+            'dateServiced' => $now,
+            'toRecommend' => 'n/a',
+            'findings' => 'n/a',
+            'rootCause' => 'n/a',
+            'actionTaken' => 'n/a',
+            'remarks' => 'n/a',
+            'created_at' => $now, // Add created_at timestamp
+            'updated_at' => $now, // Add updated_at timestamp
+        ]);
+
+        return response()->json($requestRecord, 201);
     }
+
+
 
     public function update(Request $request, $id)
     {

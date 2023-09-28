@@ -9,7 +9,16 @@ import axios from "axios";
 import { useAuth } from "../../AuthContext";
 import { useActiveTab } from "../../ActiveTabContext";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { Button, Form, Input, Row, Col, Select, DatePicker } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Row,
+  Col,
+  Select,
+  DatePicker,
+  notification,
+} from "antd";
 
 const Requests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -56,12 +65,34 @@ const Requests = () => {
   };
 
   const [dateP, setDateP] = useState("");
+
   const handleDatePickerChange = (date) => {
     form.setFieldsValue({
       dateProcured: date.$y,
     });
     console.log(date.$y);
     setDateP(date.$y);
+  };
+
+  const handleWarrantyNotif = (status) => {
+    if (status) {
+      notification.warning({
+        message: (
+          <span className="text-white font-bold">
+            Date must be under warranty
+          </span>
+        ),
+        description: (
+          <span className="text-white">
+            The service request can only be processed if the date procured is
+            under warranty.
+          </span>
+        ),
+        style: {
+          backgroundColor: "rgba(239, 68, 68, 1)",
+        },
+      });
+    }
   };
 
   const options = {
@@ -81,8 +112,6 @@ const Requests = () => {
       .then((response) => {
         setOffice(response.data.office);
         setDivision(response.data.division);
-
-        // Set the values of formOffice and formDivision in formData
       })
       .catch((error) => {
         console.log(error);
@@ -95,7 +124,7 @@ const Requests = () => {
       authorizedBy: author,
       dateProcured: dateP,
     });
-  }, [userID, office, division, daytime, dateP]);
+  }, [userID, office, division, daytime, author, dateP]);
 
   const navigate = useNavigate();
 
@@ -217,7 +246,7 @@ const Requests = () => {
                 propertyNo: "",
                 serialNo: "",
                 authorizedBy: author,
-                dateProcured: "1111-11-11",
+                dateProcured: "N/A",
                 specialIns: "",
                 status: "Pending",
                 assignedTo: "None",
@@ -354,8 +383,8 @@ const Requests = () => {
                   </label>
                   <DatePicker
                     picker="year"
-                    required
                     onChange={handleDatePickerChange}
+                    onOpenChange={handleWarrantyNotif}
                     className="h-[40px] w-full flex items-center justify-center"
                   />
                 </Col>

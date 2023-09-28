@@ -1,6 +1,6 @@
 import Sidebar from "../../components/Sidebar";
 import DrawerComponent from "../../components/DrawerComponent";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faFilter } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
@@ -12,7 +12,7 @@ import {
   QuestionCircleOutlined,
   RightOutlined,
 } from "@ant-design/icons";
-import { message, Skeleton } from "antd";
+import { message, Skeleton, notification } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import RateModal from "../../components/RateModal";
@@ -22,6 +22,7 @@ const CurrentRequests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { userID } = useAuth();
   console.log("userID:", userID);
+  const { userRole } = useAuth();
   const [selectedItemId, setSelectedItemId] = useState(null);
   // eslint-disable-next-line no-unused-vars
   const [open, setOpen] = useState(false);
@@ -131,51 +132,38 @@ const CurrentRequests = () => {
 
   useEffect(() => {
     fetchData();
-  }, [
-    startDate,
-    endDate,
-    selectedStatusFilters,
-    selectedSortOrder,
-    searchQuery,
-  ]);
+  }, [startDate, endDate]);
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      const urlSegments = ["http://127.0.0.1:8000/api/request-list"];
-
-      if (startDate) {
-        urlSegments.push(startDate);
-      }
-      if (endDate) {
-        urlSegments.push(endDate);
-      }
-      if (selectedStatusFilters) {
-        urlSegments.push(selectedStatusFilters);
-      }
-      if (selectedSortOrder) {
-        urlSegments.push(selectedSortOrder);
-      }
-      if (searchQuery) {
-        urlSegments.push(searchQuery);
-      }
-
-      const filteredUrlSegments = urlSegments.filter(
-        (segment) => segment !== null && segment !== ""
-      );
-      const url = filteredUrlSegments.join("/");
-      const regex = new RegExp(`/${selectedSortOrder}$`);
-      const cleanedUrl = url.replace(regex, "");
-
-      const result = await axios.get(cleanedUrl, {
-        params: {
-          user_id: userID,
-          order: selectedSortOrder,
-        },
-      });
-
+      const url = `http://127.0.0.1:8000/api/request-list/${userID}/${startDate}/${endDate}`;
+      const result = await axios.get(url);
       setData(result.data.results);
       setLoading(false);
+
+      const statusCounts = {
+        Received: 0,
+        "On Progress": 0,
+        "To Release": 0,
+      };
+
+      result.data.results.forEach((item) => {
+        if (item.status in statusCounts) {
+          statusCounts[item.status]++;
+        }
+      });
+
+      for (const status in statusCounts) {
+        console.log(`Status: ${status}, Count: ${statusCounts[status]}`);
+        if (statusCounts[status] > 0) {
+          const requestIds = result.data.results
+            .filter((item) => item.status === status)
+            .map((item) => item.id); // Use request_id instead of id
+          console.log(`${status} Request IDs: `, requestIds);
+          showStatusNotification(status, statusCounts[status], requestIds); // Pass requestIds to the notification
+        }
+      }
     } catch (err) {
       console.log("Something went wrong:", err);
       setLoading(false);
@@ -293,6 +281,91 @@ const CurrentRequests = () => {
   const handlePageInputKeyPress = (e) => {
     if (e.key === "Enter") {
       goToPage();
+    }
+  };
+
+  // Define a Set to keep track of unique statuses
+  const uniqueStatusesRef = useRef(new Set());
+
+  useEffect(() => {
+    // Clear the unique statuses ref when the component unmounts
+    return () => {
+      uniqueStatusesRef.current.clear();
+    };
+  }, []);
+
+  const showStatusNotification = (status, count, requestIds) => {
+    let messageText = "";
+    let descriptionText = "";
+    let notificationStyle = {};
+
+    switch (status) {
+      case "Received":
+        messageText = (
+          <span className="text-white">{`E-${requestIds} Request is Received`}</span>
+        );
+        descriptionText = (
+          <p className="text-white">
+            Your {requestIds.join(", ")} request is being processed.
+          </p>
+        );
+        notificationStyle = {
+          backgroundColor: "#343467",
+        };
+        break;
+      case "On Progress":
+        messageText = (
+          <span className="text-white">{`E-${requestIds} Request is On Progress`}</span>
+        );
+        descriptionText = (
+          <p className="text-white">
+            Your {requestIds.join(", ")} request is currently in progress.
+          </p>
+        );
+        notificationStyle = {
+          backgroundColor: "#343467",
+        };
+        break;
+      case "To Release":
+        messageText = (
+          <span className="text-white">{`E-${requestIds} Request is To Release`}</span>
+        );
+        descriptionText = (
+          <p className="text-white">
+            Your {requestIds.join(", ")} request is ready for release.
+          </p>
+        );
+        notificationStyle = {
+          backgroundColor: "#343467",
+        };
+        break;
+      case "To Rate":
+        messageText = (
+          <span className="text-white">{`E-${requestIds} Request is To Rate`}</span>
+        );
+        descriptionText = (
+          <p className="text-white">
+            Your {requestIds.join(", ")} request is ready for rating.
+          </p>
+        );
+        notificationStyle = {
+          backgroundColor: "#343467",
+        };
+        break;
+      default:
+        break;
+    }
+
+    if (messageText) {
+      if (!uniqueStatusesRef.current.has(status)) {
+        notification.success({
+          message: messageText,
+          description: descriptionText,
+          duration: 4,
+          style: notificationStyle,
+        });
+        uniqueStatusesRef.current.add(status);
+      }
     }
   };
 
@@ -727,6 +800,7 @@ const CurrentRequests = () => {
                     itemData={data.find((item) => item.id === selectedReason)}
                     onClose={handleCloseReasonModalClick} // Pass the callback here
                     isLargeScreen={isLargeScreen}
+                    role={userRole}
                     onSubmit={handleReasonModalSubmit}
                   />
                 )}

@@ -20,10 +20,10 @@ return new class extends Migration
             $table->datetime('dateRequested');
             $table->string('modeOfRequest');
             $table->string('unit');
-            $table->integer('propertyNo');
-            $table->integer('serialNo');
+            $table->string('propertyNo');
+            $table->string('serialNo');
             $table->string('authorizedBy');
-            $table->date('dateProcured');
+            $table->string('dateProcured');
             $table->string('specialIns');
             $table->string('status');
             $table->string('assignedTo');

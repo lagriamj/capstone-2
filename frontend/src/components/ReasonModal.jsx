@@ -8,6 +8,8 @@ export default function ReasonModal({
   itemData,
   onClose,
   isLargeScreen,
+  refreshData,
+  role,
   onSubmit,
 }) {
   const [reason, setReason] = useState("");
@@ -20,16 +22,20 @@ export default function ReasonModal({
 
   const handleConfirm = async () => {
     try {
-      await axios.post(
-        `http://127.0.0.1:8000/api/cancel-reason/${itemData.id}`,
-        {
-          reason: reason,
-        }
-      );
+      // Construct the API URL based on the user's role
+      const apiEndpoint =
+        role === "admin"
+          ? `http://127.0.0.1:8000/api/cancel-reason/${itemData.request_id}`
+          : `http://127.0.0.1:8000/api/cancel-reason/${itemData.id}`;
+
+      await axios.post(apiEndpoint, {
+        reason: reason,
+      });
 
       setConfirmationVisible(false);
       onSubmit();
       onClose();
+      refreshData();
     } catch (error) {
       console.error("API request failed:", error);
     }
@@ -64,7 +70,7 @@ export default function ReasonModal({
         onCancel={onClose}
         title={
           <div className="flex flex-col lg:flex-row font-sans text-xl py-6 px-10">
-            <label>{`Request ID: E-${itemData.id}`}</label>
+            <label>{`Request ID: E-${itemData.request_id}`}</label>
             <label className="ml-auto ">{`Date Requested: ${
               itemData.dateRequested.split(" ")[0]
             }`}</label>
@@ -126,5 +132,6 @@ ReasonModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   itemData: PropTypes.object.isRequired,
   isLargeScreen: PropTypes.bool.isRequired,
+  refreshData: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };

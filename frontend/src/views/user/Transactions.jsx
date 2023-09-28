@@ -16,6 +16,7 @@ import DoneRateModal from "../../components/DoneRateModal";
 const Transactions = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [data, setData] = useState([]);
+  const { userRole } = useAuth();
 
   const [rate, setRate] = useState(false);
   const [selectedID, setSelectedID] = useState(null);
@@ -776,7 +777,8 @@ const Transactions = () => {
                 <ViewCancel
                   isOpen={cancel}
                   onClose={() => setCancel(false)}
-                  datas={viewCancel} // Pass the selectedItemId as a prop
+                  datas={viewCancel}
+                  role={userRole} // Pass the selectedItemId as a prop
                 />
               )}
             </div>

@@ -80,7 +80,7 @@ const ServiceReleaseModal = ({
 
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/torelease-request/${data.id}`,
+        `http://127.0.0.1:8000/api/torelease-request/${data.request_id}`,
         modifiedValues
       );
 
@@ -123,7 +123,7 @@ const ServiceReleaseModal = ({
       title={
         <div className="flex justify-between items-center">
           <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
-          <span>REQUEST ID: {data.id}</span>
+          <span>REQUEST ID: {data.request_id}</span>
         </div>
       }
       centered
