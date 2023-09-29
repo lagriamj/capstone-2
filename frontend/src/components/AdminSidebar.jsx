@@ -155,7 +155,7 @@ const AdminSidebar = () => {
           ></HandymanIcon>
           <Link to={"/service-request"}>Service Request</Link>
         </li>
-        <li
+        {/* <li
           className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "receive-service"
               ? "bg-white text-main font-semibold"
@@ -169,7 +169,7 @@ const AdminSidebar = () => {
             }}
           ></MarkAsUnreadIcon>
           <Link to={"/receive-service"}>Receive Service</Link>
-        </li>
+          </li> */}
         <li
           className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-300 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "service-task"
@@ -185,7 +185,7 @@ const AdminSidebar = () => {
           ></AssignmentIcon>
           <Link to={"/service-task"}>Service Task</Link>
         </li>
-        <li
+        {/* <li
           className={`flex gap-3 items-center w-full py-3 px-2 whitespace-nowrap rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "service-transaction"
               ? "bg-white text-main font-semibold"
@@ -200,7 +200,7 @@ const AdminSidebar = () => {
           ></WorkHistoryIcon>
           <Link to={"/service-transaction"}>Service Transaction</Link>
         </li>
-
+          */}
         <li
           className={`flex gap-3 items-center relative w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "utilitySettings"

@@ -12,13 +12,13 @@ import ReasonModal from "../../components/ReasonModal";
 import ViewCancel from "../../components/ViewCancel";
 //import ClosedModal from "../../components/ClosedModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Skeleton } from "antd";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Input, Table, Tag } from "antd";
 import { Popconfirm } from "antd";
 import {
-  LeftOutlined,
+  LoadingOutlined,
   QuestionCircleOutlined,
-  RightOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../AuthContext";
 import { message } from "antd";
@@ -34,32 +34,6 @@ const ServiceTask = () => {
   const [modalType, setModalType] = useState(null);
   const { fullName } = useAuth();
   const { userRole } = useAuth();
-
-  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
-  const [selectedStatusFilters, setSelectedStatusFilters] =
-    useState("no-status-selected");
-
-  const [isTechnicianDropDownOpen, setIsTechnicianDropDownOpen] =
-    useState(false);
-  const [selectedTechnicianFilter, setSelectedTechnicianFilter] = useState([]);
-
-  const [isModeDropdownOpen, setIsModeDropdownOpen] = useState(false);
-  const [selectedModeFilters, setSelectedModeFilters] = useState(["notech"]);
-
-  const [selectedSortOrder, setSelectedDateOrder] = useState("desc");
-  const [isDateSortingDropdownOpen, setIsDateSortingDropdownOpen] =
-    useState(false);
-
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleDateOrderChange = (order) => {
-    setSelectedDateOrder(order);
-    setIsDateSortingDropdownOpen(false);
-  };
-
-  if (selectedStatusFilters.length === 0) {
-    setSelectedStatusFilters(["no-status-selected"]);
-  }
 
   const openModal = (data) => {
     setSelectedData(data);
@@ -101,15 +75,6 @@ const ServiceTask = () => {
   useEffect(() => {
     setPopconfirmVisible(new Array(data.length).fill(false));
   }, [data]);
-
-  const showPopconfirm = (id) => {
-    const popconfirmVisibleCopy = [...popconfirmVisible];
-    popconfirmVisibleCopy[id] = true;
-    setPopconfirmVisible(popconfirmVisibleCopy);
-    setTimeout(() => {
-      setPopconfirmVisible(false);
-    }, 5000);
-  };
 
   const handleOk = (id, reqID) => {
     setConfirmLoading(true);
@@ -167,6 +132,7 @@ const ServiceTask = () => {
       const result = await axios.get(url);
       setData(result.data.results);
       setLoading(false);
+      console.log(data);
     } catch (err) {
       console.log("Something went wrong:", err);
       setLoading(false);
@@ -182,11 +148,9 @@ const ServiceTask = () => {
     setCancel(true);
   };
 
-  const [isReasonModalOpen, setIsReasonModalOpen] = useState(false);
   const [selectedReason, setSelectedReason] = useState(null);
 
   const handleReasonModalSubmit = () => {
-    setIsReasonModalOpen(false);
     fetchData();
     message.success("Request Cancelled Successfully");
   };
@@ -197,101 +161,6 @@ const ServiceTask = () => {
 
   const handleCloseReasonModalClick = () => {
     setSelectedReason(null);
-  };
-
-  const handleTechnicianCheckboxChange = (e) => {
-    setIsTechnicianDropDownOpen(false);
-    const selectedTechnician = e.target.value;
-
-    setSelectedTechnicianFilter((prevFilters) => {
-      if (prevFilters.length === 1 && prevFilters[0] === selectedTechnician) {
-        return [];
-      } else {
-        return [selectedTechnician];
-      }
-    });
-  };
-
-  if (selectedTechnicianFilter.length == 0) {
-    setSelectedTechnicianFilter(["notech"]);
-  }
-
-  const toggleModeDropdown = () => {
-    setIsModeDropdownOpen(!isModeDropdownOpen);
-  };
-
-  const handleModeCheckboxChange = (e) => {
-    const selectedMode = e.target.value;
-    setSelectedModeFilters((prevFilters) => {
-      if (prevFilters.length === 1 && prevFilters[0] === selectedMode) {
-        return [];
-      } else {
-        return [selectedMode];
-      }
-    });
-  };
-
-  const handleStatusCheckboxChange = (e) => {
-    setIsStatusDropdownOpen(false);
-    const selectedStatus = e.target.value;
-
-    setSelectedStatusFilters((prevFilters) => {
-      if (prevFilters.length === 1 && prevFilters[0] === selectedStatus) {
-        return [];
-      } else {
-        return [selectedStatus];
-      }
-    });
-  };
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const recordsPage = 10;
-  const lastIndex = currentPage * recordsPage;
-  const firstIndex = lastIndex - recordsPage;
-  const records = data.slice(firstIndex, lastIndex);
-  const npage = Math.ceil(data.length / recordsPage);
-
-  useEffect(() => {
-    if (selectedStatusFilters !== null) {
-      setCurrentPage(1);
-    }
-  }, [selectedStatusFilters]);
-
-  useEffect(() => {
-    if (selectedSortOrder !== null) {
-      setCurrentPage(1);
-    }
-  }, [selectedSortOrder]);
-
-  useEffect(() => {
-    if (searchQuery !== null) {
-      setCurrentPage(1);
-    }
-  }, [searchQuery]);
-
-  const [pageInput, setPageInput] = useState("");
-
-  const goToPage = () => {
-    const pageNumber = parseInt(pageInput);
-
-    if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= npage) {
-      setCurrentPage(pageNumber);
-      setPageInput(currentPage);
-    }
-  };
-
-  const handlePageInputChange = (e) => {
-    setPageInput(e.target.value);
-  };
-
-  const handlePageInputBlur = () => {
-    goToPage();
-  };
-
-  const handlePageInputKeyPress = (e) => {
-    if (e.key === "Enter") {
-      goToPage();
-    }
   };
 
   const [windowWidth1366, setWindowWidth1366] = useState(window.innerWidth);
@@ -325,7 +194,229 @@ const ServiceTask = () => {
     };
   }, []);
 
-  const totalRequests = data.length;
+  const [searchText, setSearchText] = useState("");
+  const [pagination, setPagination] = useState({
+    position: ["bottomLeft"],
+    showQuickJumper: true,
+    current: 1,
+    pageSize: 10,
+    showLessItems: true,
+  });
+
+  const filteredRequests = data.filter((request) => {
+    const searchTextLower = searchText.toLowerCase();
+
+    const shouldIncludeRow = Object.values(request).some((value) => {
+      if (typeof value === "string") {
+        return value.toLowerCase().includes(searchTextLower);
+      } else if (typeof value === "number") {
+        return value.toString().toLowerCase().includes(searchTextLower);
+      } else if (value instanceof Date) {
+        // Handle Date objects
+        const formattedDate = value.toLocaleString();
+        return formattedDate.toLowerCase().includes(searchTextLower);
+      }
+      return false;
+    });
+
+    return shouldIncludeRow;
+  });
+
+  const handleSearchBar = (value) => {
+    setSearchText(value);
+    setPagination({ ...pagination, current: 1 }); // Reset to the first page when searching
+  };
+
+  const requestColumns = [
+    {
+      title: "#",
+      dataIndex: "#",
+      key: "#",
+      render: (text, record, index) => {
+        const currentPage = pagination.current || 1;
+        const calculatedIndex =
+          (currentPage - 1) * pagination.pageSize + index + 1;
+        return <span key={index}>{calculatedIndex}</span>;
+      },
+    },
+    {
+      title: "Request ID",
+      dataIndex: "request_id",
+      key: "request_id",
+    },
+    {
+      title: "Requested By",
+      dataIndex: "fullName",
+      key: "fullName",
+    },
+    {
+      title: "Date Requested",
+      dataIndex: "dateRequested",
+      key: "dateRequested",
+      sorter: (a, b) => {
+        const dateA = new Date(a.dateRequested);
+        const dateB = new Date(b.dateRequested);
+        return dateA - dateB;
+      },
+    },
+    {
+      title: "Nature of Request",
+      dataIndex: "natureOfRequest",
+      key: "natureOfRequest",
+    },
+    {
+      title: "Mode",
+      dataIndex: "modeOfRequest",
+      key: "modeOfRequest",
+    },
+    {
+      title: "Assigned To",
+      dataIndex: "assignedTo",
+      key: "assignedTo",
+      filters: [
+        {
+          text: "My Tasks",
+          value: fullName,
+        },
+      ],
+      onFilter: (value, record) => record.assignedTo === value,
+    },
+    {
+      title: "Date Updated",
+      dataIndex: "dateUpdated",
+      key: "dateUpdated",
+      sorter: (a, b) => {
+        const dateA = new Date(a.dateUpdated);
+        const dateB = new Date(b.dateUpdated);
+        return dateA - dateB;
+      },
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (text, index) => (
+        <Tag
+          key={index}
+          className={`lg:text-base text-sm font-sans w-full text-center py-2 rounded-lg
+            ${
+              text === "Pending"
+                ? "bg-red-500 text-white"
+                : text === "Received"
+                ? "bg-orange-500 text-white"
+                : text === "On Progress"
+                ? "bg-yellow-500 text-white"
+                : text === "To Release"
+                ? "bg-green-500 text-white"
+                : text === "To Rate"
+                ? "bg-blue-500 text-white"
+                : text === "Closed"
+                ? "bg-gray-800 text-white"
+                : text === "Cancelled"
+                ? "bg-red-700 text-white"
+                : "bg-main text-white"
+            }`}
+        >
+          {text}
+        </Tag>
+      ),
+      filters: [
+        {
+          text: "Pending",
+          value: "Pending",
+        },
+        {
+          text: "Received",
+          value: "Received",
+        },
+        {
+          text: "On Progress",
+          value: "On Progress",
+        },
+        {
+          text: "To Release",
+          value: "To Release",
+        },
+        {
+          text: "To Rate",
+          value: "To Rate",
+        },
+        {
+          text: "Closed",
+          value: "Closed",
+        },
+        {
+          text: "Cancelled",
+          value: "Cancelled",
+        },
+      ],
+      filterSearch: true,
+      onFilter: (value, record) => record.status?.includes(value),
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      key: "x",
+      render: (index, record) => (
+        <div className="flex gap-1 py-1" key={index}>
+          {record.status === "To Rate" || record.status === "Closed" ? (
+            <button
+              className={`text-white ${
+                isScreenWidth1366 ? "text-xs" : " text-base"
+              } bg-blue-500 font-medium px-5 py-2 rounded-lg`}
+              onClick={() => openModal(record)}
+            >
+              View
+            </button>
+          ) : record.status === "Cancelled" ? (
+            <button
+              className={`text-white ${
+                isScreenWidth1366 ? "text-xs" : " text-base"
+              } bg-blue-500 font-medium px-5 py-2 rounded-lg`}
+              onClick={() => handleCancelRequest(record)}
+            >
+              View
+            </button>
+          ) : (
+            <button
+              className={`text-white ${
+                isScreenWidth1366 ? "text-xs" : " text-base"
+              } bg-blue-500 font-medium px-3 py-2 rounded-lg`}
+              onClick={() => openModal(record)}
+            >
+              Update
+            </button>
+          )}
+          <Popconfirm
+            placement="left"
+            title="Confirmation"
+            description="Please confirm this action. This action cannot be undone."
+            open={popconfirmVisible[record.id]}
+            icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+            onConfirm={() => handleOk(record.id, record.request_id)}
+            okButtonProps={{
+              loading: confirmLoading,
+              color: "red",
+              className: "text-black border-1 border-gray-300",
+              size: "large",
+            }}
+            cancelButtonProps={{
+              size: "large",
+            }}
+            onCancel={() => handleCancel(record.id)}
+            okText="Yes"
+          >
+            <button
+              onClick={() => handleOpenReasonModalClick(record.id)}
+              className="text-white text-base bg-red-700 py-2 px-4 rounded-lg"
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </button>
+          </Popconfirm>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <HelmetProvider>
@@ -339,23 +430,25 @@ const ServiceTask = () => {
 
         <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">
           <div
-            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] h-auto lg:ml-auto lg:mx-4   lg:mt-0 mt-20  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
+            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%]  h-auto lg:ml-auto lg:mx-4   lg:mt-0 mt-20  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
             <div className="flex lg:flex-row text-center flex-col w-full lg:pl-4 items-center justify-center shadow-xl bg-white  text-white rounded-t-lg lg:gap-4 gap-2">
-              <h1 className="flex text-black items-center lg:text-2xl font-semibold ">
-                Service Task
-              </h1>
-              <div className="relative flex items-center lg:mr-auto lg:ml-4 ">
-                <FontAwesomeIcon
-                  icon={faSearch}
-                  className={`w-4 h-4 absolute ml-3 text-main`}
-                />
-                <input
-                  type="text"
-                  placeholder="Search"
-                  className="border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 w-full focus:outline-none text-base h-10"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+              <div className="flex lg:flex-col flex-row lg:gap-0 gap-2">
+                <h1 className="flex text-black items-center lg:text-3xl font-semibold ">
+                  Reqeuests List
+                </h1>
+                <span className="text-black mr-auto">
+                  Total Requests: {data.length}
+                </span>
+              </div>
+
+              <div className="relative flex items-center justify-center lg:mr-auto lg:ml-4 ">
+                <Input
+                  placeholder="Search..."
+                  prefix={<SearchOutlined />}
+                  value={searchText}
+                  onChange={(e) => handleSearchBar(e.target.value)}
+                  className="my-4 h-12"
                 />
               </div>
               <div className="flex items-center justify-center gap-4 mr-4 mb-4 lg:mb-0">
@@ -384,450 +477,39 @@ const ServiceTask = () => {
             <div
               className={`overflow-auto h-auto shadow-xl  pb-5  rounded-lg w-full`}
             >
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b-2 border-gray-200">
-                  <tr className="bg-secondary text-white ">
-                    <th
-                      className={`w-20 px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
-                    >
-                      #
-                    </th>
-                    <th
-                      className={`pl-5 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
-                    >
-                      Request ID
-                    </th>
-                    <th
-                      className={` pl-5 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
-                    >
-                      Date of Request
-                    </th>
-                    <th
-                      className={`pl-5 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
-                    >
-                      Nature of Request
-                    </th>
-                    <th
-                      className={`pl-5  py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider whitespace-nowrap text-left`}
-                    >
-                      Mode
-                      <div className="relative inline-block">
-                        <button
-                          onClick={toggleModeDropdown}
-                          className="text-main focus:outline-none ml-2"
-                          style={{
-                            backgroundColor: "transparent",
-                            border: "none",
-                          }}
-                        >
-                          <FontAwesomeIcon
-                            icon={faFilter}
-                            className="large:h-4 large:w-4 w-3 h-3 text-white"
-                          />
-                        </button>
-                        {isModeDropdownOpen && (
-                          <div className="absolute right-0 overflow-auto text-start bg-white text-black border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
-                            <label className="block px-4 py-2">
-                              <input
-                                type="checkbox"
-                                value="Walk-In"
-                                checked={selectedModeFilters.includes(
-                                  "Walk-In"
-                                )}
-                                onChange={handleModeCheckboxChange}
-                                className="mr-2"
-                              />
-                              Walk-In
-                            </label>
-                            <label className="block px-4 py-2">
-                              <input
-                                type="checkbox"
-                                value="Online"
-                                checked={selectedModeFilters.includes("Online")}
-                                onChange={handleModeCheckboxChange}
-                                className="mr-2"
-                              />
-                              Online
-                            </label>
-                          </div>
-                        )}
-                      </div>
-                    </th>
-                    <th
-                      className={`pl-5  py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
-                    >
-                      Assigned To
-                      <div className="relative inline-block">
-                        <button
-                          onClick={() =>
-                            setIsTechnicianDropDownOpen(
-                              !isTechnicianDropDownOpen
-                            )
-                          }
-                          className="text-main focus:outline-none ml-2"
-                          style={{
-                            backgroundColor: "transparent",
-                            border: "none",
-                          }}
-                        >
-                          <FontAwesomeIcon
-                            icon={faFilter}
-                            className="large:h-4 large:w-4 w-3 h-3 text-white"
-                          />
-                        </button>
-                        {isTechnicianDropDownOpen && (
-                          <div className="absolute right-0 overflow-auto text-start bg-white text-black border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
-                            <label className="block px-4 py-2">
-                              <input
-                                type="checkbox"
-                                value={fullName}
-                                checked={selectedTechnicianFilter.includes(
-                                  fullName
-                                )}
-                                onChange={handleTechnicianCheckboxChange}
-                                className="mr-2"
-                              />
-                              My Task
-                            </label>
-                          </div>
-                        )}
-                      </div>
-                    </th>
-                    <th
-                      className={`w-48py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider relative text-left whitespace-nowrap`}
-                    >
-                      Date Updated
-                      <button
-                        onClick={() =>
-                          setIsDateSortingDropdownOpen(
-                            !isDateSortingDropdownOpen
-                          )
-                        }
-                        className="text-main focus:outline-none ml-2"
-                        style={{
-                          backgroundColor: "transparent",
-                          border: "none",
-                        }}
-                      >
-                        <FontAwesomeIcon
-                          icon={faFilter}
-                          className={`large:h-4 large:w-4 w-3 h-3 text-white`}
-                        />
-                      </button>
-                      {isDateSortingDropdownOpen && (
-                        <div className="absolute top-8 right-0 flex flex-col text-black bg-white border border-gray-200 py-2 mt-2 shadow-lg rounded-lg">
-                          <button
-                            onClick={() => handleDateOrderChange("asc")}
-                            className={`text-black font-medium py-2 px-4 rounded-lg ${
-                              selectedSortOrder === "asc"
-                                ? "bg-main text-white"
-                                : ""
-                            }`}
-                          >
-                            Ascending
-                          </button>
-                          <button
-                            onClick={() => handleDateOrderChange("desc")}
-                            className={`text-black font-medium py-2 px-4 rounded-lg ${
-                              selectedSortOrder === "desc"
-                                ? "bg-main text-white"
-                                : ""
-                            }`}
-                          >
-                            Descending
-                          </button>
-                        </div>
-                      )}
-                    </th>
-                    <th
-                      className={`pl-5  py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
-                    >
-                      Status
-                      <div className="relative inline-block">
-                        <button
-                          onClick={() =>
-                            setIsStatusDropdownOpen(!isStatusDropdownOpen)
-                          }
-                          className="text-main focus:outline-none ml-2"
-                          style={{
-                            backgroundColor: "transparent",
-                            border: "none",
-                          }}
-                        >
-                          <FontAwesomeIcon
-                            icon={faFilter}
-                            className="large:h-4 large:w-4 w-3 h-3 text-white"
-                          />
-                        </button>
-                        {isStatusDropdownOpen && (
-                          <div className="absolute right-0 bg-white border text-black border-gray-200 py-2 mt-2 shadow-lg rounded-lg text-start">
-                            <label className="block px-4 py-2">
-                              <input
-                                type="checkbox"
-                                value="Pending"
-                                checked={selectedStatusFilters.includes(
-                                  "Pending"
-                                )}
-                                onChange={handleStatusCheckboxChange}
-                                className="mr-2"
-                              />
-                              Pending
-                            </label>
-                            <label className="block px-4 py-2">
-                              <input
-                                type="checkbox"
-                                value="Received"
-                                checked={selectedStatusFilters.includes(
-                                  "Received"
-                                )}
-                                onChange={handleStatusCheckboxChange}
-                                className="mr-2"
-                              />
-                              Received
-                            </label>
-                            <label className="block px-4 py-2">
-                              <input
-                                type="checkbox"
-                                value="On Progress"
-                                checked={selectedStatusFilters.includes(
-                                  "On Progress"
-                                )}
-                                onChange={handleStatusCheckboxChange}
-                                className="mr-2"
-                              />
-                              On Progress
-                            </label>
-                            <label className="block px-4 py-2">
-                              <input
-                                type="checkbox"
-                                value="To Release"
-                                checked={selectedStatusFilters.includes(
-                                  "To Release"
-                                )}
-                                onChange={handleStatusCheckboxChange}
-                                className="mr-2"
-                              />
-                              To Release
-                            </label>
-                            <label className="block px-4 py-2">
-                              <input
-                                type="checkbox"
-                                value="To Rate"
-                                checked={selectedStatusFilters.includes(
-                                  "To Rate"
-                                )}
-                                onChange={handleStatusCheckboxChange}
-                                className="mr-2"
-                              />
-                              To Rate
-                            </label>
-                            <label className="block px-4 py-2">
-                              <input
-                                type="checkbox"
-                                value="Closed"
-                                checked={selectedStatusFilters.includes(
-                                  "Closed"
-                                )}
-                                onChange={handleStatusCheckboxChange}
-                                className="mr-2"
-                              />
-                              Closed
-                            </label>
-                            <label className="block px-4 py-2">
-                              <input
-                                type="checkbox"
-                                value="Cancelled"
-                                checked={selectedStatusFilters.includes(
-                                  "Cancelled"
-                                )}
-                                onChange={handleStatusCheckboxChange}
-                                className="mr-2"
-                              />
-                              Cancelled
-                            </label>
-                          </div>
-                        )}
-                      </div>
-                    </th>
-                    <th
-                      className={`w-42  py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
-                    >
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr className="">
-                      <td colSpan="8">
-                        <Skeleton active />
-                      </td>
-                    </tr>
-                  ) : data.length === 0 ? (
-                    <tr className="h-[50vh]">
-                      <td
-                        colSpan="8"
-                        className="p-3 text-lg text-gray-700 text-center"
-                      >
-                        No Records Yet.
-                      </td>
-                    </tr>
-                  ) : records.length === 0 ? (
-                    <tr className="h-[50vh]">
-                      <td
-                        colSpan="8"
-                        className="p-3 text-lg text-gray-700 text-center"
-                      >
-                        No records found matching the selected filter.
-                      </td>
-                    </tr>
-                  ) : (
-                    records.map((setting, index) => (
-                      <tr
-                        className={`${
-                          isScreenWidth1366 ? "text-sm" : " text-lg"
-                        }`}
-                        key={setting.id}
-                      >
-                        <td className="border-b-2 px-3 py-2 large:py-3 border-gray-200 text-left">
-                          {firstIndex + index + 1}
-                        </td>
-                        <td className="border-b-2 pl-5 py-2 large:py-3 border-gray-200 text-left">
-                          {setting.request_id}
-                        </td>
-                        <td className="border-b-2 pl-5 py-2 large:py-3 border-gray-200 text-left  large:whitespace-nowrap">
-                          {setting.dateRequested}
-                        </td>
-                        <td className="border-b-2 pl-5 py-2 large:py-3 border-gray-200 text-left  large:whitespace-nowrap">
-                          {setting.natureOfRequest}
-                        </td>
-                        <td className="border-b-2 pl-5 py-2 large:py-3 border-gray-200 text-left large:whitespace-nowrap">
-                          {setting.modeOfRequest}
-                        </td>
-                        <td className="border-b-2 pl-5 py-2 large:py-3 border-gray-200 text-left  large:whitespace-nowrap">
-                          {setting.assignedTo}
-                        </td>
+              <Table
+                columns={requestColumns}
+                dataSource={filteredRequests}
+                loading={{
+                  indicator: <LoadingOutlined style={{ fontSize: 50 }} />,
+                  spinning: loading,
+                }}
+                pagination={pagination}
+                scroll={{ x: 1300 }}
+                onChange={(newPagination) => setPagination(newPagination)}
+                rowClassName={"p-0"}
+                rowKey={(record) => record.request_id}
+              />
 
-                        <td className="border-b-2 pl-5 py-2 large:py-3 border-gray-200 text-left  large:whitespace-nowrap">
-                          {setting.dateUpdated}
-                        </td>
-                        <td
-                          className={`border-b-2 pl-5 py-2 large:py-3 pr-16 border-gray-200 text-left  whitespace-nowrap`}
-                        >
-                          <p
-                            className={`rounded-xl lg:px-3 px-2 py-2 text-center ${
-                              setting.status === "Pending"
-                                ? "bg-red-500 text-white" // Apply red background and white text for Pending
-                                : setting.status === "Received"
-                                ? "bg-orange-500 text-white" // Apply orange background and white text for Received
-                                : setting.status === "On Progress"
-                                ? "bg-yellow-500 text-white" // Apply yellow background and white text for On Progress
-                                : setting.status === "To Release"
-                                ? "bg-green-500 text-white" // Apply green background and white text for To Release
-                                : setting.status === "To Rate"
-                                ? "bg-blue-500 text-white" // Apply blue background and white text for To Rate
-                                : setting.status === "Closed"
-                                ? "bg-gray-800 text-white" // Apply gray background and white text for Closed
-                                : setting.status === "Cancelled"
-                                ? "bg-red-700 text-white" // Apply dark red background and white text for Cancelled
-                                : "bg-main text-white" // Default background and text color (if none of the conditions match)
-                            }`}
-                          >
-                            {setting.status}
-                          </p>
-                        </td>
-                        <td className="border-b-2 pr-2 py-2 large:py-3 border-gray-200 text-center">
-                          <div className="flex gap-1">
-                            {setting.status === "To Rate" ||
-                            setting.status === "Closed" ? (
-                              <button
-                                className={`text-white ${
-                                  isScreenWidth1366 ? "text-xs" : " text-base"
-                                } bg-blue-500 font-medium px-5 py-2 rounded-lg`}
-                                onClick={() => openModal(setting)}
-                              >
-                                View
-                              </button>
-                            ) : setting.status === "Cancelled" ? (
-                              <button
-                                className={`text-white ${
-                                  isScreenWidth1366 ? "text-xs" : " text-base"
-                                } bg-blue-500 font-medium px-5 py-2 rounded-lg`}
-                                onClick={() => handleCancelRequest(setting)}
-                              >
-                                View
-                              </button>
-                            ) : (
-                              <button
-                                className={`text-white ${
-                                  isScreenWidth1366 ? "text-xs" : " text-base"
-                                } bg-blue-500 font-medium px-3 py-2 rounded-lg`}
-                                onClick={() => openModal(setting)}
-                              >
-                                Update
-                              </button>
-                            )}
-                            <Popconfirm
-                              placement="left"
-                              title="Confirmation"
-                              description="Please confirm this action. This action cannot be undone."
-                              open={popconfirmVisible[setting.id]}
-                              icon={
-                                <QuestionCircleOutlined
-                                  style={{ color: "red" }}
-                                />
-                              }
-                              onConfirm={() =>
-                                handleOk(setting.id, setting.request_id)
-                              }
-                              okButtonProps={{
-                                loading: confirmLoading,
-                                color: "red",
-                                className:
-                                  "text-black border-1 border-gray-300",
-                                size: "large",
-                              }}
-                              cancelButtonProps={{
-                                size: "large",
-                              }}
-                              onCancel={() => handleCancel(setting.id)}
-                              okText="Yes"
-                            >
-                              <button
-                                onClick={() =>
-                                  handleOpenReasonModalClick(setting.id)
-                                }
-                                className="text-white text-base bg-red-700 py-2 px-4 rounded-lg"
-                              >
-                                <FontAwesomeIcon icon={faTrash} />
-                              </button>
-                            </Popconfirm>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-                {selectedReason && (
-                  <ReasonModal
-                    display={true}
-                    itemData={data.find((item) => item.id === selectedReason)}
-                    onClose={handleCloseReasonModalClick} // Pass the callback here
-                    isLargeScreen={isLargeScreen}
-                    refreshData={fetchData}
-                    role={userRole}
-                    onSubmit={handleReasonModalSubmit}
-                  />
-                )}
-                {cancel && (
-                  <ViewCancel
-                    isOpen={cancel}
-                    onClose={() => setCancel(false)}
-                    datas={viewCancel}
-                    role={userRole} // Pass the selectedItemId as a prop
-                  />
-                )}
-              </table>
+              {selectedReason && (
+                <ReasonModal
+                  display={true}
+                  itemData={data.find((item) => item.id === selectedReason)}
+                  onClose={handleCloseReasonModalClick} // Pass the callback here
+                  isLargeScreen={isLargeScreen}
+                  refreshData={fetchData}
+                  role={userRole}
+                  onSubmit={handleReasonModalSubmit}
+                />
+              )}
+              {cancel && (
+                <ViewCancel
+                  isOpen={cancel}
+                  onClose={() => setCancel(false)}
+                  datas={viewCancel}
+                  role={userRole} // Pass the selectedItemId as a prop
+                />
+              )}
 
               {modalType === "ServicePending" && (
                 <ReceiveServiceModal
@@ -881,69 +563,11 @@ const ServiceTask = () => {
                 />
               )}
             </div>
-            <nav className={`  mt-2 `}>
-              <ul className="flex gap-2 items-center">
-                <li className="flex-auto  mr-5 text-base font-bold">
-                  Page {currentPage} of {npage} | Total: {totalRequests}
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    onClick={prePage}
-                    className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
-                  >
-                    <LeftOutlined
-                      style={{
-                        fontSize: isScreenWidth1366 ? ".8rem" : "",
-                      }}
-                    />
-                  </a>
-                </li>
-                <li className="flex items-center">
-                  <input
-                    type="number"
-                    placeholder="Page"
-                    className={`border rounded-lg bg-gray-100  px-4 text-black w-24  text-center outline-none ${
-                      isScreenWidth1366 ? "text-sm py-1" : "py-2"
-                    }`}
-                    value={pageInput}
-                    onChange={handlePageInputChange}
-                    onBlur={handlePageInputBlur}
-                    onKeyDown={handlePageInputKeyPress}
-                  />
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    onClick={nextPage}
-                    className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
-                  >
-                    <RightOutlined
-                      style={{
-                        fontSize: isScreenWidth1366 ? ".8rem" : "",
-                      }}
-                    />
-                  </a>
-                </li>
-              </ul>
-            </nav>
           </div>
         </div>
       </div>
     </HelmetProvider>
   );
-
-  function prePage() {
-    if (currentPage !== 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  }
-
-  function nextPage() {
-    if (currentPage !== npage) {
-      setCurrentPage(currentPage + 1);
-    }
-  }
 };
 
 export default ServiceTask;

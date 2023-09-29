@@ -12,6 +12,7 @@ import AddIcon from "@mui/icons-material/Add";
 import AddUserModal from "../../components/AddUserModal";
 import UpdateUserModal from "../../components/UpdateUserModal";
 import {
+  LoadingOutlined,
   QuestionCircleOutlined,
   SearchOutlined,
   WarningFilled,
@@ -148,12 +149,12 @@ const UsersList = () => {
     showQuickJumper: true,
     current: 1,
     pageSize: 10,
-    showLessItems: true, // This prop controls the "..." button
+    showLessItems: true,
   });
 
   const handleSearchBar = (value) => {
     setSearchText(value);
-    setPagination({ ...pagination, current: 1 }); // Reset to the first page when searching
+    setPagination({ ...pagination, current: 1 });
   };
 
   const filteredUsers = users.filter((user) => {
@@ -171,7 +172,6 @@ const UsersList = () => {
       user.userContactNumber?.includes(searchText) ||
       user.userStatus?.toLowerCase().includes(searchTextLower) ||
       user.role?.toLowerCase().includes(searchTextLower)
-      // Add more conditions for searching in other columns as needed
     );
   });
 
@@ -195,9 +195,7 @@ const UsersList = () => {
   console.log(officeOptions);
 
   useEffect(() => {
-    // Check if officeOptions is an array before mapping over it
     if (Array.isArray(officeOptions)) {
-      // Create dynamic filters based on the officeOptions data.
       const dynamicFilters = officeOptions.map((office) => ({
         text: office.office,
         value: office.office,
@@ -209,7 +207,6 @@ const UsersList = () => {
   console.log(officeOptions);
   console.log(officeFilters);
 
-  // Define columns for the table
   const columns = [
     {
       title: "#",
@@ -427,7 +424,7 @@ const UsersList = () => {
 
               <div className="relative flex items-center justify-center lg:mr-auto lg:ml-4 ">
                 <Input
-                  placeholder="Search by Government ID or other criteria"
+                  placeholder="Search..."
                   prefix={<SearchOutlined />}
                   value={searchText}
                   onChange={(e) => handleSearchBar(e.target.value)}
@@ -471,9 +468,12 @@ const UsersList = () => {
               <Table
                 columns={columns}
                 dataSource={filteredUsers}
-                loading={loading}
+                loading={{
+                  indicator: <LoadingOutlined style={{ fontSize: 50 }} />,
+                  spinning: loading,
+                }}
                 pagination={pagination}
-                scroll={{ x: "100%" }}
+                scroll={{ x: 1300 }}
                 rowSelection={rowSelection}
                 rowKey="userID"
                 onChange={(newPagination) => setPagination(newPagination)}

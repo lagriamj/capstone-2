@@ -45,6 +45,16 @@ const Dashboard = () => {
     navigate("/service-transaction"); // Navigate to the specified route
   };
 
+  const elementRef = useRef(null);
+
+  useEffect(() => {
+    // Access the DOM element and measure its height
+    if (elementRef.current) {
+      const heightInPixels = elementRef.current.offsetHeight;
+      console.log("Element height:", heightInPixels, "pixels");
+    }
+  }, []);
+
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -519,7 +529,10 @@ const Dashboard = () => {
             {isLoading ? (
               <p>Loading...</p>
             ) : (
-              <div className="w-full lg:h-screen h-auto flex flex-col  lg:grid lg:grid-cols-7 lg:grid-rows-5 gap-x-3 ">
+              <div
+                ref={elementRef}
+                className="w-full lg:h-screen h-auto flex flex-col  lg:grid lg:grid-cols-7 lg:grid-rows-5 gap-x-3 "
+              >
                 <div className="lg:grid lg:col-span-5 text-black font-sans">
                   <div className="flex lg:flex-row flex-col w-full  lg:justify-between ">
                     <div

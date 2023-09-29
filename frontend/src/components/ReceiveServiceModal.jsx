@@ -35,8 +35,6 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { fullName } = useAuth();
-  const [dataForm, setDataForm] = useState(null);
-  console.log(dataForm);
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -342,4 +340,5 @@ ReceiveServiceModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   data: PropTypes.object,
+  refreshData: PropTypes.func.isRequired,
 };

@@ -10,6 +10,7 @@ use App\Http\Controllers\UtilitySettingController;
 use App\Http\Controllers\TechnicianController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AuthorizedSignController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -127,3 +128,8 @@ Route::middleware('throttle:dashboard-api')->group(function () {
     Route::get('totalRequests-And-Closed/{startDate?}/{endDate?}', [DashboardController::class, 'getTotalAndClosed']);
     Route::get('status-description/{status}/{startDate?}/{endDate?}', [DashboardController::class, 'getStatusDescription']);
 });
+
+
+Route::post('/authorized-signatures/store', [AuthorizedSignController::class, 'store']);
+Route::get('/authorized-signatures', [AuthorizedSignController::class, 'index']);
+Route::get('/images/{filename}', [AuthorizedSignController::class, 'getImage']);

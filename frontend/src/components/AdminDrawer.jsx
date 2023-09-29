@@ -150,7 +150,7 @@ const AdminDrawer = () => {
             <HandymanIcon></HandymanIcon>
             <Link to={"/service-request"}>Service Request</Link>
           </li>
-          <li
+          {/*<li
             className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
               activeTab === "receive-service"
                 ? "bg-white text-main font-semibold"
@@ -160,7 +160,7 @@ const AdminDrawer = () => {
           >
             <MarkAsUnreadIcon></MarkAsUnreadIcon>
             <Link to={"/receive-service"}>Receive Service</Link>
-          </li>
+          </li> */}
           <li
             className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-300 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
               activeTab === "service-task"
@@ -172,7 +172,7 @@ const AdminDrawer = () => {
             <AssignmentIcon></AssignmentIcon>
             <Link to={"/service-task"}>Service Task</Link>
           </li>
-          <li
+          {/* <li
             className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:text-lg hover:font-semibold ${
               activeTab === "service-transaction"
                 ? "bg-white text-main font-semibold"
@@ -183,7 +183,7 @@ const AdminDrawer = () => {
             <WorkHistoryIcon></WorkHistoryIcon>
             <Link to={"/service-transaction"}>Service Transaction</Link>
           </li>
-
+          */}
           <li
             className={`flex gap-3 items-center relative w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
               activeTab === "utilitySettings"

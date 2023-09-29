@@ -3,6 +3,8 @@ import { Modal } from "antd";
 import ReactToPrint from "react-to-print";
 import { useAuth } from "../AuthContext";
 import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 const PrintPreviewModal = ({ visible, onClose, itemData }) => {
   const contentRef = useRef();
@@ -10,7 +12,20 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
   const printRef = useRef(); // Ref for ReactToPrint component
 
   const { fullName } = useAuth();
-  console.log(fullName);
+
+  const [authorizedSignatures, setAuthorizedSignatures] = useState([]);
+
+  useEffect(() => {
+    // Make an HTTP GET request to fetch authorized persons and their images from your Laravel API.
+    axios
+      .get("http://127.0.0.1:8000/api/authorized-signatures") // Replace with your API URL.
+      .then((response) => {
+        setAuthorizedSignatures(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
 
   const handlePrint = () => {
     if (printRef.current) {
@@ -393,8 +408,19 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                 </div>
                 <div className="w-[60%] flex flex-col border-2 border-black">
                   <div className="text-center border-b-2  border-black text-black w-full">
-                    <label htmlFor="" className=" w-full">
-                      {fullName}
+                    <label htmlFor="" className="w-full">
+                      {authorizedSignatures.map((signature) => (
+                        <li key={signature.id}>
+                          <div className="relative">
+                            <img
+                              src={`http://127.0.0.1:8000/api/images/${signature.file_path}`}
+                              alt={`${signature.authorized}'s Signature`}
+                              className=" absolute z-0 -top-11 left-1/2 transform -translate-x-1/2 mb-6"
+                            />
+                          </div>
+                        </li>
+                      ))}
+                      <p className="relative z-10 mt-2">{fullName}</p>
                     </label>
                   </div>
                   <div className="text-center ">
