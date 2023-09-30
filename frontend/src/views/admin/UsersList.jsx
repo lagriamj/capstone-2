@@ -283,6 +283,10 @@ const UsersList = () => {
           text: "user",
           value: "user",
         },
+        {
+          text: "head",
+          value: "head",
+        },
       ],
       filterSearch: true,
       onFilter: (value, record) => record.role?.includes(value),

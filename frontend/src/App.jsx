@@ -15,9 +15,7 @@ import Dashboard from "./views/admin/Dashboard";
 import Unauthorized from "./views/Unauthorized";
 import UpdatePhoneNumberPage from "./views/UpdatePhoneNumberPage";
 import ServiceRequest from "./views/admin/ServiceRequest";
-import ReceiveService from "./views/admin/ReceiveService";
 import ServiceTask from "./views/admin/ServiceTask";
-import ServiceTransaction from "./views/admin/ServiceTransaction";
 import Recommendation from "./views/admin/Recommendation";
 import AdminAccount from "./views/admin/AdminAccount";
 import { ActiveTabProvider } from "./ActiveTabContext";
@@ -27,6 +25,9 @@ import OfficeDepartment from "./views/admin/OfficeDepartment";
 import Categories from "./views/admin/Categories";
 import NatureOfRequest from "./views/admin/NatureOfRequest";
 import Technicians from "./views/admin/Technicians";
+import ApproveRequests from "./views/head/ApproveRequests";
+import ApprovedList from "./views/head/ApprovedList";
+import HeadAccount from "./views/head/HeadAccount";
 
 function App() {
   function ProtectedRoute({ element, requiredRole }) {
@@ -47,6 +48,8 @@ function App() {
         return <Navigate to="/dashboard" />;
       } else if (userRole === "user") {
         return <Navigate to="/request" />;
+      } else if (userRole === "head") {
+        return <Navigate to="/approve-requests" />;
       }
     }
 
@@ -102,6 +105,35 @@ function App() {
                 }
               />
 
+              {/* Head Routes */}
+              <Route
+                path="/approve-requests"
+                element={
+                  <ProtectedRoute
+                    element={<ApproveRequests />}
+                    requiredRole={"head"}
+                  />
+                }
+              />
+              <Route
+                path="/approved-list"
+                element={
+                  <ProtectedRoute
+                    element={<ApprovedList />}
+                    requiredRole={"head"}
+                  />
+                }
+              />
+              <Route
+                path="/head/account"
+                element={
+                  <ProtectedRoute
+                    element={<HeadAccount />}
+                    requiredRole={"head"}
+                  />
+                }
+              />
+
               {/* Admin Routes */}
               <Route
                 path="/dashboard"
@@ -122,28 +154,10 @@ function App() {
                 }
               />
               <Route
-                path="/receive-service"
-                element={
-                  <ProtectedRoute
-                    element={<ReceiveService />}
-                    requiredRole={"admin"}
-                  />
-                }
-              />
-              <Route
                 path="/service-task"
                 element={
                   <ProtectedRoute
                     element={<ServiceTask />}
-                    requiredRole={"admin"}
-                  />
-                }
-              />
-              <Route
-                path="/service-transaction"
-                element={
-                  <ProtectedRoute
-                    element={<ServiceTransaction />}
                     requiredRole={"admin"}
                   />
                 }

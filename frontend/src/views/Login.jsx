@@ -90,8 +90,10 @@ function Login() {
         if (data.userStatus === "verified") {
           if (data.role === "admin") {
             navigate("/dashboard");
-          } else {
+          } else if (data.role === "user") {
             navigate("/request");
+          } else {
+            navigate("/approve-requests");
           }
         } else if (data.userStatus === "unverified") {
           navigate("/verify-otp", {

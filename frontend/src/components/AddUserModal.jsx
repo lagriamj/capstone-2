@@ -185,6 +185,7 @@ const AddUserModal = ({
               <Select size="large">
                 <Option value="user">User</Option>
                 <Option value="admin">Admin</Option>
+                <Option value="head">Head</Option>
               </Select>
             </Form.Item>
           </Col>
