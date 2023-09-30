@@ -130,15 +130,15 @@ function Login() {
       </div>
 
       {/* Right side */}
-      <div className="lg:w-1/2 w-full h-screen   flex items-center justify-center font-sans">
-        <div className="flex flex-col bg-white lg:w-[70%] w-[90%] h-auto pb-10 rounded-2xl shadow-2xl text-4xl">
+      <div className="lg:w-1/2 w-full h-screen  flex items-center justify-center font-sans">
+        <div className="flex flex-col  bg-white lg:w-[70%] w-[90%] h-auto pb-10 rounded-2xl lg:shadow-2xl text-4xl">
           <div className="w-full  flex flex-col gap-4">
             <div className="lg:hidden flex my-5 gap-4 items-center justify-center">
               <img className="w-20 h-20" src="/cityhalllogo.png" alt="" />
               <img className="w-20 h-20" src="/citc1.png" alt="" />
             </div>
             <div className="lg:pl-10 lg:mt-10">
-              <h1 className="lg:text-6xl font-semibold text-center lg:text-start">
+              <h1 className="lg:text-5xl font-semibold text-center lg:text-start">
                 Welcome
               </h1>
               <p className="text-center lg:text-start text-2xl">
@@ -210,7 +210,7 @@ function Login() {
               </div>
               <div className="flex items-start justify-center flex-col w-3/4">
                 <a
-                  className="flex self-end justify-center underline text-lg text-main"
+                  className="flex self-end justify-center underline lg:text-lg md:text-base text-sm text-main"
                   href="/register"
                 >
                   Forgot Password?
@@ -221,12 +221,13 @@ function Login() {
                   loading={loading}
                   className="w-full h-14 text-lg font-medium border-2 rounded-lg pl-2 bg-main text-white"
                   htmlType="submit"
+                  pre
                 >
                   {loading ? "Logging In" : "Log in"}
                 </Button>
               </div>
               <div className="flex items-center justify-center flex-col w-3/4">
-                <p className="font-medium text-lg">
+                <p className="font-medium lg:text-lg md:text-base text-sm">
                   Don't have an account?{" "}
                   <a href="/register" className="text-red-600 font-semibold">
                     Register here

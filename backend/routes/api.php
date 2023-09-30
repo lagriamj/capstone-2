@@ -13,6 +13,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AuthorizedSignController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserSignatureController;
 
 /*
 |--------------------------------------------------------------------------
@@ -129,7 +130,6 @@ Route::middleware('throttle:dashboard-api')->group(function () {
     Route::get('status-description/{status}/{startDate?}/{endDate?}', [DashboardController::class, 'getStatusDescription']);
 });
 
-
-Route::post('/authorized-signatures/store', [AuthorizedSignController::class, 'store']);
-Route::get('/authorized-signatures', [AuthorizedSignController::class, 'index']);
-Route::get('/images/{filename}', [AuthorizedSignController::class, 'getImage']);
+Route::post('/user-signature/store', [UserSignatureController::class, 'userSignature']);
+Route::get('/all-signature/{fullName}', [UserSignatureController::class, 'allSignature']);
+Route::get('/user-signature/{filename}', [UserSignatureController::class, 'getSignature']);

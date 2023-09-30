@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import AdminSidebar from "../../components/AdminSidebar";
 import AdminDrawer from "../../components/AdminDrawer";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { Modal, Button, Table } from "antd";
+import { Modal, Button, Table, Badge } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClipboardCheck,
@@ -19,6 +19,7 @@ import axios from "axios";
 import { Tooltip, Legend, ResponsiveContainer, PieChart, Pie } from "recharts";
 import BarGraph from "../../components/BarGraph";
 import { useNavigate } from "react-router-dom";
+import { NotificationOutlined } from "@ant-design/icons";
 
 const Dashboard = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -33,16 +34,8 @@ const Dashboard = () => {
   const [selectedData, setSelectedData] = useState(null);
   const navigate = useNavigate();
 
-  const handleNewRequestClick = () => {
-    navigate("/receive-service"); // Navigate to the specified route
-  };
-
   const handleServiceTaskClick = () => {
-    navigate("/service-task"); // Navigate to the specified route
-  };
-
-  const handleClosedClick = () => {
-    navigate("/service-transaction"); // Navigate to the specified route
+    navigate("/service-task");
   };
 
   const elementRef = useRef(null);
@@ -381,7 +374,7 @@ const Dashboard = () => {
   };
 
   const formatter = (value) => {
-    return <span className="text-[10px]">{value}</span>;
+    return <span className="text-[16px] text-black">{value}</span>;
   };
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -519,7 +512,7 @@ const Dashboard = () => {
         <title>Dashboard</title>
       </Helmet>
       <div
-        className={`className="flex flex-grow flex-col overflow-auto gotoLarge:px-6 bg-gray-200 large:ml-20 lg:flex-row white pt-5  h-screen`}
+        className={`className="flex flex-grow flex-col overflow-auto gotoLarge:px-6 bg-gray-200 large:ml-20 lg:flex-row white pt-2  h-screen`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
         <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start  bg-gray-200 gap-2 w-full">
@@ -536,7 +529,7 @@ const Dashboard = () => {
                 <div className="lg:grid lg:col-span-5 text-black font-sans">
                   <div className="flex lg:flex-row flex-col w-full  lg:justify-between ">
                     <div
-                      onClick={handleNewRequestClick}
+                      onClick={handleServiceTaskClick}
                       className="flex lg:w-[32%] lg:h-[18vh] lg:mb-0 mb-3 cursor-pointer bg-[#fff4de] shadow-md rounded-lg"
                     >
                       <div className="flex flex-col w-[60%] font-medium cursor-pointer items-center justify-center px-2">
@@ -570,7 +563,7 @@ const Dashboard = () => {
                       </h1>
                     </div>
                     <div
-                      onClick={handleClosedClick}
+                      onClick={handleServiceTaskClick}
                       className="flex lg:w-[32%] lg:h-[18vh] mb-3 cursor-pointer bg-[#f4e8ff] shadow-md rounded-lg"
                     >
                       <div className="flex flex-col w-[60%] font-medium  items-center justify-center px-2">
@@ -588,8 +581,71 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-
-                <div className="lg:col-span-5 flex flex-col px-4  row-span-2 rounded-lg shadow-md  bg-white">
+                <div className="lg:col-span-5 flex lg:flex-row flex-col   row-span-2  rounded-lg row-start-2 ">
+                  <div className="bg-white lg:w-[49%] mr-2 w-full rounded-lg shadow-md">
+                    <label className="text-lg font-medium pl-4 pt-2 flex ">
+                      Closed and Unclosed Requests
+                    </label>
+                    <ResponsiveContainer width="100%" height="90%">
+                      <PieChart width={600} height={600}>
+                        <Pie
+                          dataKey="value"
+                          data={pieTotalAndClosed}
+                          isAnimationActive={true}
+                          cx="50%"
+                          cy="50%"
+                          fill="color"
+                          label={renderCustomizedLabel}
+                          labelLine={false}
+                        />
+                        <Tooltip />
+                        <Legend formatter={formatter} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="bg-white lg:w-[50%] w-full rounded-lg shadow-md">
+                    <label className="text-lg font-medium pl-4 pt-2 flex ">
+                      Request Status Overview
+                    </label>
+                    <ResponsiveContainer width="100%" height="90%">
+                      <PieChart width={600} height={600}>
+                        <Pie
+                          labelLine={false}
+                          dataKey="value"
+                          data={pieChartData}
+                          cx="50%"
+                          cy="50%"
+                          label={renderCustomizedLabel}
+                          onClick={handlePieClick}
+                        />
+                        <Tooltip />
+                        <Legend formatter={formatter} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                    <Modal
+                      title={
+                        <div className="flex text-lg gap-4 px-6 py-4 font-sans">
+                          <span>{clickedPortion} Requests</span>
+                          <span className="font-bold text-red-700">
+                            {modalTitle}%
+                          </span>
+                        </div>
+                      }
+                      open={modalVisible}
+                      onCancel={closePieModal}
+                      footer={null}
+                      width="90%"
+                    >
+                      <Table
+                        dataSource={modalData}
+                        columns={tableColumns}
+                        pagination={true}
+                        className="gotoLarge:w-full overflow-auto"
+                      />
+                    </Modal>
+                  </div>
+                </div>
+                <div className="lg:col-span-5 flex flex-col mediumLg:mt-2 large:mt-3 mt-4 px-4  row-span-2 rounded-lg shadow-md  bg-white">
                   <div className="w-full  flex lg:flex-row flex-col gap-2 px-2 py-3 mediumLg:pt-1 justify-end">
                     {" "}
                     <div className="px-3 gotoLarge:py-3 py-1 relative whitespace-nowrap flex items-center gap-2 pb-2 font-sans font-semibold text-lg mr-auto">
@@ -703,114 +759,112 @@ const Dashboard = () => {
                     windowsHeight768={isWindowsHeightBelow768}
                   />
                 </div>
-                <div className="lg:col-span-full flex lg:flex-row flex-col justify-between mediumLg:mt-2 large:mt-3 mt-4 gap-3 row-span-2  rounded-lg row-start-4 ">
-                  <div className="bg-white lg:w-[30%] w-full rounded-lg shadow-md">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart width={600} height={600}>
-                        <Pie
-                          dataKey="value"
-                          data={pieTotalAndClosed}
-                          isAnimationActive={true}
-                          cx="50%"
-                          cy="50%"
-                          fill="color"
-                          label={renderCustomizedLabel}
-                          labelLine={false}
+                <div className="text-black font-sans overflow-auto lg:mt-0 mt-3  bg-white shadow-md rounded-lg lg:col-start-6 lg:col-span-2  lg:row-start-1 lg:row-span-3 ">
+                  <div className="flex flex-col">
+                    <div className="flex items-center border-b-2 gap-2 border-gray-400 py-3 pl-4">
+                      <Badge dot={requestDetails.length === 0 ? false : true}>
+                        <NotificationOutlined
+                          style={{
+                            fontSize: 16,
+                          }}
                         />
-                        <Tooltip />
-                        <Legend />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div className="bg-white lg:w-[30%] w-full rounded-lg shadow-md">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart width={600} height={600}>
-                        <Pie
-                          labelLine={false}
-                          dataKey="value"
-                          data={pieChartData}
-                          cx="50%"
-                          cy="50%"
-                          label={renderCustomizedLabel}
-                          onClick={handlePieClick}
-                        />
-                        <Tooltip />
-                        <Legend formatter={formatter} />
-                      </PieChart>
-                    </ResponsiveContainer>
-                    <Modal
-                      title={
-                        <div className="flex text-lg gap-4 px-6 py-4 font-sans">
-                          <span>{clickedPortion} Requests</span>
-                          <span className="font-bold text-red-700">
-                            {modalTitle}%
-                          </span>
+                      </Badge>
+                      <Badge className="lg:text-lg text-base font-sans">
+                        Recent Requests
+                      </Badge>
+                    </div>
+                    {requestDetails.map((request) => (
+                      <div
+                        key={request.id}
+                        className="mb-5 pb-2 large:text-lg border-b-2 border-gray-400"
+                      >
+                        <div className="grid grid-cols-2 px-2">
+                          <p className="whitespace-nowrap">
+                            {" "}
+                            {request.fullName}
+                          </p>
+                          <p className="text-right"> {request.dateRequested}</p>
                         </div>
-                      }
-                      open={modalVisible}
-                      onCancel={closePieModal}
-                      footer={null}
-                      width="90%"
-                    >
-                      <Table
-                        dataSource={modalData}
-                        columns={tableColumns}
-                        pagination={true}
-                        className="gotoLarge:w-full overflow-auto"
-                      />
-                    </Modal>
+                        <div className="grid grid-cols-2 mt-2 px-2">
+                          <p className="">{request.natureOfRequest}</p>
+
+                          <button
+                            className="text-blue-400 text-right"
+                            onClick={() => openModal(request)}
+                          >
+                            View Details
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="bg-white lg:w-[20%] w-full rounded-lg shadow-md font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
+                </div>
+                <div className="lg:grid lg:col-start-6 lg:col-span-2 lg:row-start-4 mt-2 lg:row-span-1">
+                  <div className="bg-white  w-full rounded-lg shadow-md font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
                     <div className="flex border-b-2 items-center justify-center border-gray-400">
-                      <h1 className="p-3  font-semibold ">Rating</h1>
+                      <h1 className="px-3 py-1  font-semibold ">Rating</h1>
                       <FontAwesomeIcon
                         icon={faHandHoldingHeart}
                         className="large:h-8 large:w-8 text-main mediumLg:h-6 mediumLg:w-6"
                       />
                     </div>
-                    <div className="flex flex-col gap-4 gap-y-10 pt-4 gotoLarge:gap-y-12 gotoLarge:pt-14 font-medium   mediumLg:gap-y-4 mediumLg:pt-6 large:gap-y-16 large:pt-10 p-4 ">
-                      <div className="flex items-center justify-center gap-3">
+                    <div className="flex flex-col pl-10 gap-1 mediumLg:gap-y-4 mediumLg:mt-2   font-medium p-2 ">
+                      <div className="flex  text-left  gap-3">
                         <label className="gotoLarge:whitespace-nowrap">
                           Overall Ratings:{" "}
                         </label>
-                        <label className="text-red-700 text-xl large:text-3xl font-semibold italic">
+                        <label className="text-red-700 text-base large:text-xl font-semibold italic">
                           {" "}
                           {formattedTotalRatings}%
                         </label>
                       </div>
 
-                      <div className="flex items-center justify-center gap-3">
+                      <div className="flex  text-left gap-3">
                         <label>Satisfied: </label>
-                        <label className="text-red-700 text-xl large:text-3xl font-semibold italic">
+                        <label className="text-red-700 text-base large:text-xl font-semibold italic">
                           {" "}
                           {formattedTotalSatisfied}%
                         </label>
                       </div>
 
-                      <div className="flex items-center justify-center gap-3">
+                      <div className="flex  text-left  gap-3">
                         <label>Unsatisfied: </label>
-                        <label className=" text-red-700 text-xl large:text-3xl font-semibold italic">
+                        <label className=" text-red-700 text-base large:text-xl font-semibold italic">
                           {" "}
                           {formattedTotalUnsatisfied}%
                         </label>
                       </div>
                     </div>
                   </div>
-                  <div className="bg-white lg:w-[20%] w-full rounded-lg shadow-md font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
-                    <h1 className="p-3 text-center font-semibold border-b-2 border-gray-400 ">
+                </div>
+                <div className="lg:grid lg:col-start-6 lg:col-span-2 lg:row-start-5 mt-2 lg:row-span-1">
+                  <div className="bg-white w-full rounded-lg shadow-md font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
+                    <h1 className="px-3 py-1 text-center font-semibold border-b-2 border-gray-400 ">
                       Top 3 Nature of Requests
                     </h1>
-                    <ul className="flex flex-col gap-4 gap-y-10 pt-4 gotoLarge:gap-y-12 gotoLarge:pt-14 font-medium   mediumLg:gap-y-4 mediumLg:pt-6 large:gap-y-14 large:pt-10 p-4 ">
+                    <ul className="flex flex-col gap-2 pt-2 pl-10 mediumLg:gap-y-4 mediumLg:mt-2   font-medium   px-4 ">
                       {ratingsAndNature.topNature.map(
                         (natureOfRequest, index) => (
                           <li className="flex  gap-4" key={index}>
                             <span key={index}>
                               {index === 0 ? (
-                                <Filter1Icon />
+                                <Filter1Icon
+                                  style={{
+                                    fontSize: 18,
+                                  }}
+                                />
                               ) : index === 1 ? (
-                                <Filter2Icon />
+                                <Filter2Icon
+                                  style={{
+                                    fontSize: 18,
+                                  }}
+                                />
                               ) : index === 2 ? (
-                                <Filter3Icon />
+                                <Filter3Icon
+                                  style={{
+                                    fontSize: 18,
+                                  }}
+                                />
                               ) : (
                                 ""
                               )}
@@ -821,32 +875,6 @@ const Dashboard = () => {
                       )}
                     </ul>
                   </div>
-                </div>
-                <div className="text-black font-sans overflow-auto lg:mt-0 mt-3  bg-white shadow-md rounded-lg lg:col-start-6 lg:col-span-2  lg:row-start-1 lg:row-span-3 ">
-                  <h1 className="text-2xl m-2 font-semibold border-b-2 pb-2 border-gray-400">
-                    Recent Requests
-                  </h1>
-                  {requestDetails.map((request) => (
-                    <div
-                      key={request.id}
-                      className="mb-5 pb-2 large:text-lg border-b-2 border-gray-400"
-                    >
-                      <div className="grid grid-cols-2 px-2">
-                        <p className="whitespace-nowrap"> {request.fullName}</p>
-                        <p className="text-right"> {request.dateRequested}</p>
-                      </div>
-                      <div className="grid grid-cols-2 mt-2 px-2">
-                        <p className="">{request.natureOfRequest}</p>
-
-                        <button
-                          className="text-blue-400 text-right"
-                          onClick={() => openModal(request)}
-                        >
-                          View Details
-                        </button>
-                      </div>
-                    </div>
-                  ))}
                 </div>
               </div>
             )}

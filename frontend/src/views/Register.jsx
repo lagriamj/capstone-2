@@ -9,6 +9,7 @@ import {
   faLock,
   faPhone,
   faBuildingUser,
+  faSignature,
 } from "@fortawesome/free-solid-svg-icons";
 import HashLoader from "react-spinners/HashLoader";
 import { useNavigate } from "react-router-dom";
@@ -34,7 +35,7 @@ const InputBox = ({
   minLength,
 }) => {
   return (
-    <div className="flex items-start justify-center text-lg flex-col w-3/4">
+    <div className="flex items-start justify-center text-lg flex-col lg:w-[80%] w-[90%]">
       <label className="font-semibold" htmlFor={htmlFor}>
         {labelText}
       </label>
@@ -143,8 +144,35 @@ const Register = () => {
     }),
   };
 
+  const [file, setFile] = useState(null);
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
   const registerUser = async (e) => {
     e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("governmentID", userGovernmentID);
+    formData.append("firstName", userFirstName);
+    formData.append("lastName", userLastName);
+    formData.append("office", selectedOffice);
+    formData.append("signatureImage", file);
+
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/user-signature/store",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
 
     const userData = {
       userFirstName: userFirstName,
@@ -250,7 +278,7 @@ const Register = () => {
         {/* Right Column */}
         <div className="w-full lg:w-1/2 gotoLarge:h-screen h-auto   py-5 flex flex-col items-center justify-center overflow-auto ml-auto">
           <div
-            className={` bg-white lg:w-[80%] w-[90%] py-5 gotoLarge:h-auto h-auto rounded-2xl shadow-2xl ${
+            className={` bg-white  w-[90%] py-5 gotoLarge:h-auto h-auto rounded-2xl lg:shadow-2xl ${
               isLargeScreen ? "text-4xl" : "text-lg"
             }`}
           >
@@ -260,7 +288,9 @@ const Register = () => {
                 <img className="w-20 h-20" src="/citc1.png" alt="" />
               </div>
               <div className="lg:pl-5 lg:mt-5">
-                <h1 className={`lg:text-5xl font-semibold text-center`}>
+                <h1
+                  className={`text-4xl lg:text-5xl   font-semibold text-center`}
+                >
                   Register
                 </h1>
               </div>
@@ -276,7 +306,7 @@ const Register = () => {
               onSubmit={registerUser}
               className="w-full lg:mt-5 mt-5 flex flex-col items-center justify-center gap-y-5"
             >
-              <div className="flex items-start justify-center w-3/4 lg:flex-row flex-col gap-5">
+              <div className="flex items-start justify-center lg:w-[80%] w-[90%] lg:flex-row flex-col gap-5">
                 {/* First Name */}
                 <div className="flex flex-col lg:w-1/2 w-full">
                   <label className="font-semibold text-lg" htmlFor="firstName">
@@ -339,7 +369,7 @@ const Register = () => {
                 </div>
               </div>
 
-              <div className="flex items-start justify-center w-3/4 lg:flex-row flex-col gap-5">
+              <div className="flex items-start justify-center lg:w-[80%] w-[90%] lg:flex-row flex-col gap-5">
                 {/* Office */}
                 <div className="flex flex-col lg:w-1/2 w-full">
                   <label className="font-semibold text-lg" htmlFor="office">
@@ -430,7 +460,7 @@ const Register = () => {
                 value={userEmail}
                 onChange={(e) => setUserEmail(e.target.value)}
               />
-              <div className="flex items-start justify-center text-lg flex-col w-3/4">
+              <div className="flex items-start justify-center text-lg flex-col lg:w-[80%] w-[90%]">
                 <label className="font-semibold" htmlFor={"userContactNumber"}>
                   Contact Number
                 </label>
@@ -475,8 +505,28 @@ const Register = () => {
                   </div>
                 </div>
               </div>
+              <div className="flex items-start justify-center text-lg flex-col lg:w-[80%] w-[90%]">
+                <label className="font-semibold" htmlFor="signature">
+                  Signature
+                </label>
+                <div className="relative w-full">
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    accept="image/*"
+                    required
+                    className="w-full h-11 border-2 rounded-lg pl-12 pt-1 pr-4 text-lg border-slate-400 focus:outline-none"
+                  />
+                  <div className="absolute inset-y-0 left-0 flex items-center p-3 bg-main rounded-l-lg">
+                    <FontAwesomeIcon
+                      icon={faSignature} // Replace with the FontAwesome icon you want to use
+                      className="text-white"
+                    />
+                  </div>
+                </div>
+              </div>
               {/* Password */}
-              <div className="flex items-start justify-center text-lg flex-col w-3/4">
+              <div className="flex items-start justify-center text-lg flex-col lg:w-[80%] w-[90%]">
                 <label className="font-semibold" htmlFor={"userPassword"}>
                   Password
                 </label>
