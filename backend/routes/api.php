@@ -59,7 +59,7 @@ Route::middleware('api')->group(function () {
 
     //Account (user side)
     Route::get('/account', [UserController::class, 'accountDetails']);
-    Route::post('/change-password', [UserController::class, 'changePasswoequestupdaterd']);
+    Route::post('/change-password', [UserController::class, 'changePassword'])->middleware('throttle:account');
     Route::post('/check-password', [UserController::class, 'checkPassword']);
     Route::put('/update-contact', [UserController::class, 'updateContactNumber']);
 

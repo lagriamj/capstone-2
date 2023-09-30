@@ -10,9 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import HandymanIcon from "@mui/icons-material/Handyman";
-import MarkAsUnreadIcon from "@mui/icons-material/MarkAsUnread";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import WorkHistoryIcon from "@mui/icons-material/WorkHistory";
 import { useAuth } from "../AuthContext";
 import { useActiveTab } from "../ActiveTabContext";
 import { useActiveSubTab } from "../ActiveSubTabContext";
@@ -241,6 +239,20 @@ const AdminDrawer = () => {
                   }}
                 >
                   Nature of Requests
+                </button>
+                <button
+                  className={`block text-left px-3 py-2 w-full rounded-lg hover:bg-main hover:text-white ${
+                    activeSubTab === "auditLog"
+                      ? "bg-main text-white font-medium"
+                      : ""
+                  }`}
+                  onClick={() => {
+                    // Handle tab click (e.g., navigate to a different page)
+                    handleItemClickAccount("auditLog");
+                    navigate("/admin/audit-log");
+                  }}
+                >
+                  Audit Log
                 </button>
               </div>
             </div>

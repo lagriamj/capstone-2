@@ -13,7 +13,7 @@ import ViewCancel from "../../components/ViewCancel";
 //import ClosedModal from "../../components/ClosedModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Input, Table, Tag } from "antd";
+import { Input, Table, Tag, message } from "antd";
 import { Popconfirm } from "antd";
 import {
   LoadingOutlined,
@@ -21,7 +21,6 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../AuthContext";
-import { message } from "antd";
 
 const ServiceTask = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);

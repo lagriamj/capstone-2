@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { Button, Modal, message } from "antd";
+import {
+  Button,
+  Modal,
+  Form,
+  Input,
+  Row,
+  Col,
+  Select,
+  message,
+  Upload,
+} from "antd";
 import axios from "axios";
 import UpdateContactNumModal from "../../components/UpdateContactNumModal";
 import { useAuth } from "../../AuthContext";
@@ -8,15 +18,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPen } from "@fortawesome/free-solid-svg-icons";
 import HeadSidebar from "../../components/HeadSidebar";
 import HeadDrawer from "../../components/HeadDrawer";
+import { UploadOutlined } from "@ant-design/icons";
 
 const HeadAccount = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const isLargeScreen = windowWidth >= 1024;
   const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [userFirstName, setFirstName] = useState("");
-  const [userLastName, setLastName] = useState("");
-  const [userEmail, setEmail] = useState("");
   const { userID } = useAuth();
   const [userData, setUserData] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -25,9 +32,10 @@ const HeadAccount = () => {
   const [userPasswordChecker, setUserPasswordChecker] = useState("");
   const { fullName } = useAuth();
 
+  const { Option } = Select;
+  const [form] = Form.useForm();
+
   const showModal = () => {
-    setCurrentPassword("");
-    setNewPassword("");
     setIsModalVisible(true);
   };
 
@@ -44,11 +52,7 @@ const HeadAccount = () => {
       console.log("API Response:", response.data.results);
 
       const user = response.data.results[0];
-
       setUserData(user);
-      setFirstName(user.userFirstName);
-      setLastName(user.userLastName);
-      setEmail(user.userEmail);
     } catch (err) {
       console.log("Something went wrong:", err);
     }
@@ -70,22 +74,14 @@ const HeadAccount = () => {
     };
   }, []);
 
-  const handlePasswordChange = async (e) => {
-    e.preventDefault();
-
+  const handlePasswordChange = async () => {
     setIsSavingChange(true);
+    const newFormData = await form.validateFields();
 
     try {
       const response = await axios.post(
         "http://127.0.0.1:8000/api/change-password",
-        {
-          userID, // You need to pass the user ID here if required by your API
-          currentPassword,
-          newPassword,
-          userFirstName,
-          userLastName,
-          userEmail,
-        }
+        newFormData
       );
 
       const data = response.data;
@@ -94,20 +90,28 @@ const HeadAccount = () => {
       message.success("Details updated successfully");
       setIsModalVisible(false);
       setCurrentPassword("");
-      setNewPassword("");
-      setFirstName();
-      setLastName("");
-      setEmail("");
       fetchData();
       setIsSavingChange(false);
     } catch (err) {
       setIsSavingChange(false);
-      console.error("Password change failed:", err);
-      message.error(
-        "Password change failed. Please check your current password."
-      );
+      console.error("Update failed:", err);
+      console.log(err);
+      message.error(err.response.data.message);
     }
   };
+
+  useEffect(() => {
+    form.setFieldsValue({
+      userGovernmentID: userData?.userGovernmentID,
+      role: userData?.role,
+      userFirstName: userData?.userFirstName,
+      userLastName: userData?.userLastName,
+      userEmail: userData?.userEmail,
+      userContactNumber: userData?.userContactNumber,
+      office: userData?.office,
+      division: userData?.division,
+    });
+  }, [userData]);
 
   const [modalMode, setModalMode] = useState("password");
   const [modalUpdateContact, setModalUpdateContact] = useState(false);
@@ -174,6 +178,58 @@ const HeadAccount = () => {
     }
   };
 
+  const [officeOptions, setOfficeOptions] = useState([]);
+
+  const customFilterOption = (inputValue, option) =>
+    option.value?.toLowerCase().includes(inputValue.toLowerCase());
+
+  useEffect(() => {
+    fetchOfficeList();
+  }, []);
+
+  const fetchOfficeList = async () => {
+    try {
+      const result = await axios.get("http://127.0.0.1:8000/api/office-list");
+      console.log(result.data.results);
+      setOfficeOptions(result.data.results);
+      console.log(officeOptions);
+    } catch (err) {
+      console.log("Something went wrong:", err);
+    }
+  };
+
+  const [fileList, setFileList] = useState([
+    {
+      uid: "-1",
+      name: "Diri_Ang_Existing_Signature.png",
+      status: "done",
+      url: "http://www.baidu.com/xxx.png",
+    },
+  ]);
+
+  const handleChange = (info) => {
+    let newFileList = [...info.fileList];
+
+    // 1. Limit the number of uploaded files
+    // Only to show two recent uploaded files, and old ones will be replaced by the new
+    newFileList = newFileList.slice(-1);
+
+    // 2. Read from response and show file link
+    newFileList = newFileList.map((file) => {
+      if (file.response) {
+        // Component will show file.url as link
+        file.url = file.response.url;
+      }
+      return file;
+    });
+    setFileList(newFileList);
+  };
+  const props = {
+    action: "https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188",
+    onChange: handleChange,
+    multiple: true,
+  };
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -224,29 +280,29 @@ const HeadAccount = () => {
               >
                 <div className=" text-black grid lg:grid-cols-2 grid-cols-1 gap-y-4 p-10">
                   <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
-                    <label htmlFor="userFirstName">First Name:</label>
+                    <label htmlFor="userFirstName1">First Name:</label>
                     <input
                       type="text"
-                      name="userFirstName"
-                      id="userFirstName"
+                      name="userFirstName1"
+                      id="userFirstName1"
                       value={userData?.userFirstName || ""}
                       className="h-10 lg:w-[80%] w-full border-2 border-gray-200 rounded-md shadow-md px-3 outline-none"
                       readOnly
                     />
                   </div>
                   <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
-                    <label htmlFor="userLastName">Last Name:</label>
+                    <label htmlFor="userLastName1">Last Name:</label>
                     <input
                       type="text"
-                      name="userLastName"
-                      id="userLastName"
+                      name="userLastName1"
+                      id="userLastName1"
                       value={userData?.userLastName || ""}
                       className="h-10 lg:w-[80%] w-full border-2 border-gray-200 rounded-md shadow-md px-3 outline-none"
                       readOnly
                     />
                   </div>
                   <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
-                    <label htmlFor="">Government ID:</label>
+                    <label htmlFor="governmentID">Government ID:</label>
                     <input
                       type="text"
                       name="governmentID"
@@ -268,33 +324,33 @@ const HeadAccount = () => {
                     />
                   </div>
                   <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
-                    <label htmlFor="office">Type:</label>
+                    <label htmlFor="office1">Office:</label>
                     <input
                       type="text"
-                      name="office"
-                      id="office"
+                      name="office1"
+                      id="office1"
                       value={userData?.office || ""}
                       className="h-10 lg:w-[80%] w-full border-2 border-gray-200 rounded-md shadow-md px-3 outline-none"
                       readOnly
                     />
                   </div>
                   <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
-                    <label htmlFor="division">Division:</label>
+                    <label htmlFor="division1">Division:</label>
                     <input
                       type="text"
-                      name="division"
-                      id="division"
+                      name="division1"
+                      id="division1"
                       value={userData?.division || ""}
                       className="h-10 lg:w-[80%] w-full border-2 border-gray-200 rounded-md shadow-md px-3 outline-none"
                       readOnly
                     />
                   </div>
                   <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
-                    <label htmlFor="userEmail">Email:</label>
+                    <label htmlFor="userEmail1">Email:</label>
                     <input
                       type="text"
                       name="userEmail"
-                      id="userEmail"
+                      id="userEmail1"
                       value={userData?.userEmail || ""}
                       className="h-10 lg:w-[80%] w-full border-2 border-gray-200 rounded-md shadow-md px-3 outline-none"
                       readOnly
@@ -302,9 +358,9 @@ const HeadAccount = () => {
                   </div>
                   <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
                     <div className="flex">
-                      <label htmlFor="userNewContactNumber">Contact:</label>
+                      <label htmlFor="userNewContactNumber1">Contact:</label>
                       <a
-                        id="userNewContactNumber"
+                        id="userNewContactNumber1"
                         href=""
                         className="ml-14 text-sm mt-1 font-sans font-medium text-red-600 hover:opacity-90"
                         onClick={(e) => {
@@ -357,169 +413,226 @@ const HeadAccount = () => {
               onCancel={handleCancel}
               footer={null}
             >
-              <form
-                action=""
-                className=" w-full h-auto  justify-center font-sans"
-                onSubmit={handlePasswordChange}
+              <Form
+                form={form}
+                onFinish={handlePasswordChange}
+                layout="vertical"
+                initialValues={{
+                  userID: userID,
+                  userGovernmentID: userData?.userGovernmentID,
+                  role: userData?.role,
+                  userFirstName: userData?.userFirstName,
+                  userLastName: userData?.userLastName,
+                  userEmail: userData?.userEmail,
+                  userContactNumber: userData?.userContactNumber,
+                  office: userData?.office,
+                  division: userData?.division,
+                }}
               >
-                <div className="flex lg:gap-10 gap-4 items-center my-4 flex-col lg:flex-row font-sans">
-                  <div className="lg:w-1/2 w-[80%]">
-                    <div className="flex flex-col">
-                      <label
-                        className="font-semibold text-lg "
-                        htmlFor="userGovernmentID"
+                <Row gutter={[16, 16]}>
+                  <Col xs={24} lg={6}>
+                    <Form.Item
+                      label={
+                        <label className="block text-sm font-bold">
+                          Government ID
+                        </label>
+                      }
+                      rules={[
+                        {
+                          required: true,
+                          message: "This field is required",
+                        },
+                      ]}
+                      name="userGovernmentID"
+                    >
+                      <Input className="h-[40px]" disabled />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} lg={6}>
+                    <Form.Item
+                      label={
+                        <label className="block text-sm font-bold">Role:</label>
+                      }
+                      rules={[
+                        {
+                          required: true,
+                          message: "This field is required",
+                        },
+                      ]}
+                      name="role"
+                    >
+                      <Select size="large" disabled>
+                        <Option value="user">User</Option>
+                        <Option value="admin">Admin</Option>
+                        <Option value="head">Head</Option>
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} lg={6}>
+                    <Form.Item
+                      label={
+                        <label className="block text-sm font-bold">
+                          First Name:
+                        </label>
+                      }
+                      rules={[
+                        {
+                          required: true,
+                          message: "This field is required",
+                        },
+                      ]}
+                      name="userFirstName"
+                    >
+                      <Input className="h-[40px]" />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} lg={6}>
+                    <Form.Item
+                      label={
+                        <label className="block text-sm font-bold">
+                          Last Name:
+                        </label>
+                      }
+                      rules={[
+                        {
+                          required: true,
+                          message: "This field is required",
+                        },
+                      ]}
+                      name="userLastName"
+                    >
+                      <Input className="h-[40px]" />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} lg={6}>
+                    <Form.Item
+                      label={
+                        <label className="block text-sm font-bold">
+                          Email:
+                        </label>
+                      }
+                      rules={[
+                        {
+                          required: true,
+                          message: "This field is required",
+                        },
+                      ]}
+                      name="userEmail"
+                    >
+                      <Input className="h-[40px]" />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} lg={6}>
+                    <Form.Item
+                      label={
+                        <label className="block text-sm font-bold">
+                          Contact Number:
+                        </label>
+                      }
+                      rules={[
+                        {
+                          required: true,
+                          message: "This field is required",
+                        },
+                      ]}
+                      name="userContactNumber"
+                    >
+                      <Input className="h-[40px]" />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} lg={6}>
+                    <Form.Item
+                      label={
+                        <label className="block text-sm font-bold">
+                          Office:
+                        </label>
+                      }
+                      rules={[
+                        {
+                          required: true,
+                          message: "This field is required",
+                        },
+                      ]}
+                      name="office"
+                    >
+                      <Select
+                        size="large"
+                        showSearch
+                        filterOption={customFilterOption}
                       >
-                        Government ID
-                      </label>
-                      <input
-                        type="text"
-                        name="userGovernmentID"
-                        id="userGovernmentID"
-                        value={userData?.userGovernmentID || ""}
-                        className="w-full border-2 border-gray-400 bg-gray-200 cursor-not-allowed rounded-md py-2 px-4 focus:outline-none"
-                        readOnly
-                      />
-                    </div>
-                  </div>
-                  <div className="lg:w-1/2 w-[80%]">
-                    <div className="flex flex-col">
-                      <label className="font-semibold text-lg " htmlFor="role">
-                        Typed:
-                      </label>
-                      <input
-                        type="text"
-                        name="role"
-                        id="role"
-                        value={userData?.role || ""}
-                        className="w-full border-2 border-gray-400 bg-gray-200 cursor-not-allowed rounded-md py-2 px-4 focus:outline-none"
-                        readOnly
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex lg:gap-10 gap-4 items-center flex-col lg:flex-row ">
-                  <div className="lg:w-1/2 w-[80%]  ">
-                    <div className="flex flex-col">
-                      <label
-                        className="font-semibold text-lg "
-                        htmlFor="EditedUserFirstName"
-                      >
-                        First Name:
-                      </label>
-                      <input
-                        type="text"
-                        name="EditedUserFirstName"
-                        id="EditedUserFirstName"
-                        className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                        value={userFirstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="lg:w-1/2 w-[80%]">
-                    <div className="flex flex-col">
-                      <label
-                        className="font-semibold text-lg "
-                        htmlFor="EditedUserEmail"
-                      >
-                        Email:
-                      </label>
-                      <input
-                        type="email"
-                        name="EditedUserEmail"
-                        id="EditedUserEmail"
-                        className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                        value={userEmail}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex lg:gap-10 gap-4 items-center my-4 flex-col lg:flex-row">
-                  <div className="lg:w-1/2 w-[80%]">
-                    <div className="flex flex-col">
-                      <label
-                        className="font-semibold text-lg "
-                        htmlFor="EditedUserLastName"
-                      >
-                        Last Name:
-                      </label>
-                      <input
-                        type="text"
-                        name="EditedUserLastName"
-                        id="EditedUserLastName"
-                        className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
-                        value={userLastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="lg:w-1/2 w-[80%]">
-                    <div className="flex flex-col">
-                      <label
-                        className="font-semibold text-lg "
-                        htmlFor="userCurrentPassword"
-                      >
-                        Current Password:
-                      </label>
-                      <input
+                        {officeOptions.map((option) => (
+                          <Option key={option.id} value={option.office}>
+                            {option.office}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} lg={6}>
+                    <Form.Item
+                      label={
+                        <label className="block text-sm font-bold">
+                          Division:
+                        </label>
+                      }
+                      name="division"
+                    >
+                      <Input className="h-[40px]" />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} lg={6}>
+                    <Form.Item
+                      label={
+                        <label className="block text-sm font-bold">
+                          Current Password:
+                        </label>
+                      }
+                      name="currentPassword"
+                    >
+                      <Input
                         type="password"
-                        name="userCurrentPassword"
-                        id="userCurrentPassword"
-                        value={currentPassword}
+                        className="h-[40px]"
                         onChange={(e) => setCurrentPassword(e.target.value)}
-                        className="w-full border-2 border-gray-400 bg-gray-50 rounded-md py-2 px-4 focus:outline-none"
                       />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex lg:gap-10 gap-4 items-center my-4 flex-col lg:flex-row">
-                  <div className="lg:w-1/2 w-[80%]">
-                    <div className="flex flex-col">
-                      <label
-                        className="font-semibold text-lg "
-                        htmlFor="userContactNumber"
-                      >
-                        Contact:
-                      </label>
-                      <input
-                        type="text"
-                        name="userContactNumber"
-                        id="userContactNumber"
-                        value={userData?.userContactNumber || ""}
-                        className="w-full border-2 border-gray-400 bg-gray-200 cursor-not-allowed rounded-md py-2 px-4 focus:outline-none"
-                        readOnly
-                      />
-                    </div>
-                  </div>
-                  <div className="lg:w-1/2 w-[80%]">
-                    <div className="flex flex-col">
-                      <label
-                        className="font-semibold text-lg "
-                        htmlFor="userNewPassword"
-                      >
-                        New Password:
-                      </label>
-                      <input
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} lg={6}>
+                    <Form.Item
+                      label={
+                        <label className="block text-sm font-bold">
+                          New Password:
+                        </label>
+                      }
+                      name="newPassword"
+                    >
+                      <Input
                         type="password"
-                        name="userNewPassword"
-                        id="userNewPassword"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        className={`w-full border-2 border-gray-400 py-2 rounded-md px-4 focus:outline-none ${
-                          currentPassword === ""
-                            ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                            : ""
-                        }`}
                         disabled={currentPassword === ""}
-                        required
+                        className="h-[40px]"
                       />
-                    </div>
-                  </div>
-                </div>
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} lg={12}>
+                    <Form.Item
+                      label={
+                        <label className="block text-sm font-bold">
+                          Signature:
+                        </label>
+                      }
+                      name="signature"
+                      valuePropName="filelist"
+                    >
+                      <Upload {...props} fileList={fileList}>
+                        <Button icon={<UploadOutlined />}>Upload</Button>
+                      </Upload>
+                    </Form.Item>
+                  </Col>
+                  <Col hidden>
+                    <Form.Item name="userID">
+                      <Input value={userID} />
+                    </Form.Item>
+                  </Col>
+                </Row>
                 <Button
                   loading={isSavingChanges}
                   type="primary"
@@ -528,7 +641,7 @@ const HeadAccount = () => {
                 >
                   {isSavingChanges ? "Saving Changes" : "Save Changes"}
                 </Button>
-              </form>
+              </Form>
             </Modal>
           </div>
         </div>

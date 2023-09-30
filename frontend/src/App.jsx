@@ -24,10 +24,10 @@ import { ActiveSubTabProvider } from "./ActiveSubTabContext";
 import OfficeDepartment from "./views/admin/OfficeDepartment";
 import Categories from "./views/admin/Categories";
 import NatureOfRequest from "./views/admin/NatureOfRequest";
-import Technicians from "./views/admin/Technicians";
 import ApproveRequests from "./views/head/ApproveRequests";
 import ApprovedList from "./views/head/ApprovedList";
 import HeadAccount from "./views/head/HeadAccount";
+import AuditLog from "./views/admin/AuditLog";
 
 function App() {
   function ProtectedRoute({ element, requiredRole }) {
@@ -218,10 +218,10 @@ function App() {
                 }
               />
               <Route
-                path="/admin/technicians"
+                path="/admin/audit-log"
                 element={
                   <ProtectedRoute
-                    element={<Technicians />}
+                    element={<AuditLog />}
                     requiredRole={"admin"}
                   />
                 }

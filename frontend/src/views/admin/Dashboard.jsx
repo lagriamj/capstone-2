@@ -904,7 +904,7 @@ const Dashboard = () => {
           <Button
             key=""
             onClick={() => {
-              navigate("/receive-service");
+              navigate("/service-task");
             }}
             className="bg-main text-white h-9 "
           >

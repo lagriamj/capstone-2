@@ -204,6 +204,9 @@ class UserController extends Controller
         $newPassword = $request->input('newPassword');
         $newFirstName = $request->input('userFirstName');
         $newLastName = $request->input('userLastName');
+        $newContactNumber = $request->input('userContactNumber');
+        $newOffice = $request->input('office');
+        $newDivision = $request->input('division');
         $newEmail = $request->input('userEmail');
         $userID = $request->input('userID');
         $user = User::find($userID);
@@ -217,13 +220,16 @@ class UserController extends Controller
         $user->userFirstName = $newFirstName;
         $user->userLastName = $newLastName;
         $user->userEmail = $newEmail;
+        $user->userContactNumber = $newContactNumber;
+        $user->office = $newOffice;
+        $user->division = $newDivision;
 
         if (!empty($newPassword)) {
             $user->userPassword = Hash::make($newPassword);
         }
 
         $user->save();
-        return response()->json(['message' => 'Password, FirstName, LastName, and Email changed successfully']);
+        return response()->json(['message' => 'Updated successfully']);
     }
 
     public function checkPassword(Request $request)
