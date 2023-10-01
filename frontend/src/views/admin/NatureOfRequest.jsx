@@ -1,23 +1,15 @@
 import { Box, Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
-import {
-  Button,
-  Form,
-  Input,
-  Modal,
-  Popconfirm,
-  Skeleton,
-  message,
-} from "antd";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Button, Form, Input, Modal, Popconfirm, Table, message } from "antd";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import UpdateNatureModal from "../../components/UpdateNatureModal";
 import {
-  LeftOutlined,
+  LoadingOutlined,
   QuestionCircleOutlined,
-  RightOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import AdminSidebar from "../../components/AdminSidebar";
@@ -122,53 +114,6 @@ const NatureOfRequest = () => {
 
   const isLargeScreen = windowWidth >= 1024;
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const recordsPage = 10;
-
-  const lastIndex = currentPage * recordsPage;
-  const firstIndex = lastIndex - recordsPage;
-  const records = natureRequests.slice(firstIndex, lastIndex);
-
-  const npage = Math.ceil(natureRequests.length / recordsPage);
-
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const filteredRecords = records.filter((item) => {
-    const matchesSearchQuery =
-      item.id.toString().includes(searchQuery.toLowerCase()) ||
-      item.natureRequest.toLowerCase().includes(searchQuery.toLowerCase());
-
-    return matchesSearchQuery;
-  });
-
-  const [pageInput, setPageInput] = useState("");
-
-  const goToPage = () => {
-    const pageNumber = parseInt(pageInput);
-
-    if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= npage) {
-      setCurrentPage(pageNumber);
-      setPageInput(""); // Clear the input field after changing the page
-    } else {
-      // Handle invalid page number input, e.g., show an error message to the user
-      message.error("Invalid page number. Please enter a valid page number.");
-    }
-  };
-
-  const handlePageInputChange = (e) => {
-    setPageInput(e.target.value);
-  };
-
-  const handlePageInputBlur = () => {
-    goToPage(); // Trigger page change when the input field loses focus
-  };
-
-  const handlePageInputKeyPress = (e) => {
-    if (e.key === "Enter") {
-      goToPage(); // Trigger page change when the Enter key is pressed
-    }
-  };
-
   const [windowWidth1366, setWindowWidth1366] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -184,6 +129,94 @@ const NatureOfRequest = () => {
   }, []);
 
   const isScreenWidth1366 = windowWidth1366 === 1366;
+
+  const [searchText, setSearchText] = useState("");
+  const [pagination, setPagination] = useState({
+    position: ["bottomLeft"],
+    showQuickJumper: true,
+    current: 1,
+    pageSize: 10,
+    showLessItems: true,
+  });
+
+  const filteredNatures = natureRequests.filter((request) => {
+    const searchTextLower = searchText.toLowerCase();
+
+    const shouldIncludeRow = Object.values(request).some((value) => {
+      if (typeof value === "string") {
+        return value.toLowerCase().includes(searchTextLower);
+      } else if (typeof value === "number") {
+        return value.toString().toLowerCase().includes(searchTextLower);
+      } else if (value instanceof Date) {
+        // Handle Date objects
+        const formattedDate = value.toLocaleString();
+        return formattedDate.toLowerCase().includes(searchTextLower);
+      }
+      return false;
+    });
+
+    return shouldIncludeRow;
+  });
+
+  const handleSearchBar = (value) => {
+    setSearchText(value);
+    setPagination({ ...pagination, current: 1 }); // Reset to the first page when searching
+  };
+
+  const natureColumns = [
+    {
+      title: "#",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
+      title: "Nature of Requests",
+      dataIndex: "natureRequest",
+      key: "natureRequest",
+    },
+    {
+      title: "Action",
+      dataIndex: "x",
+      key: "x",
+      render: (index, record) => (
+        <div className="flex ">
+          <button
+            className={`text-white ${
+              isScreenWidth1366 ? "text-xs" : " text-base"
+            } font-medium bg-blue-600 py-2 px-4 rounded-lg`}
+            onClick={() => openUpdateNatureModal(record)}
+          >
+            Update
+          </button>
+          <Popconfirm
+            title="Confirmation"
+            description="Confirm deleting?. This action cannot be undone."
+            onConfirm={() => handleDeleteNature(record.id)}
+            okText="Yes"
+            cancelText="No"
+            placement="left"
+            icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+            okButtonProps={{
+              className: "border-2 border-gray-200 text-black",
+              size: "large",
+            }}
+            cancelButtonProps={{
+              className: "border-2 border-gray-200 text-black",
+              size: "large",
+            }}
+          >
+            <button
+              className={`ml-1 text-white bg-red-700 rounded-lg px-3 py-2 ${
+                isScreenWidth1366 ? "text-xs" : " text-lg"
+              } font-medium`}
+            >
+              <FontAwesomeIcon icon={faTrash} />
+            </button>
+          </Popconfirm>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <HelmetProvider>
@@ -245,128 +278,40 @@ const NatureOfRequest = () => {
             className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] h-auto lg:ml-auto lg:mx-4  mt-20 lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
             <div className="flex lg:flex-row text-center flex-col w-full lg:pl-4 items-center justify-center shadow-xl bg-white  text-white rounded-t-lg lg:gap-4 gap-2">
-              <h1 className="flex text-black items-center lg:text-2xl text-base font-semibold ">
-                Nature of Requests
-              </h1>
-              <div className="relative flex items-center lg:mr-auto lg:ml-4 ">
-                <FontAwesomeIcon
-                  icon={faSearch}
-                  className={`w-4 h-4 absolute ml-3 text-main`}
-                />
-                <input
-                  type="text"
-                  placeholder="Search"
-                  className={`border rounded-3xl bg-gray-100 text-black my-5 pl-12 pr-5 w-full focus:outline-none text-base h-10`}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+              <div className="flex lg:flex-col flex-row lg:gap-0 gap-2">
+                <h1 className="flex text-black items-center lg:text-3xl font-semibold ">
+                  Nature of Requests
+                </h1>
+                <span className="text-black mr-auto">
+                  Total NOR: {natureRequests.length}
+                </span>
+              </div>
+
+              <div className="relative flex items-center justify-center lg:mr-auto lg:ml-4 ">
+                <Input
+                  placeholder="Search..."
+                  prefix={<SearchOutlined />}
+                  value={searchText}
+                  onChange={(e) => handleSearchBar(e.target.value)}
+                  className="my-4 h-12"
                 />
               </div>
             </div>
             <div
               className={`overflow-auto h-auto shadow-xl  pb-5 rounded-lg w-full`}
             >
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b-2 border-gray-200">
-                  <tr className="bg-secondary text-white ">
-                    <th
-                      className={`w-64 pl-20  px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
-                    >
-                      #
-                    </th>
-                    <th
-                      className={`w-64 pl-20  px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
-                    >
-                      Nature of Request
-                    </th>
-                    <th
-                      className={`w-64 pl-20 px-3 py-5 large:py-6 text-sm large:text-base font-semibold tracking-wider text-left whitespace-nowrap`}
-                    >
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr className="">
-                      <td colSpan="8">
-                        <Skeleton active />
-                      </td>
-                    </tr>
-                  ) : natureRequests.length === 0 ? (
-                    <tr className="h-[50vh]">
-                      <td
-                        colSpan="8"
-                        className="p-3 text-lg text-gray-700 text-center"
-                      >
-                        No Records Yet.
-                      </td>
-                    </tr>
-                  ) : filteredRecords.length === 0 ? (
-                    <tr className="h-[50vh]">
-                      <td
-                        colSpan="8"
-                        className="p-3 text-lg text-gray-700 text-center"
-                      >
-                        No records found matching the selected filter.
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredRecords.map((item) => (
-                      <tr key={item.id}>
-                        <td
-                          className={`lg:pl-20 pl-4 border-b-2 px-3 py-2 large:py-3 large:text-lg text-sm border-gray-200 text-left`}
-                        >
-                          {item.id}
-                        </td>
-                        <td
-                          className={`lg:pl-20 pl-4 border-b-2 px-3 py-2 large:py-3 large:text-lg text-sm border-gray-200 text-left`}
-                        >
-                          {item.natureRequest}
-                        </td>
-                        <td
-                          className={`lg:pl-20 pl-4 border-b-2 px-3 py-2 large:py-3 large:text-lg text-sm border-gray-200 text-left`}
-                        >
-                          <div className="flex ">
-                            <button
-                              className="text-white text-base font-medium bg-blue-600 py-2 px-4 rounded-lg"
-                              onClick={() => openUpdateNatureModal(item)}
-                            >
-                              Update
-                            </button>
-                            <Popconfirm
-                              title="Confirmation"
-                              description="Confirm deleting?. This action cannot be undone."
-                              onConfirm={() => handleDeleteNature(item.id)}
-                              okText="Yes"
-                              cancelText="No"
-                              placement="left"
-                              icon={
-                                <QuestionCircleOutlined
-                                  style={{ color: "red" }}
-                                />
-                              }
-                              okButtonProps={{
-                                className:
-                                  "border-2 border-gray-200 text-black",
-                                size: "large",
-                              }}
-                              cancelButtonProps={{
-                                className:
-                                  "border-2 border-gray-200 text-black",
-                                size: "large",
-                              }}
-                            >
-                              <button className="ml-1 text-white bg-red-700 rounded-lg px-3 py-2 text-lg font-medium">
-                                <FontAwesomeIcon icon={faTrash} />
-                              </button>
-                            </Popconfirm>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
+              <Table
+                columns={natureColumns}
+                dataSource={filteredNatures}
+                loading={{
+                  indicator: <LoadingOutlined style={{ fontSize: 50 }} />,
+                  spinning: loading,
+                }}
+                pagination={pagination}
+                onChange={(newPagination) => setPagination(newPagination)}
+                rowClassName={"p-0"}
+                rowKey={(record) => record.id}
+              />
               <Modal
                 open={isModalVisible}
                 onClose={handleCancel}
@@ -449,71 +394,11 @@ const NatureOfRequest = () => {
                 />
               )}
             </div>
-            <nav className={`  mt-2 px-2 `}>
-              <ul className="flex gap-2 items-center">
-                <li className="flex-auto  mr-5 text-base font-bold">
-                  Page {currentPage} of {npage}
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    onClick={prePage}
-                    className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
-                  >
-                    <LeftOutlined
-                      style={{
-                        fontSize: isScreenWidth1366 ? ".8rem" : "",
-                      }}
-                    />
-                  </a>
-                </li>
-                <li className="flex items-center">
-                  <input
-                    type="number"
-                    placeholder="Page"
-                    className={`border rounded-lg bg-gray-100  px-4 text-black w-24  text-center outline-none ${
-                      isScreenWidth1366 ? "text-sm py-1" : "py-2"
-                    }`}
-                    value={pageInput}
-                    onChange={handlePageInputChange}
-                    onBlur={handlePageInputBlur} // Trigger page change when the input field loses focus
-                    onKeyPress={handlePageInputKeyPress} // Trigger page change when Enter key is pressed
-                  />
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    onClick={nextPage}
-                    className={`pagination-link bg-main flex items-center justify-center hover:bg-opacity-95 text-white font-bold py-3 px-4 rounded`}
-                  >
-                    <RightOutlined
-                      style={{
-                        fontSize: isScreenWidth1366 ? ".8rem" : "",
-                      }}
-                    />
-                  </a>
-                </li>
-              </ul>
-            </nav>
           </div>
         </div>
       </div>
     </HelmetProvider>
   );
-
-  function prePage() {
-    if (currentPage !== 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  }
-  //function changeCPage(id) {
-  //setCurrentPage(id);
-  //}
-  function nextPage() {
-    if (currentPage !== npage) {
-      setCurrentPage(currentPage + 1);
-    }
-  }
 };
 
 export default NatureOfRequest;

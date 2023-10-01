@@ -1,16 +1,6 @@
 import { useState, useEffect } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import {
-  Button,
-  Modal,
-  Form,
-  Input,
-  Row,
-  Col,
-  Select,
-  message,
-  Upload,
-} from "antd";
+import { Button, Modal, Form, Input, Row, Col, Select, message } from "antd";
 import axios from "axios";
 import UpdateContactNumModal from "../../components/UpdateContactNumModal";
 import { useAuth } from "../../AuthContext";
@@ -18,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPen } from "@fortawesome/free-solid-svg-icons";
 import Sidebar from "../../components/Sidebar";
 import DrawerComponent from "../../components/DrawerComponent";
-import { UploadOutlined } from "@ant-design/icons";
+import UpdateSignature from "../../components/UpdateSignature";
 
 const AdminAccount = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -31,7 +21,7 @@ const AdminAccount = () => {
   const [userNewContactNumber, setUserNewContactNumber] = useState("");
   const [userPasswordChecker, setUserPasswordChecker] = useState("");
   const { fullName } = useAuth();
-
+  const [userSignature, setUserSignature] = useState(null);
   const { Option } = Select;
   const [form] = Form.useForm();
 
@@ -60,7 +50,7 @@ const AdminAccount = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [userSignature]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -115,6 +105,11 @@ const AdminAccount = () => {
 
   const [modalMode, setModalMode] = useState("password");
   const [modalUpdateContact, setModalUpdateContact] = useState(false);
+  const [modalUpdateSignature, setModalUpdateSignature] = useState(false);
+
+  const handleModalUpdateSignature = () => {
+    setModalUpdateSignature(!modalUpdateSignature);
+  };
 
   const handleModalUpdateContact = () => {
     setModalUpdateContact(false);
@@ -198,36 +193,30 @@ const AdminAccount = () => {
     }
   };
 
-  const [fileList, setFileList] = useState([
-    {
-      uid: "-1",
-      name: "Diri_Ang_Existing_Signature.png",
-      status: "done",
-      url: "http://www.baidu.com/xxx.png",
-    },
-  ]);
+  useEffect(() => {
+    fetchSignature();
+  }, []);
 
-  const handleChange = (info) => {
-    let newFileList = [...info.fileList];
+  const fetchSignature = async () => {
+    try {
+      const response = await axios.get(
+        `http://127.0.0.1:8000/api/user-signature/`,
+        {
+          params: {
+            fullName: fullName,
+          },
+          responseType: "arraybuffer",
+        }
+      );
 
-    // 1. Limit the number of uploaded files
-    // Only to show two recent uploaded files, and old ones will be replaced by the new
-    newFileList = newFileList.slice(-1);
+      const blob = new Blob([response.data], { type: "image/png" });
+      const dataUrl = URL.createObjectURL(blob);
 
-    // 2. Read from response and show file link
-    newFileList = newFileList.map((file) => {
-      if (file.response) {
-        // Component will show file.url as link
-        file.url = file.response.url;
-      }
-      return file;
-    });
-    setFileList(newFileList);
-  };
-  const props = {
-    action: "https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188",
-    onChange: handleChange,
-    multiple: true,
+      console.log(response);
+      setUserSignature(dataUrl);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -393,7 +382,42 @@ const AdminAccount = () => {
                       readOnly
                     />
                   </div>
+                  <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
+                    <div className="flex">
+                      <label htmlFor="signature">Signature:</label>
+                      <a
+                        id="signatureUp"
+                        href=""
+                        className="ml-14 text-sm mt-1 font-sans font-medium text-red-600 hover:opacity-90"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setModalUpdateSignature(true);
+                          setModalMode("password");
+                        }}
+                      >
+                        *Update Signature
+                      </a>
+                      <UpdateSignature
+                        onOpen={modalUpdateSignature}
+                        onCancel={handleModalUpdateSignature}
+                        modalMode={modalMode}
+                        handlePasswordCheck={handlePasswordCheck}
+                        userPasswordChecker={userPasswordChecker}
+                        setUserPasswordChecker={setUserPasswordChecker}
+                        fullName={fullName}
+                        refreshSignature={fetchSignature}
+                      />
+                    </div>
+                    {userSignature && (
+                      <img
+                        src={userSignature}
+                        className="w-[40%] h-14"
+                        alt="User Signature"
+                      />
+                    )}
+                  </div>
                 </div>
+
                 <div className="flex pl-10 pr-16 py-6 items-center gap-x-4 text-black text-sm justify-end">
                   <p>Your data will be handled with care</p>
                   <button
@@ -412,6 +436,7 @@ const AdminAccount = () => {
               open={isModalVisible}
               onCancel={handleCancel}
               footer={null}
+              width={isLargeScreen ? "70%" : "90%"}
             >
               <Form
                 form={form}
@@ -612,21 +637,7 @@ const AdminAccount = () => {
                       />
                     </Form.Item>
                   </Col>
-                  <Col xs={24} lg={12}>
-                    <Form.Item
-                      label={
-                        <label className="block text-sm font-bold">
-                          Signature:
-                        </label>
-                      }
-                      name="signature"
-                      valuePropName="filelist"
-                    >
-                      <Upload {...props} fileList={fileList}>
-                        <Button icon={<UploadOutlined />}>Upload</Button>
-                      </Upload>
-                    </Form.Item>
-                  </Col>
+
                   <Col hidden>
                     <Form.Item name="userID">
                       <Input value={userID} />

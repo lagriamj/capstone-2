@@ -152,28 +152,6 @@ const Register = () => {
   const registerUser = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("governmentID", userGovernmentID);
-    formData.append("firstName", userFirstName);
-    formData.append("lastName", userLastName);
-    formData.append("office", selectedOffice);
-    formData.append("signatureImage", file);
-
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/user-signature/store",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-
     const userData = {
       userFirstName: userFirstName,
       userLastName: userLastName,
@@ -188,27 +166,50 @@ const Register = () => {
     setLoading(true);
 
     try {
-      await axios
-        .post("http://127.0.0.1:8000/api/register", userData)
-        .then((response) => {
-          if (response.status === 201) {
-            const registeredUser = response.data;
-            console.log(registeredUser);
-            setUser(registeredUser);
-            setUserId(registeredUser.userID);
-            navigate("/verify-otp", {
-              state: {
-                user: registeredUser,
-                contactNumber: registeredUser.userContactNumber,
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/register",
+        userData
+      );
+
+      if (response.status === 201) {
+        const registeredUser = response.data;
+        console.log(registeredUser);
+        setUser(registeredUser);
+        setUserId(registeredUser.userID);
+
+        const formData = new FormData();
+        formData.append("governmentID", userGovernmentID);
+        formData.append("firstName", userFirstName);
+        formData.append("lastName", userLastName);
+        formData.append("office", selectedOffice);
+        formData.append("signatureImage", file);
+
+        try {
+          const imageResponse = await axios.post(
+            "http://127.0.0.1:8000/api/user-signature/store",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
               },
-            });
-          } else if (response.status === 422) {
-            setErrorMessage("That government ID is not available");
-            setLoading(false);
-          }
-        });
+            }
+          );
+          console.log(imageResponse.data);
+          navigate("/verify-otp", {
+            state: {
+              user: registeredUser,
+              contactNumber: registeredUser.userContactNumber,
+            },
+          });
+        } catch (imageError) {
+          console.error("Error uploading image:", imageError);
+        }
+      } else if (response.status === 422) {
+        setErrorMessage("That government ID is not available");
+      }
     } catch (error) {
       setErrorMessage(error.response.data.message);
+    } finally {
       setLoading(false);
     }
   };

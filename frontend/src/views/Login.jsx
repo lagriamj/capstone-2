@@ -221,7 +221,6 @@ function Login() {
                   loading={loading}
                   className="w-full h-14 text-lg font-medium border-2 rounded-lg pl-2 bg-main text-white"
                   htmlType="submit"
-                  pre
                 >
                   {loading ? "Logging In" : "Log in"}
                 </Button>

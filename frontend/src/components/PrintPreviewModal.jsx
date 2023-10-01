@@ -18,9 +18,23 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
   useEffect(() => {
     // Make an HTTP GET request to fetch authorized persons and their images from your Laravel API.
     axios
-      .get("http://127.0.0.1:8000/api/authorized-signatures") // Replace with your API URL.
+      .get(`http://127.0.0.1:8000/api/all-signature/${fullName}`) // Replace with your API URL.
       .then((response) => {
         setAuthorizedSignatures(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+
+  const [authorApprovedSignatures, setAuthorApprovedSignatures] = useState([]);
+
+  useEffect(() => {
+    // Make an HTTP GET request to fetch authorized persons and their images from your Laravel API.
+    axios
+      .get(`http://127.0.0.1:8000/api/show-approved-request/${itemData.id}`) // Replace with your API URL.
+      .then((response) => {
+        setAuthorApprovedSignatures(response.data);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -32,6 +46,8 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
       printRef.current.handlePrint(); // Trigger the print action
     }
   };
+
+  console.log("--", itemData.id);
 
   const natureOfRerquest = itemData.natureOfRequest;
   console.log(natureOfRerquest);
@@ -407,15 +423,15 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                   </label>
                 </div>
                 <div className="w-[60%] flex flex-col border-2 border-black">
-                  <div className="text-center border-b-2  border-black text-black w-full">
+                  <div className="text-center border-b-2 border-black text-black w-full">
                     <label htmlFor="" className="w-full">
                       {authorizedSignatures.map((signature) => (
                         <li key={signature.id}>
                           <div className="relative">
                             <img
-                              src={`http://127.0.0.1:8000/api/images/${signature.file_path}`}
+                              src={`http://127.0.0.1:8000/api/user-signature/${signature.signatureImage}`}
                               alt={`${signature.authorized}'s Signature`}
-                              className=" absolute z-0 -top-11 left-1/2 transform -translate-x-1/2 mb-6"
+                              className="absolute z-0 -top-10 left-1/2 transform -translate-x-1/2 mb-6 w-25 h-20" // Adjust width and height here
                             />
                           </div>
                         </li>
@@ -423,6 +439,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                       <p className="relative z-10 mt-2">{fullName}</p>
                     </label>
                   </div>
+
                   <div className="text-center ">
                     <label htmlFor="" className="text-xs  border-black">
                       Office Representative
@@ -438,8 +455,21 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
                 </div>
                 <div className="w-[60%] flex flex-col border-2 border-black">
                   <div className="text-center border-b-2  border-black text-black w-full">
-                    <label htmlFor="" className=" w-full">
-                      {itemData.authorizedBy}
+                    <label htmlFor="" className="w-full">
+                      {authorApprovedSignatures.map((signature) => (
+                        <li key={signature.id}>
+                          <div className="relative">
+                            <img
+                              src={`http://127.0.0.1:8000/api/user-approved-signature/${signature.signatureImage}`}
+                              alt={`${signature.authorized}'s Signature`}
+                              className="absolute z-0 -top-10 left-1/2 transform -translate-x-1/2 mb-6 w-25 h-20" // Adjust width and height here
+                            />
+                          </div>
+                        </li>
+                      ))}
+                      <p className="relative z-10 mt-2">
+                        {itemData.authorizedBy}
+                      </p>
                     </label>
                   </div>
                   <div className="text-center ">

@@ -1,12 +1,24 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import HeadSidebar from "../../components/HeadSidebar";
 import { useEffect, useState } from "react";
-import { Input } from "antd";
+import { Input, Table, Button } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import HeadDrawer from "../../components/HeadDrawer";
+import { useAuth } from "../../AuthContext";
+import axios from "axios";
+import ViewToApproveModal from "../../components/ViewToApproveModal";
 
 const ApprovedList = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const { fullName } = useAuth();
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const handleViewClick = (record) => {
+    setSelectedRowData(record);
+    setIsModalVisible(true);
+  };
+
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -30,10 +42,113 @@ const ApprovedList = () => {
     showLessItems: true,
   });
 
+  {
+    /* const filteredRequests = data.filter((request) => {
+    const searchTextLower = searchText.toLowerCase();
+
+    const shouldIncludeRow = Object.values(request).some((value) => {
+      if (typeof value === "string") {
+        return value.toLowerCase().includes(searchTextLower);
+      } else if (typeof value === "number") {
+        return value.toString().toLowerCase().includes(searchTextLower);
+      } else if (value instanceof Date) {
+        // Handle Date objects
+        const formattedDate = value.toLocaleString();
+        return formattedDate.toLowerCase().includes(searchTextLower);
+      }
+      return false;
+    });
+
+    return shouldIncludeRow;
+  }); */
+  }
+
   const handleSearchBar = (value) => {
     setSearchText(value);
     setPagination({ ...pagination, current: 1 }); // Reset to the first page when searching
   };
+
+  const [data, setData] = useState([]); // State to hold the fetched data
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Make a GET request to fetch data from the API
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/pending-approved-signature/${fullName}`
+        );
+
+        // Set the fetched data to the 'data' state
+        setData(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const requestColumns = [
+    {
+      title: "#",
+      dataIndex: "#",
+      key: "#",
+      render: (text, record, index) => {
+        const currentPage = pagination.current || 1;
+        const calculatedIndex =
+          (currentPage - 1) * pagination.pageSize + index + 1;
+        return <span key={index}>{calculatedIndex}</span>;
+      },
+    },
+    {
+      title: "Request ID",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
+      title: "Requested By",
+      dataIndex: "fullName",
+      key: "fullName",
+    },
+    {
+      title: "Date Requested",
+      dataIndex: "dateRequested",
+      key: "dateRequested",
+      sorter: (a, b) => {
+        const dateA = new Date(a.dateRequested);
+        const dateB = new Date(b.dateRequested);
+        return dateA - dateB;
+      },
+    },
+    {
+      title: "Nature of Request",
+      dataIndex: "natureOfRequest",
+      key: "natureOfRequest",
+    },
+    {
+      title: "Mode",
+      dataIndex: "modeOfRequest",
+      key: "modeOfRequest",
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      key: "action",
+      render: (record) => (
+        <Button
+          onClick={() => handleViewClick(record)}
+          type="primary"
+          style={{
+            backgroundColor: "blue",
+            borderColor: "blue",
+            color: "white",
+          }}
+        >
+          View
+        </Button>
+      ),
+    },
+  ];
 
   return (
     <HelmetProvider>
@@ -65,6 +180,25 @@ const ApprovedList = () => {
                   className="my-4 h-12"
                 />
               </div>
+            </div>
+            <div
+              className={`overflow-auto h-auto shadow-xl  pb-5 rounded-lg w-full`}
+            >
+              <Table
+                columns={requestColumns}
+                dataSource={data.map((item, index) => ({
+                  ...item,
+                  key: index,
+                }))} // Add a "key" prop
+                pagination={pagination}
+                scroll={{ x: 1300 }}
+                onChange={(newPagination) => setPagination(newPagination)}
+              />
+              <ViewToApproveModal
+                isOpen={isModalVisible}
+                onClose={() => setIsModalVisible(false)}
+                data={selectedRowData}
+              />
             </div>
           </div>
         </div>

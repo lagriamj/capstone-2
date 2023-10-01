@@ -1,12 +1,17 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import HeadSidebar from "../../components/HeadSidebar";
 import { useEffect, useState } from "react";
-import { Input } from "antd";
+import { Input, Table, Button } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import HeadDrawer from "../../components/HeadDrawer";
+import { useAuth } from "../../AuthContext";
+import axios from "axios";
+import ViewToApproveModal from "../../components/ViewToApproveModal";
 
 const ApproveRequests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const { fullName } = useAuth();
+
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -21,6 +26,15 @@ const ApproveRequests = () => {
 
   const isLargeScreen = windowWidth >= 1024;
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleViewClick = (record) => {
+    setSelectedRowData(record);
+    setIsModalVisible(true);
+  };
+
   const [searchText, setSearchText] = useState("");
   const [pagination, setPagination] = useState({
     position: ["bottomLeft"],
@@ -30,10 +44,142 @@ const ApproveRequests = () => {
     showLessItems: true,
   });
 
+  {
+    /* const filteredRequests = data.filter((request) => {
+    const searchTextLower = searchText.toLowerCase();
+
+    const shouldIncludeRow = Object.values(request).some((value) => {
+      if (typeof value === "string") {
+        return value.toLowerCase().includes(searchTextLower);
+      } else if (typeof value === "number") {
+        return value.toString().toLowerCase().includes(searchTextLower);
+      } else if (value instanceof Date) {
+        // Handle Date objects
+        const formattedDate = value.toLocaleString();
+        return formattedDate.toLowerCase().includes(searchTextLower);
+      }
+      return false;
+    });
+
+    return shouldIncludeRow;
+  }); */
+  }
+
   const handleSearchBar = (value) => {
     setSearchText(value);
-    setPagination({ ...pagination, current: 1 }); // Reset to the first page when searching
+    setPagination({ ...pagination, current: 1 });
   };
+
+  const [data, setData] = useState([]);
+
+  const handleApprove = async (requestId) => {
+    setIsLoading(true);
+    try {
+      await axios.put(`http://127.0.0.1:8000/api/approve-request/${requestId}`);
+      const updatedResponse = await axios.get(
+        `http://127.0.0.1:8000/api/pending-signature/${fullName}`
+      );
+      setData(updatedResponse.data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error approving request:", error);
+      setIsLoading(false);
+    }
+  };
+
+  const requestColumns = [
+    {
+      title: "#",
+      dataIndex: "#",
+      key: "id",
+      render: (text, record, index) => {
+        const currentPage = pagination.current || 1;
+        const calculatedIndex =
+          (currentPage - 1) * pagination.pageSize + index + 1;
+        return <span>{calculatedIndex}</span>;
+      },
+    },
+
+    {
+      title: "Request ID",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
+      title: "Requested By",
+      dataIndex: "fullName",
+      key: "fullName",
+    },
+    {
+      title: "Date Requested",
+      dataIndex: "dateRequested",
+      key: "dateRequested",
+      sorter: (a, b) => {
+        const dateA = new Date(a.dateRequested);
+        const dateB = new Date(b.dateRequested);
+        return dateA - dateB;
+      },
+    },
+    {
+      title: "Nature of Request",
+      dataIndex: "natureOfRequest",
+      key: "natureOfRequest",
+    },
+    {
+      title: "Mode",
+      dataIndex: "modeOfRequest",
+      key: "modeOfRequest",
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      key: "x",
+      render: (record) => (
+        <>
+          <Button
+            onClick={() => handleViewClick(record)}
+            type="primary"
+            style={{
+              backgroundColor: "blue",
+              borderColor: "blue",
+              color: "white",
+            }}
+          >
+            View
+          </Button>
+          <Button
+            type="primary"
+            loading={isLoading}
+            style={{
+              backgroundColor: "red",
+              borderColor: "red",
+              color: "white",
+            }}
+            onClick={() => handleApprove(record.id)}
+          >
+            {isLoading ? "Approving" : "Approve"}
+          </Button>
+        </>
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/pending-signature/${fullName}`
+        );
+        setData(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  console.log(selectedRowData);
 
   return (
     <HelmetProvider>
@@ -65,6 +211,25 @@ const ApproveRequests = () => {
                   className="my-4 h-12"
                 />
               </div>
+            </div>
+            <div
+              className={`overflow-auto h-auto shadow-xl  pb-5 rounded-lg w-full`}
+            >
+              <Table
+                columns={requestColumns}
+                dataSource={data.map((item, index) => ({
+                  ...item,
+                  key: index,
+                }))} // Add a "key" prop
+                pagination={pagination}
+                scroll={{ x: 1300 }}
+                onChange={(newPagination) => setPagination(newPagination)}
+              />
+              <ViewToApproveModal
+                isOpen={isModalVisible}
+                onClose={() => setIsModalVisible(false)}
+                data={selectedRowData}
+              />
             </div>
           </div>
         </div>
