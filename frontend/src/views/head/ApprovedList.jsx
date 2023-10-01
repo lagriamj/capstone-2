@@ -42,27 +42,6 @@ const ApprovedList = () => {
     showLessItems: true,
   });
 
-  {
-    /* const filteredRequests = data.filter((request) => {
-    const searchTextLower = searchText.toLowerCase();
-
-    const shouldIncludeRow = Object.values(request).some((value) => {
-      if (typeof value === "string") {
-        return value.toLowerCase().includes(searchTextLower);
-      } else if (typeof value === "number") {
-        return value.toString().toLowerCase().includes(searchTextLower);
-      } else if (value instanceof Date) {
-        // Handle Date objects
-        const formattedDate = value.toLocaleString();
-        return formattedDate.toLowerCase().includes(searchTextLower);
-      }
-      return false;
-    });
-
-    return shouldIncludeRow;
-  }); */
-  }
-
   const handleSearchBar = (value) => {
     setSearchText(value);
     setPagination({ ...pagination, current: 1 }); // Reset to the first page when searching
@@ -87,6 +66,25 @@ const ApprovedList = () => {
 
     fetchData();
   }, []);
+
+  const filteredRequests = data.filter((request) => {
+    const searchTextLower = searchText.toLowerCase();
+
+    const shouldIncludeRow = Object.values(request).some((value) => {
+      if (typeof value === "string") {
+        return value.toLowerCase().includes(searchTextLower);
+      } else if (typeof value === "number") {
+        return value.toString().toLowerCase().includes(searchTextLower);
+      } else if (value instanceof Date) {
+        // Handle Date objects
+        const formattedDate = value.toLocaleString();
+        return formattedDate.toLowerCase().includes(searchTextLower);
+      }
+      return false;
+    });
+
+    return shouldIncludeRow;
+  });
 
   const requestColumns = [
     {
@@ -186,13 +184,11 @@ const ApprovedList = () => {
             >
               <Table
                 columns={requestColumns}
-                dataSource={data.map((item, index) => ({
-                  ...item,
-                  key: index,
-                }))} // Add a "key" prop
+                dataSource={filteredRequests}
                 pagination={pagination}
                 scroll={{ x: 1300 }}
                 onChange={(newPagination) => setPagination(newPagination)}
+                rowKey={(record) => record.id}
               />
               <ViewToApproveModal
                 isOpen={isModalVisible}
