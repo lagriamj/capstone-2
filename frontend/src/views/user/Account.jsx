@@ -10,7 +10,7 @@ import Sidebar from "../../components/Sidebar";
 import DrawerComponent from "../../components/DrawerComponent";
 import UpdateSignature from "../../components/UpdateSignature";
 
-const AdminAccount = () => {
+const Account = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const isLargeScreen = windowWidth >= 1024;
   const [currentPassword, setCurrentPassword] = useState("");
@@ -126,20 +126,23 @@ const AdminAccount = () => {
           userID: userID,
         }
       );
-
+      setCurrentPassword("");
       if (response.status === 200) {
         // Password is correct, update the UI mode
         setModalMode("contactNumber");
-        setCurrentPassword("");
+        setUserPasswordChecker("");
         setIsSavingChange(false);
       } else {
         // Handle incorrect password
         setIsSavingChange(false);
         message.error("Password is incorrect");
+        setUserPasswordChecker("");
       }
     } catch (error) {
       // Handle API request error
       setIsSavingChange(false);
+      setCurrentPassword("");
+      setUserPasswordChecker("");
       message.error("Password is incorrect");
     }
   };
@@ -661,4 +664,4 @@ const AdminAccount = () => {
   );
 };
 
-export default AdminAccount;
+export default Account;

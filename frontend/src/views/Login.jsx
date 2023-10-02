@@ -29,6 +29,8 @@ function Login() {
         navigate("/dashboard");
       } else if (userRole === "user") {
         navigate("/request");
+      } else if (userRole === "head") {
+        navigate("/head/request");
       }
     }
   }, [isAuthenticated, userRole, navigate]);

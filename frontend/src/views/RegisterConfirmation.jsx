@@ -90,10 +90,14 @@ const RegisterConfirmation = () => {
   useEffect(() => {
     // If the user is already authenticated, redirect them to the appropriate page
     if (isAuthenticated) {
-      if (userRole === "admin") {
-        navigate("/dashboard");
-      } else if (userRole === "user") {
-        navigate("/request");
+      if (isAuthenticated) {
+        if (userRole === "admin") {
+          navigate("/dashboard");
+        } else if (userRole === "user") {
+          navigate("/request");
+        } else if (userRole === "head") {
+          navigate("/head/request");
+        }
       }
     }
   }, [isAuthenticated, userRole, navigate]);

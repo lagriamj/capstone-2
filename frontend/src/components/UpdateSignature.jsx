@@ -51,6 +51,7 @@ const UpdateSignature = ({
       refreshSignature();
       onCancel();
       setIsSavingChanges(false);
+      setUserPasswordChecker("");
     } catch (error) {
       message.error("Errror");
       console.log(error);

@@ -1,5 +1,3 @@
-import Sidebar from "../../components/Sidebar";
-import DrawerComponent from "../../components/DrawerComponent";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
@@ -12,8 +10,10 @@ import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
 import { useAuth } from "../../AuthContext";
 import ViewCancel from "../../components/ViewCancel";
 import DoneRateModal from "../../components/DoneRateModal";
+import HeadSidebar from "../../components/HeadSidebar";
+import HeadDrawer from "../../components/HeadDrawer";
 
-const Transactions = () => {
+const HeadTransactions = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [data, setData] = useState([]);
   const { userRole } = useAuth();
@@ -363,7 +363,7 @@ const Transactions = () => {
       <div
         className={`className="flex flex-grow flex-col gotoLarge:px-6 large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
       >
-        {isLargeScreen ? <Sidebar /> : <DrawerComponent />}
+        {isLargeScreen ? <HeadSidebar /> : <HeadDrawer />}
         <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">
           <div
             className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] h-auto lg:ml-auto lg:mx-4 mt-20 lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
@@ -468,4 +468,4 @@ const Transactions = () => {
   );
 };
 
-export default Transactions;
+export default HeadTransactions;

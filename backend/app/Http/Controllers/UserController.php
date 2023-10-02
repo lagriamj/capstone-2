@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserSignature;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Twilio\Rest\Client;
@@ -281,11 +282,6 @@ class UserController extends Controller
             'updated_at'
         ])->get();;
 
-
-
-
-
-
         return response()->json(['result' => $users], 200);
     }
 
@@ -311,6 +307,18 @@ class UserController extends Controller
             // Optionally, update the user's password if a new password is provided
             if ($request->filled('userPassword')) {
                 $user->update(['userPassword' => Hash::make($request->input('userPassword'))]);
+            }
+
+            $userSignature = UserSignature::where('governmentID', $user->userGovernmentID)->first();
+
+            if ($userSignature) {
+                $userSignature->update([
+                    'governmentID' => $request->input('userGovernmentID'),
+                    'firstName' => $request->input('userFirstName'),
+                    'lastName' => $request->input('userLastName'),
+                    'office' => $request->input('office'),
+                    'role' => $request->input('role'),
+                ]);
             }
 
             return response()->json(['message' => 'User data updated successfully'], 201);

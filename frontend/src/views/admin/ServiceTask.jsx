@@ -10,7 +10,6 @@ import ToRateModal from "../../components/ToRateModal";
 import ReceiveServiceModal from "../../components/ReceiveServiceModal";
 import ReasonModal from "../../components/ReasonModal";
 import ViewCancel from "../../components/ViewCancel";
-//import ClosedModal from "../../components/ClosedModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Input, Table, Tag, message } from "antd";
@@ -433,7 +432,7 @@ const ServiceTask = () => {
           >
             <div className="flex lg:flex-row text-center flex-col w-full lg:pl-4 items-center justify-center shadow-xl bg-white  text-white rounded-t-lg lg:gap-4 gap-2">
               <div className="flex lg:flex-col flex-row lg:gap-0 gap-2">
-                <h1 className="flex text-black items-center lg:text-3xl font-semibold ">
+                <h1 className="flex text-black items-center lg:text-2xl font-semibold ">
                   Reqeuests List
                 </h1>
                 <span className="text-black mr-auto">

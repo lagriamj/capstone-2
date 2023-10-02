@@ -28,6 +28,9 @@ import ApproveRequests from "./views/head/ApproveRequests";
 import ApprovedList from "./views/head/ApprovedList";
 import HeadAccount from "./views/head/HeadAccount";
 import AuditLog from "./views/admin/AuditLog";
+import HeadCurrentRequests from "./views/head/HeadCurrentRequests";
+import HeadTransactions from "./views/head/HeadTransactions";
+import HeadRequests from "./views/head/HeadRequests";
 
 function App() {
   function ProtectedRoute({ element, requiredRole }) {
@@ -49,7 +52,7 @@ function App() {
       } else if (userRole === "user") {
         return <Navigate to="/request" />;
       } else if (userRole === "head") {
-        return <Navigate to="/approve-requests" />;
+        return <Navigate to="/head/request" />;
       }
     }
 
@@ -129,6 +132,33 @@ function App() {
                 element={
                   <ProtectedRoute
                     element={<HeadAccount />}
+                    requiredRole={"head"}
+                  />
+                }
+              />
+              <Route
+                path="/head/current-requests"
+                element={
+                  <ProtectedRoute
+                    element={<HeadCurrentRequests />}
+                    requiredRole={"head"}
+                  />
+                }
+              />
+              <Route
+                path="/head/transactions"
+                element={
+                  <ProtectedRoute
+                    element={<HeadTransactions />}
+                    requiredRole={"head"}
+                  />
+                }
+              />
+              <Route
+                path="/head/request"
+                element={
+                  <ProtectedRoute
+                    element={<HeadRequests />}
                     requiredRole={"head"}
                   />
                 }

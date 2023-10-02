@@ -1,6 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUser,
+  faRightFromBracket,
+  faCodePullRequest,
+  faList,
+  faClipboard,
+} from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../AuthContext";
 import RuleIcon from "@mui/icons-material/Rule";
 import ArchiveIcon from "@mui/icons-material/Archive";
@@ -102,6 +108,36 @@ const HeadSidebar = () => {
       <hr className="mx-7 mb-8" />
       <ul className="flex flex-col justify-center items-start gap-2 px-5 lg:ml-4 mediumLg:ml-0">
         <li
+          className={`flex gap-3 w-full items-center py-3 px-2 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
+            activeTab === "request" ? "bg-white text-main font-semibold" : ""
+          }`}
+          onClick={() => handleItemClick("request")}
+        >
+          <FontAwesomeIcon
+            icon={faCodePullRequest}
+            style={{
+              fontSize: isScreenWidth1366 ? "1rem" : "",
+            }}
+          />
+          <Link to={"/head/request"}>Request Services</Link>
+        </li>
+        <li
+          className={`flex gap-3 w-full items-center py-3 px-2 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
+            activeTab === "current-requests"
+              ? "bg-white text-main font-semibold"
+              : ""
+          }`}
+          onClick={() => handleItemClick("current-requests")}
+        >
+          <FontAwesomeIcon
+            icon={faList}
+            style={{
+              fontSize: isScreenWidth1366 ? "1rem" : "",
+            }}
+          />
+          <Link to={"/head/current-requests"}>Current Requests</Link>
+        </li>
+        <li
           className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "approve-requests"
               ? "bg-white text-main font-semibold"
@@ -128,6 +164,22 @@ const HeadSidebar = () => {
             }}
           ></ArchiveIcon>
           <Link to={"/approved-list"}>Approved List</Link>
+        </li>
+        <li
+          className={`flex gap-3 w-full items-center py-3 px-2 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
+            activeTab === "transactions"
+              ? "bg-white text-main font-semibold"
+              : ""
+          }`}
+          onClick={() => handleItemClick("transactions")}
+        >
+          <FontAwesomeIcon
+            icon={faClipboard}
+            style={{
+              fontSize: isScreenWidth1366 ? "1rem" : "",
+            }}
+          />
+          <Link to={"/head/transactions"}>Service Transactions</Link>
         </li>
       </ul>
 

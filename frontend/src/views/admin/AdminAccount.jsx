@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import AdminSidebar from "../../components/AdminSidebar";
-import AdminDrawer from "../../components/AdminDrawer";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Button, Modal, Form, Input, Row, Col, Select, message } from "antd";
 import axios from "axios";
@@ -9,6 +7,8 @@ import { useAuth } from "../../AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPen } from "@fortawesome/free-solid-svg-icons";
 import UpdateSignature from "../../components/UpdateSignature";
+import AdminSidebar from "../../components/AdminSidebar";
+import AdminDrawer from "../../components/AdminDrawer";
 
 const AdminAccount = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -126,20 +126,23 @@ const AdminAccount = () => {
           userID: userID,
         }
       );
-
+      setCurrentPassword("");
       if (response.status === 200) {
         // Password is correct, update the UI mode
         setModalMode("contactNumber");
-        setCurrentPassword("");
+        setUserPasswordChecker("");
         setIsSavingChange(false);
       } else {
         // Handle incorrect password
         setIsSavingChange(false);
         message.error("Password is incorrect");
+        setUserPasswordChecker("");
       }
     } catch (error) {
       // Handle API request error
       setIsSavingChange(false);
+      setCurrentPassword("");
+      setUserPasswordChecker("");
       message.error("Password is incorrect");
     }
   };
@@ -200,7 +203,7 @@ const AdminAccount = () => {
   const fetchSignature = async () => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/user-signature/`,
+        `http://127.0.0.1:8000/api/user-signatureInAccount/`,
         {
           params: {
             fullName: fullName,
@@ -225,12 +228,12 @@ const AdminAccount = () => {
         <title>Account</title>
       </Helmet>
       <div
-        className={`className="flex flex-grow flex-col gotoLarge:px-6 large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
+        className={`className="flex  flex-col gotoLarge:px-6 large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
       >
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
-        <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">
+        <div className="flex flex-col items-center justify-center flex-grow  lg:pb-10 bg-white gap-2 w-full">
           <div
-            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh]  h-auto lg:ml-auto lg:mx-4 mt-20 lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
+            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%]  large:h-[90vh]  h-auto lg:ml-auto lg:mx-4 mt-20 lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
             <h1 className="  lg:text-2xl mediumLg:text-4xl large:text-5xl text-3xl flex mr-auto  mt-10 mb-6 font-medium ">
               Account
@@ -243,7 +246,7 @@ const AdminAccount = () => {
               Please make sure these details are up to date as they&apos;ll be
               used for your requests and communication with the admins
             </p>
-            <div className="w-full h-auto  flex flex-col mt-5 rounded-md shadow-xl b text-white">
+            <div className="w-full h-auto   flex flex-col mt-5 rounded-md shadow-lg  text-white">
               <div className="bg-[#334D66] rounded-t-md h-[15vh] flex ">
                 <div className="h-[15vh] lg:w-[10%] w-[30%] flex large:px-10 items-start large:pt-10 lg:pt-4 pt-6 justify-center ">
                   <FontAwesomeIcon
@@ -417,6 +420,7 @@ const AdminAccount = () => {
                     )}
                   </div>
                 </div>
+
                 <div className="flex pl-10 pr-16 py-6 items-center gap-x-4 text-black text-sm justify-end">
                   <p>Your data will be handled with care</p>
                   <button
@@ -636,6 +640,7 @@ const AdminAccount = () => {
                       />
                     </Form.Item>
                   </Col>
+
                   <Col hidden>
                     <Form.Item name="userID">
                       <Input value={userID} />
