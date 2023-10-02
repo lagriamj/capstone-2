@@ -28,14 +28,14 @@ const UpdateEmailPage = () => {
         }
       }
     }
+
+    if (!location.state || (!location.state.user && !location.state.userID)) {
+      navigate("/login"); // Redirect to login if not coming from login, register, or update-phone page
+    }
   }, [isAuthenticated, userRole, navigate]);
 
   if (isAuthenticated) {
     return null; // or return a loading message, or redirect immediately
-  }
-
-  if (!location.state || (!location.state.user && !location.state.userID)) {
-    navigate("/login"); // Redirect to login if not coming from login, register, or update-phone page
   }
 
   if (!location.state || (!location.state.user && !location.state.userID)) {

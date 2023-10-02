@@ -4,12 +4,14 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { Button, Modal, Form, Input, Row, Col } from "antd";
 import { message } from "antd";
+import { useAuth } from "../AuthContext";
 
-const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
+const ReleasedModal = ({ isOpen, onClose, data, refreshData }) => {
   if (!isOpen) return null;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { TextArea } = Input;
   const [form] = Form.useForm();
+  const { fullName } = useAuth();
 
   const daytime = new Date().toLocaleString(undefined);
   console.log("request_id", data.request_id);
@@ -25,7 +27,7 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/torate-request/${data.request_id}`,
+        `http://127.0.0.1:8000/api/torate-request/${data.request_id}/${fullName}`,
         values
       );
 
@@ -377,9 +379,9 @@ const ServiceReleaseModal = ({ isOpen, onClose, data, refreshData }) => {
   );
 };
 
-export default ServiceReleaseModal;
+export default ReleasedModal;
 
-ServiceReleaseModal.propTypes = {
+ReleasedModal.propTypes = {
   isOpen: PropTypes.bool.isRequired, // Ensure that 'visible' is a required boolean prop
   onClose: PropTypes.func.isRequired, // Ensure that 'onClose' is a required function prop
   data: PropTypes.object, // Ensure that 'itemData' is a required object prop

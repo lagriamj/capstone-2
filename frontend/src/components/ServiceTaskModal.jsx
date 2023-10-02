@@ -4,6 +4,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { Button, Modal, Form, Input, Row, Col, Select } from "antd";
 import { message } from "antd";
+import { useAuth } from "../AuthContext";
 
 const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
   if (!isOpen) return null;
@@ -12,6 +13,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
   const { TextArea } = Input;
   const [serviceByValue, setServiceByValue] = useState(data.assignedTo);
   console.log(serviceByValue);
+  const { fullName } = useAuth();
 
   const handleChangeServiceBy = (value) => {
     setServiceByValue(value);
@@ -48,7 +50,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
     setServiceByValue(values.serviceBy);
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/onprogress-request/${data.request_id}`,
+        `http://127.0.0.1:8000/api/onprogress-request/${data.request_id}/${fullName}`,
         modifiedValues
       );
 

@@ -145,3 +145,6 @@ Route::get('/user-approved-signature/{filename}', [UserSignatureController::clas
 Route::get('/pending-signature/{fullName}', [HeadApprovedController::class, 'allpendingNotApproved']);
 Route::get('/pending-approved-signature/{fullName}', [HeadApprovedController::class, 'allpendingApproved']);
 Route::put('/approve-request/{requestId}', [HeadApprovedController::class, 'approveRequest']);
+
+
+Route::get('/audit-logs', [AuditLogController::class, 'showAuditLog']);

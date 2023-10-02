@@ -22,6 +22,7 @@ const AuditLog = () => {
   const isLargeScreen = windowWidth >= 1024;
 
   const [searchText, setSearchText] = useState("");
+  const [auditLogs, setAuditLogs] = useState([]); // State variable for audit log data
   const [pagination, setPagination] = useState({
     position: ["bottomLeft"],
     showQuickJumper: true,
@@ -37,26 +38,39 @@ const AuditLog = () => {
 
   const auditColumns = [
     {
-      title: "Requested By",
-      dataIndex: "requested_by",
-      key: "requested_by",
+      title: "Reference",
+      dataIndex: "reference",
+      key: "reference",
     },
     {
-      title: "Office",
-      dataIndex: "office",
-      key: "office",
+      title: "Updated By",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Action Taken",
+      dataIndex: "action",
+      key: "action",
     },
     {
       title: "Date",
       dataIndex: "date",
       key: "date",
     },
-    {
-      title: "Action",
-      dataIndex: "action",
-      key: "action",
-    },
   ];
+
+  useEffect(() => {
+    // Fetch audit log data from your Laravel API
+    fetch("http://127.0.0.1:8000/api/audit-logs")
+      .then((response) => response.json())
+      .then((data) => {
+        // Set the fetched data to the auditLogs state variable
+        setAuditLogs(data.auditLogs);
+      })
+      .catch((error) => {
+        console.error("Error fetching audit logs: ", error);
+      });
+  }, []);
 
   return (
     <HelmetProvider>
@@ -112,8 +126,10 @@ const AuditLog = () => {
             >
               <Table
                 columns={auditColumns}
+                dataSource={auditLogs}
                 pagination={pagination}
                 onChange={(newPagination) => setPagination(newPagination)}
+                rowKey={(record) => record.id} // Set the key prop to a unique identifier (e.g., 'id')
               />
             </div>
           </div>

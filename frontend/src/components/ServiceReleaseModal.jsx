@@ -4,6 +4,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { Button, Modal, Form, Input, Row, Col, Select } from "antd";
 import { message } from "antd";
+import { useAuth } from "../AuthContext";
 
 const ServiceReleaseModal = ({
   isOpen,
@@ -17,6 +18,7 @@ const ServiceReleaseModal = ({
   const { TextArea } = Input;
   const [form] = Form.useForm();
   const { Option } = Select;
+  const { fullName } = useAuth();
 
   const [findingsValue, setFindingsValue] = useState("");
   console.log(findingsValue);
@@ -80,7 +82,7 @@ const ServiceReleaseModal = ({
 
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/torelease-request/${data.request_id}`,
+        `http://127.0.0.1:8000/api/torelease-request/${data.request_id}/${fullName}`,
         modifiedValues
       );
 

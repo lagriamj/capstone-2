@@ -30,6 +30,7 @@ const CurrentRequests = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
+  const { fullName } = useAuth();
 
   const [selectedID, setSelectedID] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
@@ -129,6 +130,7 @@ const CurrentRequests = () => {
         Received: 0,
         "On Progress": 0,
         "To Release": 0,
+        "To Rate": 0,
       };
 
       result.data.results.forEach((item) => {
@@ -611,6 +613,7 @@ const CurrentRequests = () => {
                   onClose={handleCloseReasonModalClick} // Pass the callback here
                   isLargeScreen={isLargeScreen}
                   role={userRole}
+                  name={fullName}
                   onSubmit={handleReasonModalSubmit}
                 />
               )}

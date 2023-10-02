@@ -449,6 +449,17 @@ const ServiceTask = () => {
                   className="my-4 h-12"
                 />
               </div>
+              <div className="flex lg:flex-row flex-col items-center text-black gap-2">
+                <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">
+                  <input
+                    type="datetime-local" // Use datetime-local input for date and time selection
+                    className="p-2 w-39 outline-none border-none bg-transparent"
+                  />
+                </div>
+                <button className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg">
+                  Set
+                </button>
+              </div>
               <div className="flex items-center justify-center gap-4 mr-4 mb-4 lg:mb-0">
                 <div className="flex lg:flex-row flex-col items-center text-black gap-2">
                   <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">
@@ -497,6 +508,7 @@ const ServiceTask = () => {
                   isLargeScreen={isLargeScreen}
                   refreshData={fetchData}
                   role={userRole}
+                  name={fullName}
                   onSubmit={handleReasonModalSubmit}
                 />
               )}
@@ -567,5 +579,4 @@ const ServiceTask = () => {
     </HelmetProvider>
   );
 };
-
 export default ServiceTask;

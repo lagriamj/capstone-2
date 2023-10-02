@@ -7,6 +7,8 @@ use App\Models\ReceiveService;
 use App\Models\Requests;
 use App\Models\CancelReason;
 use App\Models\ReleaseRequests;
+use App\Models\AuditLog;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
 
@@ -48,26 +50,48 @@ class ReceiveServiceController extends Controller
     }
 
 
-    public function receivedRequest(Request $request, $id)
+    public function receivedRequest(Request $request, $id, $fullName)
     {
-        DB::table('receive_service')
-            ->where('request_id', $id)
-            ->update([
-                'receivedBy' => $request->input('receivedBy'),
-                'assignedTo' => $request->input('assignedTo'),
-                'dateReceived' => now(),
-            ]);
+        try {
+            DB::table('receive_service')
+                ->where('request_id', $id)
+                ->update([
+                    'receivedBy' => $request->input('receivedBy'),
+                    'assignedTo' => $request->input('assignedTo'),
+                    'dateReceived' => now(),
+                ]);
 
-        DB::table('user_requests')
-            ->where('id', $request->input('request_id'))
-            ->update([
-                'assignedTo' => $request->input('assignedTo'),
-                'dateUpdated' => now(),
-                'status' => 'Received',
-            ]);
+            DB::table('user_requests')
+                ->where('id', $request->input('request_id'))
+                ->update([
+                    'assignedTo' => $request->input('assignedTo'),
+                    'dateUpdated' => now(),
+                    'status' => 'Received',
+                ]);
 
-        // Return a JSON response with a 201 status code indicating success
-        return response()->json(['message' => 'Request updated successfully'], 201);
+            // Retrieve the 'office' based on the provided $fullName from the User table
+            $adminOffice = User::whereRaw("CONCAT(userFirstname, ' ', userLastName) = ?", [$fullName])
+                ->select('office')
+                ->first();
+
+            if ($adminOffice) {
+                // Create an audit log entry for the "Received" action
+                $auditLogData = [
+                    'name' => $fullName, // Use the provided fullName
+                    'office' => $adminOffice->office, // Use the retrieved office
+                    'action' => 'Received',
+                    'reference' => $id, // Use $id as reference
+                    'date' => now(),
+                ];
+
+                AuditLog::create($auditLogData);
+            }
+
+            // Return a JSON response with a 201 status code indicating success
+            return response()->json(['message' => 'Request updated successfully'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to update request'], 500);
+        }
     }
 
 
@@ -128,82 +152,141 @@ class ReceiveServiceController extends Controller
     }
 
 
-    public function onprogressRequest(Request $request, $id)
+    public function onprogressRequest(Request $request, $id, $fullName)
     {
+        try {
+            DB::table('receive_service')
+                ->where('request_id', $id)
+                ->update([
+                    'serviceBy' => $request->input('serviceBy'),
+                    'dateServiced' => now(),
+                ]);
 
+            DB::table('user_requests')
+                ->where('id', $request->input('request_id'))
+                ->update([
+                    'assignedTo' => $request->input('assignedTo'),
+                    'dateUpdated' => now(),
+                    'status' => 'On Progress',
+                ]);
 
-        DB::table('receive_service')
-            ->where('request_id', $id)
-            ->update([
-                'serviceBy' => $request->input('serviceBy'),
-                'dateServiced' => now(),
-            ]);
+            // Retrieve the 'office' based on the provided $fullName from the User table
+            $adminOffice = User::whereRaw("CONCAT(userFirstname, ' ', userLastName) = ?", [$fullName])
+                ->select('office')
+                ->first();
 
-        DB::table('user_requests')
-            ->where('id', $request->input('request_id'))
-            ->update([
-                'assignedTo' => $request->input('assignedTo'),
-                'dateUpdated' => now(),
-                'status' => 'On Progress',
-            ]);
+            if ($adminOffice) {
+                // Create an audit log entry for the "On Progress" action
+                $auditLogData = [
+                    'name' => $fullName, // Use the provided fullName
+                    'office' => $adminOffice->office, // Use the retrieved office
+                    'action' => 'On Progress',
+                    'reference' => $id, // Use $id as reference
+                    'date' => now(),
+                ];
 
-        return response()->json(['message' => 'ReceiveService updated successfully']);
+                AuditLog::create($auditLogData);
+            }
+
+            return response()->json(['message' => 'ReceiveService updated successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to update ReceiveService'], 500);
+        }
     }
 
-    public function toreleaseRequest(Request $request, $id)
+    public function toreleaseRequest(Request $request, $id, $fullName)
     {
+        try {
+            DB::table('receive_service')
+                ->where('request_id', $id)
+                ->update([
+                    'toRecommend' => $request->input('toRecommend'),
+                    'findings' => $request->input('findings'),
+                    'rootCause' => $request->input('rootCause'),
+                    'actionTaken' => $request->input('actionTaken'),
+                    'remarks' => $request->input('remarks'),
+                ]);
 
-        DB::table('receive_service')
-            ->where('request_id', $id)
-            ->update([
-                'toRecommend' => $request->input('toRecommend'),
-                'findings' => $request->input('findings'),
-                'rootCause' => $request->input('rootCause'),
-                'actionTaken' => $request->input('actionTaken'),
-                'remarks' => $request->input('remarks'),
-            ]);
+            DB::table('user_requests')
+                ->where('id', $request->input('request_id'))
+                ->update([
+                    'assignedTo' => $request->input('assignedTo'),
+                    'dateUpdated' => now(),
+                    'status' => 'To Release',
+                ]);
 
-        DB::table('user_requests')
-            ->where('id', $request->input('request_id'))
-            ->update([
-                'assignedTo' => $request->input('assignedTo'),
-                'dateUpdated' => now(),
-                'status' => 'To Release',
-            ]);
+            // Retrieve the 'office' based on the provided $fullName from the User table
+            $adminOffice = User::whereRaw("CONCAT(userFirstname, ' ', userLastName) = ?", [$fullName])
+                ->select('office')
+                ->first();
 
-        return response()->json(['message' => 'ReceiveService updated successfully']);
+            if ($adminOffice) {
+                // Create an audit log entry for the "To Release" action
+                $auditLogData = [
+                    'name' => $fullName, // Use the provided fullName
+                    'office' => $adminOffice->office, // Use the retrieved office
+                    'action' => 'To Release',
+                    'reference' => $id, // Use $id as reference
+                    'date' => now(),
+                ];
+
+                AuditLog::create($auditLogData);
+            }
+
+            return response()->json(['message' => 'ReceiveService updated successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to update ReceiveService'], 500);
+        }
     }
 
-    public function torateRequest(Request $request, $id)
+    public function torateRequest(Request $request, $id, $fullName)
     {
-        $validatedData = $request->validate([
-            'receivedReq_id' => 'required',
-            'request_id' => 'required',
-            'approvedBy' => 'required',
-            'noteBy' => 'required',
-            'releasedBy' => 'required',
-            'received_By' => 'required',
-
-        ]);
-
-
-
-        $validatedData['dateApproved'] = now();
-        $validatedData['dateNoted'] = now();
-        $validatedData['dateReleased'] = now();
-        $validatedData['date_Received'] = now();
-
-        $data = ReleaseRequests::create($validatedData);
-
-        DB::table('user_requests')
-            ->where('id', $id)
-            ->update([
-                'dateUpdated' => now(),
-                'status' => 'To Rate',
+        try {
+            $validatedData = $request->validate([
+                'receivedReq_id' => 'required',
+                'request_id' => 'required',
+                'approvedBy' => 'required',
+                'noteBy' => 'required',
+                'releasedBy' => 'required',
+                'received_By' => 'required',
             ]);
 
+            $validatedData['dateApproved'] = now();
+            $validatedData['dateNoted'] = now();
+            $validatedData['dateReleased'] = now();
+            $validatedData['date_Received'] = now();
 
-        return response()->json($data, 201);
+            $data = ReleaseRequests::create($validatedData);
+
+            DB::table('user_requests')
+                ->where('id', $id)
+                ->update([
+                    'dateUpdated' => now(),
+                    'status' => 'To Rate',
+                ]);
+
+            // Retrieve the 'office' based on the provided $fullName from the User table
+            $adminOffice = User::whereRaw("CONCAT(userFirstname, ' ', userLastName) = ?", [$fullName])
+                ->select('office')
+                ->first();
+
+            if ($adminOffice) {
+                // Create an audit log entry for the "To Rate" action
+                $auditLogData = [
+                    'name' => $fullName, // Use the provided fullName
+                    'office' => $adminOffice->office, // Use the retrieved office
+                    'action' => 'To Rate',
+                    'reference' => $id, // Use $id as reference
+                    'date' => now(),
+                ];
+
+                AuditLog::create($auditLogData);
+            }
+
+            return response()->json($data, 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to create ReleaseRequests'], 500);
+        }
     }
 
     public function destroyServiceTask($id, $request_id)
@@ -217,7 +300,6 @@ class ReceiveServiceController extends Controller
             ], 404);
         }
 
-        // Update the status of the request to "Cancelled"
         if ($requestID) {
             $requestID->update(['status' => 'Cancelled']);
         }
@@ -228,17 +310,41 @@ class ReceiveServiceController extends Controller
     }
 
 
-    public function cancelReason(Request $request, $requestId)
+    public function cancelReason(Request $request, $requestId, $fullName)
     {
         try {
             $reason = $request->input('reason');
+
+            $requestRecord = Requests::find($requestId);
+
+            if (!$requestRecord) {
+                return response()->json(['message' => 'Request not found'], 404);
+            }
+
+            $requestRecord->update(['status' => 'Cancelled']);
+
+            // Retrieve the 'office' based on the provided $fullName from the User table
+            $adminOffice = User::whereRaw("CONCAT(userFirstname, ' ', userLastName) = ?", [$fullName])
+                ->select('office')
+                ->first();
+
+            if ($adminOffice) {
+                // Create an audit log entry for the "Cancelled" action
+                $auditLogData = [
+                    'name' => $fullName, // Use the provided fullName
+                    'office' => $adminOffice->office, // Use the retrieved office
+                    'action' => 'Cancelled',
+                    'reference' => $requestId, // Use $requestId as reference
+                    'date' => now(),
+                ];
+
+                AuditLog::create($auditLogData);
+            }
 
             $cancelReason = new CancelReason([
                 'request_id' => $requestId,
                 'reason' => $reason,
             ]);
-            $request_id = Requests::find($requestId);
-            $request_id->update(['status' => 'Cancelled']);
             $cancelReason->save();
 
             return response()->json(['message' => 'Cancellation reason saved successfully']);

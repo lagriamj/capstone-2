@@ -7,6 +7,7 @@ use App\Models\RateServices;
 use App\Models\ReceiveService;
 use App\Models\Requests;
 use Illuminate\Support\Facades\DB;
+use App\Models\AuditLog;
 
 
 class RatingController extends Controller
@@ -106,48 +107,85 @@ class RatingController extends Controller
 
     public function rateTransaction(Request $request)
     {
-        $validatedData = $request->validate([
-            'user_id' => 'required',
-            'request_id' => 'required',
-            'department' => 'required',
-            'q1' => 'required',
-            'q2' => 'required',
-            'q3' => 'required',
-            'q4' => 'required',
-            'q5' => 'required',
-            'q6' => 'required',
-            'q7' => 'required',
-            'q8' => 'required',
-            'commendation' => 'required',
-            'suggestion' => 'required',
-            'request' => 'required',
-            'complaint' => 'required',
-        ]);
-        $validatedData['dateRate'] = now();
-        $users = RateServices::create($validatedData);
-
-        DB::table('user_requests')
-            ->where('id', $request->input('request_id'))
-            ->update([
-                'dateUpdated' => now(),
-                'status' => 'Closed',
+        try {
+            $validatedData = $request->validate([
+                'user_id' => 'required',
+                'request_id' => 'required',
+                'department' => 'required',
+                'q1' => 'required',
+                'q2' => 'required',
+                'q3' => 'required',
+                'q4' => 'required',
+                'q5' => 'required',
+                'q6' => 'required',
+                'q7' => 'required',
+                'q8' => 'required',
+                'commendation' => 'required',
+                'suggestion' => 'required',
+                'request' => 'required',
+                'complaint' => 'required',
             ]);
-        return response()->json($users, 201);
+
+            $validatedData['dateRate'] = now();
+            $users = RateServices::create($validatedData);
+
+            // Retrieve data from the Requests table where id matches request_id
+            $requestData = Requests::find($request->input('request_id'));
+
+            if (!$requestData) {
+                return response()->json(['message' => 'Request not found'], 404);
+            }
+
+            DB::table('user_requests')
+                ->where('id', $request->input('request_id'))
+                ->update([
+                    'dateUpdated' => now(),
+                    'status' => 'Closed',
+                ]);
+
+            $auditLogData = [
+                'name' => $requestData->fullName, // Use the retrieved name from Requests
+                'office' => $requestData->reqOffice, // Use the retrieved office from Requests
+                'action' => 'Rate',
+                'reference' => $request->input('request_id'), // Use the provided user_id
+                'date' => now(),
+            ];
+
+            AuditLog::create($auditLogData);
+
+            return response()->json($users, 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to rate service'], 500);
+        }
     }
 
     public function closedNorate($id)
     {
-        $request = Requests::find($id);
+        try {
+            $request = Requests::find($id);
 
-        if (!$request) {
-            return response()->json(['error' => 'Request not found'], 404);
+            if (!$request) {
+                return response()->json(['error' => 'Request not found'], 404);
+            }
+
+            $auditLogData = [
+                'name' => $request->fullName,
+                'office' => $request->reqOffice,
+                'action' => 'Closed',
+                'reference' => $id,
+                'date' => now(),
+            ];
+
+            AuditLog::create($auditLogData);
+
+            $request->status = 'Closed';
+            $request->dateUpdated = now();
+            $request->save();
+
+            return response()->json(['message' => 'Request has been closed']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to close request'], 500);
         }
-
-        $request->status = 'Closed';
-        $request->dateUpdated = now();
-        $request->save();
-
-        return response()->json(['message' => 'Request has been closed']);
     }
 
 

@@ -47,7 +47,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
       };
 
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/received-request/${data.request_id}`,
+        `http://127.0.0.1:8000/api/received-request/${data.request_id}/${fullName}`,
         modifiedValues
       );
 
