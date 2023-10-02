@@ -63,7 +63,6 @@ const RegisterConfirmation = () => {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  console.log(location.state);
   const { userRole, isAuthenticated, userID } = useAuth();
   const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
 
@@ -117,26 +116,20 @@ const RegisterConfirmation = () => {
     return null; // Return null if not coming from login, register, or update-phone page
   }
 
-  const {
-    user,
-    contactNumber: contactNumberFromLogin,
-    newPhoneNumber,
-  } = location.state;
+  const { user, userEmail: userEmailFromLogin, newEmail } = location.state;
   const userId = user ? user.userID : userID;
 
   // In case the user is coming from the registration page, use the contactNumber from the state
-  const contactNumberFromRegistration = user ? user.userContactNumber : "";
-  const contactNumberFromUpdatePage = newPhoneNumber || "";
+  const userEmailFromRegistration = user ? user.userEmail : "";
+  const userEmailFromUpdatePage = newEmail || "";
 
-  const [contactNumber, setContactNumber] = useState(
-    contactNumberFromLogin ||
-      contactNumberFromRegistration ||
-      contactNumberFromUpdatePage
+  const [userEmail, setUserEmail] = useState(
+    userEmailFromLogin || userEmailFromRegistration || userEmailFromUpdatePage
   );
 
   useEffect(() => {
-    setContactNumber(contactNumberFromLogin || contactNumberFromRegistration);
-  }, [contactNumberFromLogin, contactNumberFromRegistration]);
+    setUserEmail(userEmailFromLogin || userEmailFromRegistration);
+  }, [userEmailFromLogin, userEmailFromRegistration]);
 
   const confirmOTP = async () => {
     try {
@@ -276,7 +269,7 @@ const RegisterConfirmation = () => {
             <h1 className="font-semibold text-center">Verification Code</h1>
             <p className="text-lg font-semibold text-center">
               Please enter the Verification code that was sent to your
-              {` ${contactNumber} `} in order to activate your account
+              {` ${userEmail} `} in order to activate your account
             </p>
             <img src="/confrm1.svg" alt="" className="h-64" />
             {verificationMessage && (
@@ -306,11 +299,11 @@ const RegisterConfirmation = () => {
               </button>
               <div className="mt-3 font-semibold">
                 <p className="text-lg">
-                  Wrong number?{" "}
+                  Wrong email?{" "}
                   <a
                     className="underline text-main cursor-pointer"
                     onClick={() =>
-                      navigate("/update-phone", {
+                      navigate("/update-email", {
                         state: {
                           userID: !userId ? location.state.userID : userId,
                         },

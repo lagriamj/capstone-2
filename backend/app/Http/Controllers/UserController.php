@@ -8,8 +8,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Twilio\Rest\Client;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -54,11 +56,11 @@ class UserController extends Controller
             $user->role = 'user';
         }
 
-        /*$sendingSuccess = $this->sendVerificationCode($user, $otpCode);
+        /* $sendOTP = $this->sendVerificationCode($user, $otpCode);
 
-            if (!$sendingSuccess) {
-                return response()->json(['message' => 'SMS sending failed'], 500);
-            }*/
+        if (!$sendOTP) {
+            return response()->json(['message' => 'Verification sending failed'], 500);
+        } */
 
         $user->dateRegistered = now();
         $user->otpCode = $otpCode;
@@ -68,7 +70,7 @@ class UserController extends Controller
         $user->userID = $user->userID;
 
         if ($user->save()) {
-            return response()->json(['message' => 'User registered successfully', 'userID' => $user->userID, 'userContactNumber' => $user->userContactNumber], 201);
+            return response()->json(['message' => 'User registered successfully', 'userID' => $user->userID, 'userEmail' => $user->userEmail], 201);
         } else {
             return response()->json(['message' => 'The government ID is already taken.'], 422);
         }
@@ -76,23 +78,13 @@ class UserController extends Controller
 
     private function sendVerificationCode(User $user, $otpCode)
     {
-        $client = new Client(getenv("TWILIO_SID"), getenv("TWILIO_AUTH_TOKEN"));
 
-        try {
-            $client->messages->create(
-                '+' . $user->userContactNumber,
-                [
-                    'from' => getenv("TWILIO_PHONE_NUMBER"),
-                    'body' => "Your verification code is: " . htmlspecialchars($otpCode),
-                ]
-            );
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Failed sending verification code',
-            ]); // Indicate that sending failed
-        }
+        Mail::raw('Your verification code is: ' . $otpCode, function ($message) use ($user) {
+            $message->subject('OTP Verification');
+            $message->to($user->userEmail);
+        });
 
-        return true; // Indicate that sending was successful
+        return response()->json(['message' => 'Successfully sent an otp']);
     }
 
     public function verifyOTP(Request $request)
@@ -149,12 +141,13 @@ class UserController extends Controller
             $user->otpCode = $otpCode;
             $user->otpExpiration = $otpExpiration;
 
-            /*$sendingSuccess = $this->sendVerificationCode($user, $otpCode);
+            /*  $sendOTP = $this->sendVerificationCode($user, $otpCode);
 
-            if (!$sendingSuccess) {
-                return response()->json(['message' => 'SMS sending failed'], 500);
-            }*/
+            if (!$sendOTP) {
+                return response()->json(['message' => 'Verification sending failed'], 500);
+            }
 
+            */
             $user->save();
 
             return response()->json(['message' => 'New OTP code has been sent'], 200);
@@ -163,7 +156,7 @@ class UserController extends Controller
         }
     }
 
-    public function updatePhoneNumber(Request $request)
+    public function updateEmail(Request $request)
     {
         $userID = $request->userID;
 
@@ -173,14 +166,12 @@ class UserController extends Controller
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        $newContactNumber = $request->input('newContactNumber');
+        $newUserEmail = $request->input('newUserEmail');
 
-        // Validate the new contact number if needed
-
-        $user->userContactNumber = $newContactNumber;
+        $user->userEmail = $newUserEmail;
         $user->save();
 
-        return response()->json(['message' => 'Contact number updated successfully']);
+        return response()->json(['message' => 'Email number updated successfully']);
     }
 
     public function accountDetails(Request $request)

@@ -1,4 +1,4 @@
-import { faPhone, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -6,10 +6,10 @@ import HashLoader from "react-spinners/HashLoader";
 import axios from "axios";
 import { useAuth } from "../AuthContext";
 
-const UpdatePhoneNumberPage = () => {
+const UpdateEmailPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [newPhoneNumber, setNewPhoneNumber] = useState("");
+  const [newEmail, setNewEmail] = useState("");
   const userId = location.state?.userID;
   const [loading, setLoading] = useState(false);
   const { userRole, isAuthenticated } = useAuth();
@@ -42,12 +42,12 @@ const UpdatePhoneNumberPage = () => {
     return null; // Return null if not coming from login, register, or update-phone page
   }
 
-  const handleUpdatePhoneNumber = async (e) => {
+  const handleUpdateEmail = async (e) => {
     e.preventDefault();
 
-    const response = await axios.put(`http://127.0.0.1:8000/api/update-phone`, {
+    const response = await axios.put(`http://127.0.0.1:8000/api/update-email`, {
       userID: !userId ? location.state.userID : userId,
-      newContactNumber: newPhoneNumber,
+      newUserEmail: newEmail,
     });
     console.log(response);
     setLoading(true);
@@ -55,7 +55,7 @@ const UpdatePhoneNumberPage = () => {
       navigate("/verify-otp", {
         state: {
           userID: !userId ? location.state.userID : userId,
-          contactNumber: newPhoneNumber,
+          userEmail: newEmail,
           successMessage: "Updated Successfully!",
         },
       });
@@ -111,45 +111,26 @@ const UpdatePhoneNumberPage = () => {
               <img className="w-28 h-28" src="/cityhalllogo.png" alt="" />
               <img className="w-28 h-28" src="/citc1.png" alt="" />
             </div>
-            <h1 className="font-semibold text-center">Update Phone Number</h1>
+            <h1 className="font-semibold text-center">Update Email</h1>
             <p className="text-lg font-semibold text-center">
-              Enter your correct phone number
+              Enter your correct Email Address
             </p>
             <img src="/confrm1.svg" alt="" className="h-64" />
 
-            <form
-              action=""
-              onSubmit={handleUpdatePhoneNumber}
-              className="w-3/4"
-            >
+            <form action="" onSubmit={handleUpdateEmail} className="w-3/4">
               <div className="flex items-start justify-center text-lg flex-col w-full">
-                <label className="font-semibold" htmlFor="newContactNumber">
-                  Contact Number
+                <label className="font-semibold" htmlFor="newUserEmail">
+                  Email
                 </label>
                 <div className="relative w-full">
                   <input
-                    type="text"
-                    id="newContactNumber"
-                    name="newContactNumber"
-                    pattern="[0-9]{11}"
+                    type="email"
+                    id="newUserEmail"
+                    name="newUserEmail"
                     required
-                    value={newPhoneNumber}
-                    onChange={(e) => setNewPhoneNumber(e.target.value)}
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
                     className="w-full h-14 border-2 rounded-lg pl-14 pr-4 text-lg border-slate-400 focus:outline-none"
-                    onInvalid={(e) => {
-                      if (e.target.validity.valueMissing) {
-                        e.target.setCustomValidity(
-                          "Contact Number is required."
-                        );
-                      } else if (e.target.validity.patternMismatch) {
-                        e.target.setCustomValidity(
-                          `Contact Number must be a 11-digit mobile number.`
-                        );
-                      }
-                    }}
-                    onInput={(e) => {
-                      e.target.setCustomValidity("");
-                    }}
                   />
                   <div className="absolute inset-y-0 left-0 flex items-center p-3 bg-main rounded-l-lg">
                     <svg
@@ -158,7 +139,7 @@ const UpdatePhoneNumberPage = () => {
                       viewBox="0 0 20 20"
                     >
                       <FontAwesomeIcon
-                        icon={faPhone}
+                        icon={faEnvelope}
                         style={{ color: "#ffffff" }}
                       />
                     </svg>
@@ -181,4 +162,4 @@ const UpdatePhoneNumberPage = () => {
   );
 };
 
-export default UpdatePhoneNumberPage;
+export default UpdateEmailPage;

@@ -41,7 +41,7 @@ Route::middleware('api')->group(function () {
     Route::post('/verify-otp', [UserController::class, 'verifyOTP']);
     Route::put('/verify-otp', [UserController::class, 'resendOTP']);
     Route::post('/logout', [LogoutController::class, 'logout']);
-    Route::put('/update-phone', [UserController::class, 'updatePhoneNumber']);
+    Route::put('/update-email', [UserController::class, 'updateEmail']);
     //Request Services (user side)
     Route::get('/getOfficeAndDivision/{userID}', [RequestsController::class, 'getOfficeAndDivision']);
     Route::post('add-request', [RequestsController::class, 'addRequest']);

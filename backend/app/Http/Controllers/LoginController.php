@@ -35,7 +35,7 @@ class LoginController extends Controller
                     return response()->json([
                         'success' => true,
                         'userID' => $user->userID,
-                        'contactNumber' => $user->userContactNumber,
+                        'userEmail' => $user->userEmail,
                         'userStatus' => 'unverified',
                     ]);
                 }

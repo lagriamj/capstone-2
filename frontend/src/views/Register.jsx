@@ -202,7 +202,7 @@ const Register = () => {
           navigate("/verify-otp", {
             state: {
               user: registeredUser,
-              contactNumber: registeredUser.userContactNumber,
+              userEmail: registeredUser.userEmail,
             },
           });
         } catch (imageError) {
@@ -213,6 +213,7 @@ const Register = () => {
       }
     } catch (error) {
       setErrorMessage(error.response.data.message);
+      console.log(error);
     } finally {
       setLoading(false);
     }

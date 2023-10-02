@@ -99,7 +99,7 @@ function Login() {
           }
         } else if (data.userStatus === "unverified") {
           navigate("/verify-otp", {
-            state: { user: data, contactNumber: data.contactNumber },
+            state: { user: data, userEmail: data.userEmail },
           });
         }
       } else {

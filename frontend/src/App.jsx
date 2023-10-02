@@ -13,7 +13,7 @@ import Transactions from "./views/user/Transactions";
 import Account from "./views/user/Account";
 import Dashboard from "./views/admin/Dashboard";
 import Unauthorized from "./views/Unauthorized";
-import UpdatePhoneNumberPage from "./views/UpdatePhoneNumberPage";
+import UpdateEmailPage from "./views/UpdateEmailPage";
 import ServiceRequest from "./views/admin/ServiceRequest";
 import ServiceTask from "./views/admin/ServiceTask";
 import Recommendation from "./views/admin/Recommendation";
@@ -69,7 +69,7 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/verify-otp" element={<RegisterConfirmation />} />
-              <Route path="/update-phone" element={<UpdatePhoneNumberPage />} />
+              <Route path="/update-email" element={<UpdateEmailPage />} />
               <Route path="/page-not-found" element={<NotFound />} />
               <Route path="/unauthorized" element={<Unauthorized />} />
 
