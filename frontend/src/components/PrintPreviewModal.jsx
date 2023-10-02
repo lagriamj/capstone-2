@@ -28,13 +28,19 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
   }, []);
 
   const [authorApprovedSignatures, setAuthorApprovedSignatures] = useState([]);
+  // eslint-disable-next-line no-unused-vars
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    // Make an HTTP GET request to fetch authorized persons and their images from your Laravel API.
     axios
-      .get(`http://127.0.0.1:8000/api/show-approved-request/${itemData.id}`) // Replace with your API URL.
+      .get(`http://127.0.0.1:8000/api/show-approved-request/${itemData.id}`)
       .then((response) => {
-        setAuthorApprovedSignatures(response.data);
+        if (response.data.message) {
+          setMessage(response.data.message);
+          console.log("API Message:", response.data.message);
+        } else {
+          setAuthorApprovedSignatures(response.data);
+        }
       })
       .catch((error) => {
         console.error("Error fetching data:", error);

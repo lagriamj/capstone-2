@@ -134,14 +134,14 @@ Route::middleware('throttle:dashboard-api')->group(function () {
 //signature
 Route::post('/user-signature/store', [UserSignatureController::class, 'userSignature']);
 Route::get('/all-signature/{fullName}', [UserSignatureController::class, 'allSignature']);
-Route::get('/user-signature/', [UserSignatureController::class, 'getSignature']);
-Route::get('/get-signatureFileName/', [UserSignatureController::class, 'getFileName']);
 Route::post('/update-signature/{fullName}', [UserSignatureController::class, 'updateSignature']);
+Route::get('/user-signature/{fullName}', [UserSignatureController::class, 'getSignature']);
+Route::get('/user-signatureInAccount/', [UserSignatureController::class, 'getSignatureInAccount']);
+Route::get('/get-signatureFileName/', [UserSignatureController::class, 'getFileName']);
+Route::get('/show-approved-request/{request_id}', [UserSignatureController::class, 'approvedAuthorSign']);
+Route::get('/user-approved-signature/{filename}', [UserSignatureController::class, 'getApprovedSignature']);
 
 //head
 Route::get('/pending-signature/{fullName}', [HeadApprovedController::class, 'allpendingNotApproved']);
 Route::get('/pending-approved-signature/{fullName}', [HeadApprovedController::class, 'allpendingApproved']);
 Route::put('/approve-request/{requestId}', [HeadApprovedController::class, 'approveRequest']);
-
-Route::get('/show-approved-request/{request_id}', [UserSignatureController::class, 'approvedAuthorSign']);
-Route::get('/user-approved-signature/{filename}', [UserSignatureController::class, 'getApprovedSignature']);

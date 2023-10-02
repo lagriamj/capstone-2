@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\UserSignature;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -48,7 +47,7 @@ class UserSignatureController extends Controller
         return response()->json($authorizedSignatures);
     }
 
-    /*public function getSignature($filename)
+    public function getSignature($filename)
     {
         $path = storage_path('app/user_signatures/' . $filename);
 
@@ -56,8 +55,9 @@ class UserSignatureController extends Controller
             abort(404);
         }
         return response()->file($path);
-    } */
-    public function getSignature()
+    }
+
+    public function getSignatureInAccount()
     {
         $fullName = request('fullName');
         try {
@@ -84,6 +84,7 @@ class UserSignatureController extends Controller
         }
     }
 
+
     public function getFileName()
     {
         $fullName = request('fullName');
@@ -100,7 +101,6 @@ class UserSignatureController extends Controller
             return null; // Handle the error as needed
         }
     }
-
 
     public function updateSignature(Request $request, $fullName)
     {
@@ -136,11 +136,14 @@ class UserSignatureController extends Controller
             ->first();
 
         if (!$userRequest) {
-            return response()->json(['error' => 'No matching user request found.'], 404);
+            return response()->json(['message' => 'Request is not yet approved by an authorized person.']);
         }
 
-        $reqOffice = $userRequest->reqOffice;
-        $authorizedSignatures = UserSignature::where('office', $reqOffice)->get();
+        $reqOffice = $userRequest->reqOffice; // Change this line
+
+        $authorizedSignatures = UserSignature::where('office', $reqOffice)
+            ->where('role', 'head')
+            ->get();
 
         return response()->json($authorizedSignatures);
     }

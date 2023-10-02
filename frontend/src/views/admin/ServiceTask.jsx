@@ -223,7 +223,7 @@ const ServiceTask = () => {
 
   const handleSearchBar = (value) => {
     setSearchText(value);
-    setPagination({ ...pagination, current: 1 }); // Reset to the first page when searching
+    setPagination({ ...pagination, current: 1 });
   };
 
   const requestColumns = [

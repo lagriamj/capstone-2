@@ -200,7 +200,7 @@ const AdminAccount = () => {
   const fetchSignature = async () => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/user-signature/`,
+        `http://127.0.0.1:8000/api/user-signatureInAccount/`,
         {
           params: {
             fullName: fullName,

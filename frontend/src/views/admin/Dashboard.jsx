@@ -239,16 +239,6 @@ const Dashboard = () => {
     }
   };
 
-  {
-    /*const formatDate = (dateString) => {
-    // Assuming dateString is in the format "YYYY-MM-DD"
-    const date = new Date(dateString);
-    const month = date.toLocaleString("default", { month: "short" }); // Get short month name
-    const day = date.getDate();
-    return `${month} ${day}`;
-  }; */
-  }
-
   const pieTotalAndClosed = [
     {
       name: "Total",
