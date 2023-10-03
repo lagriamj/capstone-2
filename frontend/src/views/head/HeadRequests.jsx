@@ -19,6 +19,7 @@ import {
 } from "antd";
 import HeadSidebar from "../../components/HeadSidebar";
 import HeadDrawer from "../../components/HeadDrawer";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 const HeadRequests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -152,25 +153,56 @@ const HeadRequests = () => {
     setActiveTab("current-requests");
   };
 
+  const checkCutOffTime = async () => {
+    try {
+      const response = await axios.get(
+        "http://127.0.0.1:8000/api/getCutOffTime"
+      );
+      const cutOffTime = new Date(response.data.cutOffTime);
+      const currentDate = new Date();
+
+      if (currentDate > cutOffTime) {
+        const formattedCutOffDate = cutOffTime.toLocaleString();
+        notification.error({
+          message: "Cut-off time exceeded",
+          description: `You cannot request service after the cut-off time (${formattedCutOffDate}).`,
+          icon: <ExclamationCircleOutlined />, // Add the notification icon
+        });
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Error fetching cut-off time:", error);
+      return false;
+    }
+  };
+
   const onSubmitChange = async () => {
     const values = await form.validateFields();
 
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/add-request",
-        values
-      );
-      const data = response.data;
-      console.log(data);
+      const isCutOffTimeValid = await checkCutOffTime();
 
-      navigate("/head/current-requests", {
-        state: {
-          successMessage: "Requested successfully.",
-        },
-      });
-      handleNewActiveTab();
+      if (isCutOffTimeValid) {
+        const response = await axios.post(
+          "http://127.0.0.1:8000/api/add-request",
+          values
+        );
+        const data = response.data;
+        console.log(data);
+
+        navigate("/head/current-requests", {
+          state: {
+            successMessage: "Requested successfully.",
+          },
+        });
+        handleNewActiveTab();
+      } else {
+        setLoading(false);
+      }
     } catch (err) {
       console.log(err);
       setLoading(false);
@@ -206,6 +238,17 @@ const HeadRequests = () => {
       console.log("Something went wrong:", err);
     }
   };
+
+  useEffect(() => {
+    const resetCutOffTime = async () => {
+      try {
+        await axios.get("http://127.0.0.1:8000/api/reset-cut-off-time");
+      } catch (error) {
+        console.error("Error resetting cut-off time:", error);
+      }
+    };
+    resetCutOffTime();
+  }, []);
 
   return (
     <HelmetProvider>

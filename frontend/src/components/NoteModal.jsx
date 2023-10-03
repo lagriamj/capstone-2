@@ -1,11 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function NoteModal(display) {
   const [showModal, setShowModal] = React.useState(display);
+  const [cutOffTime, setCutOffTime] = useState("");
+
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8000/api/getCutOffTime")
+      .then((response) => {
+        const cutOffTimeDate = new Date(response.data.cutOffTime);
+
+        const hours = cutOffTimeDate.getHours();
+        const minutes = cutOffTimeDate.getMinutes();
+        const formattedHours = hours % 12 || 12;
+        const amPm = hours < 12 ? "AM" : "PM";
+        const formattedTime = `${formattedHours}:${minutes
+          .toString()
+          .padStart(2, "0")} ${amPm}`;
+        setCutOffTime(formattedTime);
+      })
+      .catch((error) => {
+        console.error("Error fetching cut-off time:", error);
+      });
+  }, []);
+
   return (
     <>
       <button
-        className=" text-yellow-300 underline font-bold uppercase text-sm lg:text-lg    rounded  outline-none focus:outline-none ease-linear transition-all duration-150"
+        className="text-yellow-300 underline font-bold uppercase text-sm lg:text-lg rounded outline-none focus:outline-none ease-linear transition-all duration-150"
         type="button"
         onClick={() => setShowModal(true)}
       >
@@ -13,7 +36,7 @@ export default function NoteModal(display) {
       </button>
       {showModal ? (
         <>
-          <div className="justify-center items-center flex overflow-x-hidden  overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
             <div className="relative w-auto my-6 mx-auto max-w-3xl">
               {/*content*/}
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white text-black outline-none focus:outline-none">
@@ -32,23 +55,28 @@ export default function NoteModal(display) {
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
                   <ul className="list-disc pl-6">
+                    {cutOffTime && (
+                      <li className="text-red-500 text-semibold">
+                        Cut-off Time: {cutOffTime}
+                      </li>
+                    )}
                     <li>
-                      If Property No. is not visible please input the Sticker
+                      If Property No. is not visible, please input the Sticker
                       No. instead.
                     </li>
                     <li>
-                      We are not responsible for any UNLICENSED SOFTWARE that
-                      are installed in your unit and if in case with any raid or
-                      confiscation of your unit, we are not be held liable.
+                      We are not responsible for any UNLICENSED SOFTWARE that is
+                      installed on your unit, and in case of any raid or
+                      confiscation of your unit, we are not held liable.
                     </li>
                     <li>
                       We are also not liable for any loss of data during the
                       course of repairing the unit.
                     </li>
                     <li>
-                      Failed to pass the hard copy of the request slip with the
-                      signature of the authorized within the day will be
-                      automatically cancel to the following day.
+                      Failure to submit the hard copy of the request slip with
+                      the authorized signature within the day will result in
+                      automatic cancellation for the following day.
                     </li>
                   </ul>
                 </div>

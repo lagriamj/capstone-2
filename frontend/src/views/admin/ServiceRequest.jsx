@@ -1,6 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import AdminSidebar from "../../components/AdminSidebar";
-import AdminDrawer from "../../components/AdminDrawer";
 import { useState, useEffect } from "react";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,29 +6,31 @@ import NoteModal from "../../components/NoteModal";
 import axios from "axios";
 import { useAuth } from "../../AuthContext";
 import { useActiveTab } from "../../ActiveTabContext";
-import Select from "react-select";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { Button } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Row,
+  Col,
+  Select,
+  DatePicker,
+  notification,
+} from "antd";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
+import AdminDrawer from "../../components/AdminDrawer";
+import AdminSidebar from "../../components/AdminSidebar";
 
 const ServiceRequest = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const isLargeScreen = windowWidth >= 1024;
   const { setActiveTab } = useActiveTab();
   const [loading, setLoading] = useState(false);
-  const [selectedNatureOfRequest, setSelectedNatureOfRequest] = useState(null);
-  const [selectedUnit, setSelectedUnit] = useState(null);
   const [office, setOffice] = useState("");
   const [division, setDivision] = useState("");
   const [author, setAuthor] = useState("");
   const { userID, fullName } = useAuth();
   console.log("userID:", userID);
-
-  const [selectedMode, setSelectedMode] = useState(null);
-
-  const mode = [
-    { value: "Walk-In", label: "Walk-In" },
-    { value: "Online", label: "Online" },
-  ];
 
   useEffect(() => {
     const handleResize = () => {
@@ -44,26 +44,54 @@ const ServiceRequest = () => {
     };
   }, []);
 
-  useEffect(() => {
-    axios
-      .get(`http://127.0.0.1:8000/api/getOfficeAndDivision/${userID}`)
-      .then((response) => {
-        setOffice(response.data.office);
-        setDivision(response.data.division);
+  const customFilterOption = (inputValue, option) =>
+    option.value?.toLowerCase().includes(inputValue.toLowerCase());
 
-        // Set the values of formOffice and formDivision in formData
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          reqOffice: response.data.office,
-          division: response.data.division,
-        }));
-      })
-      .catch((error) => {
-        console.log(error);
+  const { TextArea } = Input;
+  const [form] = Form.useForm();
+  const { Option } = Select;
+  const [natureValue, setNatureValue] = useState("");
+  const [unitValue, setUnitValue] = useState("");
+
+  const handleChangeNature = (value) => {
+    setNatureValue(value);
+  };
+
+  const handleChangeUnit = (value) => {
+    setUnitValue(value);
+  };
+
+  const [dateP, setDateP] = useState("");
+
+  const handleDatePickerChange = (date) => {
+    form.setFieldsValue({
+      dateProcured: date.$y,
+    });
+    console.log(date.$y);
+    setDateP(date.$y);
+  };
+
+  const handleWarrantyNotif = (status) => {
+    if (status) {
+      notification.warning({
+        message: (
+          <span className="text-white font-bold">
+            Date must be under warranty
+          </span>
+        ),
+        description: (
+          <span className="text-white">
+            The service request can only be processed if the date procured is
+            under warranty.
+          </span>
+        ),
+        style: {
+          backgroundColor: "rgba(239, 68, 68, 1)",
+        },
       });
-  }, [userID]);
+    }
+  };
 
-  const navigate = useNavigate();
   const options = {
     year: "numeric",
     month: "numeric",
@@ -73,26 +101,29 @@ const ServiceRequest = () => {
     hour12: true,
   };
 
-  const formOffice = office;
-  const formDivision = division;
-
   const daytime = new Date().toLocaleString(undefined, options);
-  const [formData, setFormData] = useState({
-    user_id: userID,
-    fullName: fullName,
-    reqOffice: "",
-    division: "",
-    natureOfRequest: "",
-    modeOfRequest: "",
-    unit: "",
-    propertyNo: "",
-    serialNo: "",
-    authorizedBy: "",
-    dateProcured: "1111-11-11",
-    specialIns: "",
-    status: "Pending",
-    assignedTo: "None",
-  });
+
+  useEffect(() => {
+    axios
+      .get(`http://127.0.0.1:8000/api/getOfficeAndDivision/${userID}`)
+      .then((response) => {
+        setOffice(response.data.office);
+        setDivision(response.data.division);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    form.setFieldsValue({
+      reqOffice: office,
+      division: division,
+      dateRequested: daytime,
+      authorizedBy: author,
+      dateProcured: dateP,
+    });
+  }, [userID, office, division, daytime, author, dateP]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -100,16 +131,11 @@ const ServiceRequest = () => {
       .then((response) => {
         const officeList = response.data.results;
         const matchingNature = officeList.find(
-          (item) => item.office === formOffice
+          (item) => item.office === office
         );
 
         if (matchingNature) {
           setAuthor(matchingNature.head);
-
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            authorizedBy: matchingNature.head,
-          }));
         } else {
           console.log("Matching office not found.");
         }
@@ -117,58 +143,67 @@ const ServiceRequest = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, [formOffice]);
-
-  const changeUserFieldHandler = (e) => {
-    const { name, value } = e.target;
-
-    if (name === "dateProcured") {
-      const newValue = value || "1111-11-11";
-
-      setFormData({
-        ...formData,
-        [name]: newValue,
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
-
-    console.log(formData);
-  };
+  }, [office]);
 
   const handleNewActiveTab = () => {
-    setActiveTab("receive-service");
+    setActiveTab("current-requests");
   };
 
-  const onSubmitChange = async (e) => {
-    e.preventDefault();
+  const checkCutOffTime = async () => {
+    try {
+      const response = await axios.get(
+        "http://127.0.0.1:8000/api/getCutOffTime"
+      );
+      const cutOffTime = new Date(response.data.cutOffTime);
+      const currentDate = new Date();
+
+      if (currentDate > cutOffTime) {
+        const formattedCutOffDate = cutOffTime.toLocaleString();
+        notification.error({
+          message: "Cut-off time exceeded",
+          description: `You cannot request service after the cut-off time (${formattedCutOffDate}).`,
+          icon: <ExclamationCircleOutlined />, // Add the notification icon
+        });
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Error fetching cut-off time:", error);
+      return false;
+    }
+  };
+
+  const onSubmitChange = async () => {
+    const values = await form.validateFields();
 
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/add-request",
-        formData
-      );
-      const data = response.data;
-      console.log(data);
+      const isCutOffTimeValid = await checkCutOffTime();
 
-      navigate("/receive-service", {
-        state: {
-          successMessage: "Requested successfully.",
-        },
-      });
-      handleNewActiveTab();
+      if (isCutOffTimeValid) {
+        const response = await axios.post(
+          "http://127.0.0.1:8000/api/add-request",
+          values
+        );
+        const data = response.data;
+        console.log(data);
+
+        navigate("/service-task", {
+          state: {
+            successMessage: "Requested successfully.",
+          },
+        });
+        handleNewActiveTab();
+      } else {
+        setLoading(false);
+      }
     } catch (err) {
       console.log(err);
       setLoading(false);
     }
   };
-
-  console.log("data", formData);
 
   const [data, setData] = useState([]);
 
@@ -200,25 +235,16 @@ const ServiceRequest = () => {
     }
   };
 
-  const customStyles = {
-    control: (provided) => ({
-      ...provided,
-      border: "none",
-      boxShadow: "none",
-      height: "100%",
-      width: "100%",
-      outline: "none",
-      display: "flex",
-      overflowX: "auto",
-    }),
-    option: (provided, state) => ({
-      ...provided,
-      backgroundColor: state.isSelected ? "#343467" : "white",
-      color: state.isSelected ? "white" : "black",
-    }),
-  };
-
-  console.log(office + division);
+  useEffect(() => {
+    const resetCutOffTime = async () => {
+      try {
+        await axios.get("http://127.0.0.1:8000/api/reset-cut-off-time");
+      } catch (error) {
+        console.error("Error resetting cut-off time:", error);
+      }
+    };
+    resetCutOffTime();
+  }, []);
 
   return (
     <HelmetProvider>
@@ -232,7 +258,7 @@ const ServiceRequest = () => {
         {isLargeScreen ? <AdminSidebar /> : <AdminDrawer />}
         <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">
           <div
-            className={` w-[90%] lg:w-[80%] large:w-[85%] large:h-[90vh] shadow-xl  h-auto lg:ml-auto lg:mx-4 mt-20 lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
+            className={` w-[90%] lg:w-[80%] large:w-[85%] large:mt-20 shadow-xl  h-auto lg:ml-auto lg:mx-4 mt-20 lg:mt-0  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
             <div className="bg-secondary py-6 pl-4  text-white flex items-center justify-center">
               <h1 className=" mediumLg:text-xl text-lg text-left   font-medium italic ">
@@ -243,207 +269,226 @@ const ServiceRequest = () => {
               </div>
             </div>
 
-            <form
-              action=""
-              onSubmit={onSubmitChange}
-              className="w-11/12 h-screen grid lg:grid-cols-3 grid-cols-1 items-center justify-between lg:pl-10  text-xl gap-y-10 gap-x-12 mt-10 "
+            <Form
+              form={form}
+              onFinish={onSubmitChange}
+              layout="vertical"
+              className="relative p-6 text-lg"
+              initialValues={{
+                user_id: userID,
+                fullName: fullName,
+                reqOffice: office,
+                division: division,
+                natureOfRequest: "",
+                modeOfRequest: "Online",
+                unit: "",
+                propertyNo: "",
+                serialNo: "",
+                authorizedBy: author,
+                dateProcured: "N/A",
+                specialIns: "",
+                status: "Pending",
+                assignedTo: "None",
+              }}
             >
-              <div className="flex items-center  gap-2 justify-center w-full ">
-                <label htmlFor="reqOffice" className="font-normal text-lg ">
-                  Office:
-                </label>
-                <input
-                  type="text"
-                  id="reqOffice"
-                  name="reqOffice"
-                  value={formOffice}
-                  readOnly
-                  className=" w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
-                />
-              </div>
-              <div className="flex items-center gap-2 justify-center  w-full ">
-                <label htmlFor="division" className="font-normal text-lg ">
-                  Division:
-                </label>
-                <input
-                  type="text"
-                  id="division"
-                  name="division"
-                  value={formDivision}
-                  readOnly
-                  className=" w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
-                />
-              </div>
-              <div className="flex items-center justify-center gap-2 w-full ">
-                <label htmlFor="dateRequested" className="font-normal text-lg ">
-                  Date:
-                </label>
-                <input
-                  required
-                  value={daytime}
-                  className=" w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
-                  readOnly
-                />
-              </div>
-              <div className="flex items-center justify-start gap-2 w-full">
-                <label className="font-normal text-lg">Nature:</label>
-                <div className="relative w-full">
-                  <Select // Use react-select
-                    required
-                    name="natureOfRequest"
-                    className=" w-full border-b-2 border-gray-400    focus:outline-none"
-                    value={selectedNatureOfRequest} // Set selected value
-                    onChange={(selectedOption) => {
-                      setSelectedNatureOfRequest(selectedOption); // Update selected option
-                      changeUserFieldHandler({
-                        target: {
-                          name: "natureOfRequest",
-                          value: selectedOption ? selectedOption.value : "",
-                        },
-                      });
-                    }}
-                    options={data.map((option) => ({
-                      value: option.natureRequest,
-                      label: option.natureRequest,
-                    }))}
-                    placeholder="select..."
-                    styles={customStyles}
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-start gap-2 w-full">
-                <label className="font-normal text-lg">Unit:</label>
-                <div className="relative w-full">
-                  <Select // Use react-select
-                    required
-                    classNamePrefix={"select"}
-                    name="unit"
-                    className=" w-full border-b-2 border-gray-400    focus:outline-none"
-                    value={selectedUnit} // Set selected value
-                    onChange={(selectedOption) => {
-                      setSelectedUnit(selectedOption); // Update selected option
-                      changeUserFieldHandler({
-                        target: {
-                          name: "unit",
-                          value: selectedOption ? selectedOption.value : "",
-                        },
-                      });
-                    }}
-                    options={units.map((option) => ({
-                      value: option.utilityCategory,
-                      label: option.utilityCategory,
-                    }))}
-                    placeholder="select..."
-                    styles={customStyles}
-                  />
-                </div>
-              </div>
-              <div className="flex items-center justify-center gap-2 w-full  ">
-                <div className="flex items-center gap-2">
-                  <label className="font-normal text-lg">Property No:</label>
-                </div>
-                <input
-                  required
-                  type="text"
-                  id="propertyNo"
-                  name="propertyNo"
-                  className=" w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
-                  onChange={(e) => {
-                    changeUserFieldHandler(e);
-                  }}
-                />
-              </div>
-
-              <div className="flex items-center justify-center gap-2 w-full ">
-                <label htmlFor="serialNo" className="font-normal text-lg ">
-                  Serial No:
-                </label>
-                <input
-                  required
-                  type="text"
-                  id="serialNo"
-                  name="serialNo"
-                  className=" w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
-                  onChange={(e) => {
-                    changeUserFieldHandler(e);
-                  }}
-                />
-              </div>
-
-              <div className="flex items-center justify-center gap-2 w-full ">
-                <label htmlFor="dateProcured" className="font-normal text-lg ">
-                  Date Procured:
-                </label>
-                <input
-                  type="date"
-                  id="dateProcured"
-                  name="dateProcured"
-                  className=" w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
-                  onChange={(e) => {
-                    changeUserFieldHandler(e);
-                  }}
-                />
-              </div>
-              <div className="flex items-center justify-start gap-2 w-full">
-                <label className="font-normal text-lg">Mode Of Request:</label>
-                <div className="relative w-full">
-                  <Select
-                    required
-                    classNamePrefix={"select"}
-                    name="modeOfRequest"
-                    className="w-full border-b-2 border-gray-400 focus:outline-none"
-                    value={selectedMode}
-                    onChange={(selectedOption) => {
-                      setSelectedMode(selectedOption);
-                      changeUserFieldHandler({
-                        target: {
-                          name: "modeOfRequest",
-                          value: selectedOption ? selectedOption.value : "",
-                        },
-                      });
-                    }}
-                    options={mode}
-                    placeholder="Select..."
-                    styles={customStyles}
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-col col-span-full w-full ">
-                <label htmlFor="message" className="font-normal text-lg">
-                  Special Instruction{" "}
-                </label>
-                <textarea
-                  id="message"
-                  name="specialIns"
-                  rows="4"
-                  required
-                  className="block p-2.5 w-full text-lg  bg-gray-50 rounded-lg border border-gray-400  dark:placeholder-gray-400 dark:text-white focus:outline-none"
-                  placeholder="Write the special instructions here..."
-                  onChange={(e) => {
-                    changeUserFieldHandler(e);
-                  }}
-                ></textarea>
-              </div>
-              <div className="col-span-full flex lg:flex-row flex-col lg:gap-0 gap-4">
-                <div className="flex items-center justify-center gap-2 w-full lg:w-[40%] ">
-                  <label
-                    htmlFor="authorizedBy"
-                    className="font-normal lg:whitespace-nowrap text-lg "
+              <Row gutter={[16, 16]}>
+                <Col xs={24} lg={6}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">Office</label>
+                    }
+                    name={"reqOffice"}
                   >
-                    Authorized By:
+                    <Input readOnly value={office} className="h-[40px]" />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} lg={6}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">
+                        Division
+                      </label>
+                    }
+                    name="division"
+                  >
+                    <Input readOnly value={division} className="h-[40px]" />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} lg={6}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">Date</label>
+                    }
+                    name="dateRequested"
+                  >
+                    <Input readOnly value={daytime} className="h-[40px]" />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} lg={6}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">Nature</label>
+                    }
+                    name="natureOfRequest"
+                    rules={[
+                      {
+                        required: true,
+                        message: "This field is required",
+                      },
+                    ]}
+                  >
+                    <Select
+                      size="large"
+                      showSearch
+                      className="h-[40px]"
+                      filterOption={customFilterOption}
+                      onChange={handleChangeNature}
+                      value={natureValue} // Set the value of the Select component
+                    >
+                      {data.map((option, index) => (
+                        <Option key={index} value={option.natureRequest}>
+                          {option.natureOfRequest}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col xs={24} lg={6}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">Unit</label>
+                    }
+                    name="unit"
+                    rules={[
+                      {
+                        required: true,
+                        message: "This field is required",
+                      },
+                    ]}
+                  >
+                    <Select
+                      size="large"
+                      showSearch
+                      className="h-[40px]"
+                      filterOption={customFilterOption}
+                      onChange={handleChangeUnit}
+                      value={unitValue} // Set the value of the Select component
+                    >
+                      {units.map((option, index) => (
+                        <Option key={index} value={option.utilityCategory}>
+                          {option.utilityCategory}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col xs={24} lg={6}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">
+                        Property No.
+                      </label>
+                    }
+                    name="propertyNo"
+                  >
+                    <Input className="h-[40px]" />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} lg={6}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">
+                        Serial No.
+                      </label>
+                    }
+                    rules={[
+                      {
+                        required: true,
+                        message: "This field is required",
+                      },
+                    ]}
+                    name="serialNo"
+                  >
+                    <Input className="h-[40px]" />
+                  </Form.Item>
+                </Col>
+                <Col
+                  xs={24}
+                  lg={6}
+                  className="flex flex-col items-center justify-center pb-[30px] pt-[2px]"
+                >
+                  <label className="block text-sm font-bold mb-2 mr-auto text-black">
+                    Date Procured
                   </label>
-                  <input
-                    required
-                    type="text"
-                    id="authorizedBy"
-                    name="authorizedBy"
-                    value={author}
-                    className="  w-full border-b-2 border-gray-400   py-2 px-4 focus:outline-none"
-                    readOnly
+                  <DatePicker
+                    picker="year"
+                    onChange={handleDatePickerChange}
+                    onOpenChange={handleWarrantyNotif}
+                    className="h-[40px] w-full flex items-center justify-center"
                   />
-                </div>
+                </Col>
+                <Col xs={24} lg={24}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">
+                        Special Instructions
+                      </label>
+                    }
+                    rules={[
+                      {
+                        required: true,
+                        message: "This field is required",
+                      },
+                    ]}
+                    name="specialIns"
+                  >
+                    <TextArea rows={4} />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} lg={6}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">
+                        Authorized By
+                      </label>
+                    }
+                    name={"authorizedBy"}
+                  >
+                    <Input readOnly value={author} className="h-[40px]" />
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Form.Item name={"user_id"}>
+                    <Input hidden />
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Form.Item name={"fullName"}>
+                    <Input hidden />
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Form.Item name={"modeOfRequest"}>
+                    <Input hidden />
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Form.Item name={"dateProcured"}>
+                    <Input hidden />
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Form.Item name={"status"}>
+                    <Input hidden />
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Form.Item name={"assignedTo"}>
+                    <Input hidden />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <div className="col-span-full flex lg:flex-row flex-col lg:gap-0 gap-4">
                 <Button
                   loading={loading}
                   htmlType="submit"
@@ -457,7 +502,7 @@ const ServiceRequest = () => {
                 </Button>
               </div>
               <p></p>
-            </form>
+            </Form>
           </div>
         </div>
       </div>

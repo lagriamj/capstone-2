@@ -146,5 +146,10 @@ Route::get('/pending-signature/{fullName}', [HeadApprovedController::class, 'all
 Route::get('/pending-approved-signature/{fullName}', [HeadApprovedController::class, 'allpendingApproved']);
 Route::put('/approve-request/{requestId}', [HeadApprovedController::class, 'approveRequest']);
 
-
+//audit-log
 Route::get('/audit-logs', [AuditLogController::class, 'showAuditLog']);
+
+//cut-off time
+Route::post('/cut-off', [RequestsController::class, 'cutOffRequest']);
+Route::get('/getCutOffTime', [RequestsController::class, 'getCutOffTime']);
+Route::get('/reset-cut-off-time', [RequestsController::class, 'resetCutOffTime']);

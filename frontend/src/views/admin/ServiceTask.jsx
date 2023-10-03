@@ -20,6 +20,7 @@ import {
   SearchOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../AuthContext";
+import CutOffModal from "../../components/CutOffModal";
 
 const ServiceTask = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -416,6 +417,12 @@ const ServiceTask = () => {
     },
   ];
 
+  const [openCutOffModal, setOpenCutOffModal] = useState(false);
+
+  const closeCutOffModal = () => {
+    setOpenCutOffModal(!openCutOffModal);
+  };
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -449,17 +456,19 @@ const ServiceTask = () => {
                   className="my-4 h-12"
                 />
               </div>
-              <div className="flex lg:flex-row flex-col items-center text-black gap-2">
-                <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">
-                  <input
-                    type="datetime-local" // Use datetime-local input for date and time selection
-                    className="p-2 w-39 outline-none border-none bg-transparent"
-                  />
-                </div>
-                <button className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg">
-                  Set
-                </button>
-              </div>
+              <button
+                className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setOpenCutOffModal(true);
+                }}
+              >
+                Set Cut-Off Time
+              </button>
+              <CutOffModal
+                isOpen={openCutOffModal}
+                onClose={closeCutOffModal}
+              />
               <div className="flex items-center justify-center gap-4 mr-4 mb-4 lg:mb-0">
                 <div className="flex lg:flex-row flex-col items-center text-black gap-2">
                   <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">

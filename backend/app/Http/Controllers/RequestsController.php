@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\AuditLog;
 use App\Models\Requests;
+use App\Models\CutOffTime;
 use App\Models\User;
 use Carbon\Carbon;
 
@@ -158,5 +159,59 @@ class RequestsController extends Controller
         ];
 
         return response()->json($userData);
+    }
+
+
+    public function cutOffRequest(Request $request)
+    {
+        $validatedData = $request->validate([
+            'cutOff' => 'required|date_format:Y-m-d\TH:i',
+        ]);
+
+        $existingCutOffTime = CutOffTime::first();
+
+        if ($existingCutOffTime) {
+            $existingCutOffTime->update([
+                'cut_off' => $validatedData['cutOff'],
+            ]);
+        } else {
+            $cutOffTime = new CutOffTime();
+            $cutOffTime->cut_off = $validatedData['cutOff'];
+            $cutOffTime->save();
+        }
+
+        return response()->json(['message' => 'Cut-off time saved successfully'], 201);
+    }
+
+    public function getCutOffTime()
+    {
+        try {
+            $cutOffTime = CutOffTime::first();
+
+            if (!$cutOffTime) {
+                return response()->json(['message' => 'No cut-off time set yet.'], 200);
+            }
+
+            return response()->json(['message' => 'Cut-off time found', 'cutOffTime' => $cutOffTime->cut_off], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to fetch cut-off time'], 500);
+        }
+    }
+
+    public function resetCutOffTime()
+    {
+        $cutOffstartDateTime = Carbon::now();
+        $cutOffstartDateTime->setTime(1, 0, 0);
+
+        $cutOffendDateTime = Carbon::now();
+        $cutOffendDateTime->setTime(11, 59, 0);
+
+        $cutOffTimeToDelete = CutOffTime::where('cut_off', '<', $cutOffstartDateTime)
+            ->where('cut_off', '<', $cutOffendDateTime)
+            ->get();
+
+        if ($cutOffTimeToDelete->count() > 0) {
+            CutOffTime::query()->delete();
+        }
     }
 }
