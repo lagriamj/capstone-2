@@ -117,7 +117,14 @@ const Sidebar = () => {
             icon={faCodePullRequest}
             className={`${isScreenWidth1366 ? "h-3" : "h-5"}`}
           />
-          <Link to={"/request"}>Request Services</Link>
+          <label
+            className="cursor-pointer"
+            onClick={() => {
+              navigate("/request");
+            }}
+          >
+            Request Services
+          </label>
         </li>
         <li
           className={`flex gap-3 w-full items-center py-3 px-2 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
@@ -131,7 +138,14 @@ const Sidebar = () => {
             icon={faList}
             className={`${isScreenWidth1366 ? "h-3" : "h-5"}`}
           />
-          <Link to={"/current-requests"}>Current Requests</Link>
+          <label
+            className="cursor-pointer"
+            onClick={() => {
+              navigate("/current-requests");
+            }}
+          >
+            Current Requests
+          </label>
         </li>
         <li
           className={`flex gap-3 w-full items-center py-3 px-2 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
@@ -145,7 +159,14 @@ const Sidebar = () => {
             icon={faClipboard}
             className={`${isScreenWidth1366 ? "h-3" : "h-5"}`}
           />
-          <Link to={"/transactions"}>Service Transaction</Link>
+          <label
+            className="cursor-pointer"
+            onClick={() => {
+              navigate("/transactions");
+            }}
+          >
+            Transactions
+          </label>
         </li>
       </ul>
 
@@ -169,7 +190,14 @@ const Sidebar = () => {
                 icon={faUser}
                 className={`${isScreenWidth1366 ? "h-3" : "h-5"}`}
               />
-              <Link to={"/account"}>Account</Link>
+              <label
+                className="cursor-pointer"
+                onClick={() => {
+                  navigate("/account");
+                }}
+              >
+                Account
+              </label>
             </li>
             <li
               onClick={showLogoutConfirmationModal}

@@ -135,7 +135,14 @@ const AdminDrawer = () => {
             onClick={() => handleItemClick("dashboard")}
           >
             <DashboardIcon></DashboardIcon>
-            <Link to={"/dashboard"}>Dashboard</Link>
+            <label
+              className="cursor-pointer"
+              onClick={() => {
+                navigate("/dashboard");
+              }}
+            >
+              Dashboard
+            </label>
           </li>
           <li
             className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
@@ -146,19 +153,15 @@ const AdminDrawer = () => {
             onClick={() => handleItemClick("service-request")}
           >
             <HandymanIcon></HandymanIcon>
-            <Link to={"/service-request"}>Service Request</Link>
+            <label
+              className="cursor-pointer"
+              onClick={() => {
+                navigate("/service-request");
+              }}
+            >
+              Service Request
+            </label>
           </li>
-          {/*<li
-            className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
-              activeTab === "receive-service"
-                ? "bg-white text-main font-semibold"
-                : ""
-            }`}
-            onClick={() => handleItemClick("receive-service")}
-          >
-            <MarkAsUnreadIcon></MarkAsUnreadIcon>
-            <Link to={"/receive-service"}>Receive Service</Link>
-          </li> */}
           <li
             className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-300 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
               activeTab === "service-task"
@@ -168,20 +171,15 @@ const AdminDrawer = () => {
             onClick={() => handleItemClick("service-task")}
           >
             <AssignmentIcon></AssignmentIcon>
-            <Link to={"/service-task"}>Service Task</Link>
+            <label
+              className="cursor-pointer"
+              onClick={() => {
+                navigate("/service-task");
+              }}
+            >
+              Service Task
+            </label>
           </li>
-          {/* <li
-            className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:text-lg hover:font-semibold ${
-              activeTab === "service-transaction"
-                ? "bg-white text-main font-semibold"
-                : ""
-            }`}
-            onClick={() => handleItemClick("service-transaction")}
-          >
-            <WorkHistoryIcon></WorkHistoryIcon>
-            <Link to={"/service-transaction"}>Service Transaction</Link>
-          </li>
-          */}
           <li
             className={`flex gap-3 items-center relative w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
               activeTab === "utilitySettings"

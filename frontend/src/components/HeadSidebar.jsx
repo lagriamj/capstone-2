@@ -119,7 +119,14 @@ const HeadSidebar = () => {
               fontSize: isScreenWidth1366 ? "1rem" : "",
             }}
           />
-          <Link to={"/head/request"}>Request Services</Link>
+          <label
+            className="cursor-pointer"
+            onClick={() => {
+              navigate("/head/request");
+            }}
+          >
+            Request Services
+          </label>
         </li>
         <li
           className={`flex gap-3 w-full items-center py-3 px-2 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
@@ -135,7 +142,14 @@ const HeadSidebar = () => {
               fontSize: isScreenWidth1366 ? "1rem" : "",
             }}
           />
-          <Link to={"/head/current-requests"}>Current Requests</Link>
+          <label
+            className="cursor-pointer"
+            onClick={() => {
+              navigate("/head/current-requests");
+            }}
+          >
+            Current Requests
+          </label>
         </li>
         <li
           className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
@@ -150,7 +164,14 @@ const HeadSidebar = () => {
               fontSize: isScreenWidth1366 ? "1.2rem" : "",
             }}
           ></RuleIcon>
-          <Link to={"/approve-requests"}>Approve Requests </Link>
+          <label
+            className="cursor-pointer"
+            onClick={() => {
+              navigate("/approve-requests");
+            }}
+          >
+            Approve Requests
+          </label>
         </li>
         <li
           className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-300 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
@@ -163,7 +184,14 @@ const HeadSidebar = () => {
               fontSize: isScreenWidth1366 ? "1.2rem" : "",
             }}
           ></ArchiveIcon>
-          <Link to={"/approved-list"}>Approved List</Link>
+          <label
+            className="cursor-pointer"
+            onClick={() => {
+              navigate("/approved-list");
+            }}
+          >
+            Approved List
+          </label>
         </li>
         <li
           className={`flex gap-3 w-full items-center py-3 px-2 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
@@ -179,7 +207,14 @@ const HeadSidebar = () => {
               fontSize: isScreenWidth1366 ? "1rem" : "",
             }}
           />
-          <Link to={"/head/transactions"}>Service Transactions</Link>
+          <label
+            className="cursor-pointer"
+            onClick={() => {
+              navigate("/head/transactions");
+            }}
+          >
+            Transactions
+          </label>
         </li>
       </ul>
 
@@ -199,7 +234,14 @@ const HeadSidebar = () => {
                 icon={faUser}
                 className={`${isScreenWidth1366 ? "h-3" : "h-5"}`}
               />
-              <Link to={"/head/account"}>Account</Link>
+              <label
+                className="cursor-pointer"
+                onClick={() => {
+                  navigate("/head/account");
+                }}
+              >
+                Account
+              </label>
             </li>
             <li
               onClick={showLogoutConfirmationModal}

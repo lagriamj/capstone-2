@@ -136,7 +136,14 @@ const AdminSidebar = () => {
               fontSize: isScreenWidth1366 ? "1.2rem" : "",
             }}
           ></DashboardIcon>
-          <Link to={"/dashboard"}>Dashboard</Link>
+          <label
+            className="cursor-pointer"
+            onClick={() => {
+              navigate("/dashboard");
+            }}
+          >
+            Dashboard
+          </label>
         </li>
         <li
           className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
@@ -151,23 +158,15 @@ const AdminSidebar = () => {
               fontSize: isScreenWidth1366 ? "1.2rem" : "",
             }}
           ></HandymanIcon>
-          <Link to={"/service-request"}>Service Request</Link>
-        </li>
-        {/* <li
-          className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
-            activeTab === "receive-service"
-              ? "bg-white text-main font-semibold"
-              : ""
-          }`}
-          onClick={() => handleItemClick("receive-service")}
-        >
-          <MarkAsUnreadIcon
-            style={{
-              fontSize: isScreenWidth1366 ? "1.2rem" : "",
+          <label
+            className="cursor-pointer"
+            onClick={() => {
+              navigate("/service-request");
             }}
-          ></MarkAsUnreadIcon>
-          <Link to={"/receive-service"}>Receive Service</Link>
-          </li> */}
+          >
+            Service Request
+          </label>
+        </li>
         <li
           className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-300 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "service-task"
@@ -181,24 +180,15 @@ const AdminSidebar = () => {
               fontSize: isScreenWidth1366 ? "1.2rem" : "",
             }}
           ></AssignmentIcon>
-          <Link to={"/service-task"}>Service Task</Link>
-        </li>
-        {/* <li
-          className={`flex gap-3 items-center w-full py-3 px-2 whitespace-nowrap rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
-            activeTab === "service-transaction"
-              ? "bg-white text-main font-semibold"
-              : ""
-          }`}
-          onClick={() => handleItemClick("service-transaction")}
-        >
-          <WorkHistoryIcon
-            style={{
-              fontSize: isScreenWidth1366 ? "1.2rem" : "",
+          <label
+            className="cursor-pointer"
+            onClick={() => {
+              navigate("/service-task");
             }}
-          ></WorkHistoryIcon>
-          <Link to={"/service-transaction"}>Service Transaction</Link>
+          >
+            Service Task
+          </label>
         </li>
-          */}
         <li
           className={`flex gap-3 items-center relative w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "utilitySettings"
@@ -239,7 +229,6 @@ const AdminSidebar = () => {
                     : ""
                 }`}
                 onClick={() => {
-                  // Handle tab click (e.g., navigate to a different page)
                   handleItemClickAccount("categories");
                   navigate("/admin/categories");
                 }}
@@ -253,7 +242,6 @@ const AdminSidebar = () => {
                     : ""
                 }`}
                 onClick={() => {
-                  // Handle tab click (e.g., navigate to a different page)
                   handleItemClickAccount("natureOfRequests");
                   navigate("/admin/nature-of-requests");
                 }}
@@ -267,7 +255,6 @@ const AdminSidebar = () => {
                     : ""
                 }`}
                 onClick={() => {
-                  // Handle tab click (e.g., navigate to a different page)
                   handleItemClickAccount("auditLog");
                   navigate("/admin/audit-log");
                 }}
@@ -323,7 +310,6 @@ const AdminSidebar = () => {
                         : ""
                     }`}
                     onClick={() => {
-                      // Handle tab click (e.g., navigate to a different page)
                       handleItemClickAccount("userstList");
                       navigate("/users-list");
                     }}

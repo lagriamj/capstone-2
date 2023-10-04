@@ -115,7 +115,14 @@ const DrawerComponent = () => {
               onClick={() => handleItemClick("request")}
             >
               <FontAwesomeIcon icon={faCodePullRequest} className="h-5" />
-              <Link to={"/request"}>Request Services</Link>
+              <label
+                className="cursor-pointer"
+                onClick={() => {
+                  navigate("/request");
+                }}
+              >
+                Request Services
+              </label>
             </li>
             <li
               className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
@@ -126,7 +133,14 @@ const DrawerComponent = () => {
               onClick={() => handleItemClick("current-requests")}
             >
               <FontAwesomeIcon icon={faList} className="h-5" />
-              <Link to={"/current-requests"}>Current Requests</Link>
+              <label
+                className="cursor-pointer"
+                onClick={() => {
+                  navigate("/current-requests");
+                }}
+              >
+                Current Requests
+              </label>
             </li>
             <li
               className={`flex gap-3 items-center py-3 px-4 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
@@ -137,7 +151,14 @@ const DrawerComponent = () => {
               onClick={() => handleItemClick("transactions")}
             >
               <FontAwesomeIcon icon={faClipboard} className="h-5" />
-              <Link to={"/transactions"}>Service Transaction</Link>
+              <label
+                className="cursor-pointer"
+                onClick={() => {
+                  navigate("/transactions");
+                }}
+              >
+                Transactions
+              </label>
             </li>
           </ul>
 
@@ -154,7 +175,14 @@ const DrawerComponent = () => {
                   onClick={() => handleItemClick("account")}
                 >
                   <FontAwesomeIcon icon={faUser} className="h-5" />
-                  <Link to={"/account"}>Account</Link>
+                  <label
+                    className="cursor-pointer"
+                    onClick={() => {
+                      navigate("/account");
+                    }}
+                  >
+                    Account
+                  </label>
                 </li>
                 <li
                   onClick={showLogoutConfirmationModal}

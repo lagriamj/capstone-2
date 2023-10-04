@@ -102,11 +102,11 @@ const RateModal = ({
     });
   };
 
-  const renderRatingIcon = (value, questionNumber) => {
+  const renderRatingIcon = (value, questionNumber, description) => {
     const isActive = value === selectedRatings[`q${questionNumber}`];
     let icon = null;
     let color = "text-gray-400"; // Default gray color
-
+  
     switch (value) {
       case 1:
         icon = faSadTear;
@@ -131,14 +131,20 @@ const RateModal = ({
       default:
         break;
     }
-
+  
     const iconProps = {
       className: `text-3xl cursor-pointer ${color}`,
       onClick: () => handleRatingClick(value, questionNumber),
     };
-
-    return <FontAwesomeIcon icon={icon} {...iconProps} />;
+  
+    return (
+      <div className="text-center">
+        <FontAwesomeIcon icon={icon} {...iconProps} />
+        <div className="text-sm mt-1">{description}</div>
+      </div>
+    );
   };
+  
 
   return (
     <Modal
@@ -178,9 +184,8 @@ const RateModal = ({
     >
       <form onSubmit={onSubmitChange}>
         <div
-          className={`relative p-6 flex-auto grid grid-rows-4 ${
-            isScreenWidth1366 ? "text-sm" : "text-lg"
-          } grid-cols-5 lg:grid-rows-2 lg:grid-cols-4 gap-4`}
+          className={`relative p-6 flex-auto grid grid-rows-4 ${isScreenWidth1366 ? "text-sm" : "text-lg"
+            } grid-cols-5 lg:grid-rows-2 lg:grid-cols-4 gap-4`}
         >
           <div className="col-span-5 lg:col-span-2">
             <label htmlFor="q1" className=" font-semibold ">
@@ -188,19 +193,35 @@ const RateModal = ({
               serbisyo)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
-              {[1, 2, 3, 4, 5].map((value) => (
-                <div key={value}>{renderRatingIcon(value, 1)}</div>
+              {[
+                { value: 1, description: "1" },
+                { value: 2, description: "2" },
+                { value: 3, description: "3" },
+                { value: 4, description: "4" },
+                { value: 5, description: "5" },
+              ].map((item) => (
+                <div key={item.value}>
+                  {renderRatingIcon(item.value, 1, item.description)}
+                </div>
               ))}
             </div>
           </div>
           <div className="col-span-5 lg:col-span-2">
-            <label htmlFor="name" className=" font-semibold">
+            <label htmlFor="q5" className=" font-semibold">
               5. Employee Attitude towards Client (Saktong pamatasan sa
               empleyado)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
-              {[1, 2, 3, 4, 5].map((value) => (
-                <div key={value}>{renderRatingIcon(value, 2)}</div>
+              {[
+                { value: 1, description: "1" },
+                { value: 2, description: "2" },
+                { value: 3, description: "3" },
+                { value: 4, description: "4" },
+                { value: 5, description: "5" },
+              ].map((item) => (
+                <div key={item.value}>
+                  {renderRatingIcon(item.value, 5, item.description)}
+                </div>
               ))}
             </div>
           </div>
@@ -209,8 +230,16 @@ const RateModal = ({
               2. Quality of Service (Kalidad serbisyo)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
-              {[1, 2, 3, 4, 5].map((value) => (
-                <div key={value}>{renderRatingIcon(value, 3)}</div>
+              {[
+                { value: 1, description: "1" },
+                { value: 2, description: "2" },
+                { value: 3, description: "3" },
+                { value: 4, description: "4" },
+                { value: 5, description: "5" },
+              ].map((item) => (
+                <div key={item.value}>
+                  {renderRatingIcon(item.value, 2, item.description)}
+                </div>
               ))}
             </div>
           </div>
@@ -219,8 +248,16 @@ const RateModal = ({
               7. Transaction Costs (Kantidad sa serbisyo)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
-              {[1, 2, 3, 4, 5].map((value) => (
-                <div key={value}>{renderRatingIcon(value, 4)}</div>
+              {[
+                { value: 1, description: "1" },
+                { value: 2, description: "2" },
+                { value: 3, description: "3" },
+                { value: 4, description: "4" },
+                { value: 5, description: "5" },
+              ].map((item) => (
+                <div key={item.value}>
+                  {renderRatingIcon(item.value, 7, item.description)}
+                </div>
               ))}
             </div>
           </div>
@@ -229,8 +266,16 @@ const RateModal = ({
               3. Access and Facilities (Paagi ug pag-gamit sa pasilidad)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
-              {[1, 2, 3, 4, 5].map((value) => (
-                <div key={value}>{renderRatingIcon(value, 5)}</div>
+              {[
+                { value: 1, description: "1" },
+                { value: 2, description: "2" },
+                { value: 3, description: "3" },
+                { value: 4, description: "4" },
+                { value: 5, description: "5" },
+              ].map((item) => (
+                <div key={item.value}>
+                  {renderRatingIcon(item.value, 3, item.description)}
+                </div>
               ))}
             </div>
           </div>
@@ -239,8 +284,16 @@ const RateModal = ({
               6. Integrity (Pagkamatarongon sinsero sa empleyado)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
-              {[1, 2, 3, 4, 5].map((value) => (
-                <div key={value}>{renderRatingIcon(value, 6)}</div>
+              {[
+                { value: 1, description: "1" },
+                { value: 2, description: "2" },
+                { value: 3, description: "3" },
+                { value: 4, description: "4" },
+                { value: 5, description: "5" },
+              ].map((item) => (
+                <div key={item.value}>
+                  {renderRatingIcon(item.value, 6, item.description)}
+                </div>
               ))}
             </div>
           </div>
@@ -249,8 +302,16 @@ const RateModal = ({
               4. Communication (Kahanas sa pag abi-abi)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
-              {[1, 2, 3, 4, 5].map((value) => (
-                <div key={value}>{renderRatingIcon(value, 7)}</div>
+              {[
+                { value: 1, description: "1" },
+                { value: 2, description: "2" },
+                { value: 3, description: "3" },
+                { value: 4, description: "4" },
+                { value: 5, description: "5" },
+              ].map((item) => (
+                <div key={item.value}>
+                  {renderRatingIcon(item.value, 4, item.description)}
+                </div>
               ))}
             </div>
           </div>
@@ -259,8 +320,16 @@ const RateModal = ({
               8. Overall Experience/Satisfaction (Kinatibuk-ang kasinatian)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
-              {[1, 2, 3, 4, 5].map((value) => (
-                <div key={value}>{renderRatingIcon(value, 8)}</div>
+              {[
+                { value: 1, description: "1" },
+                { value: 2, description: "2" },
+                { value: 3, description: "3" },
+                { value: 4, description: "4" },
+                { value: 5, description: "5" },
+              ].map((item) => (
+                <div key={item.value}>
+                  {renderRatingIcon(item.value, 8, item.description)}
+                </div>
               ))}
             </div>
           </div>
@@ -311,9 +380,8 @@ const RateModal = ({
         </div>
         <div className="flex items-center justify-end p-6 border-t border-solid border-gray-300 rounded-b">
           <button
-            className={` font-sans text-white bg-red-700 ${
-              isScreenWidth1366 ? "text-sm py-3" : "text-sm py-2"
-            }  rounded-lg  background-transparent font-bold px-6  outline-none focus:outline-none mr-1  ease-linear transition-all duration-150`}
+            className={` font-sans text-white bg-red-700 ${isScreenWidth1366 ? "text-sm py-3" : "text-sm py-2"
+              }  rounded-lg  background-transparent font-bold px-6  outline-none focus:outline-none mr-1  ease-linear transition-all duration-150`}
             type="button"
             onClick={onClose}
           >
@@ -323,9 +391,8 @@ const RateModal = ({
             loading={loading}
             type="primary"
             htmlType="submit"
-            className={`bg-gray-800  ${
-              isScreenWidth1366 ? "text-sm py-6" : "text-base py-7"
-            }  font-semibold flex items-center justify-center text-white  font-sans w-28  rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out `}
+            className={`font-sans text-white bg-gray-800  ${isScreenWidth1366 ? "text-sm py-6" : "text-base py-7"
+              }  font-semibold flex items-center justify-center text-white  font-sans w-28  rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out `}
           >
             {loading ? "Submitting" : "Submit"}
           </Button>

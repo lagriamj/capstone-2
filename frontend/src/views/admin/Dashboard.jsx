@@ -5,13 +5,7 @@ import AdminDrawer from "../../components/AdminDrawer";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Modal, Button, Table, Badge } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faClipboardCheck,
-  faFilter,
-  faHandHoldingHeart,
-  faTableList,
-  faTicket,
-} from "@fortawesome/free-solid-svg-icons";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import Filter1Icon from "@mui/icons-material/Filter1";
 import Filter2Icon from "@mui/icons-material/Filter2";
 import Filter3Icon from "@mui/icons-material/Filter3";
@@ -20,6 +14,13 @@ import { Tooltip, Legend, ResponsiveContainer, PieChart, Pie } from "recharts";
 import BarGraph from "../../components/BarGraph";
 import { useNavigate } from "react-router-dom";
 import { NotificationOutlined } from "@ant-design/icons";
+import { FolderPlusIcon } from "@heroicons/react/24/solid";
+import { WrenchScrewdriverIcon } from "@heroicons/react/24/solid";
+import { DocumentCheckIcon } from "@heroicons/react/24/solid";
+import { StarIcon } from "@heroicons/react/24/solid";
+import { FaceSmileIcon } from "@heroicons/react/24/solid";
+import { FaceFrownIcon } from "@heroicons/react/24/solid";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/solid";
 
 const Dashboard = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -496,6 +497,26 @@ const Dashboard = () => {
     );
   }
 
+  const [isBelow800, setIsBelow800] = useState(false);
+
+  useEffect(() => {
+    function checkScreenHeight() {
+      if (window.innerHeight < 800) {
+        setIsBelow800(true);
+      } else {
+        setIsBelow800(false);
+      }
+    }
+
+    window.addEventListener("resize", checkScreenHeight);
+
+    checkScreenHeight();
+
+    return () => {
+      window.removeEventListener("resize", checkScreenHeight);
+    };
+  }, []);
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -516,66 +537,149 @@ const Dashboard = () => {
                 ref={elementRef}
                 className="w-full lg:h-screen h-auto flex flex-col  lg:grid lg:grid-cols-7 lg:grid-rows-5 gap-x-3 "
               >
-                <div className="lg:grid lg:col-span-5 text-black font-sans">
-                  <div className="flex lg:flex-row flex-col w-full  lg:justify-between ">
+                <div className="lg:grid lg:col-span-5 lg:row-span-1 lg:h-[90%] lg:py-2 pt-10  rounded-lg bg-white text-black font-sans">
+                  <div className="lg:grid w-full  lg:grid-cols-3 lg:grid-rows-2 flex flex-col lg:gap-0 gap-4 lg:mb-0 mb-20  pl-20 pr-10">
                     <div
-                      onClick={handleServiceTaskClick}
-                      className="flex lg:w-[32%] lg:h-[18vh] lg:mb-0 mb-3 cursor-pointer bg-[#fff4de] shadow-md rounded-lg"
+                      className=" flex w-full gap-2 items-center text-left cursor-pointer"
+                      onClick={() => {
+                        handleServiceTaskClick();
+                      }}
                     >
-                      <div className="flex flex-col w-[60%] font-medium cursor-pointer items-center justify-center px-2">
-                        <FontAwesomeIcon
-                          icon={faTicket}
-                          className="text-[#ff947a] h-12 w-12 large:h-20 large:w-20"
+                      <div
+                        className={`bg-[#fff4de] rounded-xl ${
+                          isBelow800 ? "p-3" : "p-4"
+                        }`}
+                      >
+                        <FolderPlusIcon
+                          className={`${
+                            isBelow800 ? "h-5 w-5" : "h-7 w-7"
+                          } text-[#ff947a]`}
                         />
-                        <label className="large:text-xl large:mt-2">
-                          New Requests
-                        </label>
                       </div>
-                      <h1 className="large:text-4xl lg:text-2xl font-bold flex items-center justify-center ml-auto mr-auto">
-                        {counts.countPending}
-                      </h1>
+                      <div className="flex flex-col">
+                        <label>New</label>
+                        <label>{counts.countPending}</label>
+                      </div>
                     </div>
                     <div
-                      onClick={handleServiceTaskClick}
-                      className="flex lg:w-[32%] lg:h-[18vh] mb-3 cursor-pointer bg-[#dcfce7] shadow-md rounded-lg"
+                      className=" flex w-full gap-2 items-center text-left cursor-pointer"
+                      onClick={() => {
+                        handleServiceTaskClick();
+                      }}
                     >
-                      <div className="flex flex-col w-[60%] font-medium cursor-pointer items-center justify-center px-2">
-                        <FontAwesomeIcon
-                          icon={faTableList}
-                          className="text-[#3cd958] h-12 w-12 large:h-20 large:w-20"
+                      <div
+                        className={`bg-[#dcfce7] rounded-xl ${
+                          isBelow800 ? "p-3" : "p-4"
+                        }`}
+                      >
+                        <WrenchScrewdriverIcon
+                          className={`${
+                            isBelow800 ? "h-5 w-5" : "h-7 w-7"
+                          } text-[#3cd958]`}
                         />
-                        <label className="w-full large:text-lg large:mt-2 large:whitespace-nowrap text-center ">
-                          Received Requests
-                        </label>
                       </div>
-                      <h1 className="large:text-4xl lg:text-2xl font-bold flex items-center justify-center ml-auto mr-auto">
-                        {counts.countReceived}
-                      </h1>
+                      <div className="flex flex-col">
+                        <label>Received</label>
+                        <label>{counts.countReceived}</label>
+                      </div>
                     </div>
                     <div
-                      onClick={handleServiceTaskClick}
-                      className="flex lg:w-[32%] lg:h-[18vh] mb-3 cursor-pointer bg-[#f4e8ff] shadow-md rounded-lg"
+                      className=" flex w-full gap-2 items-center text-left cursor-pointer"
+                      onClick={() => {
+                        handleServiceTaskClick();
+                      }}
                     >
-                      <div className="flex flex-col w-[60%] font-medium  items-center justify-center px-2">
-                        <FontAwesomeIcon
-                          icon={faClipboardCheck}
-                          className="text-[#bf83ff] h-12 w-12 large:h-20 large:w-20"
+                      <div
+                        className={`bg-[#e9d5fe] rounded-xl ${
+                          isBelow800 ? "p-3" : "p-4"
+                        }`}
+                      >
+                        <DocumentCheckIcon
+                          className={`${
+                            isBelow800 ? "h-5 w-5" : "h-7 w-7"
+                          } text-[#bf83ff]`}
                         />
-                        <label className="large:text-xl large:mt-2">
-                          Closed
-                        </label>
                       </div>
-                      <h1 className="large:text-4xl lg:text-2xl font-bold flex items-center justify-center ml-auto mr-auto">
-                        {counts.countClosed}
-                      </h1>
+                      <div className="flex flex-col">
+                        <label>Closed</label>
+                        <label>{counts.countClosed}</label>
+                      </div>
+                    </div>
+                    <div
+                      className=" flex w-full gap-2 items-center text-left cursor-pointer"
+                      onClick={() => {
+                        handleServiceTaskClick();
+                      }}
+                    >
+                      <div
+                        className={`bg-[#fff4de] rounded-xl ${
+                          isBelow800 ? "p-3" : "p-4"
+                        }`}
+                      >
+                        <StarIcon
+                          className={`${
+                            isBelow800 ? "h-5 w-5" : "h-7 w-7"
+                          } text-[#ff947a]`}
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <label>Overall Rating</label>
+                        <label>{formattedTotalRatings}%</label>
+                      </div>
+                    </div>
+                    <div
+                      className=" flex w-full gap-2 items-center text-left cursor-pointer"
+                      onClick={() => {
+                        handleServiceTaskClick();
+                      }}
+                    >
+                      <div
+                        className={`bg-[#dcfce7] rounded-xl ${
+                          isBelow800 ? "p-3" : "p-4"
+                        }`}
+                      >
+                        <FaceSmileIcon
+                          className={`${
+                            isBelow800 ? "h-5 w-5" : "h-7 w-7"
+                          } text-[#3cd958]`}
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <label>Satisfied</label>
+                        <label>{formattedTotalSatisfied}%</label>
+                      </div>
+                    </div>
+                    <div
+                      className=" flex w-full gap-2 items-center text-left cursor-pointer"
+                      onClick={() => {
+                        handleServiceTaskClick();
+                      }}
+                    >
+                      <div
+                        className={`bg-[#e9d5fe] rounded-xl ${
+                          isBelow800 ? "p-3" : "p-4"
+                        }`}
+                      >
+                        <FaceFrownIcon
+                          className={`${
+                            isBelow800 ? "h-5 w-5" : "h-7 w-7"
+                          } text-[#bf83ff]`}
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <label>Unsatisfied</label>
+                        <label>{formattedTotalUnsatisfied}%</label>
+                      </div>
                     </div>
                   </div>
                 </div>
                 <div className="lg:col-span-5 flex lg:flex-row flex-col   row-span-2  rounded-lg row-start-2 ">
                   <div className="bg-white lg:w-[49%] mr-2 w-full rounded-lg shadow-md">
-                    <label className="text-lg font-medium pl-4 pt-2 flex ">
-                      Closed and Unclosed Requests
-                    </label>
+                    <div className="flex gap-2 w-full">
+                      <label className="text-lg font-medium pl-4 pt-2 flex ">
+                        Closed and Unclosed Requests
+                      </label>
+                    </div>
                     <ResponsiveContainer width="100%" height="90%">
                       <PieChart width={600} height={600}>
                         <Pie
@@ -715,6 +819,7 @@ const Dashboard = () => {
                         className="border-2 border-gray-700  rounded-lg px-1 large:text-lg mediumLg:text-sm w-36 lg:text-base "
                       />
                     </div>
+                    <EllipsisVerticalIcon className="h-6 w-6 mt-2" />
                   </div>
 
                   <BarGraph
@@ -789,50 +894,12 @@ const Dashboard = () => {
                     ))}
                   </div>
                 </div>
-                <div className="lg:grid lg:col-start-6 lg:col-span-2 lg:row-start-4 mt-2 lg:row-span-1">
+                <div className="lg:grid lg:col-start-6 lg:col-span-2 lg:row-start-4 mt-2 lg:row-span-2">
                   <div className="bg-white  w-full rounded-lg shadow-md font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
-                    <div className="flex border-b-2 items-center justify-center border-gray-400">
-                      <h1 className="px-3 py-1  font-semibold ">Rating</h1>
-                      <FontAwesomeIcon
-                        icon={faHandHoldingHeart}
-                        className="large:h-8 large:w-8 text-main mediumLg:h-6 mediumLg:w-6"
-                      />
-                    </div>
-                    <div className="flex flex-col pl-10 gap-1 mediumLg:gap-y-4 mediumLg:mt-2   font-medium p-2 ">
-                      <div className="flex  text-left  gap-3">
-                        <label className="gotoLarge:whitespace-nowrap">
-                          Overall Ratings:{" "}
-                        </label>
-                        <label className="text-red-700 text-base large:text-xl font-semibold italic">
-                          {" "}
-                          {formattedTotalRatings}%
-                        </label>
-                      </div>
-
-                      <div className="flex  text-left gap-3">
-                        <label>Satisfied: </label>
-                        <label className="text-red-700 text-base large:text-xl font-semibold italic">
-                          {" "}
-                          {formattedTotalSatisfied}%
-                        </label>
-                      </div>
-
-                      <div className="flex  text-left  gap-3">
-                        <label>Unsatisfied: </label>
-                        <label className=" text-red-700 text-base large:text-xl font-semibold italic">
-                          {" "}
-                          {formattedTotalUnsatisfied}%
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="lg:grid lg:col-start-6 lg:col-span-2 lg:row-start-5 mt-2 lg:row-span-1">
-                  <div className="bg-white w-full rounded-lg shadow-md font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
-                    <h1 className="px-3 py-1 text-center font-semibold border-b-2 border-gray-400 ">
+                    <h1 className="p-3 text-center font-semibold border-b-2 border-gray-400 ">
                       Top 3 Nature of Requests
                     </h1>
-                    <ul className="flex flex-col gap-2 pt-2 pl-10 mediumLg:gap-y-4 mediumLg:mt-2   font-medium   px-4 ">
+                    <ul className="flex flex-col gap-4 gap-y-10 pt-4 gotoLarge:gap-y-12 gotoLarge:pt-14 font-medium   mediumLg:gap-y-4 mediumLg:pt-6 large:gap-y-14 large:pt-10 p-4 ">
                       {ratingsAndNature.topNature.map(
                         (natureOfRequest, index) => (
                           <li className="flex  gap-4" key={index}>
