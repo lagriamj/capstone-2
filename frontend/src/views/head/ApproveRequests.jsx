@@ -100,7 +100,7 @@ const ApproveRequests = () => {
 
     {
       title: "Request ID",
-      dataIndex: "id",
+      dataIndex: "request_code",
       key: "id",
     },
     {

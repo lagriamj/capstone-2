@@ -9,6 +9,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../AuthContext";
 import { Button, message } from "antd";
+import { useActiveTab } from "../ActiveTabContext";
 
 function Login() {
   const [role, setRole] = useState("");
@@ -21,16 +22,20 @@ function Login() {
   const { userRole, isAuthenticated, login, fullName } = useAuth();
   const location = useLocation();
   const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
+  const { setActive } = useActiveTab();
 
   useEffect(() => {
     // If the user is already authenticated, redirect them to the appropriate page
     if (isAuthenticated) {
       if (userRole === "admin") {
         navigate("/dashboard");
+        setActive("dashboard");
       } else if (userRole === "user") {
         navigate("/request");
+        setActive("request");
       } else if (userRole === "head") {
         navigate("/head/request");
+        setActive("request");
       }
     }
   }, [isAuthenticated, userRole, navigate]);
@@ -92,10 +97,13 @@ function Login() {
         if (data.userStatus === "verified") {
           if (data.role === "admin") {
             navigate("/dashboard");
+            setActive("dashboard");
           } else if (data.role === "user") {
             navigate("/request");
+            setActive("request");
           } else {
             navigate("/approve-requests");
+            setActive("approve-requests");
           }
         } else if (data.userStatus === "unverified") {
           navigate("/verify-otp", {

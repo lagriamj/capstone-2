@@ -23,6 +23,7 @@ import { FaceFrownIcon } from "@heroicons/react/24/solid";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/solid";
 import { PresentationChartLineIcon } from "@heroicons/react/24/solid";
 import TechnicianPerformance from "../../components/TechnicianPerformance";
+import { useActiveTab } from "../../ActiveTabContext";
 
 const Dashboard = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -36,9 +37,11 @@ const Dashboard = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
   const navigate = useNavigate();
+  const { setActive } = useActiveTab();
 
   const handleServiceTaskClick = () => {
     navigate("/service-task");
+    setActive("service-task");
   };
 
   const elementRef = useRef(null);
@@ -811,6 +814,7 @@ const Dashboard = () => {
                   <TechnicianPerformance
                     isOpen={techPerformanceModal}
                     onClose={closeTechPerformanceModal}
+                    isLargeScreen={isLargeScreen}
                   />
                   <div className="w-full  flex lg:flex-row flex-col gap-2 px-2 py-3 mediumLg:pt-1 justify-end">
                     {" "}
@@ -928,7 +932,7 @@ const Dashboard = () => {
                 <div className="text-black font-sans overflow-auto lg:mt-0 mt-3  bg-white shadow-md rounded-lg lg:col-start-6 lg:col-span-2  lg:row-start-1 lg:row-span-3 ">
                   <div className="flex flex-col">
                     <div className="flex items-center border-b-2 gap-2 border-gray-400 py-3 pl-4">
-                      <Badge dot={requestDetails.length === 0 ? false : true}>
+                      <Badge count={requestDetails.length} size="small">
                         <NotificationOutlined
                           style={{
                             fontSize: 16,
@@ -1033,6 +1037,7 @@ const Dashboard = () => {
             key=""
             onClick={() => {
               navigate("/service-task");
+              setActive("service-task");
             }}
             className="bg-main text-white h-9 "
           >

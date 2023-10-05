@@ -24,7 +24,7 @@ import { ExclamationCircleOutlined } from "@ant-design/icons";
 const Requests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const isLargeScreen = windowWidth >= 1024;
-  const { setActiveTab } = useActiveTab();
+  const { setActive } = useActiveTab();
   const [loading, setLoading] = useState(false);
   const [office, setOffice] = useState("");
   const [division, setDivision] = useState("");
@@ -146,7 +146,7 @@ const Requests = () => {
   }, [office]);
 
   const handleNewActiveTab = () => {
-    setActiveTab("current-requests");
+    setActive("current-requests");
   };
 
   const checkCutOffTime = async () => {

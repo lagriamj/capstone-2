@@ -15,6 +15,7 @@ import RateModal from "../../components/RateModal";
 import ReasonModal from "../../components/ReasonModal";
 import HeadSidebar from "../../components/HeadSidebar";
 import HeadDrawer from "../../components/HeadDrawer";
+import { useActiveTab } from "../../ActiveTabContext";
 
 const HeadCurrentRequests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -30,7 +31,7 @@ const HeadCurrentRequests = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
-
+  const { setActive } = useActiveTab();
   const [selectedID, setSelectedID] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedOffice, setSelectedOffice] = useState(null);
@@ -65,6 +66,7 @@ const HeadCurrentRequests = () => {
     if (locationState && locationState.successMessage) {
       setDisplaySuccessMessage(true);
       navigate("/head/current-requests");
+      setActive("current-requests");
     }
   }, []);
 

@@ -79,10 +79,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
         size: "large",
       }}
     >
-      <ReactToPrint
-        ref={printRef} // Assign the ref for the ReactToPrint component
-        content={() => contentRef.current} // No need for an additional trigger element
-      />
+      <ReactToPrint ref={printRef} content={() => contentRef.current} />
       <div className="text-black w-full overflow-auto " ref={contentRef}>
         <div className="flex">
           <div className="flex flex-col">

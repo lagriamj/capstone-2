@@ -15,6 +15,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import RateModal from "../../components/RateModal";
 import ReasonModal from "../../components/ReasonModal";
+import { useActiveTab } from "../../ActiveTabContext";
 
 const CurrentRequests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -31,6 +32,7 @@ const CurrentRequests = () => {
   const [loading, setLoading] = useState(true);
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
   const { fullName } = useAuth();
+  const { setActive } = useActiveTab();
 
   const [selectedID, setSelectedID] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
@@ -66,6 +68,7 @@ const CurrentRequests = () => {
     if (locationState && locationState.successMessage) {
       setDisplaySuccessMessage(true);
       navigate("/current-requests");
+      setActive("current-requests");
     }
   }, []);
 

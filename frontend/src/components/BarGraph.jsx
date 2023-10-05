@@ -19,17 +19,24 @@ const BarGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
     return `${month} ${day}`;
   };
 
-  //const maxValues1 = Math.max(...data.map((item) => item[values1]));
-  //const maxValues2 = Math.max(...data.map((item) => item[values2]));
-  //const maxValue = Math.max(maxValues1, maxValues2) + 1;
+  const nameFormat = (name) => {
+    const fullNameArray = name.split(" ");
+    const lastName = fullNameArray[fullNameArray.length - 1];
+    return lastName;
+  };
 
   return (
     <ResponsiveContainer width={"100%"} height={windowsHeight768 ? 200 : 300}>
       <BarChart data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
+          tick={{ fontSize: "14px" }}
+          interval={0}
+          height={40}
           dataKey={xValue}
-          {...(xValue === "date" && { tickFormatter: formatDate })}
+          {...(xValue === "date"
+            ? { tickFormatter: formatDate }
+            : { tickFormatter: nameFormat })}
         />
         <YAxis />
         <Tooltip />
