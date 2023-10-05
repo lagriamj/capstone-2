@@ -11,8 +11,9 @@ return new class extends Migration
     {
         Schema::create('user_requests', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id'); // Foreign key column
-            $table->foreign('user_id')->references('userID')->on('users'); // Use 'userID' as the reference column
+            $table->string('request_code')->unique();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('userID')->on('users');
             $table->string('fullName');
             $table->string('reqOffice');
             $table->string('division');

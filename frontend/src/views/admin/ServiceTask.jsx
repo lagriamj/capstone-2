@@ -240,8 +240,8 @@ const ServiceTask = () => {
     },
     {
       title: "Request ID",
-      dataIndex: "request_id",
-      key: "request_id",
+      dataIndex: "request_code",
+      key: "request_code",
     },
     {
       title: "Requested By",

@@ -11,6 +11,7 @@ class Requests extends Model
     protected $table = 'user_requests';
     protected $primaryKey = 'id';
     protected $fillable = [
+        'request_code',
         'user_id',
         'fullName',
         'reqOffice',

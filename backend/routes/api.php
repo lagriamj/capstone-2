@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserSignatureController;
 use App\Http\Controllers\HeadApprovedController;
+use App\Http\Controllers\AuditLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,7 +42,7 @@ Route::middleware('api')->group(function () {
     Route::post('/verify-otp', [UserController::class, 'verifyOTP']);
     Route::put('/verify-otp', [UserController::class, 'resendOTP']);
     Route::post('/logout', [LogoutController::class, 'logout']);
-    Route::put('/update-email', [UserController::class, 'updateEmail']);
+    Route::put('/update-phone', [UserController::class, 'updatePhoneNumber']);
     //Request Services (user side)
     Route::get('/getOfficeAndDivision/{userID}', [RequestsController::class, 'getOfficeAndDivision']);
     Route::post('add-request', [RequestsController::class, 'addRequest']);
@@ -67,7 +68,7 @@ Route::middleware('api')->group(function () {
     //Receive Service (admin side)
     Route::put('delete-receive/{id}', [ReceiveServiceController::class, 'destroyService']);
     Route::get('pending-request/{startDate?}/{endDate?}/{selectedSort?}/{search?}', [ReceiveServiceController::class, 'pendingRequest']);
-    Route::post('received-request/{id}', [ReceiveServiceController::class, 'receivedRequest']);
+    Route::post('received-request/{id}/{fullName}', [ReceiveServiceController::class, 'receivedRequest']);
 
     //Service Task (admin side)
     Route::get('service-task-list/{startDate?}/{endDate?}/{search?}', [ReceiveServiceController::class, 'showServiceTask']);
@@ -75,9 +76,9 @@ Route::middleware('api')->group(function () {
 
 
     // Route::get('service-my-task-list/{fullName}', [ReceiveServiceController::class, 'showMyServiceTask']);
-    Route::put('onprogress-request/{id}', [ReceiveServiceController::class, 'onprogressRequest']);
-    Route::put('torelease-request/{id}', [ReceiveServiceController::class, 'toreleaseRequest']);
-    Route::post('torate-request/{id}', [ReceiveServiceController::class, 'torateRequest']);
+    Route::put('onprogress-request/{id}/{fullName}', [ReceiveServiceController::class, 'onprogressRequest']);
+    Route::put('torelease-request/{id}/{fullName}', [ReceiveServiceController::class, 'toreleaseRequest']);
+    Route::post('torate-request/{id}/{fullName}', [ReceiveServiceController::class, 'torateRequest']);
     Route::put('delete-serviced/{id}/{reqID}', [ReceiveServiceController::class, 'destroyServiceTask']);
 
     //Service Transaction
@@ -115,7 +116,7 @@ Route::middleware('api')->group(function () {
     Route::delete('delete-technician/{id}', [TechnicianController::class, 'destroyTechnician']);
 
     // View Cancel Reason
-    Route::post('cancel-reason/{id}', [ReceiveServiceController::class, 'cancelReason']);
+    Route::post('cancel-reason/{id}/{name}', [ReceiveServiceController::class, 'cancelReason']);
     Route::get('view-cancelled/{id}', [ReceiveServiceController::class, 'viewCancelRequest']);
 });
 
@@ -146,7 +147,7 @@ Route::get('/pending-signature/{fullName}', [HeadApprovedController::class, 'all
 Route::get('/pending-approved-signature/{fullName}', [HeadApprovedController::class, 'allpendingApproved']);
 Route::put('/approve-request/{requestId}', [HeadApprovedController::class, 'approveRequest']);
 
-//audit-log
+//audit log
 Route::get('/audit-logs', [AuditLogController::class, 'showAuditLog']);
 
 //cut-off time

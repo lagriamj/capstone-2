@@ -68,7 +68,22 @@ class RequestsController extends Controller
             'assignedTo' => 'required',
         ]);
 
-        // Add the created_at and updated_at timestamps
+        $currentYear = date('Y');
+        $latestRequest = Requests::where('request_code', 'like', $currentYear . '-%')
+            ->orderBy('request_code', 'desc')
+            ->first();
+
+        $sequenceNumber = 1;
+
+        if ($latestRequest) {
+            $latestSequenceNumber = intval(substr($latestRequest->request_code, -3));
+            $sequenceNumber = $latestSequenceNumber + 1;
+        }
+
+        $formattedSequenceNumber = str_pad($sequenceNumber, 3, '0', STR_PAD_LEFT);
+        $requestCode = $currentYear . '-' . $formattedSequenceNumber . 'C';
+
+        $validatedData['request_code'] = $requestCode;
         $now = now();
         $validatedData['dateRequested'] = $now;
         $validatedData['dateUpdated'] = $now;
