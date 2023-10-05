@@ -43,6 +43,24 @@ const TechnicianPerformance = ({ isOpen, onClose, isLargeScreen }) => {
       onCancel={onClose}
       footer={null}
     >
+      <div className="flex w-full items-center justify-center lg:justify-end gap-4 mr-4 mb-4 lg:mb-2">
+        <div className="flex lg:flex-row flex-col items-center text-black gap-2">
+          <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">
+            <span className="font-semibold">From:</span>
+            <input
+              type="date"
+              className="p-2 w-36 outline-none border-none bg-transparent"
+            />
+          </div>
+          <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">
+            <span className="font-semibold">To:</span>
+            <input
+              type="date"
+              className="p-2 w-36 outline-none border-none bg-transparent"
+            />
+          </div>
+        </div>
+      </div>
       <Table
         columns={techPerformanceColumn}
         pagination={true}

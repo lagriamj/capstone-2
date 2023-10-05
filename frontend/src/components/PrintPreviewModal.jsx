@@ -64,7 +64,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
       open={visible}
       onCancel={onClose}
       onOk={handlePrint}
-      width="65%" // Set a custom width
+      width="90%" // Set a custom width
       style={{ height: "60vh" }}
       className="ant-modal-content-custom "
       okButtonProps={{
@@ -115,7 +115,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
             />
           </div>
         </div>
-        <div className="flex justify-between">
+        <div className=" relative flex justify-between">
           <div className="flex flex-col mt-auto">
             <input
               type="text"
@@ -134,6 +134,9 @@ const PrintPreviewModal = ({ visible, onClose, itemData }) => {
             <h1>CITY INFORMATION TECHNOLOGY CENTER</h1>
           </div>
           <div className="w-[12%]"></div>
+          <div className="absolute bottom-0 right-0 text-base font-bold ">
+            Diri ang request code
+          </div>
         </div>
         <div className="border-2 border-black w-full">
           <div className="text-center font-bold border-2 border-black text-2xl p-1">
