@@ -1,39 +1,64 @@
-import { Modal, Table } from "antd";
+import { Modal, Table, Button } from "antd";
 import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const TechnicianPerformance = ({ isOpen, onClose, isLargeScreen }) => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:8000/api/tech-performance")
+      .then((response) => {
+        setData(response.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+
   const techPerformanceColumn = [
     {
-      title: "Technician",
-      dataIndex: "servicedBy",
-      key: "servicedBy",
+      title: "#",
+      dataIndex: "index",
+      key: "index",
+      render: (text, record, index) => index + 1,
     },
     {
-      title: "Assigned Requests",
-      dataIndex: "jsonName",
-      key: "jsonName",
+      title: "Technician",
+      dataIndex: "technician",
+      key: "technician",
+    },
+    {
+      title: "Total Assigned Requests",
+      dataIndex: "all_req",
+      key: "all_req",
     },
     {
       title: "Closed Requests",
-      dataIndex: "servicedBy",
-      key: "servicedBy",
+      dataIndex: "closed_req",
+      key: "closed_req",
     },
     {
       title: "Unclosed Requests",
-      dataIndex: "servicedBy",
-      key: "servicedBy",
+      dataIndex: "unclosed_req",
+      key: "unclosed_req",
     },
     {
       title: "Performance by Percentage",
-      dataIndex: "servicedBy",
-      key: "servicedBy",
+      dataIndex: "performance",
+      key: "performance",
     },
     {
       title: "Ratings",
-      dataIndex: "servicedBy",
-      key: "servicedBy",
+      dataIndex: "rating",
+      key: "rating",
     },
   ];
+
+  const handleGenerateReport = () => {
+    window.print();
+  };
 
   return (
     <Modal
@@ -60,11 +85,13 @@ const TechnicianPerformance = ({ isOpen, onClose, isLargeScreen }) => {
             />
           </div>
         </div>
+        <Button onClick={handleGenerateReport}>Generate Report</Button>
       </div>
       <Table
         columns={techPerformanceColumn}
+        dataSource={data.map((item, index) => ({ ...item, key: index }))}
         pagination={true}
-        className="gotoLarge:w-full overflow-auto"
+        className="gotoLarge:w-full overflow-auto print"
       />
     </Modal>
   );

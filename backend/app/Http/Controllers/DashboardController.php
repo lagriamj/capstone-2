@@ -4,6 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Technician;
+use App\Models\ReceiveService;
+use App\Models\RateServices;
+use App\Models\Requests;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
@@ -270,5 +275,57 @@ class DashboardController extends Controller
             ->get();
 
         return response()->json(['requestData' => $requestData]);
+    }
+
+
+    public function technicianTable()
+    {
+        $admins = User::where('role', 'admin')->get();
+
+        $data = [];
+
+        foreach ($admins as $admin) {
+
+            $adminName = $admin->userFirstName . ' ' . $admin->userLastName;
+
+            $adminRequests = Requests::where('assignedTo', $adminName)->get();
+            $totalRequests = $adminRequests->count();
+            $closedRequests = Requests::where('assignedTo', $adminName)
+                ->where('status', 'Closed')
+                ->count();
+            $unclosedRequests = Requests::where('assignedTo', $adminName)
+                ->whereIn('status', ['On Progress', 'To Release', 'To Rate'])
+                ->count();
+            $performance = ($totalRequests > 0) ? ($closedRequests / $totalRequests) * 100 : 0;
+
+            $totalRating = RateServices::whereIn('request_id', $adminRequests->pluck('id')->toArray())
+                ->selectRaw('SUM(q1 + q2 + q3 + q4 + q5 + q6 + q7 + q8) as total')
+                ->value('total');
+
+            $overallRating = RateServices::whereIn('request_id', $adminRequests->pluck('id')->toArray())->count();
+
+            if ($overallRating > 0) {
+                $totalRating = ($totalRating / ($overallRating * 40)) * 100;
+            } else {
+                $totalRating = '0';
+            }
+
+
+            $performance = number_format($performance, 2) . '%';
+            $totalRating = number_format($totalRating, 2) . '%';
+
+            $adminData = [
+                'technician' => $adminName,
+                'all_req' => $totalRequests,
+                'closed_req' => $closedRequests,
+                'unclosed_req' => $unclosedRequests,
+                'performance' => $performance,
+                'rating' => $totalRating,
+            ];
+
+            $data[] = $adminData;
+        }
+
+        return response()->json(['data' => $data]);
     }
 }
