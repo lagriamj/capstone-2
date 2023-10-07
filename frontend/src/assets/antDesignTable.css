@@ -22,3 +22,6 @@
     border-color: #007bff; 
   }
 
+  .hide-pagination .ant-pagination {
+    display: none; 
+  }

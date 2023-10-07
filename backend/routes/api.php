@@ -130,7 +130,6 @@ Route::middleware('throttle:dashboard-api')->group(function () {
     Route::get('requestsByDate/{startDate?}/{endDate?}', [DashboardController::class, 'getRequestsByDate']);
     Route::get('totalRequests-And-Closed/{startDate?}/{endDate?}', [DashboardController::class, 'getTotalAndClosed']);
     Route::get('status-description/{status}/{startDate?}/{endDate?}', [DashboardController::class, 'getStatusDescription']);
-    Route::get('/tech-performance', [DashboardController::class, 'technicianTable']);
 });
 
 //signature
@@ -155,3 +154,6 @@ Route::get('/audit-logs', [AuditLogController::class, 'showAuditLog']);
 Route::post('/cut-off', [RequestsController::class, 'cutOffRequest']);
 Route::get('/getCutOffTime', [RequestsController::class, 'getCutOffTime']);
 Route::get('/reset-cut-off-time', [RequestsController::class, 'resetCutOffTime']);
+
+Route::get('/tech-performance', [DashboardController::class, 'technicianTable']);
+Route::get('/summary-list', [DashboardController::class, 'summaryList']);

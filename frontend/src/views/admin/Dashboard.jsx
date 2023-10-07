@@ -22,8 +22,10 @@ import { FaceSmileIcon } from "@heroicons/react/24/solid";
 import { FaceFrownIcon } from "@heroicons/react/24/solid";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/solid";
 import { PresentationChartLineIcon } from "@heroicons/react/24/solid";
+import { ClipboardDocumentIcon } from "@heroicons/react/24/solid";
 import TechnicianPerformance from "../../components/TechnicianPerformance";
 import { useActiveTab } from "../../ActiveTabContext";
+import SummaryListModal from "../../components/SummaryListModal";
 
 const Dashboard = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -533,6 +535,12 @@ const Dashboard = () => {
     setOpen(false);
   };
 
+  const [summaryListModal, setSummaryListModal] = useState(false);
+
+  const closeSummaryListModal = () => {
+    setSummaryListModal(!summaryListModal);
+  };
+
   const items = [
     {
       label: (
@@ -540,7 +548,7 @@ const Dashboard = () => {
           onClick={() => {
             setTechPerformanceModal(true);
           }}
-          className="flex gap-2 items-center justify-center cursor-pointer w-full"
+          className="flex gap-2 items-center justify-start cursor-pointer w-full"
         >
           <PresentationChartLineIcon className="h-4 w-4 text-main" />
           <label className="cursor-pointer">Technician Performance</label>
@@ -549,7 +557,17 @@ const Dashboard = () => {
       key: "1",
     },
     {
-      label: "Example 1",
+      label: (
+        <div
+          onClick={() => {
+            setSummaryListModal(true);
+          }}
+          className="flex gap-2 items-center justify-start cursor-pointer w-full"
+        >
+          <ClipboardDocumentIcon className="h-4 w-4 text-main" />
+          <label className="cursor-pointer">Summary List</label>
+        </div>
+      ),
       key: "2",
     },
     {
@@ -814,6 +832,11 @@ const Dashboard = () => {
                   <TechnicianPerformance
                     isOpen={techPerformanceModal}
                     onClose={closeTechPerformanceModal}
+                    isLargeScreen={isLargeScreen}
+                  />
+                  <SummaryListModal
+                    isOpen={summaryListModal}
+                    onClose={closeSummaryListModal}
                     isLargeScreen={isLargeScreen}
                   />
                   <div className="w-full  flex lg:flex-row flex-col gap-2 px-2 py-3 mediumLg:pt-1 justify-end">

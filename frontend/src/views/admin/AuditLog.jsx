@@ -33,7 +33,7 @@ const AuditLog = () => {
 
   const handleSearchBar = (value) => {
     setSearchText(value);
-    setPagination({ ...pagination, current: 1 }); // Reset to the first page when searching
+    setPagination({ ...pagination, current: 1 });
   };
 
   const auditColumns = [
@@ -129,7 +129,7 @@ const AuditLog = () => {
                 dataSource={auditLogs}
                 pagination={pagination}
                 onChange={(newPagination) => setPagination(newPagination)}
-                rowKey={(record) => record.id} // Set the key prop to a unique identifier (e.g., 'id')
+                rowKey={(record) => record.id}
               />
             </div>
           </div>
