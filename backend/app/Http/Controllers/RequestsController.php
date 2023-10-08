@@ -176,7 +176,6 @@ class RequestsController extends Controller
         return response()->json($userData);
     }
 
-
     public function cutOffRequest(Request $request)
     {
         $validatedData = $request->validate([
@@ -206,7 +205,6 @@ class RequestsController extends Controller
             if (!$cutOffTime) {
                 return response()->json(['message' => 'No cut-off time set yet.'], 200);
             }
-
             return response()->json(['message' => 'Cut-off time found', 'cutOffTime' => $cutOffTime->cut_off], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to fetch cut-off time'], 500);

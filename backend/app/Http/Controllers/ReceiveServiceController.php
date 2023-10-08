@@ -140,7 +140,8 @@ class ReceiveServiceController extends Controller
         $query = DB::table('user_requests')
             ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
             ->select('user_requests.*', 'receive_service.*')
-            ->whereNotIn('user_requests.status', ['Purge']);
+            ->whereNotIn('user_requests.status', ['Purge'])
+            ->where('user_requests.approved', '=', 'yes-signature');
 
         if ($startDate && $endDate) {
             $query->where('user_requests.dateRequested', '>=', $startDate)

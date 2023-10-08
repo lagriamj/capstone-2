@@ -3,25 +3,30 @@ import axios from "axios";
 
 export default function NoteModal(display) {
   const [showModal, setShowModal] = React.useState(display);
-  const [cutOffTime, setCutOffTime] = useState("");
+  const [cutOffTime, setCutOffTime] = useState(null);
 
   useEffect(() => {
     axios
       .get("http://127.0.0.1:8000/api/getCutOffTime")
       .then((response) => {
-        const cutOffTimeDate = new Date(response.data.cutOffTime);
+        if (response.data.cutOffTime) {
+          const cutOffTimeDate = new Date(response.data.cutOffTime);
 
-        const hours = cutOffTimeDate.getHours();
-        const minutes = cutOffTimeDate.getMinutes();
-        const formattedHours = hours % 12 || 12;
-        const amPm = hours < 12 ? "AM" : "PM";
-        const formattedTime = `${formattedHours}:${minutes
-          .toString()
-          .padStart(2, "0")} ${amPm}`;
-        setCutOffTime(formattedTime);
+          const hours = cutOffTimeDate.getHours();
+          const minutes = cutOffTimeDate.getMinutes();
+          const formattedHours = hours % 12 || 12;
+          const amPm = hours < 12 ? "AM" : "PM";
+          const formattedTime = `${formattedHours}:${minutes
+            .toString()
+            .padStart(2, "0")} ${amPm}`;
+          setCutOffTime(formattedTime);
+        } else {
+          setCutOffTime("");
+        }
       })
       .catch((error) => {
         console.error("Error fetching cut-off time:", error);
+        setCutOffTime("Error fetching cut-off time");
       });
   }, []);
 

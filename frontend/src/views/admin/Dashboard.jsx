@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import AdminSidebar from "../../components/AdminSidebar";
 import AdminDrawer from "../../components/AdminDrawer";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { Modal, Button, Table, Badge, Dropdown, Space } from "antd";
+import { Modal, Button, Badge, Dropdown, Space } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import Filter1Icon from "@mui/icons-material/Filter1";
@@ -26,6 +26,7 @@ import { ClipboardDocumentIcon } from "@heroicons/react/24/solid";
 import TechnicianPerformance from "../../components/TechnicianPerformance";
 import { useActiveTab } from "../../ActiveTabContext";
 import SummaryListModal from "../../components/SummaryListModal";
+import PieChartModal from "../../components/PieChartModal";
 
 const Dashboard = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -425,10 +426,9 @@ const Dashboard = () => {
   useEffect(() => {
     const columnsForPie = [
       {
-        title: "ID",
-        dataIndex: "id",
-        key: "id",
-        sorter: (a, b) => a.id - b.id,
+        title: "Request Code",
+        dataIndex: "request_code",
+        key: "request_code",
       },
       { title: "Requested By", dataIndex: "fullName", key: "fullName" },
       {
@@ -785,27 +785,16 @@ const Dashboard = () => {
                         <Legend formatter={formatter} />
                       </PieChart>
                     </ResponsiveContainer>
-                    <Modal
-                      title={
-                        <div className="flex text-lg gap-4 px-6 py-4 font-sans">
-                          <span>{clickedPortion} Requests</span>
-                          <span className="font-bold text-red-700">
-                            {modalTitle}%
-                          </span>
-                        </div>
-                      }
-                      open={modalVisible}
-                      onCancel={closePieModal}
-                      footer={null}
-                      width="90%"
-                    >
-                      <Table
-                        dataSource={modalData}
-                        columns={tableColumns}
-                        pagination={true}
-                        className="gotoLarge:w-full overflow-auto"
-                      />
-                    </Modal>
+                    {/* modal for clicking the pie chart */}
+                    <PieChartModal
+                      modalVisible={modalVisible}
+                      closePieModal={closePieModal}
+                      modalTitle={modalTitle}
+                      clickedPortion={clickedPortion}
+                      modalData={modalData}
+                      tableColumns={tableColumns}
+                      isLargeScreen={isLargeScreen}
+                    />
                   </div>
                 </div>
                 <div className="relative lg:col-span-5  flex flex-col mediumLg:mt-2 large:mt-3 mt-4 px-4  row-span-2 rounded-lg shadow-md  bg-white">

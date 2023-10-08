@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useRef } from "react";
 import ReactToPrint from "react-to-print";
 
-const PrintTechPerformance = ({
+const PrintPieChartData = ({
   isOpen,
   onClose,
   tableColumn,
@@ -11,26 +11,10 @@ const PrintTechPerformance = ({
   pageSize,
   currentPage,
   isLargeScreen,
-  fromDate,
-  toDate,
+  isLastPage,
 }) => {
   const contentRef = useRef();
   const printRef = useRef();
-
-  const fromDateObj = fromDate ? new Date(fromDate) : null;
-  const toDateObj = toDate ? new Date(toDate) : null;
-
-  // Helper function to format a Date object as "Month day, year"
-  const formatDate = (dateObj) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return dateObj.toLocaleDateString(undefined, options);
-  };
-
-  // Format the date range for display
-  const formattedDateRange =
-    fromDateObj && toDateObj
-      ? ` ${formatDate(fromDateObj)} - ${formatDate(toDateObj)}`
-      : "";
 
   const handlePrint = () => {
     if (printRef.current) {
@@ -38,9 +22,11 @@ const PrintTechPerformance = ({
     }
   };
 
+  console.log("last page: " + isLastPage);
+
   return (
     <Modal
-      title="Technician Performance Print Preview"
+      title="Print Preview"
       open={isOpen}
       onCancel={onClose}
       onOk={handlePrint}
@@ -67,13 +53,10 @@ const PrintTechPerformance = ({
           <h3 className="text-sm font-bold">
             Computer Equipment Maintenance and Systems Engineering Division
           </h3>
-          <h1 className="text-base font-bold">Technician Performance</h1>
-          <div className="flex items-center justify-center gap-1">
-            <h3 className="text-sm">For the period</h3>
-            <h1 className="font-bold">{formattedDateRange}</h1>
-          </div>
+          <h1 className="text-base font-bold"></h1>
         </div>
         <Table
+          className="mt-4"
           columns={tableColumn}
           dataSource={techData.map((item, index) => ({
             ...item,
@@ -91,7 +74,7 @@ const PrintTechPerformance = ({
   );
 };
 
-PrintTechPerformance.propTypes = {
+PrintPieChartData.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   tableColumn: PropTypes.any.isRequired,
@@ -99,8 +82,7 @@ PrintTechPerformance.propTypes = {
   pageSize: PropTypes.any.isRequired,
   currentPage: PropTypes.any.isRequired,
   isLargeScreen: PropTypes.bool.isRequired,
-  fromDate: PropTypes,
-  toDate: PropTypes.any,
+  isLastPage: PropTypes.bool.isRequired,
 };
 
-export default PrintTechPerformance;
+export default PrintPieChartData;

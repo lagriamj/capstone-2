@@ -7,6 +7,7 @@ import HeadDrawer from "../../components/HeadDrawer";
 import { useAuth } from "../../AuthContext";
 import axios from "axios";
 import ViewToApproveModal from "../../components/ViewToApproveModal";
+import { message } from "antd";
 
 const ApproveRequests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -28,6 +29,8 @@ const ApproveRequests = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
+  const [processingRequests, setProcessingRequests] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [isLoading, setIsLoading] = useState(false);
 
   const handleViewClick = (record) => {
@@ -54,15 +57,28 @@ const ApproveRequests = () => {
   const handleApprove = async (requestId) => {
     setIsLoading(true);
     try {
+      setProcessingRequests([...processingRequests, requestId]);
       await axios.put(`http://127.0.0.1:8000/api/approve-request/${requestId}`);
       const updatedResponse = await axios.get(
         `http://127.0.0.1:8000/api/pending-signature/${fullName}`
       );
       setData(updatedResponse.data);
       setIsLoading(false);
+      message.success("Request successfully approved");
     } catch (error) {
       console.error("Error approving request:", error);
       setIsLoading(false);
+    }
+  };
+
+  const refreshData = async () => {
+    try {
+      const updatedResponse = await axios.get(
+        `http://127.0.0.1:8000/api/pending-signature/${fullName}`
+      );
+      setData(updatedResponse.data);
+    } catch (error) {
+      console.error("Error fetching updated data:", error);
     }
   };
 
@@ -147,7 +163,7 @@ const ApproveRequests = () => {
           </Button>
           <Button
             type="primary"
-            loading={isLoading}
+            loading={processingRequests.includes(record.id)}
             style={{
               backgroundColor: "red",
               borderColor: "red",
@@ -155,7 +171,7 @@ const ApproveRequests = () => {
             }}
             onClick={() => handleApprove(record.id)}
           >
-            {isLoading ? "Approving" : "Approve"}
+            {processingRequests.includes(record.id) ? "Approving" : "Approve"}
           </Button>
         </>
       ),
@@ -225,6 +241,7 @@ const ApproveRequests = () => {
                 isOpen={isModalVisible}
                 onClose={() => setIsModalVisible(false)}
                 data={selectedRowData}
+                refreshData={refreshData}
               />
             </div>
           </div>

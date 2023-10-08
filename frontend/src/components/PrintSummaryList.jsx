@@ -99,52 +99,55 @@ const PrintSummaryList = ({
         />
 
         {isLastPage && (
-          <div className="grid grid-cols-4 gap-4 font-sans mt-20">
-            <div className="flex flex-col">
-              <label htmlFor="">Prepared by:</label>
-              <input
-                type="text"
-                className="text-black outline-none h-[20px]  text-base font-bold"
-                placeholder="Prepared by name here"
-                value={fullName}
-              />
-              <p>Date: {formatDate(toDateObj)}</p>
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="">Approved by:</label>
-              <input
-                type="text"
-                className="text-black outline-none h-[20px]  text-base  font-bold"
-                placeholder="Approved by name here"
-              />
-              <input
-                type="text"
-                className="text-black outline-none h-[20px] "
-                placeholder="ex. Computer Main. Technologist..."
-              />
-              <input
-                type="text"
-                className="text-black outline-none h-[20px] "
-                placeholder="head here"
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="">Noted by:</label>
-              <input
-                type="text"
-                className="text-black outline-none h-[20px]  text-base font-bold"
-                placeholder="Noted by name here"
-              />
-              <input
-                type="text"
-                className="text-black outline-none h-[20px]"
-                placeholder="officer in-charge here"
-              />
-            </div>
-            <div className="flex flex-col">
+          <div className="flex relative">
+            <div className="flex mt-2 text-sm absolute right-0 flex-col">
               <p>Total Released: {totalReleased}</p>
               <p>Total Unclaimed: {totalUnclaimed}</p>
               <p>Total Defect: {totalDefect}</p>
+            </div>
+            <div className="grid grid-cols-3 w-[80%] gap-4 font-sans mt-20">
+              <div className="flex flex-col">
+                <label htmlFor="">Prepared by:</label>
+                <input
+                  type="text"
+                  className="text-black outline-none h-[20px]  text-base font-bold"
+                  placeholder="Prepared by name here"
+                  value={fullName}
+                  onChange={() => {}}
+                />
+                <p>Date: {formatDate(toDateObj)}</p>
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="">Approved by:</label>
+                <input
+                  type="text"
+                  className="text-black outline-none h-[20px]  text-base  font-bold"
+                  placeholder="Approved by name here"
+                />
+                <input
+                  type="text"
+                  className="text-black outline-none h-[20px] "
+                  placeholder="ex. Computer Main. Technologist..."
+                />
+                <input
+                  type="text"
+                  className="text-black outline-none h-[20px] "
+                  placeholder="head here"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="">Noted by:</label>
+                <input
+                  type="text"
+                  className="text-black outline-none h-[20px]  text-base font-bold"
+                  placeholder="Noted by name here"
+                />
+                <input
+                  type="text"
+                  className="text-black outline-none h-[20px]"
+                  placeholder="officer in-charge here"
+                />
+              </div>
             </div>
           </div>
         )}
@@ -157,16 +160,16 @@ PrintSummaryList.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   tableColumn: PropTypes.any.isRequired,
-  techData: PropTypes.any.isRequired,
+  techData: PropTypes.any,
   pageSize: PropTypes.any.isRequired,
   currentPage: PropTypes.any.isRequired,
   isLargeScreen: PropTypes.bool.isRequired,
-  fromDate: PropTypes.any.isRequired,
-  toDate: PropTypes.any.isRequired,
-  isLastPage: PropTypes.bool.isRequired,
-  totalReleased: PropTypes.any.isRequired,
-  totalUnclaimed: PropTypes.any.isRequired,
-  totalDefect: PropTypes.any.isRequired,
+  fromDate: PropTypes.any,
+  toDate: PropTypes.any,
+  isLastPage: PropTypes.bool,
+  totalReleased: PropTypes.any,
+  totalUnclaimed: PropTypes.any,
+  totalDefect: PropTypes.any,
 };
 
 export default PrintSummaryList;

@@ -119,7 +119,7 @@ const Requests = () => {
       division: division,
       dateRequested: daytime,
       authorizedBy: author,
-      dateProcured: dateP,
+      dateProcured: dateP || "N/A",
     });
   }, [userID, office, division, daytime, author, dateP]);
 

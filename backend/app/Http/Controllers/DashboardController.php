@@ -408,7 +408,7 @@ class DashboardController extends Controller
         $totalRequestsCount = $totalRequestsCountQuery->count();
         $totalReleasedMessage = ($totalRequestsCount > 0) ? "{$totalRequestsCount} unit Released" : "0 unit Released";
 
-        $sevenDaysAgo = now()->subDays(1);
+        $sevenDaysAgo = now()->subDays(7);
         $formattedSevenDaysAgo = $sevenDaysAgo->format('Y-m-d H:i:s');
         $unclaimedRequestsCountQuery = clone $query;
         $unclaimedRequestsCountQuery->where('user_requests.status', 'To Release')

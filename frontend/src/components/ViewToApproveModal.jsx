@@ -1,10 +1,24 @@
 import PropTypes from "prop-types";
 import { Button, Modal, Form, Input, Row, Col } from "antd";
+import axios from "axios";
+import { message } from "antd";
 
-const ViewToApproveModal = ({ isOpen, onClose, data }) => {
+const ViewToApproveModal = ({ isOpen, onClose, data, refreshData }) => {
   if (!isOpen) return null;
 
   const { TextArea } = Input;
+
+  const handleApprove = async () => {
+    try {
+      await axios.put(`http://127.0.0.1:8000/api/approve-request/${data.id}`);
+      // Update data after approval (you might need to refresh the data from the parent component)
+      refreshData();
+      message.success("Request successfully approved");
+      onClose();
+    } catch (error) {
+      console.error("Error approving request:", error);
+    }
+  };
 
   const options = {
     year: "numeric",
@@ -14,6 +28,7 @@ const ViewToApproveModal = ({ isOpen, onClose, data }) => {
     minute: "2-digit",
     hour12: true,
   };
+
   const daytime = new Date().toLocaleString(undefined, options);
 
   return (
@@ -24,7 +39,7 @@ const ViewToApproveModal = ({ isOpen, onClose, data }) => {
       title={
         <div className="flex justify-between items-center">
           <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
-          <span>REQUEST ID: E-{data?.request_id}</span>
+          <span>REQUEST ID: E-{data?.request_code}</span>
         </div>
       }
       centered={true}
@@ -139,6 +154,13 @@ const ViewToApproveModal = ({ isOpen, onClose, data }) => {
               onClick={onClose}
             >
               Close
+            </Button>
+            <Button
+              className="bg-green-700 text-white h-12 font-semibold text-base font-sans w-32 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
+              htmlType="button"
+              onClick={handleApprove}
+            >
+              Approve
             </Button>
           </div>
         </div>
