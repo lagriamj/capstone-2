@@ -129,6 +129,10 @@ const SummaryListModal = ({ isOpen, onClose, isLargeScreen }) => {
     setOpenGenerateReport(false);
   };
 
+  const totalItems = data.requests?.length;
+  const lastPage = Math.ceil(totalItems / pagination.pageSize);
+  const isLastPage = currentPage === lastPage;
+
   return (
     <Modal
       title={"Summary List"}
@@ -166,30 +170,40 @@ const SummaryListModal = ({ isOpen, onClose, isLargeScreen }) => {
           </Button>
         </div>
       </div>
-      <PrintSummaryList
-        isOpen={openGenerateReport}
-        onClose={closeGenerateReport}
-        tableColumn={summaryListColumn}
-        techData={data}
-        pageSize={pagination.pageSize}
-        currentPage={currentPage}
-        isLargeScreen={isLargeScreen}
-        fromDate={fromDate}
-        toDate={toDate}
-      />
-      <Table
-        columns={summaryListColumn}
-        dataSource={data.map((item, index) => ({
-          ...item,
-          key: index,
-        }))}
-        pagination={pagination}
-        onChange={(newPagination) => {
-          handlePageChange(newPagination);
-        }}
-        scroll={isLargeScreen ? "" : { x: 1300 }}
-        className="gotoLarge:w-full overflow-auto print"
-      />
+
+      <>
+        <PrintSummaryList
+          isOpen={openGenerateReport}
+          onClose={closeGenerateReport}
+          tableColumn={summaryListColumn}
+          techData={data.requests}
+          pageSize={pagination.pageSize}
+          currentPage={currentPage}
+          isLargeScreen={isLargeScreen}
+          fromDate={fromDate}
+          toDate={toDate}
+          isLastPage={isLastPage}
+          totalReleased={data.totalReleased}
+          totalUnclaimed={data.totalUnclaimed}
+          totalDefect={data.totalDefect}
+        />
+
+        <Table
+          columns={summaryListColumn}
+          dataSource={data.requests?.map((item, index) => ({
+            ...item,
+            key: index,
+          }))}
+          pagination={pagination}
+          onChange={(newPagination) => {
+            handlePageChange(newPagination);
+          }}
+          scroll={isLargeScreen ? "" : { x: 1300 }}
+          className="gotoLarge:w-full overflow-auto print"
+        />
+
+        {/* Display summary information here */}
+      </>
     </Modal>
   );
 };

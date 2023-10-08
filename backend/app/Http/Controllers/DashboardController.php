@@ -370,9 +370,10 @@ class DashboardController extends Controller
                 ['user_requests.unit', '<>', 'n/a'],
                 ['user_requests.natureOfRequest', '<>', 'n/a'],
             ])
-            ->whereIn('user_requests.status', ['Closed', 'To Rate'])
+            ->whereIn('user_requests.status', ['Closed', 'To Rate', 'To Release'])
             ->where('receive_service.toRecommend', '<>', 'n/a')
             ->where('receive_service.remarks', '<>', 'n/a');
+
 
 
         if ($request->has('fromDate')) {
@@ -384,15 +385,50 @@ class DashboardController extends Controller
             $toDate = $request->input('toDate');
             $query->whereDate('user_requests.dateRequested', '<=', $toDate);
         }
-
         $requests = $query->get();
+
 
 
         foreach ($requests as $request) {
             $processingHours = $this->calculateProcessingHours($request->dateReceived, $request->dateReleased);
             $request->processing_hours = $processingHours . ' hrs';
         }
-        return $requests;
+
+
+        $totalRequestsCountQuery = clone $query;
+        $totalRequestsCountQuery->whereIn('user_requests.status', ['Closed', 'To Rate']);
+        $totalRequestsCount = $totalRequestsCountQuery->count();
+        $totalReleasedMessage = ($totalRequestsCount > 0) ? "{$totalRequestsCount} unit Released" : "0 unit Released";
+
+        $sevenDaysAgo = now()->subDays(7);
+        $formattedSevenDaysAgo = $sevenDaysAgo->format('Y-m-d H:i:s');
+        $unclaimedRequestsCountQuery = clone $query;
+        $unclaimedRequestsCountQuery->where('user_requests.status', 'To Release')
+            ->whereDate('user_requests.dateRequested', '<=', $formattedSevenDaysAgo);
+        $unclaimedRequestsCount = $unclaimedRequestsCountQuery->count();
+        $unclaimedRequestsMessage = ($unclaimedRequestsCount > 0) ? "{$unclaimedRequestsCount} unit Unclaimed" : "0 unit Unclaimed";
+
+        $defectRequestsCountQuery = clone $query;
+        $defectRequestsCount = $defectRequestsCountQuery
+            ->whereIn('user_requests.status', ['Closed', 'To Rate'])
+            ->where(function ($query) {
+                $query->where('receive_service.toRecommend', 'LIKE', '%Defective%')
+                    ->orWhere('receive_service.toRecommend', 'LIKE', '%Defect%')
+                    ->orWhere('receive_service.toRecommend', 'LIKE', '%Defected%');
+            })
+            ->count();
+
+        $defectRequestsCount = $defectRequestsCountQuery->count();
+        $defectRequestsMessage = ($defectRequestsCount > 0) ? "{$defectRequestsCount} unit Defect" : "0 unit Defect";
+
+
+        $response = [
+            'requests' => $requests,
+            'totalReleased' => $totalReleasedMessage,
+            'totalUnclaimed' => $unclaimedRequestsMessage,
+            'totalDefect' => $defectRequestsMessage,
+        ];
+        return $response;
     }
 
     private function calculateProcessingHours($updatedAt, $dateReceived)

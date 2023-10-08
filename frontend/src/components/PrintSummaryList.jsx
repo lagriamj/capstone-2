@@ -1,6 +1,6 @@
 import { Table, Modal } from "antd";
 import PropTypes from "prop-types";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import ReactToPrint from "react-to-print";
 
 const PrintSummaryList = ({
@@ -13,13 +13,13 @@ const PrintSummaryList = ({
   isLargeScreen,
   fromDate,
   toDate,
+  isLastPage,
+  totalReleased,
+  totalUnclaimed,
+  totalDefect,
 }) => {
   const contentRef = useRef();
   const printRef = useRef();
-
-  useEffect(() => {
-    console.log("currentPage prop updated:", currentPage);
-  }, [currentPage]);
 
   const fromDateObj = fromDate ? new Date(fromDate) : null;
   const toDateObj = toDate ? new Date(toDate) : null;
@@ -27,7 +27,7 @@ const PrintSummaryList = ({
   // Helper function to format a Date object as "Month day, year"
   const formatDate = (dateObj) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
-    return dateObj.toLocaleDateString(undefined, options);
+    return dateObj?.toLocaleDateString(undefined, options);
   };
 
   // Format the date range for display
@@ -41,6 +41,8 @@ const PrintSummaryList = ({
       printRef.current.handlePrint(); // Trigger the print action
     }
   };
+
+  console.log("last page: " + isLastPage);
 
   return (
     <Modal
@@ -80,6 +82,7 @@ const PrintSummaryList = ({
           </div>
         </div>
         <Table
+          className="mt-4"
           columns={tableColumn}
           dataSource={techData.map((item, index) => ({
             ...item,
@@ -92,6 +95,56 @@ const PrintSummaryList = ({
             current: currentPage,
           }}
         />
+
+        {isLastPage && (
+          <div className="grid grid-cols-4 gap-4 font-sans mt-20">
+            <div className="flex flex-col">
+              <label htmlFor="">Prepared by:</label>
+              <input
+                type="text"
+                className="text-black outline-none h-[20px]  text-base font-bold"
+                placeholder="Prepared by name here"
+              />
+              <p>Date: {formatDate(toDateObj)}</p>
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="">Approved by:</label>
+              <input
+                type="text"
+                className="text-black outline-none h-[20px]  text-base  font-bold"
+                placeholder="Approved by name here"
+              />
+              <input
+                type="text"
+                className="text-black outline-none h-[20px] "
+                placeholder="ex. Computer Main. Technologist..."
+              />
+              <input
+                type="text"
+                className="text-black outline-none h-[20px] "
+                placeholder="head here"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="">Noted by:</label>
+              <input
+                type="text"
+                className="text-black outline-none h-[20px]  text-base font-bold"
+                placeholder="Noted by name here"
+              />
+              <input
+                type="text"
+                className="text-black outline-none h-[20px]"
+                placeholder="officer in-charge here"
+              />
+            </div>
+            <div className="flex flex-col">
+              <p>Total Released: {totalReleased}</p>
+              <p>Total Unclaimed: {totalUnclaimed}</p>
+              <p>Total Defect: {totalDefect}</p>
+            </div>
+          </div>
+        )}
       </div>
     </Modal>
   );
@@ -107,6 +160,10 @@ PrintSummaryList.propTypes = {
   isLargeScreen: PropTypes.bool.isRequired,
   fromDate: PropTypes.any.isRequired,
   toDate: PropTypes.any.isRequired,
+  isLastPage: PropTypes.bool.isRequired,
+  totalReleased: PropTypes.any.isRequired,
+  totalUnclaimed: PropTypes.any.isRequired,
+  totalDefect: PropTypes.any.isRequired,
 };
 
 export default PrintSummaryList;
