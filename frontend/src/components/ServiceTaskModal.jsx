@@ -230,14 +230,14 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
                 <Form.Item
                   label={
                     <label className="block text-sm font-bold">
-                      Date Received
+                      Date Serviced
                     </label>
                   }
-                  name="dateReceived"
+                  name="dateServiced"
                 >
                   <Input
                     readOnly
-                    value={data.dateReceived}
+                    value={data.dateServiced}
                     className="h-[40px]"
                   />
                 </Form.Item>

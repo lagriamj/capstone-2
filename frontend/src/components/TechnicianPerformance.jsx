@@ -8,6 +8,7 @@ const TechnicianPerformance = ({ isOpen, onClose, isLargeScreen }) => {
   const [data, setData] = useState([]);
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchTechnicianData();
@@ -33,14 +34,6 @@ const TechnicianPerformance = ({ isOpen, onClose, isLargeScreen }) => {
         console.error("Error fetching data:", error);
       });
   };
-
-  const [pagination, setPagination] = useState({
-    position: ["bottomLeft"],
-    showQuickJumper: true,
-    current: 1,
-    pageSize: 10,
-    showLessItems: true,
-  });
 
   const techPerformanceColumn = [
     {
@@ -80,6 +73,25 @@ const TechnicianPerformance = ({ isOpen, onClose, isLargeScreen }) => {
       key: "rating",
     },
   ];
+
+  const [pagination, setPagination] = useState({
+    position: ["bottomLeft"],
+    showQuickJumper: true,
+    current: 1,
+    pageSize: 10,
+    showLessItems: true,
+  });
+
+  useEffect(() => {
+    setPagination((prevPagination) => ({
+      ...prevPagination,
+      current: currentPage,
+    }));
+  }, [currentPage]);
+
+  const handlePageChange = (newPagination) => {
+    setCurrentPage(newPagination.current);
+  };
 
   const [openGenerateReport, setOpenGenerateReport] = useState(false);
 
@@ -127,13 +139,21 @@ const TechnicianPerformance = ({ isOpen, onClose, isLargeScreen }) => {
         onClose={closeGenerateReport}
         tableColumn={techPerformanceColumn}
         techData={data}
+        pageSize={pagination.pageSize}
+        currentPage={currentPage}
+        isLargeScreen={isLargeScreen}
+        fromDate={fromDate}
+        toDate={toDate}
       />
       <Table
         columns={techPerformanceColumn}
         dataSource={data.map((item, index) => ({ ...item, key: index }))}
         pagination={pagination}
+        onChange={(newPagination) => {
+          handlePageChange(newPagination);
+        }}
+        scroll={isLargeScreen ? "" : { x: 1300 }}
         className="gotoLarge:w-full overflow-auto print"
-        onChange={(newPagination) => setPagination(newPagination)}
       />
     </Modal>
   );

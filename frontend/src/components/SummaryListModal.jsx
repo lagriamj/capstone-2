@@ -8,6 +8,7 @@ const SummaryListModal = ({ isOpen, onClose, isLargeScreen }) => {
   const [data, setData] = useState([]);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const queryParams = {};
@@ -32,13 +33,6 @@ const SummaryListModal = ({ isOpen, onClose, isLargeScreen }) => {
 
   const summaryListColumn = [
     {
-      title: "#",
-      dataIndex: "index",
-      key: "index",
-      render: (text, record, index) => index + 1,
-      align: "center",
-    },
-    {
       title: "SR No.",
       dataIndex: "request_code",
       key: "request_code",
@@ -55,6 +49,15 @@ const SummaryListModal = ({ isOpen, onClose, isLargeScreen }) => {
       dataIndex: "reqOffice",
       key: "reqOffice",
       align: "center",
+    },
+    {
+      title: "Qty",
+      dataIndex: "qty",
+      key: "qty",
+      align: "center",
+      render: (text) => {
+        return text || 1;
+      },
     },
     {
       title: "Item",
@@ -109,6 +112,17 @@ const SummaryListModal = ({ isOpen, onClose, isLargeScreen }) => {
     showLessItems: true,
   });
 
+  useEffect(() => {
+    setPagination((prevPagination) => ({
+      ...prevPagination,
+      current: currentPage,
+    }));
+  }, [currentPage]);
+
+  const handlePageChange = (newPagination) => {
+    setCurrentPage(newPagination.current);
+  };
+
   const [openGenerateReport, setOpenGenerateReport] = useState(false);
 
   const closeGenerateReport = () => {
@@ -118,7 +132,7 @@ const SummaryListModal = ({ isOpen, onClose, isLargeScreen }) => {
   return (
     <Modal
       title={"Summary List"}
-      width={isLargeScreen ? "100%" : "70%"}
+      width={isLargeScreen ? "100%" : "85%"}
       open={isOpen}
       onCancel={onClose}
       footer={null}
@@ -143,14 +157,14 @@ const SummaryListModal = ({ isOpen, onClose, isLargeScreen }) => {
               onChange={(e) => setToDate(e.target.value)}
             />
           </div>
+          <Button
+            onClick={() => {
+              setOpenGenerateReport(true);
+            }}
+          >
+            Generate Report
+          </Button>
         </div>
-        <Button
-          onClick={() => {
-            setOpenGenerateReport(true);
-          }}
-        >
-          Generate Report
-        </Button>
       </div>
       <PrintSummaryList
         isOpen={openGenerateReport}
@@ -158,6 +172,10 @@ const SummaryListModal = ({ isOpen, onClose, isLargeScreen }) => {
         tableColumn={summaryListColumn}
         techData={data}
         pageSize={pagination.pageSize}
+        currentPage={currentPage}
+        isLargeScreen={isLargeScreen}
+        fromDate={fromDate}
+        toDate={toDate}
       />
       <Table
         columns={summaryListColumn}
@@ -165,8 +183,11 @@ const SummaryListModal = ({ isOpen, onClose, isLargeScreen }) => {
           ...item,
           key: index,
         }))}
-        pagination={true}
-        onChange={(newPagination) => setPagination(newPagination)}
+        pagination={pagination}
+        onChange={(newPagination) => {
+          handlePageChange(newPagination);
+        }}
+        scroll={isLargeScreen ? "" : { x: 1300 }}
         className="gotoLarge:w-full overflow-auto print"
       />
     </Modal>

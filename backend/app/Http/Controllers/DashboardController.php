@@ -347,9 +347,9 @@ class DashboardController extends Controller
         return response()->json(['data' => $data]);
     }
 
-    public function summaryList()
+    public function summaryList(Request $request)
     {
-        $requests = DB::table('user_requests')
+        $query = DB::table('user_requests')
             ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
             ->join('release_requests', 'receive_service.id', '=', 'release_requests.receivedReq_id')
             ->select(
@@ -372,11 +372,25 @@ class DashboardController extends Controller
             ])
             ->whereIn('user_requests.status', ['Closed', 'To Rate'])
             ->where('receive_service.toRecommend', '<>', 'n/a')
-            ->where('receive_service.remarks', '<>', 'n/a')
-            ->get();
+            ->where('receive_service.remarks', '<>', 'n/a');
+
+
+        if ($request->has('fromDate')) {
+            $fromDate = $request->input('fromDate');
+            $query->whereDate('user_requests.dateRequested', '>=', $fromDate);
+        }
+
+        if ($request->has('toDate')) {
+            $toDate = $request->input('toDate');
+            $query->whereDate('user_requests.dateRequested', '<=', $toDate);
+        }
+
+        $requests = $query->get();
+
 
         foreach ($requests as $request) {
-            $request->processing_hours = $this->calculateProcessingHours($request->updated_at, $request->dateReceived);
+            $processingHours = $this->calculateProcessingHours($request->dateReceived, $request->dateReleased);
+            $request->processing_hours = $processingHours . ' hrs';
         }
         return $requests;
     }
