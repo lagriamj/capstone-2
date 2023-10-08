@@ -2,6 +2,7 @@ import { Table, Modal } from "antd";
 import PropTypes from "prop-types";
 import { useRef } from "react";
 import ReactToPrint from "react-to-print";
+import { useAuth } from "../AuthContext";
 
 const PrintSummaryList = ({
   isOpen,
@@ -20,6 +21,7 @@ const PrintSummaryList = ({
 }) => {
   const contentRef = useRef();
   const printRef = useRef();
+  const { fullName } = useAuth();
 
   const fromDateObj = fromDate ? new Date(fromDate) : null;
   const toDateObj = toDate ? new Date(toDate) : null;
@@ -104,6 +106,7 @@ const PrintSummaryList = ({
                 type="text"
                 className="text-black outline-none h-[20px]  text-base font-bold"
                 placeholder="Prepared by name here"
+                value={fullName}
               />
               <p>Date: {formatDate(toDateObj)}</p>
             </div>

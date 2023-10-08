@@ -349,20 +349,23 @@ class DashboardController extends Controller
 
     public function summaryList(Request $request)
     {
+
+        $selectClause = [
+            'user_requests.request_code',
+            'receive_service.dateReceived',
+            'user_requests.reqOffice',
+            'user_requests.unit',
+            'user_requests.natureOfRequest',
+            'receive_service.updated_at',
+            'receive_service.remarks',
+            DB::raw("COALESCE(release_requests.dateReleased, ' ') as dateReleased"), // Handle blank value for dateReleased
+            'receive_service.toRecommend'
+        ];
+
         $query = DB::table('user_requests')
             ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
-            ->join('release_requests', 'receive_service.id', '=', 'release_requests.receivedReq_id')
-            ->select(
-                'user_requests.request_code',
-                'receive_service.dateReceived',
-                'user_requests.reqOffice',
-                'user_requests.unit',
-                'user_requests.natureOfRequest',
-                'receive_service.updated_at',
-                'receive_service.remarks',
-                'release_requests.dateReleased',
-                'receive_service.toRecommend'
-            )
+            ->leftJoin('release_requests', 'receive_service.id', '=', 'release_requests.receivedReq_id')
+            ->select($selectClause)
             ->where([
                 ['user_requests.request_code', '<>', 'n/a'],
                 ['receive_service.dateReceived', '<>', 'n/a'],
@@ -373,8 +376,6 @@ class DashboardController extends Controller
             ->whereIn('user_requests.status', ['Closed', 'To Rate', 'To Release'])
             ->where('receive_service.toRecommend', '<>', 'n/a')
             ->where('receive_service.remarks', '<>', 'n/a');
-
-
 
         if ($request->has('fromDate')) {
             $fromDate = $request->input('fromDate');
@@ -387,20 +388,27 @@ class DashboardController extends Controller
         }
         $requests = $query->get();
 
-
-
         foreach ($requests as $request) {
             $processingHours = $this->calculateProcessingHours($request->dateReceived, $request->dateReleased);
             $request->processing_hours = $processingHours . ' hrs';
         }
 
+        foreach ($requests as $request) {
+            if ($request->dateReleased === ' ') {
+                $request->processing_hours = ' ';
+                $request->toRecommend = 'Unclaimed';
+            } else {
+                $processingHours = $this->calculateProcessingHours($request->dateReceived, $request->dateReleased);
+                $request->processing_hours = $processingHours . ' hrs';
+            }
+        }
 
         $totalRequestsCountQuery = clone $query;
         $totalRequestsCountQuery->whereIn('user_requests.status', ['Closed', 'To Rate']);
         $totalRequestsCount = $totalRequestsCountQuery->count();
         $totalReleasedMessage = ($totalRequestsCount > 0) ? "{$totalRequestsCount} unit Released" : "0 unit Released";
 
-        $sevenDaysAgo = now()->subDays(7);
+        $sevenDaysAgo = now()->subDays(1);
         $formattedSevenDaysAgo = $sevenDaysAgo->format('Y-m-d H:i:s');
         $unclaimedRequestsCountQuery = clone $query;
         $unclaimedRequestsCountQuery->where('user_requests.status', 'To Release')
@@ -420,7 +428,6 @@ class DashboardController extends Controller
 
         $defectRequestsCount = $defectRequestsCountQuery->count();
         $defectRequestsMessage = ($defectRequestsCount > 0) ? "{$defectRequestsCount} unit Defect" : "0 unit Defect";
-
 
         $response = [
             'requests' => $requests,
