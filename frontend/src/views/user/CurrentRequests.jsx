@@ -299,6 +299,37 @@ const CurrentRequests = () => {
 
   const isScreenWidth1366 = windowWidth1366 === 1366;
 
+  const [natureRequests, setNatureRequests] = useState("");
+  const [natureReqOption, setNatureReqOption] = useState([]);
+
+  useEffect(() => {
+    fetchNature();
+  }, []);
+
+  const fetchNature = () => {
+    setLoading(true);
+    axios
+      .get("http://127.0.0.1:8000/api/nature-list")
+      .then((response) => {
+        setNatureRequests(response.data.results);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    if (Array.isArray(natureRequests)) {
+      const dynamicFilters = natureRequests.map((natureRequest) => ({
+        text: natureRequest.natureRequest,
+        value: natureRequest.natureRequest,
+      }));
+      setNatureReqOption(dynamicFilters);
+    }
+  }, [natureRequests]);
+
   const [searchText, setSearchText] = useState("");
   const [pagination, setPagination] = useState({
     position: ["bottomLeft"],
@@ -363,11 +394,25 @@ const CurrentRequests = () => {
       title: "Nature of Request",
       dataIndex: "natureOfRequest",
       key: "natureOfRequest",
+      filters: natureReqOption,
+      filterSearch: true,
+      onFilter: (value, record) => record.natureOfRequest?.includes(value),
     },
     {
       title: "Mode",
       dataIndex: "modeOfRequest",
       key: "modeOfRequest",
+      filters: [
+        {
+          text: "Online",
+          value: "Online",
+        },
+        {
+          text: "Walk-In",
+          value: "Walk-In",
+        },
+      ],
+      onFilter: (value, record) => record.modeOfRequest?.includes(value),
     },
     {
       title: "Assigned To",

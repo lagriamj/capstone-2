@@ -194,7 +194,7 @@ const HeadSidebar = () => {
           </label>
         </li>
         <li
-          className={`flex gap-3 w-full items-center py-3 px-2 rounded-lg hover:bg-white hover:text-main hover:font-semibold ${
+          className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-300 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
             activeTab === "transactions"
               ? "bg-white text-main font-semibold"
               : ""
@@ -204,7 +204,7 @@ const HeadSidebar = () => {
           <FontAwesomeIcon
             icon={faClipboard}
             style={{
-              fontSize: isScreenWidth1366 ? "1rem" : "",
+              fontSize: isScreenWidth1366 ? "1.2rem" : "",
             }}
           />
           <label

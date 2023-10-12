@@ -87,7 +87,7 @@ const ReleasedModal = ({ isOpen, onClose, data, refreshData }) => {
             </Col>
             <Col xs={24} lg={6}>
               <label className="block text-sm font-bold mb-2">
-                Date Request
+                Date Requested
               </label>
               <Input value={data.dateRequested} readOnly className="h-[40px]" />
             </Col>

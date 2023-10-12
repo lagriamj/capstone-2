@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\DB;
 
 class HeadApprovedController extends Controller
 {
-    public function allpendingNotApproved($fullName)
+    public function allpendingNotApproved($userID)
     {
         $officeRequest = DB::table('users')
             ->select('office')
-            ->whereRaw('CONCAT(userFirstName, " ", userLastName) = ?', [$fullName])
+            ->where('userID', $userID)
             ->first();
 
         if (!$officeRequest) {
@@ -29,12 +29,11 @@ class HeadApprovedController extends Controller
         return response()->json($requests);
     }
 
-
-    public function allpendingApproved($fullName)
+    public function allpendingApproved($userID)
     {
         $officeRequest = DB::table('users')
             ->select('office')
-            ->whereRaw('CONCAT(userFirstName, " ", userLastName) = ?', [$fullName])
+            ->where('userID', $userID)
             ->first();
 
         if (!$officeRequest) {

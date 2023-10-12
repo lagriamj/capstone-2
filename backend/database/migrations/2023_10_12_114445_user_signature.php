@@ -11,11 +11,7 @@ return new class extends Migration
         Schema::create('user_signature', function (Blueprint $table) {
             $table->id();
             $table->string('governmentID');
-            $table->string('firstName');
-            $table->string('lastName');
-            $table->string('office');
             $table->string('signatureImage');
-            $table->string('role');
             $table->timestamps();
         });
     }

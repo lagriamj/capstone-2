@@ -66,22 +66,22 @@ export default function NoteModal(display) {
                       </li>
                     )}
                     <li>
-                      If Property No. is not visible, please input the Sticker
-                      No. instead.
+                      No Property Number? No problem! Use the Sticker Number
+                      instead.
                     </li>
                     <li>
-                      We are not responsible for any UNLICENSED SOFTWARE that is
-                      installed on your unit, and in case of any raid or
-                      confiscation of your unit, we are not held liable.
+                      Warning: We can`&apos;`t be responsible for any unlicensed
+                      software on your device. In case of a raid or
+                      confiscation, we`&apos;`re not liable.
                     </li>
                     <li>
-                      We are also not liable for any loss of data during the
-                      course of repairing the unit.
+                      Protect your data: We`&apos;`re not liable for any data
+                      loss during the repair process.
                     </li>
                     <li>
-                      Failure to submit the hard copy of the request slip with
-                      the authorized signature within the day will result in
-                      automatic cancellation for the following day.
+                      Act fast: Submit your request slip with the authorized
+                      signature by the end of the day. Otherwise, it will be
+                      canceled for the next day.
                     </li>
                   </ul>
                 </div>

@@ -579,7 +579,10 @@ const Dashboard = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>Dashboard</title>
+        <title>
+          Dashboard
+          {requestDetails.length > 0 ? `(${requestDetails.length})` : ""}
+        </title>
       </Helmet>
       <div
         className={`className="flex flex-grow flex-col overflow-auto gotoLarge:px-6 bg-gray-200 large:ml-20 lg:flex-row white pt-2  h-screen`}

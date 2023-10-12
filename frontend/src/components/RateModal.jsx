@@ -10,6 +10,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Button, Modal } from "antd";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
+import { useActiveTab } from "../ActiveTabContext";
 
 const RateModal = ({
   isOpen,
@@ -21,6 +23,8 @@ const RateModal = ({
   isScreenWidth1366,
 }) => {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { setActive } = useActiveTab();
 
   console.log("reqid", id);
   console.log("userid", user_id);
@@ -77,7 +81,8 @@ const RateModal = ({
       );
       const data = response.data;
       console.log(data);
-      window.location.href = "/transactions";
+      navigate("/transanctions");
+      setActive("transanctions");
     } catch (err) {
       if (err.response && err.response.status === 422) {
         // The server returned validation errors
@@ -106,7 +111,7 @@ const RateModal = ({
     const isActive = value === selectedRatings[`q${questionNumber}`];
     let icon = null;
     let color = "text-gray-400"; // Default gray color
-  
+
     switch (value) {
       case 1:
         icon = faSadTear;
@@ -131,12 +136,12 @@ const RateModal = ({
       default:
         break;
     }
-  
+
     const iconProps = {
       className: `text-3xl cursor-pointer ${color}`,
       onClick: () => handleRatingClick(value, questionNumber),
     };
-  
+
     return (
       <div className="text-center">
         <FontAwesomeIcon icon={icon} {...iconProps} />
@@ -144,7 +149,6 @@ const RateModal = ({
       </div>
     );
   };
-  
 
   return (
     <Modal
@@ -184,8 +188,9 @@ const RateModal = ({
     >
       <form onSubmit={onSubmitChange}>
         <div
-          className={`relative p-6 flex-auto grid grid-rows-4 ${isScreenWidth1366 ? "text-sm" : "text-lg"
-            } grid-cols-5 lg:grid-rows-2 lg:grid-cols-4 gap-4`}
+          className={`relative p-6 flex-auto grid grid-rows-4 ${
+            isScreenWidth1366 ? "text-sm" : "text-lg"
+          } grid-cols-5 lg:grid-rows-2 lg:grid-cols-4 gap-4`}
         >
           <div className="col-span-5 lg:col-span-2">
             <label htmlFor="q1" className=" font-semibold ">
@@ -380,8 +385,9 @@ const RateModal = ({
         </div>
         <div className="flex items-center justify-end p-6 border-t border-solid border-gray-300 rounded-b">
           <button
-            className={` font-sans text-white bg-red-700 ${isScreenWidth1366 ? "text-sm py-3" : "text-sm py-2"
-              }  rounded-lg  background-transparent font-bold px-6  outline-none focus:outline-none mr-1  ease-linear transition-all duration-150`}
+            className={` font-sans text-white bg-red-700 ${
+              isScreenWidth1366 ? "text-sm py-3" : "text-sm py-2"
+            }  rounded-lg  background-transparent font-bold px-6  outline-none focus:outline-none mr-1  ease-linear transition-all duration-150`}
             type="button"
             onClick={onClose}
           >
@@ -391,8 +397,9 @@ const RateModal = ({
             loading={loading}
             type="primary"
             htmlType="submit"
-            className={`font-sans text-white bg-gray-800  ${isScreenWidth1366 ? "text-sm py-6" : "text-base py-7"
-              }  font-semibold flex items-center justify-center text-white  font-sans w-28  rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out `}
+            className={`font-sans text-white bg-gray-800  ${
+              isScreenWidth1366 ? "text-sm py-6" : "text-base py-7"
+            }  font-semibold flex items-center justify-center text-white  font-sans w-28  rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out `}
           >
             {loading ? "Submitting" : "Submit"}
           </Button>

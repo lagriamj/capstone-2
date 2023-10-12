@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Button, Modal, Form, Input, Row, Col, Select, message } from "antd";
 import axios from "axios";
-import UpdateContactNumModal from "../../components/UpdateContactNumModal";
 import { useAuth } from "../../AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserPen } from "@fortawesome/free-solid-svg-icons";
@@ -18,7 +17,6 @@ const AdminAccount = () => {
   const [userData, setUserData] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSavingChanges, setIsSavingChange] = useState(false);
-  const [userNewContactNumber, setUserNewContactNumber] = useState("");
   const [userPasswordChecker, setUserPasswordChecker] = useState("");
   const { fullName } = useAuth();
   const [userSignature, setUserSignature] = useState(null);
@@ -104,16 +102,10 @@ const AdminAccount = () => {
   }, [userData]);
 
   const [modalMode, setModalMode] = useState("password");
-  const [modalUpdateContact, setModalUpdateContact] = useState(false);
   const [modalUpdateSignature, setModalUpdateSignature] = useState(false);
 
   const handleModalUpdateSignature = () => {
     setModalUpdateSignature(!modalUpdateSignature);
-  };
-
-  const handleModalUpdateContact = () => {
-    setModalUpdateContact(false);
-    // You might also want to reset any necessary state values here
   };
 
   const handlePasswordCheck = async () => {
@@ -147,35 +139,6 @@ const AdminAccount = () => {
     }
   };
 
-  const handleContactNumberUpdate = async (e) => {
-    e.preventDefault();
-
-    setIsSavingChange(true);
-    try {
-      const response = await axios.put(
-        "http://127.0.0.1:8000/api/update-contact",
-        {
-          newContactNumber: userNewContactNumber,
-          userID: userID,
-        }
-      );
-
-      if (response.status === 200) {
-        setModalUpdateContact(false);
-        message.success("Contact Number Updated Successfully");
-        fetchData();
-        setUserNewContactNumber("");
-        setIsSavingChange(false);
-      } else {
-        setIsSavingChange(false);
-        message.error("Contact Number Update Failed");
-      }
-    } catch (error) {
-      setIsSavingChange(false);
-      message.error("An error occurred while updating contact number");
-    }
-  };
-
   const [officeOptions, setOfficeOptions] = useState([]);
 
   const customFilterOption = (inputValue, option) =>
@@ -202,20 +165,17 @@ const AdminAccount = () => {
 
   const fetchSignature = async () => {
     try {
+      const timestamp = Date.now();
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/user-signatureInAccount/`,
+        `http://127.0.0.1:8000/api/user-signatureInAccount/?userID=${userID}&timestamp=${timestamp}`,
         {
-          params: {
-            fullName: fullName,
-          },
           responseType: "arraybuffer",
         }
       );
 
-      const blob = new Blob([response.data], { type: "image/png" });
+      const blob = new Blob([response.data], { type: "image/png/jpg/jpeg" });
       const dataUrl = URL.createObjectURL(blob);
-
-      console.log(response);
+      console.log("Fetched Signature Data:", dataUrl);
       setUserSignature(dataUrl);
     } catch (err) {
       console.log(err);
@@ -351,30 +311,6 @@ const AdminAccount = () => {
                   <div className="flex flex-col lg:pl-10 md:pl-10 pl-0">
                     <div className="flex">
                       <label htmlFor="userNewContactNumber1">Contact:</label>
-                      <a
-                        id="userNewContactNumber1"
-                        href=""
-                        className="ml-14 text-sm mt-1 font-sans font-medium text-red-600 hover:opacity-90"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setModalUpdateContact(true);
-                          setModalMode("password");
-                        }}
-                      >
-                        *Update Contact Number
-                      </a>
-                      <UpdateContactNumModal
-                        onOpen={modalUpdateContact}
-                        onCancel={handleModalUpdateContact}
-                        modalMode={modalMode}
-                        handlePasswordCheck={handlePasswordCheck}
-                        userPasswordChecker={userPasswordChecker}
-                        setUserPasswordChecker={setUserPasswordChecker}
-                        userNewContactNumber={userNewContactNumber}
-                        setUserNewContactNumber={setUserNewContactNumber}
-                        handleContactNumberUpdate={handleContactNumberUpdate}
-                        isSavingChanges={isSavingChanges}
-                      />
                     </div>
                     <input
                       type="text"
@@ -407,7 +343,6 @@ const AdminAccount = () => {
                         handlePasswordCheck={handlePasswordCheck}
                         userPasswordChecker={userPasswordChecker}
                         setUserPasswordChecker={setUserPasswordChecker}
-                        fullName={fullName}
                         refreshSignature={fetchSignature}
                       />
                     </div>

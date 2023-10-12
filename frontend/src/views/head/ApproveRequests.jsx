@@ -11,7 +11,7 @@ import { message } from "antd";
 
 const ApproveRequests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const { fullName } = useAuth();
+  const { userID } = useAuth();
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,7 +60,7 @@ const ApproveRequests = () => {
       setProcessingRequests([...processingRequests, requestId]);
       await axios.put(`http://127.0.0.1:8000/api/approve-request/${requestId}`);
       const updatedResponse = await axios.get(
-        `http://127.0.0.1:8000/api/pending-signature/${fullName}`
+        `http://127.0.0.1:8000/api/pending-signature/${userID}`
       );
       setData(updatedResponse.data);
       setIsLoading(false);
@@ -74,7 +74,7 @@ const ApproveRequests = () => {
   const refreshData = async () => {
     try {
       const updatedResponse = await axios.get(
-        `http://127.0.0.1:8000/api/pending-signature/${fullName}`
+        `http://127.0.0.1:8000/api/pending-signature/${userID}`
       );
       setData(updatedResponse.data);
     } catch (error) {
@@ -100,6 +100,34 @@ const ApproveRequests = () => {
 
     return shouldIncludeRow;
   });
+
+  const [natureRequests, setNatureRequests] = useState("");
+  const [natureReqOption, setNatureReqOption] = useState([]);
+
+  useEffect(() => {
+    fetchNature();
+  }, []);
+
+  const fetchNature = () => {
+    axios
+      .get("http://127.0.0.1:8000/api/nature-list")
+      .then((response) => {
+        setNatureRequests(response.data.results);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  useEffect(() => {
+    if (Array.isArray(natureRequests)) {
+      const dynamicFilters = natureRequests.map((natureRequest) => ({
+        text: natureRequest.natureRequest,
+        value: natureRequest.natureRequest,
+      }));
+      setNatureReqOption(dynamicFilters);
+    }
+  }, [natureRequests]);
 
   const requestColumns = [
     {
@@ -138,11 +166,25 @@ const ApproveRequests = () => {
       title: "Nature of Request",
       dataIndex: "natureOfRequest",
       key: "natureOfRequest",
+      filters: natureReqOption,
+      filterSearch: true,
+      onFilter: (value, record) => record.natureOfRequest?.includes(value),
     },
     {
       title: "Mode",
       dataIndex: "modeOfRequest",
       key: "modeOfRequest",
+      filters: [
+        {
+          text: "Online",
+          value: "Online",
+        },
+        {
+          text: "Walk-In",
+          value: "Walk-In",
+        },
+      ],
+      onFilter: (value, record) => record.modeOfRequest?.includes(value),
     },
     {
       title: "Action",
@@ -182,7 +224,7 @@ const ApproveRequests = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/pending-signature/${fullName}`
+          `http://127.0.0.1:8000/api/pending-signature/${userID}`
         );
         setData(response.data);
       } catch (error) {

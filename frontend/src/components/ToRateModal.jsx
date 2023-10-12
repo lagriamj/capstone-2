@@ -4,6 +4,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { Modal, Input, Row, Col } from "antd";
 import { Skeleton } from "antd";
+import PrintPreviewModal from "./PrintPreviewModal";
 
 const ToRateModal = ({ isOpen, onClose, datas }) => {
   if (!isOpen) return null;
@@ -11,6 +12,13 @@ const ToRateModal = ({ isOpen, onClose, datas }) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const { TextArea } = Input;
+  const [printModalOpen, setPrintModalOpen] = useState(false);
+  const [dataForPrinting, setDataForPrinting] = useState("");
+  const [requestID, setRequestID] = useState(null);
+
+  const closePrintModal = () => {
+    setPrintModalOpen(false);
+  };
 
   useEffect(() => {
     fetchData();
@@ -25,6 +33,8 @@ const ToRateModal = ({ isOpen, onClose, datas }) => {
       if (response.status === 200) {
         setLoading(false);
         setData(response.data.results);
+        setRequestID(response.data.results.map((item) => item.request_id));
+        setDataForPrinting(response.data.results);
       } else {
         setLoading(false);
         console.error("Failed to fetch utility settings. Response:", response);
@@ -482,6 +492,12 @@ const ToRateModal = ({ isOpen, onClose, datas }) => {
       footer={null}
       closable={false}
     >
+      <PrintPreviewModal
+        visible={printModalOpen}
+        onClose={closePrintModal}
+        itemData={dataForPrinting[0]}
+        reqID={requestID}
+      />
       <div className="relative p-6 text-lg">{RequestDetails()}</div>
       <div className="relative p-6 text-lg">{ReceivedDetails()}</div>
       <div className="relative p-6 text-lg">{ReleasedDetails()}</div>
@@ -489,6 +505,15 @@ const ToRateModal = ({ isOpen, onClose, datas }) => {
       <div className="flex ml-auto w-full  gap-2 justify-end border-t-2 pt-5 pr-6">
         <button
           className="bg-gray-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
+          type="submit"
+          onClick={() => {
+            setPrintModalOpen(true);
+          }}
+        >
+          Print
+        </button>
+        <button
+          className="bg-red-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
           type="submit"
           onClick={onClose}
         >

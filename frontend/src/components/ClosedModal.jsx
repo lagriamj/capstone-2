@@ -1,19 +1,23 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { Modal } from "antd";
 import { Skeleton } from "antd";
-import { message } from "antd";
-import PropagateLoader from "react-spinners/PropagateLoader";
+import PrintPreviewModal from "./PrintPreviewModal";
 
-const ClosedModal = ({ isOpen, onClose, datas, refreshData }) => {
+const ClosedModal = ({ isOpen, onClose, datas }) => {
   if (!isOpen) return null;
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-  const [isSingleRequest, setIsSingleRequest] = useState(false);
+  const [dataForPrinting, setDataForPrinting] = useState("");
+  const [printModalOpen, setPrintModalOpen] = useState(false);
+  const [requestID, setRequestID] = useState(null);
+
+  const closePrintModal = () => {
+    setPrintModalOpen(false);
+  };
 
   useEffect(() => {
     fetchData();
@@ -28,16 +32,19 @@ const ClosedModal = ({ isOpen, onClose, datas, refreshData }) => {
       if (response.status === 200) {
         setLoading(false);
         setData(response.data.results);
-        setIsSingleRequest(response.data.results.length === 1);
+        setRequestID(response.data.results[0].request_id);
+        setDataForPrinting(response.data.results);
       } else {
         setLoading(false);
-        console.error("Failed to fetch utility settings. Response:", response);
+        console.error("Failed to data. Response:", response);
       }
     } catch (error) {
       setLoading(false);
-      console.error("Error fetching utility settings:", error);
+      console.error("Error fetching data:", error);
     }
   };
+
+  console.log("aaaaaaaa", requestID);
 
   // Function to render input fields based on data
   const RequestDetails = () => {
@@ -535,6 +542,12 @@ const ClosedModal = ({ isOpen, onClose, datas, refreshData }) => {
       footer={null}
       closable={false}
     >
+      <PrintPreviewModal
+        visible={printModalOpen}
+        onClose={closePrintModal}
+        itemData={dataForPrinting[0]}
+        reqID={requestID}
+      />
       <div className="relative p-6 text-lg">{RequestDetails()}</div>
       <div className="relative p-6 text-lg">{ReceivedDetails()}</div>
       <div className="relative p-6 text-lg">{ReleasedDetails()}</div>
@@ -542,6 +555,15 @@ const ClosedModal = ({ isOpen, onClose, datas, refreshData }) => {
       <div className="flex ml-auto w-full  gap-2 justify-end border-t-2 pt-5 pr-6">
         <button
           className="bg-gray-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
+          type="submit"
+          onClick={() => {
+            setPrintModalOpen(true);
+          }}
+        >
+          Print
+        </button>
+        <button
+          className="bg-red-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
           type="submit"
           onClick={onClose}
         >

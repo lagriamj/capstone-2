@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\UserSignature;
+use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -16,9 +17,6 @@ class UserSignatureController extends Controller
     {
         $request->validate([
             'governmentID' => 'required|string',
-            'firstName' => 'required|string',
-            'lastName' => 'required|string',
-            'office' => 'required|string',
             'signatureImage' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -29,21 +27,18 @@ class UserSignatureController extends Controller
 
             $userSignature = new UserSignature();
             $userSignature->governmentID = $request->input('governmentID');
-            $userSignature->firstName = $request->input('firstName');
-            $userSignature->lastName = $request->input('lastName');
-            $userSignature->office = $request->input('office');
             $userSignature->signatureImage = $filename;
-            $userSignature->role = 'user';
             $userSignature->save();
             return response()->json(['message' => 'Authorized signature added successfully']);
         }
         return response()->json(['message' => 'No file uploaded.']);
     }
 
-
-    public function allSignature($fullName)
+    public function allSignature($userID)
     {
-        $authorizedSignatures = UserSignature::whereRaw("CONCAT(firstName, ' ', lastName) = ?", [$fullName])->get();
+        $id = User::where('userID', $userID)->pluck('userGovernmentID')->first();
+
+        $authorizedSignatures = UserSignature::where('governmentID', $id)->get();
         return response()->json($authorizedSignatures);
     }
 
@@ -59,22 +54,25 @@ class UserSignatureController extends Controller
 
     public function getSignatureInAccount()
     {
-        $fullName = request('fullName');
+        $userID = request('userID');
+        $id = User::where('userID', $userID)->pluck('userGovernmentID')->first();
+
         try {
-            Log::info('Querying for name: ' . $fullName);
-            $userSignature = UserSignature::whereRaw("CONCAT(firstName, ' ', lastName) = ?", [$fullName])->first();
+            Log::info('Querying for userID: ' . $userID);
+            $userSignature = UserSignature::where('governmentID', $id)->first();
 
-            // Get the signature image filename
+            if (!$userSignature) {
+                throw new ModelNotFoundException('User signature not found');
+            }
+
             $signatureFilename = $userSignature->signatureImage;
-
             $path = storage_path('app/user_signatures/' . $signatureFilename);
-
 
             if (!Storage::exists('user_signatures/' . $signatureFilename)) {
                 throw new \Exception('Signature file not found');
             }
 
-            return response()->file($path, ['Content-Type' => 'image/png']);
+            return response()->file($path, ['Content-Type' => 'image/png/jpg/jpeg']);
         } catch (ModelNotFoundException $e) {
             return response()->json(['error' => 'User signature not found'], 404);
         } catch (QueryException $e) {
@@ -87,28 +85,39 @@ class UserSignatureController extends Controller
 
     public function getFileName()
     {
-        $fullName = request('fullName');
-        try {
-            $userSignature = UserSignature::whereRaw("CONCAT(firstName, ' ', lastName) = ?", [$fullName])->first();
+        $userID = request('userID');
+        $id = User::where('userID', $userID)->pluck('userGovernmentID')->first();
+
+        if ($id) {
+            $userSignature = UserSignature::where('governmentID', $id)->first();
 
             if ($userSignature) {
                 return $userSignature->signatureImage;
             } else {
-                return null; // Return null if user signature not found
+                return null;
             }
-        } catch (\Exception $e) {
-            Log::error('Error while retrieving filename: ' . $e->getMessage());
-            return null; // Handle the error as needed
         }
+
+        Log::error('User or user signature not found for userID: ' . $userID);
+        return null;
     }
 
-    public function updateSignature(Request $request, $fullName)
+
+    public function updateSignature(Request $request, $userID)
     {
         $request->validate([
             'signatureImage' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $userSignature = UserSignature::whereRaw("CONCAT(firstName, ' ', lastName) = ?", [$fullName])->first();
+        $user = User::where('userID', $userID)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $governmentID = $user->userGovernmentID;
+
+        $userSignature = UserSignature::where('governmentID', $governmentID)->first();
 
         if (!$userSignature) {
             return response()->json(['message' => 'User signature not found'], 404);
@@ -117,15 +126,16 @@ class UserSignatureController extends Controller
         if ($request->hasFile('signatureImage')) {
             $image = $request->file('signatureImage');
             $filename = $image->getClientOriginalName();
-            $storagePath = $image->storeAs('user_signatures', $filename);
 
             $userSignature->signatureImage = $filename;
             $userSignature->save();
+            $image->storeAs('user_signatures', $filename);
 
             return response()->json(['message' => 'User signature updated successfully']);
         }
         return response()->json(['message' => 'No file uploaded.']);
     }
+
 
     public function approvedAuthorSign($request_id)
     {
@@ -139,15 +149,22 @@ class UserSignatureController extends Controller
             return response()->json(['message' => 'Request is not yet approved by an authorized person.']);
         }
 
-        $reqOffice = $userRequest->reqOffice; // Change this line
-
-        $authorizedSignatures = UserSignature::where('office', $reqOffice)
+        $reqOffice = $userRequest->reqOffice;
+        $authorized = User::where('office', $reqOffice)
             ->where('role', 'head')
+            ->select('userGovernmentID')
+            ->first();
+
+        if (!$authorized) {
+            return response()->json(['message' => 'No authorized person found for the given office.']);
+        }
+
+        $govID = $authorized->userGovernmentID;
+        $authorizedSignatures = UserSignature::where('governmentID', $govID)
             ->get();
 
         return response()->json($authorizedSignatures);
     }
-
 
     public function getApprovedSignature($filename)
     {

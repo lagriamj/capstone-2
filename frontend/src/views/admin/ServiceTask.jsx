@@ -193,6 +193,67 @@ const ServiceTask = () => {
     };
   }, []);
 
+  const [natureRequests, setNatureRequests] = useState("");
+  const [natureReqOption, setNatureReqOption] = useState([]);
+  const [technicians, setTechnicians] = useState("");
+  const [techniciansFilter, setTechniciansFilter] = useState([]);
+
+  useEffect(() => {
+    fetchNature();
+    fetchTechnicians();
+  }, []);
+
+  const fetchNature = () => {
+    setLoading(true);
+    axios
+      .get("http://127.0.0.1:8000/api/nature-list")
+      .then((response) => {
+        setNatureRequests(response.data.results);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
+  };
+
+  const fetchTechnicians = () => {
+    setLoading(true);
+    axios
+      .get("http://127.0.0.1:8000/api/admin-list")
+      .then((response) => {
+        setTechnicians(response.data.result);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    if (Array.isArray(natureRequests)) {
+      const dynamicFilters = natureRequests.map((natureRequest) => ({
+        text: natureRequest.natureRequest,
+        value: natureRequest.natureRequest,
+      }));
+      setNatureReqOption(dynamicFilters);
+    }
+
+    if (Array.isArray(technicians)) {
+      const techFilter = technicians.map((technician) => ({
+        text: technician.userFirstName + technician.userLastName,
+        value: technician.userFirstName + technician.userLastName,
+      }));
+      techFilter.unshift({
+        text: "My Tasks",
+        value: fullName,
+      });
+
+      setTechniciansFilter(techFilter);
+    }
+  }, [natureRequests, technicians]);
+
   const [searchText, setSearchText] = useState("");
   const [pagination, setPagination] = useState({
     position: ["bottomLeft"],
@@ -262,22 +323,31 @@ const ServiceTask = () => {
       title: "Nature of Request",
       dataIndex: "natureOfRequest",
       key: "natureOfRequest",
+      filters: natureReqOption,
+      filterSearch: true,
+      onFilter: (value, record) => record.natureOfRequest?.includes(value),
     },
     {
       title: "Mode",
       dataIndex: "modeOfRequest",
       key: "modeOfRequest",
+      filters: [
+        {
+          text: "Online",
+          value: "Online",
+        },
+        {
+          text: "Walk-In",
+          value: "Walk-In",
+        },
+      ],
+      onFilter: (value, record) => record.modeOfRequest?.includes(value),
     },
     {
       title: "Assigned To",
       dataIndex: "assignedTo",
       key: "assignedTo",
-      filters: [
-        {
-          text: "My Tasks",
-          value: fullName,
-        },
-      ],
+      filters: techniciansFilter,
       onFilter: (value, record) => record.assignedTo === value,
     },
     {

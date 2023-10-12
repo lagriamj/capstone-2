@@ -21,7 +21,13 @@ class LoginController extends Controller
             // Use Hash::check to compare the user-provided plain password with the hashed password
             if (Hash::check($credentials['userPassword'], $user->userPassword)) {
                 if ($user->userStatus === 'verified') {
-                    Auth::login($user);
+                    if (!Auth::check()) {
+                        if ($user) {
+                            Auth::login($user);
+                        } else {
+                            redirect('/login');
+                        }
+                    }
 
                     return response()->json([
                         'success' => true,

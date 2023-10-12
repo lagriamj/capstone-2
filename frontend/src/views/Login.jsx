@@ -93,6 +93,8 @@ function Login() {
         //setUserID(data.userID);
         setRole(data.role);
         setUserStatus(data.userStatus);
+        const token = response.data.access_token;
+        console.log("token: " + token);
 
         if (data.userStatus === "verified") {
           if (data.role === "admin") {

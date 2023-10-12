@@ -183,9 +183,6 @@ const Register = () => {
 
         const formData = new FormData();
         formData.append("governmentID", userGovernmentID);
-        formData.append("firstName", userFirstName);
-        formData.append("lastName", userLastName);
-        formData.append("office", selectedOffice);
         formData.append("signatureImage", file);
 
         try {

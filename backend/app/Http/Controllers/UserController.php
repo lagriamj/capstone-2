@@ -305,10 +305,6 @@ class UserController extends Controller
             if ($userSignature) {
                 $userSignature->update([
                     'governmentID' => $request->input('userGovernmentID'),
-                    'firstName' => $request->input('userFirstName'),
-                    'lastName' => $request->input('userLastName'),
-                    'office' => $request->input('office'),
-                    'role' => $request->input('role'),
                 ]);
             }
 
@@ -350,5 +346,12 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error deleting selected users'], 500);
         }
+    }
+
+    public function showTechnicians()
+    {
+
+        $technicians = User::where('role', 'admin')->get();
+        return response()->json(['result' => $technicians], 200);
     }
 }

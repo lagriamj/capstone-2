@@ -168,11 +168,7 @@ const AddUserModal = ({
             </Form.Item>
           </Col>
           <Col span={`${isLargeScreen ? 12 : 24}`}>
-            <Form.Item
-              name="division"
-              label="Division"
-              rules={[{ required: true, message: "Please enter the division" }]}
-            >
+            <Form.Item name="division" label="Division">
               <Input size="large" />
             </Form.Item>
           </Col>
@@ -209,7 +205,7 @@ const AddUserModal = ({
               <Input size="large" />
             </Form.Item>
           </Col>
-          <Col span={`${isLargeScreen ? 12 : 24}`}>
+          <Col span={24}>
             <Form.Item>
               <Button
                 loading={isCreating}

@@ -10,7 +10,7 @@ import ViewToApproveModal from "../../components/ViewToApproveModal";
 
 const ApprovedList = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const { fullName } = useAuth();
+  const { userID } = useAuth();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
@@ -33,6 +33,34 @@ const ApprovedList = () => {
 
   const isLargeScreen = windowWidth >= 1024;
 
+  const [natureRequests, setNatureRequests] = useState("");
+  const [natureReqOption, setNatureReqOption] = useState([]);
+
+  useEffect(() => {
+    fetchNature();
+  }, []);
+
+  const fetchNature = () => {
+    axios
+      .get("http://127.0.0.1:8000/api/nature-list")
+      .then((response) => {
+        setNatureRequests(response.data.results);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  useEffect(() => {
+    if (Array.isArray(natureRequests)) {
+      const dynamicFilters = natureRequests.map((natureRequest) => ({
+        text: natureRequest.natureRequest,
+        value: natureRequest.natureRequest,
+      }));
+      setNatureReqOption(dynamicFilters);
+    }
+  }, [natureRequests]);
+
   const [searchText, setSearchText] = useState("");
   const [pagination, setPagination] = useState({
     position: ["bottomLeft"],
@@ -54,7 +82,7 @@ const ApprovedList = () => {
       try {
         // Make a GET request to fetch data from the API
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/pending-approved-signature/${fullName}`
+          `http://127.0.0.1:8000/api/pending-approved-signature/${userID}`
         );
 
         // Set the fetched data to the 'data' state
@@ -122,11 +150,25 @@ const ApprovedList = () => {
       title: "Nature of Request",
       dataIndex: "natureOfRequest",
       key: "natureOfRequest",
+      filters: natureReqOption,
+      filterSearch: true,
+      onFilter: (value, record) => record.natureOfRequest?.includes(value),
     },
     {
       title: "Mode",
       dataIndex: "modeOfRequest",
       key: "modeOfRequest",
+      filters: [
+        {
+          text: "Online",
+          value: "Online",
+        },
+        {
+          text: "Walk-In",
+          value: "Walk-In",
+        },
+      ],
+      onFilter: (value, record) => record.modeOfRequest?.includes(value),
     },
     {
       title: "Action",

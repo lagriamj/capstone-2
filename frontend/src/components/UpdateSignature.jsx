@@ -4,6 +4,7 @@ import { Button, Col, Form, Row, Upload, message } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
+import { useAuth } from "../AuthContext";
 
 const UpdateSignature = ({
   onOpen,
@@ -12,13 +13,12 @@ const UpdateSignature = ({
   handlePasswordCheck,
   userPasswordChecker,
   setUserPasswordChecker,
-  fullName,
   refreshSignature,
 }) => {
   const [fileName, setFileName] = useState("");
   const [form] = Form.useForm();
   const [isSavingChanges, setIsSavingChanges] = useState(false);
-
+  const { userID } = useAuth();
   const [fileList, setFileList] = useState([
     {
       uid: "-1",
@@ -39,7 +39,7 @@ const UpdateSignature = ({
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/update-signature/${fullName}`,
+        `http://127.0.0.1:8000/api/update-signature/${userID}`,
         formData,
         {
           headers: {
@@ -47,10 +47,11 @@ const UpdateSignature = ({
           },
         }
       );
-      message.success(response.data.message);
       refreshSignature();
+      message.success(response.data.message);
       onCancel();
       setIsSavingChanges(false);
+
       setUserPasswordChecker("");
     } catch (error) {
       message.error("Errror");
@@ -68,7 +69,7 @@ const UpdateSignature = ({
         `http://127.0.0.1:8000/api/get-signatureFileName/`,
         {
           params: {
-            fullName: fullName,
+            userID: userID,
           },
         }
       );
@@ -104,7 +105,7 @@ const UpdateSignature = ({
     setFileList(newFileList);
   };
   const props = {
-    action: `http://127.0.0.1:8000/api/update-signature/${fullName}`,
+    action: `http://127.0.0.1:8000/api/update-signature/${userID}`,
     onChange: handleChange,
     multiple: false,
   };
@@ -186,7 +187,6 @@ UpdateSignature.propTypes = {
   handlePasswordCheck: PropTypes.func.isRequired,
   userPasswordChecker: PropTypes.string.isRequired,
   setUserPasswordChecker: PropTypes.func.isRequired,
-  fullName: PropTypes.string.isRequired,
   refreshSignature: PropTypes.func.isRequired,
 };
 

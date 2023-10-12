@@ -12,10 +12,6 @@ class UserSignature extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'governmentID',
-        'firstName',
-        'lastName',
-        'office',
         'signatureImage',
-        'role',
     ];
 }

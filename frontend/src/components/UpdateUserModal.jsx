@@ -64,7 +64,7 @@ const UpdateUserModal = ({
       open={visible}
       onCancel={onCancel}
       onOk={onOk}
-      title="Create New User Account"
+      title="Update User Account"
       width={`${isLargeScreen ? "50%" : "90%"}`}
       footer={null}
     >
