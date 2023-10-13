@@ -12,6 +12,8 @@ const PrintPieChartData = ({
   currentPage,
   isLargeScreen,
   isLastPage,
+  fromDate,
+  toDate,
 }) => {
   const contentRef = useRef();
   const printRef = useRef();
@@ -21,6 +23,21 @@ const PrintPieChartData = ({
       printRef.current.handlePrint(); // Trigger the print action
     }
   };
+
+  const fromDateObj = fromDate ? new Date(fromDate) : null;
+  const toDateObj = toDate ? new Date(toDate) : null;
+
+  // Helper function to format a Date object as "Month day, year"
+  const formatDate = (dateObj) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return dateObj.toLocaleDateString(undefined, options);
+  };
+
+  // Format the date range for display
+  const formattedDateRange =
+    fromDateObj && toDateObj
+      ? ` ${formatDate(fromDateObj)} - ${formatDate(toDateObj)}`
+      : "";
 
   console.log("last page: " + isLastPage);
 
@@ -53,7 +70,10 @@ const PrintPieChartData = ({
           <h3 className="text-sm font-bold">
             Computer Equipment Maintenance and Systems Engineering Division
           </h3>
-          <h1 className="text-base font-bold"></h1>
+          <div className="flex items-center justify-center gap-1">
+            <h3 className="text-sm">For the period</h3>
+            <h1 className="font-bold">{formattedDateRange}</h1>
+          </div>
         </div>
         <Table
           className="mt-4"
@@ -83,6 +103,8 @@ PrintPieChartData.propTypes = {
   currentPage: PropTypes.any.isRequired,
   isLargeScreen: PropTypes.bool.isRequired,
   isLastPage: PropTypes.bool.isRequired,
+  fromDate: PropTypes.any,
+  toDate: PropTypes.any,
 };
 
 export default PrintPieChartData;

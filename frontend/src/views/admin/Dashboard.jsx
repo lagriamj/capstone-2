@@ -670,12 +670,7 @@ const Dashboard = () => {
                       </div>
                     </div>
                     <div className="lg:grid lg:grid-cols-3">
-                      <div
-                        className=" flex w-full lg:mt-0 mt-2 gap-2 items-center text-left cursor-pointer"
-                        onClick={() => {
-                          handleServiceTaskClick();
-                        }}
-                      >
+                      <div className=" flex w-full lg:mt-0 mt-2 gap-2 items-center text-left cursor-pointer">
                         <div
                           className={`bg-[#fff4de] rounded-xl ${
                             isBelow800 ? "p-3" : "p-4"
@@ -692,12 +687,7 @@ const Dashboard = () => {
                           <label>{formattedTotalRatings}%</label>
                         </div>
                       </div>
-                      <div
-                        className=" flex w-full lg:mt-0 mt-2 gap-2 items-center text-left cursor-pointer"
-                        onClick={() => {
-                          handleServiceTaskClick();
-                        }}
-                      >
+                      <div className=" flex w-full lg:mt-0 mt-2 gap-2 items-center text-left cursor-pointer">
                         <div
                           className={`bg-[#dcfce7] rounded-xl ${
                             isBelow800 ? "p-3" : "p-4"
@@ -714,12 +704,7 @@ const Dashboard = () => {
                           <label>{formattedTotalSatisfied}%</label>
                         </div>
                       </div>
-                      <div
-                        className=" flex w-full lg:mt-0 mt-2 gap-2 items-center text-left cursor-pointer"
-                        onClick={() => {
-                          handleServiceTaskClick();
-                        }}
-                      >
+                      <div className=" flex w-full lg:mt-0 mt-2 gap-2 items-center text-left cursor-pointer">
                         <div
                           className={`bg-[#e9d5fe] rounded-xl ${
                             isBelow800 ? "p-3" : "p-4"
@@ -797,6 +782,8 @@ const Dashboard = () => {
                       modalData={modalData}
                       tableColumns={tableColumns}
                       isLargeScreen={isLargeScreen}
+                      fromDate={startDate}
+                      toDate={endDate}
                     />
                   </div>
                 </div>
@@ -825,6 +812,8 @@ const Dashboard = () => {
                     isOpen={techPerformanceModal}
                     onClose={closeTechPerformanceModal}
                     isLargeScreen={isLargeScreen}
+                    startDate={startDate}
+                    endDate={endDate}
                   />
                   <SummaryListModal
                     isOpen={summaryListModal}

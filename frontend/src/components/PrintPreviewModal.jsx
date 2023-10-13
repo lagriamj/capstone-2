@@ -650,7 +650,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
                   </div>
                   <div className="text-center ">
                     <label htmlFor="" className="text-xs  border-black">
-                      Office Representative
+                      Division Head
                     </label>
                   </div>
                 </div>
@@ -681,7 +681,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
                   </div>
                   <div className="text-center ">
                     <label htmlFor="" className="text-xs  border-black">
-                      Office Head
+                      CITC Head
                     </label>
                   </div>
                 </div>

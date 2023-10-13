@@ -59,9 +59,9 @@ export default function NoteModal(display) {
                 </div>
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  <ul className="list-disc pl-6">
+                  <ul className="list-disc pl-6 font-bold">
                     {cutOffTime && (
-                      <li className="text-red-500 text-semibold">
+                      <li className="text-red-500 ">
                         Cut-off Time: {cutOffTime}
                       </li>
                     )}

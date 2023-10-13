@@ -4,10 +4,16 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import PrintTechPerformance from "./PrintTechPerformance";
 
-const TechnicianPerformance = ({ isOpen, onClose, isLargeScreen }) => {
+const TechnicianPerformance = ({
+  isOpen,
+  onClose,
+  isLargeScreen,
+  startDate,
+  endDate,
+}) => {
   const [data, setData] = useState([]);
-  const [fromDate, setFromDate] = useState(null);
-  const [toDate, setToDate] = useState(null);
+  const [fromDate, setFromDate] = useState(startDate);
+  const [toDate, setToDate] = useState(endDate);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -114,6 +120,7 @@ const TechnicianPerformance = ({ isOpen, onClose, isLargeScreen }) => {
             <input
               type="date"
               className="p-2 w-36 outline-none border-none bg-transparent"
+              defaultValue={startDate}
               onChange={(e) => setFromDate(e.target.value)}
             />
           </div>
@@ -121,6 +128,7 @@ const TechnicianPerformance = ({ isOpen, onClose, isLargeScreen }) => {
             <span className="font-semibold">To:</span>
             <input
               type="date"
+              defaultValue={endDate}
               className="p-2 w-36 outline-none border-none bg-transparent"
               onChange={(e) => setToDate(e.target.value)}
             />
@@ -163,6 +171,8 @@ TechnicianPerformance.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   isLargeScreen: PropTypes.bool.isRequired,
+  startDate: PropTypes.any,
+  endDate: PropTypes.any,
 };
 
 export default TechnicianPerformance;

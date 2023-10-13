@@ -11,6 +11,8 @@ const PieChartModal = ({
   modalData,
   tableColumns,
   isLargeScreen,
+  fromDate,
+  toDate,
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -74,6 +76,8 @@ const PieChartModal = ({
           pageSize={pagination.pageSize}
           currentPage={currentPage}
           isLargeScreen={isLargeScreen}
+          fromDate={fromDate}
+          toDate={toDate}
         />
         <Table
           dataSource={modalData}
@@ -98,6 +102,8 @@ PieChartModal.propTypes = {
   modalData: PropTypes.any,
   tableColumns: PropTypes.any,
   isLargeScreen: PropTypes.bool,
+  fromDate: PropTypes.any,
+  toDate: PropTypes.any,
 };
 
 export default PieChartModal;

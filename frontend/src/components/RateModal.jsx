@@ -187,6 +187,13 @@ const RateModal = ({
       centered
     >
       <form onSubmit={onSubmitChange}>
+        <ul className="w-full text-center items-center justify-center flex flex-wrap lg:gap-4 gap-2 font-semibold font-sans">
+          <li>1 - Very Satisfied</li>
+          <li>2 - Satisfied</li>
+          <li>3 - Neutral</li>
+          <li>4 - Dissatisfied</li>
+          <li>5 - Very Dissatisfied</li>
+        </ul>
         <div
           className={`relative p-6 flex-auto grid grid-rows-4 ${
             isScreenWidth1366 ? "text-sm" : "text-lg"
@@ -212,25 +219,6 @@ const RateModal = ({
             </div>
           </div>
           <div className="col-span-5 lg:col-span-2">
-            <label htmlFor="q5" className=" font-semibold">
-              5. Employee Attitude towards Client (Saktong pamatasan sa
-              empleyado)
-            </label>
-            <div className="flex items-center justify-center space-x-4 mt-4">
-              {[
-                { value: 1, description: "1" },
-                { value: 2, description: "2" },
-                { value: 3, description: "3" },
-                { value: 4, description: "4" },
-                { value: 5, description: "5" },
-              ].map((item) => (
-                <div key={item.value}>
-                  {renderRatingIcon(item.value, 5, item.description)}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="col-span-5 lg:col-span-2">
             <label htmlFor="name" className=" font-semibold">
               2. Quality of Service (Kalidad serbisyo)
             </label>
@@ -244,24 +232,6 @@ const RateModal = ({
               ].map((item) => (
                 <div key={item.value}>
                   {renderRatingIcon(item.value, 2, item.description)}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="col-span-5 lg:col-span-2">
-            <label htmlFor="name" className=" font-semibold">
-              7. Transaction Costs (Kantidad sa serbisyo)
-            </label>
-            <div className="flex items-center justify-center space-x-4 mt-4">
-              {[
-                { value: 1, description: "1" },
-                { value: 2, description: "2" },
-                { value: 3, description: "3" },
-                { value: 4, description: "4" },
-                { value: 5, description: "5" },
-              ].map((item) => (
-                <div key={item.value}>
-                  {renderRatingIcon(item.value, 7, item.description)}
                 </div>
               ))}
             </div>
@@ -286,6 +256,43 @@ const RateModal = ({
           </div>
           <div className="col-span-5 lg:col-span-2">
             <label htmlFor="name" className=" font-semibold">
+              4. Communication (Kahanas sa pag abi-abi)
+            </label>
+            <div className="flex items-center justify-center space-x-4 mt-4">
+              {[
+                { value: 1, description: "1" },
+                { value: 2, description: "2" },
+                { value: 3, description: "3" },
+                { value: 4, description: "4" },
+                { value: 5, description: "5" },
+              ].map((item) => (
+                <div key={item.value}>
+                  {renderRatingIcon(item.value, 4, item.description)}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="col-span-5 lg:col-span-2">
+            <label htmlFor="q5" className=" font-semibold">
+              5. Employee Attitude towards Client (Saktong pamatasan sa
+              empleyado)
+            </label>
+            <div className="flex items-center justify-center space-x-4 mt-4">
+              {[
+                { value: 1, description: "1" },
+                { value: 2, description: "2" },
+                { value: 3, description: "3" },
+                { value: 4, description: "4" },
+                { value: 5, description: "5" },
+              ].map((item) => (
+                <div key={item.value}>
+                  {renderRatingIcon(item.value, 5, item.description)}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="col-span-5 lg:col-span-2">
+            <label htmlFor="name" className=" font-semibold">
               6. Integrity (Pagkamatarongon sinsero sa empleyado)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
@@ -304,7 +311,7 @@ const RateModal = ({
           </div>
           <div className="col-span-5 lg:col-span-2">
             <label htmlFor="name" className=" font-semibold">
-              4. Communication (Kahanas sa pag abi-abi)
+              7. Transaction Costs (Kantidad sa serbisyo)
             </label>
             <div className="flex items-center justify-center space-x-4 mt-4">
               {[
@@ -315,7 +322,7 @@ const RateModal = ({
                 { value: 5, description: "5" },
               ].map((item) => (
                 <div key={item.value}>
-                  {renderRatingIcon(item.value, 4, item.description)}
+                  {renderRatingIcon(item.value, 7, item.description)}
                 </div>
               ))}
             </div>
@@ -383,16 +390,16 @@ const RateModal = ({
             />
           </div>
         </div>
-        <div className="flex items-center justify-end p-6 border-t border-solid border-gray-300 rounded-b">
-          <button
+        <div className="flex items-center justify-end p-6  gap-2 border-t border-solid border-gray-300 rounded-b">
+          <Button
             className={` font-sans text-white bg-red-700 ${
-              isScreenWidth1366 ? "text-sm py-3" : "text-sm py-2"
-            }  rounded-lg  background-transparent font-bold px-6  outline-none focus:outline-none mr-1  ease-linear transition-all duration-150`}
+              isScreenWidth1366 ? "text-sm py-6" : "text-sm py-7"
+            }  font-semibold flex items-center justify-center text-white  font-sans w-28  rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out `}
             type="button"
             onClick={onClose}
           >
             Close
-          </button>
+          </Button>
           <Button
             loading={loading}
             type="primary"
