@@ -227,7 +227,7 @@ const ViewCancel = ({ isOpen, onClose, datas, role }) => {
       title={
         <div className="flex justify-between items-center">
           <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
-          <span>REQUEST ID: E-{datas.id}</span>
+          <span>REQUEST ID: {datas.request_code}</span>
         </div>
       }
       centered
@@ -254,6 +254,7 @@ ViewCancel.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   datas: PropTypes.object,
+  role: PropTypes.any,
 };
 
 export default ViewCancel;

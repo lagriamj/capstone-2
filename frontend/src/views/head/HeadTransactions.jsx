@@ -218,8 +218,8 @@ const HeadTransactions = () => {
     },
     {
       title: "Request ID",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "request_code",
+      key: "request_code",
     },
     {
       title: "Date Requested",
@@ -416,7 +416,7 @@ const HeadTransactions = () => {
             <div className="flex lg:flex-row text-center flex-col w-full lg:pl-4 items-center justify-center shadow-xl bg-white  text-white rounded-t-lg lg:gap-4 gap-2">
               <div className="flex lg:flex-col flex-row lg:gap-0 gap-2">
                 <h1 className="flex text-black items-center lg:text-2xl font-semibold ">
-                  Current Requests
+                  Transactions
                 </h1>
                 <span className="text-black mr-auto">
                   Total Requests: {data.length}

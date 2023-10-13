@@ -155,6 +155,11 @@ class DashboardController extends Controller
             ->where('status', 'To Release')
             ->count();
 
+        $torateRequests = DB::table('user_requests')
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->where('status', 'To Rate')
+            ->count();
+
         $closedRequests = DB::table('user_requests')
             ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
             ->where('status', 'Closed')
@@ -166,6 +171,7 @@ class DashboardController extends Controller
             'receivedRequests' => $receivedRequests,
             'onprogressRequests' => $onprogressRequests,
             'toreleaseRequests' => $toreleaseRequests,
+            'torateRequests' => $torateRequests,
             'closedRequests' => $closedRequests,
         ]);
     }

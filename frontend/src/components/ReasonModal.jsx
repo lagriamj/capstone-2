@@ -71,7 +71,7 @@ export default function ReasonModal({
         onCancel={onClose}
         title={
           <div className="flex flex-col lg:flex-row font-sans text-xl py-6 px-10">
-            <label>{`Request ID: E-${itemData.request_id}`}</label>
+            <label>{`Request ID: ${itemData.request_code}`}</label>
             <label className="ml-auto ">{`Date Requested: ${
               itemData.dateRequested.split(" ")[0]
             }`}</label>
@@ -135,4 +135,6 @@ ReasonModal.propTypes = {
   isLargeScreen: PropTypes.bool.isRequired,
   refreshData: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  name: PropTypes.any,
+  role: PropTypes.any,
 };

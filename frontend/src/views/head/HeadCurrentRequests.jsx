@@ -374,8 +374,8 @@ const HeadCurrentRequests = () => {
     },
     {
       title: "Request ID",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "request_code",
+      key: "request_code",
     },
     {
       title: "Date Requested",

@@ -125,7 +125,7 @@ const ServiceReleaseModal = ({
       title={
         <div className="flex justify-between items-center">
           <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
-          <span>REQUEST ID: {data.request_id}</span>
+          <span>REQUEST ID: {data.request_code}</span>
         </div>
       }
       centered

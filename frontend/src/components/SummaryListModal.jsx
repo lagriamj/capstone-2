@@ -4,11 +4,22 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import PrintSummaryList from "./PrintSummaryList";
 
-const SummaryListModal = ({ isOpen, onClose, isLargeScreen }) => {
+const SummaryListModal = ({
+  isOpen,
+  onClose,
+  isLargeScreen,
+  startDate,
+  endDate,
+}) => {
   const [data, setData] = useState([]);
-  const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
+  const [fromDate, setFromDate] = useState(startDate);
+  const [toDate, setToDate] = useState(endDate);
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    setFromDate(startDate);
+    setToDate(endDate);
+  }, [startDate, endDate]);
 
   useEffect(() => {
     const queryParams = {};
@@ -212,6 +223,8 @@ SummaryListModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   isLargeScreen: PropTypes.bool.isRequired,
+  startDate: PropTypes.any,
+  endDate: PropTypes.any,
 };
 
 export default SummaryListModal;

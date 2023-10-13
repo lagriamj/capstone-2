@@ -535,7 +535,7 @@ const ClosedModal = ({ isOpen, onClose, datas }) => {
       title={
         <div className="flex justify-between items-center">
           <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
-          <span>REQUEST ID: {datas.id}</span>
+          <span>REQUEST ID: {datas.request_code}</span>
         </div>
       }
       centered

@@ -115,7 +115,7 @@ export default function CurrentRequestModal({
               isScreenWidth1366 ? "text-base" : "text-xl"
             } py-6 px-10`}
           >
-            <label>{`Request ID: E-${itemData.id}`}</label>
+            <label>{`Request ID: ${itemData.request_code}`}</label>
             <label className="ml-auto ">{`Date Requested: ${
               itemData.dateRequested.split(" ")[0]
             }`}</label>

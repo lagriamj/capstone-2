@@ -99,7 +99,7 @@ PrintTechPerformance.propTypes = {
   pageSize: PropTypes.any.isRequired,
   currentPage: PropTypes.any.isRequired,
   isLargeScreen: PropTypes.bool.isRequired,
-  fromDate: PropTypes,
+  fromDate: PropTypes.any,
   toDate: PropTypes.any,
 };
 

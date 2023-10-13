@@ -17,6 +17,11 @@ const TechnicianPerformance = ({
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
+    setFromDate(startDate);
+    setToDate(endDate);
+  }, [startDate, endDate]);
+
+  useEffect(() => {
     fetchTechnicianData();
   }, [fromDate, toDate]);
 
@@ -120,7 +125,7 @@ const TechnicianPerformance = ({
             <input
               type="date"
               className="p-2 w-36 outline-none border-none bg-transparent"
-              defaultValue={startDate}
+              value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
             />
           </div>
@@ -128,7 +133,7 @@ const TechnicianPerformance = ({
             <span className="font-semibold">To:</span>
             <input
               type="date"
-              defaultValue={endDate}
+              value={toDate}
               className="p-2 w-36 outline-none border-none bg-transparent"
               onChange={(e) => setToDate(e.target.value)}
             />

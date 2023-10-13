@@ -283,6 +283,11 @@ const Dashboard = () => {
       fill: "#008000", // Green
     },
     {
+      name: "To Rate",
+      value: percentData?.torateRequests,
+      fill: "#0000FF", // Blue
+    },
+    {
       name: "Closed ",
       value: percentData?.closedRequests,
       fill: "#808080", // Gray
@@ -819,6 +824,8 @@ const Dashboard = () => {
                     isOpen={summaryListModal}
                     onClose={closeSummaryListModal}
                     isLargeScreen={isLargeScreen}
+                    startDate={startDate}
+                    endDate={endDate}
                   />
                   <div className="w-full  flex lg:flex-row flex-col gap-2 px-2 py-3 mediumLg:pt-1 justify-end">
                     {" "}

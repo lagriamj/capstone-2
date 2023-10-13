@@ -145,7 +145,7 @@ const ApproveRequests = () => {
     {
       title: "Request ID",
       dataIndex: "request_code",
-      key: "id",
+      key: "request_code",
     },
     {
       title: "Requested By",
