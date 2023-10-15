@@ -222,8 +222,10 @@ function Login() {
               </div>
               <div className="flex items-start justify-center flex-col w-3/4">
                 <a
-                  className="flex self-end justify-center underline lg:text-lg md:text-base text-sm text-main"
-                  href="/register"
+                  className="flex self-end justify-center underline lg:text-lg md:text-base text-sm text-main cursor-pointer"
+                  onClick={() => {
+                    navigate("/forgot-password");
+                  }}
                 >
                   Forgot Password?
                 </a>

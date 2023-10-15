@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
@@ -76,6 +77,79 @@ class UserController extends Controller
         }
     }
 
+    public function checkEmail(Request $request)
+    {
+        $email = $request->input("email");
+        $user = User::where("userEmail", $email)->first();
+
+        $otpCode = mt_rand(100000, 999999);
+        $otpExpiration = now()->addMinutes(10);
+
+        if (!$user) {
+            // Email does not exist
+            return response()->json(['message' => 'Email not found'], 404);
+        } else {
+            $user->otpCode = $otpCode;
+            $user->otpExpiration = $otpExpiration;
+            $user->save();
+        }
+
+        $sendOTP = $this->sendVerificationCode($user, $otpCode);
+
+        if (!$sendOTP) {
+            return response()->json(['message' => 'Verification sending failed'], 500);
+        }
+
+        return response()->json(['otpCode' => $otpCode, 'message' => 'Sending OTP successfull'], 200);
+    }
+
+    public function checkOTP(Request $request)
+    {
+        $email = $request->input('email');
+        // Find the user by email
+        $user = User::where('userEmail', $email)->first();
+
+        if (!$user) {
+            // Email not found
+            return response()->json(['message' => 'Email not found'], 404);
+        }
+
+        if ($user->otpCode !== $request->otpCode) {
+            // Invalid OTP
+            return response()->json(['message' => ' Nganong Invalid OTP mannnnnnnn'], 400);
+        } elseif ($user->otpExpiration < now()) {
+            // OTP has expired
+            return response()->json(['message' => 'OTP has expired'], 400);
+        } else {
+            // OTP is valid
+            return response()->json(['message' => 'OTP is valid'], 200);
+        }
+    }
+
+    public function newPassword(Request $request)
+    {
+        $email = $request->input('email');
+        $newPassword = $request->userPassword;
+        // Find the user by email
+        $user = User::where('userEmail', $email)->first();
+
+
+
+
+        if (!$user) {
+            // Email not found
+            return response()->json(['message' => 'Email not found'], 404);
+        }
+
+        $maxPasswordLength = 50;
+
+        $truncatedPassword = Str::limit($newPassword, $maxPasswordLength);
+        $user->userPassword = bcrypt($truncatedPassword); // 
+        $user->save();
+
+        return response()->json(['message' => "Successfully changed password"]);
+    }
+
     private function sendVerificationCode(User $user, $otpCode)
     {
 
@@ -124,36 +198,36 @@ class UserController extends Controller
 
     public function resendOTP(Request $request)
     {
-        $action = $request->action; // Fetch the action parameter
 
-        if ($action === 'resend') {
-            $userId = $request->userId;
+        $userId = $request->userId;
+        $email = $request->email;
 
+        if ($userId) {
             $user = User::find($userId);
-
-            if (!$user) {
-                return response()->json(['message' => 'User not found'], 404);
-            }
-
-            $otpCode = mt_rand(100000, 999999);
-            $otpExpiration = now()->addMinutes(15);
-
-            $user->otpCode = $otpCode;
-            $user->otpExpiration = $otpExpiration;
-
-            /*  $sendOTP = $this->sendVerificationCode($user, $otpCode);
-
-            if (!$sendOTP) {
-                return response()->json(['message' => 'Verification sending failed'], 500);
-            }
-
-            */
-            $user->save();
-
-            return response()->json(['message' => 'New OTP code has been sent'], 200);
+        } elseif ($email) {
+            $user = User::where('userEmail', $email)->first();
         } else {
-            return response()->json(['message' => 'Invalid action'], 400);
+            return response()->json(['message' => 'User ID or email is required'], 400);
         }
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+        $otpCode = mt_rand(100000, 999999);
+        $otpExpiration = now()->addMinutes(15);
+
+        $user->otpCode = $otpCode;
+        $user->otpExpiration = $otpExpiration;
+
+        $sendOTP = $this->sendVerificationCode($user, $otpCode);
+
+        if (!$sendOTP) {
+            return response()->json(['message' => 'Verification sending failed'], 500);
+        }
+
+        $user->save();
+
+        return response()->json(['message' => 'New OTP code has been sent'], 200);
     }
 
     public function updateEmail(Request $request)

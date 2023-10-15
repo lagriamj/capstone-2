@@ -16,7 +16,6 @@ import Unauthorized from "./views/Unauthorized";
 import UpdateEmailPage from "./views/UpdateEmailPage";
 import ServiceRequest from "./views/admin/ServiceRequest";
 import ServiceTask from "./views/admin/ServiceTask";
-import Recommendation from "./views/admin/Recommendation";
 import AdminAccount from "./views/admin/AdminAccount";
 import { ActiveTabProvider } from "./ActiveTabContext";
 import UsersList from "./views/admin/UsersList";
@@ -31,6 +30,7 @@ import AuditLog from "./views/admin/AuditLog";
 import HeadCurrentRequests from "./views/head/HeadCurrentRequests";
 import HeadTransactions from "./views/head/HeadTransactions";
 import HeadRequests from "./views/head/HeadRequests";
+import ForgotPassword from "./views/ForgotPassword";
 
 function App() {
   function ProtectedRoute({ element, requiredRole }) {
@@ -70,6 +70,7 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/verify-otp" element={<RegisterConfirmation />} />
               <Route path="/update-email" element={<UpdateEmailPage />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/page-not-found" element={<NotFound />} />
               <Route path="/unauthorized" element={<Unauthorized />} />
 
@@ -192,16 +193,6 @@ function App() {
                   />
                 }
               />
-              <Route
-                path="/recommendation"
-                element={
-                  <ProtectedRoute
-                    element={<Recommendation />}
-                    requiredRole={"admin"}
-                  />
-                }
-              />
-
               <Route
                 path="/admin/account"
                 element={
