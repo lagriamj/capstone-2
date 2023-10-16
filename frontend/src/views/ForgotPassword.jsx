@@ -103,6 +103,8 @@ const ForgotPassword = () => {
     setLoadingResend(true);
     setShowNewPassword(false);
     setChangeButton("verify");
+    setOtp("");
+    setError("");
     try {
       const response = await axios.put("http://127.0.0.1:8000/api/verify-otp", {
         email: email,
@@ -149,14 +151,16 @@ const ForgotPassword = () => {
         {/* ... */}
         <div className="lg:w-[60%] w-full h-screen  flex items-center justify-center font-sans">
           <div className="flex flex-col relative  bg-white lg:w-[70%] w-[90%] h-auto px-6 pb-6 rounded-2xl lg:shadow-2xl text-4xl">
-            <button
-              className="absolute text-base bg-main text-white py-2 px-4 rounded-lg cursor-pointer top-0 right-0 m-3"
-              onClick={() => {
-                navigate("/login");
-              }}
-            >
-              Back
-            </button>
+            {sent && (
+              <button
+                className="absolute text-base bg-main text-white py-2 px-4 rounded-lg cursor-pointer top-0 right-0 m-3"
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Back
+              </button>
+            )}
             <AnimatePresence>
               {sent ? (
                 <motion.div
@@ -175,35 +179,43 @@ const ForgotPassword = () => {
                     alt="sent-email"
                     className="h-60 w-60"
                   />
-                  <h1 className="text-2xl font-semibold text-center">
-                    Enter OTP
-                  </h1>
-                  <p className="text-base text-center">
-                    Please enter the OTP code sent to your email.
-                  </p>
-                  <p className="text-xs text-red-700 text-center">{error}</p>
-                  <div className="flex mt-2 flex-col gap-1 w-full">
-                    <label htmlFor="otp" className="font-bold text-xs">
-                      OTP Code
-                    </label>
-                    <motion.input
-                      type="text"
-                      className="outline-none h-10 border-2 rounded-lg text-sm pl-2 bg-gray-100"
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 20 }}
-                      transition={{ duration: 0.5 }}
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value)}
-                    />
-                  </div>
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ duration: 0.5 }}
+                    className="flex w-[90%] flex-col items-center justify-center gap-3"
+                  >
+                    <h1 className="text-2xl font-semibold text-center">
+                      Enter OTP
+                    </h1>
+                    <p className="text-base text-center">
+                      Please enter the OTP code sent to your email.
+                    </p>
+                    <p className="text-xs text-red-700 text-center">{error}</p>
+                    <div className="flex mt-2 flex-col gap-1 w-full">
+                      <label htmlFor="otp" className="font-bold text-xs">
+                        OTP Code
+                      </label>
+                      <motion.input
+                        type="text"
+                        className="outline-none h-10 border-2 rounded-lg text-sm pl-2 bg-gray-100"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                        transition={{ duration: 0.5 }}
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                      />
+                    </div>
+                  </motion.div>
                   {showNewPassword && (
                     <motion.div
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 20 }}
                       transition={{ duration: 0.5 }}
-                      className="flex mt-2 flex-col gap-1 w-full"
+                      className="flex mt-2 flex-col gap-1 w-[90%]"
                     >
                       <label
                         htmlFor="newPassword"
@@ -316,7 +328,12 @@ const ForgotPassword = () => {
                     />
                   </div>
                   <div className="flex mt-2 gap-2 w-full items-center justify-center">
-                    <Button className="w-[45%] h-12 text-lg font-medium border-2 border-main rounded-lg bg-white text-main">
+                    <Button
+                      className="w-[45%] h-12 text-lg font-medium border-2 border-main rounded-lg bg-white text-main"
+                      onClick={() => {
+                        navigate("/login");
+                      }}
+                    >
                       Cancel
                     </Button>
                     <Button
