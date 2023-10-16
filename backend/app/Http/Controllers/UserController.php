@@ -128,6 +128,13 @@ class UserController extends Controller
 
     public function newPassword(Request $request)
     {
+        $request->validate([
+            'newPassword' => 'required|min:6',
+        ], [
+            'newPassword.required' => 'The new password field is required it must be atleast 6 characters long.',
+            'newPassword.min' => 'The new password must be at least 6 characters long.',
+        ]);
+
         $email = $request->input('email');
         $newPassword = $request->userPassword;
         // Find the user by email
@@ -235,6 +242,8 @@ class UserController extends Controller
         $userID = $request->userID;
 
         $user = User::find($userID);
+
+
 
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);

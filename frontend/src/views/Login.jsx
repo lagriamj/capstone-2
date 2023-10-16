@@ -10,6 +10,7 @@ import axios from "axios";
 import { useAuth } from "../AuthContext";
 import { Button, message } from "antd";
 import { useActiveTab } from "../ActiveTabContext";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 function Login() {
   const [role, setRole] = useState("");
@@ -124,134 +125,147 @@ function Login() {
   };
 
   return (
-    <div className="flex">
-      {/* Left side */}
-      <div className="lg:w-1/2 h-screen box-border bg-main hidden lg:flex md:w-1/6 justify-center items-start lg:py-16">
-        <div className=" w-full flex flex-col items-center text-center gap-3">
-          <div className="flex mb-32 gap-4">
-            <img className="w-28 h-28" src="/cityhalllogo.png" alt="" />
-            <img className="w-28 h-28" src="/citclogo.png" alt="" />
-          </div>
-          <div className="w-[70%]">
-            <img src="/davaologo.png" alt="" />
-            <p className="text-4xl w-full \  lg:tracking-mostWidest text-white font-bold">
-              LIFE IS HERE
-            </p>
+    <HelmetProvider>
+      <Helmet>
+        <title>Login</title>
+      </Helmet>
+      <div className="flex">
+        {/* Left side */}
+        <div className="lg:w-[40%] h-screen box-border bg-main hidden lg:flex md:w-1/6 justify-center items-start ">
+          <div className=" w-full  h-[100%] flex flex-col items-center justify-center text-center gap-3">
+            <div className="mb-4">
+              <p className=" text-white text-xl">
+                City Information Technology Center
+              </p>
+              <h2 className="text-white text-2xl font-semibold tracking-wider">
+                eRequest
+              </h2>
+            </div>
+            <div className="flex gap-2">
+              <img className="w-28 h-28" src="/cityhalllogo.png" alt="" />
+              <img className="w-28 h-28" src="/citclogo.png" alt="" />
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Right side */}
-      <div className="lg:w-1/2 w-full h-screen  flex items-center justify-center font-sans">
-        <div className="flex flex-col  bg-white lg:w-[70%] w-[90%] h-auto pb-10 rounded-2xl lg:shadow-2xl text-4xl">
-          <div className="w-full  flex flex-col gap-4">
-            <div className="lg:hidden flex my-5 gap-4 items-center justify-center">
-              <img className="w-20 h-20" src="/cityhalllogo.png" alt="" />
-              <img className="w-20 h-20" src="/citc1.png" alt="" />
-            </div>
-            <div className="lg:pl-10 lg:mt-10">
-              <h1 className="lg:text-5xl font-semibold text-center lg:text-start">
-                Welcome
-              </h1>
-              <p className="text-center lg:text-start text-2xl">
-                Login to your account
-              </p>
-            </div>
-            <form
-              action=""
-              onSubmit={handleSubmit}
-              className="w-full lg:mt-10 mt-5 flex flex-col items-center justify-center gap-y-5"
-            >
-              <div className="flex items-start justify-center flex-col w-3/4">
-                <label
-                  className="flex font-semibold text-lg"
-                  htmlFor="userGovernmentID"
-                >
-                  Government ID
-                </label>
-                <div className="relative w-full">
-                  <input
-                    className="w-full h-14 border-2 rounded-lg pl-14 pr-4 text-lg border-slate-400 focus:outline-none"
-                    type="text"
-                    name="userGovernmentID"
-                    id="userGovernmentID"
-                    placeholder="Government ID"
-                    value={userGovernmentID}
-                    onChange={(e) => setUserGovernmentID(e.target.value)}
-                  />
-                  <div className="absolute inset-y-0 left-0 flex items-center p-3 bg-main rounded-l-lg">
-                    <svg
-                      className="w-7 h-7 text-white"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      {/* Replace with your icon component */}
-                      <FontAwesomeIcon icon={faIdCard} />
-                    </svg>
-                  </div>
-                </div>
+        {/* Right side */}
+        <div className="lg:w-[60%] w-full h-screen  flex items-center justify-center font-sans">
+          <div className="flex flex-col  bg-white lg:w-[70%] w-[90%] h-auto pb-10 rounded-2xl lg:shadow-2xl text-4xl">
+            <div className="w-full  flex flex-col gap-4">
+              <div className="lg:hidden flex my-5 gap-4 items-center justify-center">
+                <img className="w-20 h-20" src="/cityhalllogo.png" alt="" />
+                <img className="w-20 h-20" src="/citc1.png" alt="" />
               </div>
-              <div className="flex items-start justify-center flex-col w-3/4">
-                <label
-                  className="flex font-semibold text-lg"
-                  htmlFor="password"
-                >
-                  Password
-                </label>
-                <div className="relative w-full">
-                  <input
-                    className="w-full h-14 border-2 rounded-lg pl-14 pr-4 text-lg border-slate-400 focus:outline-none"
-                    type="password"
-                    name="password"
-                    id="password"
-                    placeholder="Password"
-                    value={userPassword}
-                    onChange={(e) => setUserPassword(e.target.value)}
-                  />
-                  <div className="absolute inset-y-0 left-0 flex items-center p-3 bg-main rounded-l-lg">
-                    <svg
-                      className="w-7 h-7 text-white"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      {/* Replace with your icon component */}
-                      <FontAwesomeIcon icon={faLock} />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-              <div className="flex items-start justify-center flex-col w-3/4">
-                <a
-                  className="flex self-end justify-center underline lg:text-lg md:text-base text-sm text-main cursor-pointer"
-                  onClick={() => {
-                    navigate("/forgot-password");
-                  }}
-                >
-                  Forgot Password?
-                </a>
-              </div>
-              <div className="flex items-start justify-center flex-col w-3/4">
-                <Button
-                  loading={loading}
-                  className="w-full h-14 text-lg font-medium border-2 rounded-lg pl-2 bg-main text-white"
-                  htmlType="submit"
-                >
-                  {loading ? "Logging In" : "Log in"}
-                </Button>
-              </div>
-              <div className="flex items-center justify-center flex-col w-3/4">
-                <p className="font-medium lg:text-lg md:text-base text-sm">
-                  Don't have an account?{" "}
-                  <a href="/register" className="text-red-600 font-semibold">
-                    Register here
-                  </a>
+              <div className="lg:pl-10 lg:mt-10">
+                <h1 className="lg:text-5xl font-semibold text-center lg:text-start">
+                  Welcome
+                </h1>
+                <p className="text-center lg:text-start text-2xl">
+                  Login to your account
                 </p>
               </div>
-            </form>
+              <form
+                action=""
+                onSubmit={handleSubmit}
+                className="w-full lg:mt-10 mt-5 flex flex-col items-center justify-center gap-y-5"
+              >
+                <div className="flex items-start justify-center flex-col w-3/4">
+                  <label
+                    className="flex font-semibold text-lg"
+                    htmlFor="userGovernmentID"
+                  >
+                    Government ID
+                  </label>
+                  <div className="relative w-full">
+                    <input
+                      className="w-full h-14 border-2 rounded-lg pl-14 pr-4 text-lg border-slate-400 focus:outline-none"
+                      type="text"
+                      name="userGovernmentID"
+                      id="userGovernmentID"
+                      placeholder="Government ID"
+                      value={userGovernmentID}
+                      onChange={(e) => setUserGovernmentID(e.target.value)}
+                    />
+                    <div className="absolute inset-y-0 left-0 flex items-center p-3 bg-main rounded-l-lg">
+                      <svg
+                        className="w-7 h-7 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        {/* Replace with your icon component */}
+                        <FontAwesomeIcon icon={faIdCard} />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-start justify-center flex-col w-3/4">
+                  <label
+                    className="flex font-semibold text-lg"
+                    htmlFor="password"
+                  >
+                    Password
+                  </label>
+                  <div className="relative w-full">
+                    <input
+                      className="w-full h-14 border-2 rounded-lg pl-14 pr-4 text-lg border-slate-400 focus:outline-none"
+                      type="password"
+                      name="password"
+                      id="password"
+                      placeholder="Password"
+                      value={userPassword}
+                      onChange={(e) => setUserPassword(e.target.value)}
+                    />
+                    <div className="absolute inset-y-0 left-0 flex items-center p-3 bg-main rounded-l-lg">
+                      <svg
+                        className="w-7 h-7 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        {/* Replace with your icon component */}
+                        <FontAwesomeIcon icon={faLock} />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-start justify-center flex-col w-3/4">
+                  <a
+                    className="flex self-end justify-center underline lg:text-lg md:text-base text-sm text-main cursor-pointer"
+                    onClick={() => {
+                      navigate("/forgot-password");
+                    }}
+                  >
+                    Forgot Password?
+                  </a>
+                </div>
+                <div className="flex items-start justify-center flex-col w-3/4">
+                  <Button
+                    loading={loading}
+                    className="w-full h-14 text-lg font-medium border-2 rounded-lg pl-2 bg-main text-white"
+                    htmlType="submit"
+                  >
+                    {loading ? "Logging In" : "Log in"}
+                  </Button>
+                </div>
+                <div className="flex items-center justify-center flex-col w-3/4">
+                  <p className="font-medium lg:text-lg md:text-base text-sm">
+                    Don't have an account?{" "}
+                    <button
+                      href=""
+                      className="text-red-600 font-semibold"
+                      onClick={() => {
+                        navigate("/register");
+                      }}
+                    >
+                      Register here
+                    </button>
+                  </p>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </HelmetProvider>
   );
 }
 

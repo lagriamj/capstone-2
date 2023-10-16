@@ -8,6 +8,7 @@ import { useAuth } from "../AuthContext";
 import axios from "axios";
 import HashLoader from "react-spinners/HashLoader";
 import { message } from "antd";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const RegisterConfirmation = () => {
   const InputBox = ({
@@ -197,17 +198,17 @@ const RegisterConfirmation = () => {
         setIsResending(true);
 
         const countdownInterval = setInterval(() => {
-          setRemainingTime((prevTime) => prevTime - 1); // Decrement remaining time
+          setRemainingTime((prevTime) => prevTime - 1);
         }, 1000);
 
         setTimeout(() => {
-          clearInterval(countdownInterval); // Stop countdown interval after 60 seconds
-          setIsResending(false); // Enable the button
+          clearInterval(countdownInterval);
+          setIsResending(false);
           setRemainingTime(0);
         }, 60000); // 60 sec
       } else {
         console.error(response.data.error);
-        // Handle specific OTP error here
+
         setVerificationMessage(response.data.message);
         setMessageColor("text-red-700");
       }
@@ -226,99 +227,110 @@ const RegisterConfirmation = () => {
   };
 
   return (
-    <div className="bg-transparent">
-      {loading && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-10">
-          <HashLoader color="#ffffff" size={80} />
-        </div>
-      )}
-      <div className="flex">
-        {/* Left side */}
-        <div className="lg:w-1/2 h-screen box-border bg-main hidden lg:flex md:w-1/6 justify-center items-start lg:pt-16">
-          <div className=" w-full flex flex-col items-center text-center  gap-3">
-            <div className="flex mb-32 gap-4">
-              <img className="w-28 h-28" src="/cityhalllogo.png" alt="" />
-              <img className="w-28 h-28" src="/citclogo.png" alt="" />
-            </div>
-            <div>
-              <img src="/davaologo.png" alt="" />
-              <p className="text-4xl lg:tracking-mostWidest text-white font-bold">
-                LIFE IS HERE
-              </p>
+    <HelmetProvider>
+      <Helmet>
+        <title>Confirmation</title>
+      </Helmet>
+      <div className="bg-transparent">
+        {loading && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-10">
+            <HashLoader color="#ffffff" size={80} />
+          </div>
+        )}
+        <div className="flex">
+          {/* Left side */}
+          <div className="lg:w-[40%] h-screen box-border bg-main hidden lg:flex md:w-1/6 justify-center items-start ">
+            <div className=" w-full  h-[100%] flex flex-col items-center justify-center text-center gap-3">
+              <div className="mb-4">
+                <p className=" text-white text-xl">
+                  City Information Technology Center
+                </p>
+                <h2 className="text-white text-2xl font-semibold tracking-wider">
+                  eRequest
+                </h2>
+              </div>
+              <div className="flex gap-2">
+                <img className="w-28 h-28" src="/cityhalllogo.png" alt="" />
+                <img className="w-28 h-28" src="/citclogo.png" alt="" />
+              </div>
             </div>
           </div>
-        </div>
-        {/* right side */}
-        <div className="w-full lg:w-1/2 h-screen relative lg:absolute lg:right-0 z-10 overflow-auto  flex flex-col items-center justify-center">
-          <a
-            href="/register"
-            className="bg-main text-white text-xl absolute right-10 top-10 py-3 px-6 rounded-lg  flex gap-2 items-center"
-          >
-            <FontAwesomeIcon
-              className="w-8 h-6"
-              icon={faArrowLeft}
-              style={{ color: "#ffffff" }}
-              fade
-            />
-          </a>
-          <div className="bg-white w-[80%] shadow-xl h-auto flex flex-col items-center justify-center text-5xl rounded-xl pb-16 lg:pt-16 px-4 gap-y-6">
-            <div className="lg:hidden flex ml-10 my-8 gap-4 w-full justify-center">
-              <img className="w-28 h-28" src="/cityhalllogo.png" alt="" />
-              <img className="w-28 h-28" src="/citc1.png" alt="" />
-            </div>
-            <h1 className="font-semibold text-center">Verification Code</h1>
-            <p className="text-lg font-semibold text-center">
-              Please enter the Verification code that was sent to your
-              {` ${userEmail} `} in order to activate your account
-            </p>
-            <img src="/confrm1.svg" alt="" className="h-64" />
-            {verificationMessage && (
-              <p className={`text-lg ${messageColor}`}>{verificationMessage}</p>
-            )}
-            <InputBox
-              type={"number"}
-              id={"otpCode"}
-              placeholder={"OTP CODE"}
-              value={otpCode}
-              onChange={(e) => setOtpCode(e.target.value)}
-              icon={faKey}
-            />
-            <div className="flex flex-col gap-y-2 w-full items-center justify-center">
-              <button
-                onClick={confirmOTP}
-                className="text-xl text-white font-semibold bg-main w-[75%]  py-4 rounded-lg"
-              >
-                Confirm Code
-              </button>
-              <button
-                onClick={resendOTP}
-                disabled={isResending}
-                className="text-xl text-main font-semibold bg-gray-200 w-[75%]  py-4 rounded-lg"
-              >
-                {isResending ? `Resending in ${remainingTime}s` : "Resend Code"}
-              </button>
-              <div className="mt-3 font-semibold">
-                <p className="text-lg">
-                  Wrong email?{" "}
-                  <a
-                    className="underline text-main cursor-pointer"
-                    onClick={() =>
-                      navigate("/update-email", {
-                        state: {
-                          userID: !userId ? location.state.userID : userId,
-                        },
-                      })
-                    }
-                  >
-                    Click here
-                  </a>
+          {/* right side */}
+          <div className="w-full lg:w-[60%] h-screen relative lg:absolute lg:right-0 z-10 overflow-auto  flex flex-col items-center justify-center">
+            <a
+              href="/register"
+              className="bg-main text-white text-xl absolute right-10 top-10 py-3 px-6 rounded-lg  flex gap-2 items-center"
+            >
+              <FontAwesomeIcon
+                className="w-8 h-6"
+                icon={faArrowLeft}
+                style={{ color: "#ffffff" }}
+                fade
+              />
+            </a>
+            <div className="bg-white w-[80%] shadow-xl h-auto flex flex-col items-center justify-center text-5xl rounded-xl pb-16 lg:pt-16 px-4 gap-y-6">
+              <div className="lg:hidden flex ml-10 my-8 gap-4 w-full justify-center">
+                <img className="w-28 h-28" src="/cityhalllogo.png" alt="" />
+                <img className="w-28 h-28" src="/citc1.png" alt="" />
+              </div>
+              <h1 className="font-semibold text-center">Verification Code</h1>
+              <p className="text-lg font-semibold text-center">
+                Please enter the Verification code that was sent to your
+                {` ${userEmail} `} in order to activate your account
+              </p>
+              <img src="/confrm1.svg" alt="" className="h-64" />
+              {verificationMessage && (
+                <p className={`text-lg ${messageColor}`}>
+                  {verificationMessage}
                 </p>
+              )}
+              <InputBox
+                type={"number"}
+                id={"otpCode"}
+                placeholder={"OTP CODE"}
+                value={otpCode}
+                onChange={(e) => setOtpCode(e.target.value)}
+                icon={faKey}
+              />
+              <div className="flex flex-col gap-y-2 w-full items-center justify-center">
+                <button
+                  onClick={confirmOTP}
+                  className="text-xl text-white font-semibold bg-main w-[75%]  py-4 rounded-lg"
+                >
+                  Confirm Code
+                </button>
+                <button
+                  onClick={resendOTP}
+                  disabled={isResending}
+                  className="text-xl text-main font-semibold bg-gray-200 w-[75%]  py-4 rounded-lg"
+                >
+                  {isResending
+                    ? `Resending in ${remainingTime}s`
+                    : "Resend Code"}
+                </button>
+                <div className="mt-3 font-semibold">
+                  <p className="text-lg">
+                    Wrong email?{" "}
+                    <a
+                      className="underline text-main cursor-pointer"
+                      onClick={() =>
+                        navigate("/update-email", {
+                          state: {
+                            userID: !userId ? location.state.userID : userId,
+                          },
+                        })
+                      }
+                    >
+                      Click here
+                    </a>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </HelmetProvider>
   );
 };
 

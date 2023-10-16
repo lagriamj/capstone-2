@@ -65,6 +65,7 @@ function App() {
         <ActiveTabProvider>
           <ActiveSubTabProvider>
             <Routes>
+              <Route path="*" element={<NotFound />} />
               <Route index element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
