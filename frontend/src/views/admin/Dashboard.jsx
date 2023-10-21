@@ -575,10 +575,6 @@ const Dashboard = () => {
       ),
       key: "2",
     },
-    {
-      label: "Example 2",
-      key: "3",
-    },
   ];
 
   return (

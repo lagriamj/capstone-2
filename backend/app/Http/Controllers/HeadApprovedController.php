@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Requests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -61,6 +62,24 @@ class HeadApprovedController extends Controller
             return response()->json(['message' => 'Request approved successfully']);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to approve request'], 500);
+        }
+    }
+
+    public function approveSelectedRequests(Request $request)
+    {
+        $selectedRequestIDs = $request->input('selectedRequestIDs', []);
+
+        if (empty($selectedRequestIDs)) {
+            return response()->json(['message' => 'No request selected for approve'], 400);
+        }
+
+        try {
+            // Perform the bulk deletion
+            Requests::whereIn('request_code', $selectedRequestIDs)->update(['approved' => 'yes-signature']);
+
+            return response()->json(['message' => 'Selected users Inactive successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error updating users'], 500);
         }
     }
 }

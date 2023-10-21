@@ -159,9 +159,9 @@ const ReleasedModal = ({ isOpen, onClose, data, refreshData }) => {
             </Col>
             <Col xs={24} lg={6}>
               <label className="block text-sm font-bold mb-2 text-black">
-                Date Procured
+                Year Procured
               </label>
-              <Input value={data.dateProcured} readOnly className="h-[40px]" />
+              <Input value={data.yearProcured} readOnly className="h-[40px]" />
             </Col>
             <Col xs={24} lg={6}>
               <label className="block text-sm font-bold mb-2 text-black">

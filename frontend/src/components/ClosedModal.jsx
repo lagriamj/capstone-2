@@ -265,25 +265,25 @@ const ClosedModal = ({ isOpen, onClose, datas }) => {
           <div className="col-span-1">
             <label
               className="block text-sm font-bold mb-2"
-              htmlFor="propertyNo"
+              htmlFor="yearProcured"
             >
-              Date Procured
+              Year Procured
             </label>
             <input
               className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               type="date"
-              id="dateProcured"
-              name="dateProcured"
-              value={item.dateProcured || "No data"}
+              id="yearProcured"
+              name="yearProcured"
+              value={item.yearProcured || "No data"}
               readOnly
             />
           </div>
           <div className="col-span-1">
             <label
               className="block text-sm font-bold mb-2"
-              htmlFor="propertyNo"
+              htmlFor="dateServiced"
             >
-              Date Service
+              Date Serviced
             </label>
             <input
               className="shadow-md bg-gray-200 appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

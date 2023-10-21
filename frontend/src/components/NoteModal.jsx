@@ -59,29 +59,29 @@ export default function NoteModal(display) {
                 </div>
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
-                  <ul className="list-disc pl-6 font-bold">
+                  <ul className="list-disc pl-6 flex flex-col text-xl gap-4">
                     {cutOffTime && (
-                      <li className="text-red-500 ">
+                      <li className="text-red-500  font-bold">
                         Cut-off Time: {cutOffTime}
                       </li>
                     )}
                     <li>
-                      No Property Number? No problem! Use the Sticker Number
-                      instead.
+                      <b>No Property Number?</b> No problem! Use the Sticker
+                      Number instead.
                     </li>
                     <li>
-                      Warning: We can`&apos;`t be responsible for any unlicensed
-                      software on your device. In case of a raid or
-                      confiscation, we`&apos;`re not liable.
+                      <b>Warning: We can&apos;t be responsible</b> for any
+                      unlicensed software on your device. In case of a raid or
+                      confiscation, we&apos;re not liable.
                     </li>
                     <li>
-                      Protect your data: We`&apos;`re not liable for any data
-                      loss during the repair process.
+                      <b>Protect your data: We&apos;re not liable</b> for any
+                      data loss during the repair process.
                     </li>
                     <li>
-                      Act fast: Submit your request slip with the authorized
-                      signature by the end of the day. Otherwise, it will be
-                      canceled for the next day.
+                      <b>Act fast: Submit your request slip</b> with the
+                      authorized signature by the end of the day. Otherwise, it
+                      will be canceled for the next day.
                     </li>
                   </ul>
                 </div>

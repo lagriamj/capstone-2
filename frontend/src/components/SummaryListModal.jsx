@@ -44,7 +44,7 @@ const SummaryListModal = ({
 
   const summaryListColumn = [
     {
-      title: "SR No.",
+      title: "Property No.",
       dataIndex: "request_code",
       key: "request_code",
       align: "center",

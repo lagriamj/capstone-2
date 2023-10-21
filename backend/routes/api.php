@@ -150,6 +150,7 @@ Route::get('/user-approved-signature/{filename}', [UserSignatureController::clas
 Route::get('/pending-signature/{userID}', [HeadApprovedController::class, 'allpendingNotApproved']);
 Route::get('/pending-approved-signature/{userID}', [HeadApprovedController::class, 'allpendingApproved']);
 Route::put('/approve-request/{requestId}', [HeadApprovedController::class, 'approveRequest']);
+Route::post('approve-selected-requests', [HeadApprovedController::class, 'approveSelectedRequests']);
 
 //audit log
 Route::get('/audit-logs', [AuditLogController::class, 'showAuditLog']);

@@ -260,14 +260,14 @@ const ToRateModal = ({ isOpen, onClose, datas }) => {
           </Col>
           <Col xs={24} lg={6}>
             <label
-              htmlFor="dateProcured"
+              htmlFor="yearProcured"
               className="block text-sm font-bold mb-2 text-black"
             >
-              Date Procured
+              Year Procured
             </label>
             <Input
-              value={item.dateProcured}
-              id="dateProcured"
+              value={item.yearProcured}
+              id="yearProcured"
               readOnly
               className="h-[40px] "
             />

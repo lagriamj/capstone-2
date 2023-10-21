@@ -119,7 +119,7 @@ const ServiceRequest = () => {
       division: division,
       dateRequested: daytime,
       authorizedBy: author,
-      dateProcured: dateP,
+      yearProcured: dateP,
     });
   }, [userID, office, division, daytime, author, dateP]);
 
@@ -285,7 +285,7 @@ const ServiceRequest = () => {
                 propertyNo: "",
                 serialNo: "",
                 authorizedBy: author,
-                dateProcured: "N/A",
+                yearProcured: "N/A",
                 specialIns: "",
                 status: "Pending",
                 assignedTo: "None",
@@ -418,7 +418,7 @@ const ServiceRequest = () => {
                   className="flex flex-col items-center justify-center pb-[30px] pt-[2px]"
                 >
                   <label className="block text-sm font-bold mb-2 mr-auto text-black">
-                    Date Procured
+                    Year Procured
                   </label>
                   <DatePicker
                     picker="year"
@@ -473,7 +473,7 @@ const ServiceRequest = () => {
                   </Form.Item>
                 </Col>
                 <Col>
-                  <Form.Item name={"dateProcured"}>
+                  <Form.Item name={"yearProcured"}>
                     <Input hidden />
                   </Form.Item>
                 </Col>

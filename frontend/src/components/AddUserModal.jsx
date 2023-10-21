@@ -154,6 +154,20 @@ const AddUserModal = ({
           </Col>
           <Col span={`${isLargeScreen ? 12 : 24}`}>
             <Form.Item
+              name="isActive"
+              label="isActive"
+              rules={[
+                { required: true, message: "Please select the active status" },
+              ]}
+            >
+              <Select size="large">
+                <Option value={1}>Active</Option>
+                <Option value={0}>Inactive</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={`${isLargeScreen ? 12 : 24}`}>
+            <Form.Item
               name="office"
               label="Office"
               rules={[{ required: true, message: "Please select the office" }]}

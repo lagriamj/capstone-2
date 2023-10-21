@@ -11,6 +11,7 @@ import ViewToApproveModal from "../../components/ViewToApproveModal";
 const ApprovedList = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { userID } = useAuth();
+  const fromApprovedList = true;
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
@@ -236,6 +237,7 @@ const ApprovedList = () => {
                 isOpen={isModalVisible}
                 onClose={() => setIsModalVisible(false)}
                 data={selectedRowData}
+                fromApprovedList={fromApprovedList}
               />
             </div>
           </div>

@@ -193,7 +193,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
           receivedBy: data.receivedBy,
           dateReceived: data.dateReceived,
           assignedTo: data.assignedTo,
-          dateProcured: data.dateProcured,
+          yearProcured: data.yearProcured,
           dateServiced: daytime,
           serviceBy: serviceByValue,
           toRecommend: "n/a",
@@ -262,14 +262,14 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
                 <Form.Item
                   label={
                     <label className="block text-sm font-bold">
-                      Date Procured
+                      Year Procured
                     </label>
                   }
-                  name="dateProcured"
+                  name="yearProcured"
                 >
                   <Input
                     readOnly
-                    value={data.dateProcured}
+                    value={data.yearProcured}
                     className="h-[40px]"
                   />
                 </Form.Item>

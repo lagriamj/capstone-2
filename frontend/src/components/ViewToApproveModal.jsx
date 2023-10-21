@@ -3,7 +3,13 @@ import { Button, Modal, Form, Input, Row, Col } from "antd";
 import axios from "axios";
 import { message } from "antd";
 
-const ViewToApproveModal = ({ isOpen, onClose, data, refreshData }) => {
+const ViewToApproveModal = ({
+  isOpen,
+  onClose,
+  data,
+  refreshData,
+  fromApprovedList,
+}) => {
   if (!isOpen) return null;
 
   const { TextArea } = Input;
@@ -39,7 +45,7 @@ const ViewToApproveModal = ({ isOpen, onClose, data, refreshData }) => {
       title={
         <div className="flex justify-between items-center">
           <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
-          <span>REQUEST ID: E-{data?.request_code}</span>
+          <span>REQUEST ID: {data?.request_code}</span>
         </div>
       }
       centered={true}
@@ -98,10 +104,10 @@ const ViewToApproveModal = ({ isOpen, onClose, data, refreshData }) => {
             </Col>
             <Col xs={24} lg={6}>
               <label className="block text-sm font-bold mb-2">
-                Date Procured
+                Year Procured
               </label>
               <Input
-                value={data?.dateProcured}
+                value={data?.yearProcured}
                 readOnly
                 className="h-[40px] "
               />
@@ -155,13 +161,15 @@ const ViewToApproveModal = ({ isOpen, onClose, data, refreshData }) => {
             >
               Close
             </Button>
-            <Button
-              className="bg-green-700 text-white h-12 font-semibold text-base font-sans w-32 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
-              htmlType="button"
-              onClick={handleApprove}
-            >
-              Approve
-            </Button>
+            {!fromApprovedList && (
+              <Button
+                className="bg-green-700 text-white h-12 font-semibold text-base font-sans w-32 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
+                htmlType="button"
+                onClick={handleApprove}
+              >
+                Approve
+              </Button>
+            )}
           </div>
         </div>
       </Form>
@@ -176,4 +184,5 @@ ViewToApproveModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   data: PropTypes.object,
   refreshData: PropTypes.func,
+  fromApprovedList: PropTypes.bool,
 };

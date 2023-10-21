@@ -216,7 +216,7 @@ const ServiceReleaseModal = ({
           request_id: data.request_id,
           receivedBy: data.receivedBy,
           dateReceived: data.dateReceived,
-          dateProcured: data.dateProcured,
+          yearProcured: data.yearProcured,
           assignedTo: data.assignedTo,
           serviceBy: data.serviceBy,
           dateServiced: data.dateServiced,
@@ -284,14 +284,14 @@ const ServiceReleaseModal = ({
                 <Form.Item
                   label={
                     <label className="block text-sm font-bold">
-                      Date Procured
+                      Year Procured
                     </label>
                   }
-                  name="dateProcured"
+                  name="yearProcured"
                 >
                   <Input
                     readOnly
-                    value={data.dateProcured}
+                    value={data.yearProcured}
                     className="h-[40px]"
                   />
                 </Form.Item>

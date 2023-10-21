@@ -197,7 +197,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
           request_id: data.request_id,
           receivedBy: fullName,
           assignedTo: selectedTechnician,
-          dateProcured: data.dateProcured,
+          yearProcured: data.yearProcured,
           dateReceived: daytime,
         }}
         layout="vertical"
@@ -265,11 +265,11 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
                       Date Procured
                     </label>
                   }
-                  name="dateProcured"
+                  name="yearProcured"
                 >
                   <Input
                     readOnly
-                    value={data.dateProcured}
+                    value={data.yearProcured}
                     className="h-[40px] "
                   />
                 </Form.Item>

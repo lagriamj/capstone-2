@@ -266,8 +266,24 @@ const UsersList = () => {
           value: "unverified",
         },
       ],
-      filterSearch: true,
       onFilter: (value, record) => record.userStatus === value,
+    },
+    {
+      title: "isActive",
+      dataIndex: "isActive",
+      key: "isActive",
+      render: (text) => (text === 1 ? "Active" : "Inactive"),
+      filters: [
+        {
+          text: "Active",
+          value: 1,
+        },
+        {
+          text: "Inactive",
+          value: 0,
+        },
+      ],
+      onFilter: (value, record) => record.isActive === value,
     },
     {
       title: "Role",
@@ -410,6 +426,7 @@ const UsersList = () => {
             onOk={() => setUpdateUserModalVisible(false)}
             userData={selectedUserForUpdate}
             isLargeScreen={isLargeScreen}
+            refreshData={fetchUsers}
           />
         )}
         <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">

@@ -1,8 +1,8 @@
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import HeadSidebar from "../../components/HeadSidebar";
 import { useEffect, useState } from "react";
-import { Input, Table, Button } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { Input, Table, Button, Modal } from "antd";
+import { SearchOutlined, WarningFilled } from "@ant-design/icons";
 import HeadDrawer from "../../components/HeadDrawer";
 import { useAuth } from "../../AuthContext";
 import axios from "axios";
@@ -117,6 +117,57 @@ const ApproveRequests = () => {
       .catch((error) => {
         console.error(error);
       });
+  };
+
+  const onApproveSelectedRequests = async () => {
+    if (selectedRowKeys.length === 0) {
+      message.info("Please select request to approve.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/approve-selected-requests",
+        {
+          selectedRequestIDs: selectedRowKeys,
+        }
+      );
+
+      if (response.status === 200) {
+        // Users deleted successfully, update the user list
+        refreshData();
+        message.success("Selected requests approved successfully");
+        setSelectedRowKeys([]); // Clear selected rows
+      } else {
+        message.error("Error approving requests");
+      }
+    } catch (error) {
+      console.error(error);
+      message.error(error.response.data);
+    }
+  };
+
+  const [isApproveModalVisible, setIsApproveModalVisible] = useState(false);
+  const showApproveConfirmationModal = () => {
+    setIsApproveModalVisible(true);
+  };
+
+  const handleMultiplApprove = () => {
+    onApproveSelectedRequests();
+    setIsApproveModalVisible(false);
+  };
+
+  const handleCancelApprove = () => {
+    setIsApproveModalVisible(false);
+  };
+
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (selectedKeys) => {
+      setSelectedRowKeys(selectedKeys);
+    },
   };
 
   useEffect(() => {
@@ -255,7 +306,9 @@ const ApproveRequests = () => {
                 <h1 className="flex text-black items-center lg:text-3xl font-semibold ">
                   Reqeuests List
                 </h1>
-                <span className="text-black mr-auto">Total Requests:</span>
+                <span className="text-black mr-auto">
+                  Total Requests: {data.length}
+                </span>
               </div>
 
               <div className="relative flex items-center justify-center lg:mr-auto lg:ml-4 ">
@@ -267,6 +320,37 @@ const ApproveRequests = () => {
                   className="my-4 h-12"
                 />
               </div>
+              {selectedRowKeys.length > 0 && (
+                <button
+                  onClick={showApproveConfirmationModal}
+                  className="text-white bg-red-700   rounded-lg px-3 py-2 text-lg font-medium transition duration-300 ease-in-out"
+                >
+                  Approve Selected
+                </button>
+              )}
+              <Modal
+                title="Confirm Approve"
+                open={isApproveModalVisible}
+                onOk={handleMultiplApprove}
+                onCancel={handleCancelApprove}
+                footer={[
+                  <Button key="cancel" onClick={handleCancelApprove}>
+                    Cancel
+                  </Button>,
+                  <Button
+                    key="ok"
+                    className="bg-red-700 text-white"
+                    onClick={handleMultiplApprove}
+                  >
+                    Confirm
+                  </Button>,
+                ]}
+              >
+                <p className="flex items-center justify-center gap-4">
+                  <WarningFilled className="text-red-700 text-4xl" /> Are you
+                  sure you want to approve the selected requests?
+                </p>
+              </Modal>
             </div>
             <div
               className={`overflow-auto h-auto shadow-xl  pb-5 rounded-lg w-full`}
@@ -275,9 +359,10 @@ const ApproveRequests = () => {
                 columns={requestColumns}
                 dataSource={filteredRequests}
                 pagination={pagination}
+                rowSelection={rowSelection}
                 scroll={{ x: 1300 }}
                 onChange={(newPagination) => setPagination(newPagination)}
-                rowKey={(record) => record.id}
+                rowKey="request_code"
               />
               <ViewToApproveModal
                 isOpen={isModalVisible}

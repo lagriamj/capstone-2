@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('propertyNo');
             $table->string('serialNo');
             $table->string('authorizedBy');
-            $table->string('dateProcured');
+            $table->string('yearProcured');
             $table->string('specialIns');
             $table->string('status');
             $table->string('assignedTo');

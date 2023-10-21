@@ -23,7 +23,7 @@ class Requests extends Model
         'propertyNo',
         'serialNo',
         'authorizedBy',
-        'dateProcured',
+        'yearProcured',
         'specialIns',
         'status',
         'assignedTo',

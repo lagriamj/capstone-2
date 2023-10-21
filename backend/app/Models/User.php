@@ -27,6 +27,7 @@ class User extends Authenticatable
         'userContactNumber',
         'userPassword',
         'userStatus',
+        'isActive',
         'dateRegistered',
         'role',
         'otpCode',

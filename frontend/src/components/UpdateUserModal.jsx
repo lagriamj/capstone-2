@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { useAuth } from "../AuthContext";
 import { useEffect, useState } from "react";
 import AdminPassConfirmationModal from "./AdminPassConfirmationModal";
+import { useNavigate } from "react-router-dom";
 
 const UpdateUserModal = ({
   visible,
@@ -11,11 +12,13 @@ const UpdateUserModal = ({
   onOk,
   userData,
   isLargeScreen,
+  refreshData,
 }) => {
   const { Option } = Select;
   const [form] = Form.useForm();
   const { userRole } = useAuth();
   const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleCancel = () => {
     setIsVerifyModalOpen(false);
@@ -32,7 +35,8 @@ const UpdateUserModal = ({
       if (response.status === 201) {
         onOk(); // Close the modal or take any other desired action upon successful submission.
         message.success("User Updated successfully");
-        window.location.href = "/users-list";
+        refreshData();
+        navigate("/users-list");
       }
     } catch (error) {
       console.log(error);
@@ -73,6 +77,7 @@ const UpdateUserModal = ({
         name="addUserForm"
         layout="vertical"
         initialValues={userData}
+        className="relative"
       >
         <Row gutter={16}>
           <Col span={`${isLargeScreen ? 12 : 24}`}>
@@ -134,11 +139,7 @@ const UpdateUserModal = ({
             </Form.Item>
           </Col>
           <Col span={`${isLargeScreen ? 12 : 24}`}>
-            <Form.Item
-              name="division"
-              label="Division"
-              rules={[{ required: true, message: "Please enter the division" }]}
-            >
+            <Form.Item name="division" label="Division">
               <Input size="large" />
             </Form.Item>
           </Col>
@@ -182,6 +183,20 @@ const UpdateUserModal = ({
           </Col>
           <Col span={`${isLargeScreen ? 12 : 24}`}>
             <Form.Item
+              name="isActive"
+              label="isActive"
+              rules={[
+                { required: true, message: "Please select the active status" },
+              ]}
+            >
+              <Select size="large">
+                <Option value={1}>Active</Option>
+                <Option value={0}>Inactive</Option>
+              </Select>
+            </Form.Item>
+          </Col>
+          <Col span={`${isLargeScreen ? 12 : 24}`}>
+            <Form.Item
               name="role"
               label="Role"
               rules={[{ required: true, message: "Please select the role" }]}
@@ -214,7 +229,7 @@ const UpdateUserModal = ({
           <Form.Item name="userID" hidden>
             <Input size="large" />
           </Form.Item>
-          <Form.Item>
+          <Form.Item className="absolute bottom-0 right-0">
             <Button
               type="primary"
               htmlType="submit"
@@ -241,6 +256,7 @@ UpdateUserModal.propTypes = {
   onOk: PropTypes.func.isRequired,
   userData: PropTypes.object,
   isLargeScreen: PropTypes.bool.isRequired,
+  refreshData: PropTypes.any,
 };
 
 export default UpdateUserModal;

@@ -348,6 +348,7 @@ class UserController extends Controller
             'userEmail',
             'userContactNumber',
             'userStatus',
+            'isActive',
             'dateRegistered',
             'role',
             'otpCode',
@@ -375,6 +376,7 @@ class UserController extends Controller
                 'division' => $request->input('division'),
                 'userContactNumber' => $request->input('userContactNumber'),
                 'userStatus' => $request->input('userStatus'),
+                'isActive' => $request->input('isActive'),
                 'role' => $request->input('role'),
             ]);
 
@@ -407,9 +409,9 @@ class UserController extends Controller
             ], 404);
         }
 
-        $user->delete();
+        $user->update(['isActive' => 0]);
         return response()->json([
-            'message' => 'User deleted successfully.'
+            'message' => 'User  successfully.'
         ], 200);
     }
 
@@ -423,11 +425,11 @@ class UserController extends Controller
 
         try {
             // Perform the bulk deletion
-            User::whereIn('userID', $selectedUserIDs)->delete();
+            User::whereIn('userID', $selectedUserIDs)->update(['isActive' => false]);
 
-            return response()->json(['message' => 'Selected users deleted successfully']);
+            return response()->json(['message' => 'Selected users Inactive successfully']);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Error deleting selected users'], 500);
+            return response()->json(['message' => 'Error updating users'], 500);
         }
     }
 

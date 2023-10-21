@@ -65,7 +65,7 @@ const Requests = () => {
 
   const handleDatePickerChange = (date) => {
     form.setFieldsValue({
-      dateProcured: date.$y,
+      yearProcured: date.$y,
     });
     console.log(date.$y);
     setDateP(date.$y);
@@ -81,7 +81,7 @@ const Requests = () => {
         ),
         description: (
           <span className="text-white">
-            The service request can only be processed if the date procured is
+            The service request can only be processed if the year procured is
             under warranty.
           </span>
         ),
@@ -119,7 +119,7 @@ const Requests = () => {
       division: division,
       dateRequested: daytime,
       authorizedBy: author,
-      dateProcured: dateP || "N/A",
+      yearProcured: dateP || "N/A",
     });
   }, [userID, office, division, daytime, author, dateP]);
 
@@ -285,7 +285,7 @@ const Requests = () => {
                 propertyNo: "",
                 serialNo: "",
                 authorizedBy: author,
-                dateProcured: "N/A",
+                yearProcured: "N/A",
                 specialIns: "",
                 status: "Pending",
                 assignedTo: "None",
@@ -418,7 +418,7 @@ const Requests = () => {
                   className="flex flex-col items-center justify-center pb-[30px] pt-[2px]"
                 >
                   <label className="block text-sm font-bold mb-2 mr-auto text-black">
-                    Date Procured
+                    Year Procured
                   </label>
                   <DatePicker
                     picker="year"
@@ -473,7 +473,7 @@ const Requests = () => {
                   </Form.Item>
                 </Col>
                 <Col>
-                  <Form.Item name={"dateProcured"}>
+                  <Form.Item name={"yearProcured"}>
                     <Input hidden />
                   </Form.Item>
                 </Col>

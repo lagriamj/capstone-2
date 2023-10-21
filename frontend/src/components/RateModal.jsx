@@ -188,11 +188,11 @@ const RateModal = ({
     >
       <form onSubmit={onSubmitChange}>
         <ul className="w-full text-center items-center justify-center flex flex-wrap lg:gap-4 gap-2 font-semibold font-sans">
-          <li>1 - Very Satisfied</li>
-          <li>2 - Satisfied</li>
+          <li>5 - Very Satisfied</li>
+          <li>4 - Satisfied</li>
           <li>3 - Neutral</li>
-          <li>4 - Dissatisfied</li>
-          <li>5 - Very Dissatisfied</li>
+          <li>2 - Dissatisfied</li>
+          <li>1 - Very Dissatisfied</li>
         </ul>
         <div
           className={`relative p-6 flex-auto grid grid-rows-4 ${

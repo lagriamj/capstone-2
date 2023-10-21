@@ -393,7 +393,7 @@ const AdminAccount = () => {
                 }}
               >
                 <Row gutter={[16, 16]}>
-                  <Col xs={24} lg={6}>
+                  <Col xs={24} lg={12}>
                     <Form.Item
                       label={
                         <label className="block text-sm font-bold">
@@ -411,7 +411,7 @@ const AdminAccount = () => {
                       <Input className="h-[40px]" disabled />
                     </Form.Item>
                   </Col>
-                  <Col xs={24} lg={6}>
+                  <Col xs={24} lg={12}>
                     <Form.Item
                       label={
                         <label className="block text-sm font-bold">Role:</label>
@@ -431,7 +431,7 @@ const AdminAccount = () => {
                       </Select>
                     </Form.Item>
                   </Col>
-                  <Col xs={24} lg={6}>
+                  <Col xs={24} lg={12}>
                     <Form.Item
                       label={
                         <label className="block text-sm font-bold">
@@ -449,7 +449,7 @@ const AdminAccount = () => {
                       <Input className="h-[40px]" />
                     </Form.Item>
                   </Col>
-                  <Col xs={24} lg={6}>
+                  <Col xs={24} lg={12}>
                     <Form.Item
                       label={
                         <label className="block text-sm font-bold">
@@ -467,7 +467,7 @@ const AdminAccount = () => {
                       <Input className="h-[40px]" />
                     </Form.Item>
                   </Col>
-                  <Col xs={24} lg={6}>
+                  <Col xs={24} lg={12}>
                     <Form.Item
                       label={
                         <label className="block text-sm font-bold">
@@ -485,7 +485,7 @@ const AdminAccount = () => {
                       <Input className="h-[40px]" />
                     </Form.Item>
                   </Col>
-                  <Col xs={24} lg={6}>
+                  <Col xs={24} lg={12}>
                     <Form.Item
                       label={
                         <label className="block text-sm font-bold">
@@ -503,7 +503,7 @@ const AdminAccount = () => {
                       <Input className="h-[40px]" />
                     </Form.Item>
                   </Col>
-                  <Col xs={24} lg={6}>
+                  <Col xs={24} lg={12}>
                     <Form.Item
                       label={
                         <label className="block text-sm font-bold">
@@ -531,7 +531,7 @@ const AdminAccount = () => {
                       </Select>
                     </Form.Item>
                   </Col>
-                  <Col xs={24} lg={6}>
+                  <Col xs={24} lg={12}>
                     <Form.Item
                       label={
                         <label className="block text-sm font-bold">
@@ -543,7 +543,7 @@ const AdminAccount = () => {
                       <Input className="h-[40px]" />
                     </Form.Item>
                   </Col>
-                  <Col xs={24} lg={6}>
+                  <Col xs={24} lg={12}>
                     <Form.Item
                       label={
                         <label className="block text-sm font-bold">
@@ -559,7 +559,7 @@ const AdminAccount = () => {
                       />
                     </Form.Item>
                   </Col>
-                  <Col xs={24} lg={6}>
+                  <Col xs={24} lg={12}>
                     <Form.Item
                       label={
                         <label className="block text-sm font-bold">
