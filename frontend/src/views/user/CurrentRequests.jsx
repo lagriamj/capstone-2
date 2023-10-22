@@ -147,9 +147,9 @@ const CurrentRequests = () => {
         if (statusCounts[status] > 0) {
           const requestIds = result.data.results
             .filter((item) => item.status === status)
-            .map((item) => item.id); // Use request_id instead of id
+            .map((item) => item.id);
           console.log(`${status} Request IDs: `, requestIds);
-          showStatusNotification(status, statusCounts[status], requestIds); // Pass requestIds to the notification
+          showStatusNotification(status, statusCounts[status], requestIds);
         }
       }
     } catch (err) {

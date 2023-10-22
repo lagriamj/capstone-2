@@ -133,6 +133,7 @@ Route::middleware('throttle:dashboard-api')->group(function () {
     Route::get('requestsByDate/{startDate?}/{endDate?}', [DashboardController::class, 'getRequestsByDate']);
     Route::get('totalRequests-And-Closed/{startDate?}/{endDate?}', [DashboardController::class, 'getTotalAndClosed']);
     Route::get('status-description/{status}/{startDate?}/{endDate?}', [DashboardController::class, 'getStatusDescription']);
+    Route::get('request-description/{status}/{startDate?}/{endDate?}', [DashboardController::class, 'getRequestsDescription']);
 });
 
 //signature

@@ -31,6 +31,7 @@ import HeadCurrentRequests from "./views/head/HeadCurrentRequests";
 import HeadTransactions from "./views/head/HeadTransactions";
 import HeadRequests from "./views/head/HeadRequests";
 import ForgotPassword from "./views/ForgotPassword";
+import WalkInEntry from "./views/admin/WalkInEntry";
 
 function App() {
   function ProtectedRoute({ element, requiredRole }) {
@@ -172,6 +173,15 @@ function App() {
                 element={
                   <ProtectedRoute
                     element={<Dashboard />}
+                    requiredRole={"admin"}
+                  />
+                }
+              />
+              <Route
+                path="/walk-in-request"
+                element={
+                  <ProtectedRoute
+                    element={<WalkInEntry />}
                     requiredRole={"admin"}
                   />
                 }

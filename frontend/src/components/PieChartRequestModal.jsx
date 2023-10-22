@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import PrintPieChartData from "./PrintPieChartData";
 import { LoadingOutlined } from "@ant-design/icons";
 
-const PieChartModal = ({
+const PieChartRequestModal = ({
   modalVisible,
   closePieModal,
   clickedPortion,
@@ -100,7 +100,7 @@ const PieChartModal = ({
   );
 };
 
-PieChartModal.propTypes = {
+PieChartRequestModal.propTypes = {
   modalVisible: PropTypes.any,
   closePieModal: PropTypes.any,
   clickedPortion: PropTypes.any,
@@ -113,4 +113,4 @@ PieChartModal.propTypes = {
   pieLoading: PropTypes.bool,
 };
 
-export default PieChartModal;
+export default PieChartRequestModal;

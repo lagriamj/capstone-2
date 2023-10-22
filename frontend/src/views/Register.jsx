@@ -6,7 +6,6 @@ import {
   faUser,
   faIdCard,
   faEnvelope,
-  faLock,
   faPhone,
   faBuildingUser,
   faSignature,
@@ -75,7 +74,6 @@ const Register = () => {
   const [userGovernmentID, setUserGovernmentID] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userContactNumber, setUserContactNumber] = useState("");
-  const [userPassword, setUserPassword] = useState("");
   const [loading, setLoading] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [userId, setUserId] = useState(null);
@@ -164,7 +162,7 @@ const Register = () => {
       division: division,
       userEmail: userEmail,
       userContactNumber: userContactNumber,
-      userPassword: userPassword,
+      userPassword: selectedOffice + userLastName,
     };
 
     setLoading(true);
@@ -540,51 +538,6 @@ const Register = () => {
                     </div>
                   </div>
                 </div>
-                {/* Password */}
-                <div className="flex items-start justify-center text-lg flex-col lg:w-[80%] w-[90%]">
-                  <label className="font-semibold" htmlFor={"userPassword"}>
-                    Password
-                  </label>
-                  <div className="relative w-full">
-                    <input
-                      type="password"
-                      id="userPassword"
-                      name="userPassword"
-                      minLength="6"
-                      required
-                      placeholder="Password"
-                      onChange={(e) => setUserPassword(e.target.value)}
-                      value={userPassword}
-                      className="w-full h-14 border-2 rounded-lg pl-14 pr-4 text-lg border-slate-400 focus:outline-none"
-                      onInvalid={(e) => {
-                        if (e.target.validity.valueMissing) {
-                          e.target.setCustomValidity("Password is required.");
-                        } else if (e.target.validity.tooShort) {
-                          e.target.setCustomValidity(
-                            "Password must be at least 6 characters long."
-                          );
-                        }
-                      }}
-                      onInput={(e) => {
-                        e.target.setCustomValidity("");
-                      }}
-                    />
-                    <div className="absolute inset-y-0 left-0 flex items-center p-3 bg-main rounded-l-lg">
-                      <svg
-                        className="w-6 h-7 text-white"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <FontAwesomeIcon
-                          icon={faLock}
-                          style={{ color: "#ffffff" }}
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Confirm Password */}
 
                 <div className="flex items-start justify-center flex-col w-3/4">
                   <button

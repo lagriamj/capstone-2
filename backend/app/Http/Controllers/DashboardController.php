@@ -9,6 +9,7 @@ use App\Models\ReceiveService;
 use App\Models\RateServices;
 use App\Models\Requests;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
@@ -282,6 +283,34 @@ class DashboardController extends Controller
 
         return response()->json(['requestData' => $requestData]);
     }
+
+    public function getRequestsDescription($status, $startDate = null, $endDate = null)
+    {
+        if ($startDate === null) {
+            $startDate = date('Y-m-d', strtotime('-10 days'));
+        }
+
+        if ($endDate === null) {
+            $endDate = date('Y-m-d'); // Default to today
+        }
+
+        $query = DB::table('user_requests')
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate]);
+
+        if ($status === 'Total') {
+            $requestData = $query->get();
+        } elseif ($status === 'Closed') {
+            $requestData = $query->where('status', 'closed')->get();
+        } else {
+
+            return response()->json(['error' => 'Invalid status']);
+        }
+
+        Log::info($requestData);
+
+        return response()->json(['requestData' => $requestData]);
+    }
+
 
     public function technicianTable(Request $request)
     {

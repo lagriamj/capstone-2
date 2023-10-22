@@ -27,6 +27,7 @@ import TechnicianPerformance from "../../components/TechnicianPerformance";
 import { useActiveTab } from "../../ActiveTabContext";
 import SummaryListModal from "../../components/SummaryListModal";
 import PieChartModal from "../../components/PieChartModal";
+import PieChartRequestModal from "../../components/PieChartRequestModal";
 
 const Dashboard = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -381,6 +382,8 @@ const Dashboard = () => {
     return <span className="text-[16px] text-black">{value}</span>;
   };
 
+  const [pieLoading, setPieLoading] = useState(false);
+
   const [modalVisible, setModalVisible] = useState(false);
   const [modalData, setModalData] = useState([]);
   const [clickedPortion, setClickedPortion] = useState(null);
@@ -388,6 +391,7 @@ const Dashboard = () => {
   const [modalTitle, setModalTitle] = useState(null);
 
   const handlePieClick = (entry) => {
+    setPieLoading(true);
     axios
       .get(
         `http://127.0.0.1:8000/api/status-description/${entry.name}/${startDate}/${endDate}`
@@ -395,7 +399,7 @@ const Dashboard = () => {
       .then((response) => {
         const formattedData = response.data.requestData.map((item, index) => ({
           key: index,
-          id: item.id,
+          request_code: item.request_code,
           fullName: item.fullName,
           reqOffice: item.reqOffice,
           division: item.division,
@@ -411,21 +415,74 @@ const Dashboard = () => {
             pieChartData.reduce((total, data) => total + data.value, 0)) *
             100
         );
-
         setModalTitle(percentage);
         setModalData(formattedData);
         setModalVisible(true);
         setClickedPortion(entry.name);
+        setPieLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
     setModalVisible(true);
+    setPieLoading(false);
   };
 
   const closePieModal = () => {
     setModalVisible(false);
     setClickedPortion(null);
+  };
+
+  const [requestMoodalVisible, setRequestModalVisible] = useState(false);
+  const [requestModalData, setRequestModalData] = useState([]);
+  const [clickedRequestPortion, setClickedRequestPortion] = useState(null);
+  const [tableRequestColumns, setTableRequestColumns] = useState([]);
+  const [modalRequestTitle, setModalRequestTitle] = useState(null);
+
+  const handlePieRequestsClick = (entry) => {
+    setPieLoading(true);
+    axios
+      .get(
+        `http://127.0.0.1:8000/api/request-description/${entry.name}/${startDate}/${endDate}`
+      )
+      .then((response) => {
+        console.log(response);
+        const formattedData = response.data.requestData.map((item, index) => ({
+          key: index,
+          request_code: item.request_code,
+          fullName: item.fullName,
+          reqOffice: item.reqOffice,
+          division: item.division,
+          natureOfRequest: item.natureOfRequest,
+          unit: item.unit,
+          serialNo: item.serialNo,
+          propertyNo: item.propertyNo,
+          dateRequested: item.dateRequested,
+          dateUpdated: item.dateUpdated,
+        }));
+        const percentage = Math.round(
+          (entry.value /
+            pieTotalAndClosed.reduce((total, data) => total + data.value, 0)) *
+            100
+        );
+
+        setModalRequestTitle(percentage);
+        setRequestModalData(formattedData);
+        setRequestModalVisible(true);
+        setClickedRequestPortion(entry.name);
+        setPieLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        console.error("Error fetching data:", error);
+      });
+    setRequestModalVisible(true);
+    setPieLoading(false);
+  };
+
+  const closeRequestPieModal = () => {
+    setRequestModalVisible(false);
+    setClickedRequestPortion(null);
   };
 
   useEffect(() => {
@@ -467,6 +524,7 @@ const Dashboard = () => {
     ];
 
     setTableColumns(columnsForPie);
+    setTableRequestColumns(columnsForPie);
   }, []);
 
   function TextTruncate({ text, maxLength }) {
@@ -746,6 +804,7 @@ const Dashboard = () => {
                           fill="color"
                           label={renderCustomizedLabel}
                           labelLine={false}
+                          onClick={handlePieRequestsClick}
                         />
                         <Tooltip />
                         <Legend formatter={formatter} />
@@ -785,6 +844,19 @@ const Dashboard = () => {
                       isLargeScreen={isLargeScreen}
                       fromDate={startDate}
                       toDate={endDate}
+                      pieLoading={pieLoading}
+                    />
+                    <PieChartRequestModal
+                      modalVisible={requestMoodalVisible}
+                      closePieModal={closeRequestPieModal}
+                      modalTitle={modalRequestTitle}
+                      clickedPortion={clickedRequestPortion}
+                      modalData={requestModalData}
+                      tableColumns={tableRequestColumns}
+                      isLargeScreen={isLargeScreen}
+                      fromDate={startDate}
+                      toDate={endDate}
+                      pieLoading={pieLoading}
                     />
                   </div>
                 </div>

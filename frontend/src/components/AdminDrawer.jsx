@@ -11,6 +11,7 @@ import {
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import HandymanIcon from "@mui/icons-material/Handyman";
 import AssignmentIcon from "@mui/icons-material/Assignment";
+import DirectionsWalkIcon from "@mui/icons-material/DirectionsWalk";
 import { useAuth } from "../AuthContext";
 import { useActiveTab } from "../ActiveTabContext";
 import { useActiveSubTab } from "../ActiveSubTabContext";
@@ -142,6 +143,24 @@ const AdminDrawer = () => {
               }}
             >
               Dashboard
+            </label>
+          </li>
+          <li
+            className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-200 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
+              activeTab === "walkIn-entry"
+                ? "bg-white text-main font-semibold"
+                : ""
+            }`}
+            onClick={() => handleItemClick("walkIn-entry")}
+          >
+            <DirectionsWalkIcon></DirectionsWalkIcon>
+            <label
+              className="cursor-pointer"
+              onClick={() => {
+                navigate("/walk-in-request");
+              }}
+            >
+              Walk-In Entry
             </label>
           </li>
           <li

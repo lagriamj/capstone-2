@@ -55,7 +55,6 @@ class RequestsController extends Controller
             'user_id' => 'required',
             'fullName' => 'required',
             'reqOffice' => 'required',
-            'division' => 'required',
             'natureOfRequest' => 'required',
             'modeOfRequest' => 'required',
             'unit' => 'required',

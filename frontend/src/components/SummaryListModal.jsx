@@ -140,6 +140,8 @@ const SummaryListModal = ({
     setOpenGenerateReport(false);
   };
 
+  
+
   const totalItems = data.requests?.length;
   const lastPage = Math.ceil(totalItems / pagination.pageSize);
   const isLastPage = currentPage === lastPage;
