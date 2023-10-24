@@ -11,6 +11,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import HandymanIcon from "@mui/icons-material/Handyman";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import DirectionsWalkIcon from "@mui/icons-material/DirectionsWalk";
+import DataThresholdingIcon from "@mui/icons-material/DataThresholding";
 import { useActiveTab } from "../ActiveTabContext";
 import { useEffect, useState } from "react";
 import { useActiveSubTab } from "../ActiveSubTabContext";
@@ -212,6 +213,28 @@ const AdminSidebar = () => {
             }}
           >
             Service Task
+          </label>
+        </li>
+        <li
+          className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-300 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
+            activeTab === "threshold-log"
+              ? "bg-white text-main font-semibold"
+              : ""
+          }`}
+          onClick={() => handleItemClick("threshold-log")}
+        >
+          <DataThresholdingIcon
+            style={{
+              fontSize: isScreenWidth1366 ? "1.2rem" : "",
+            }}
+          ></DataThresholdingIcon>
+          <label
+            className="cursor-pointer"
+            onClick={() => {
+              navigate("/threshold-log");
+            }}
+          >
+            Threshold Log
           </label>
         </li>
         <li
