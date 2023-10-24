@@ -264,7 +264,7 @@ const Dashboard = () => {
 
   const pieChartData = [
     {
-      name: "Pending ",
+      name: "Pending",
       value: percentData?.pendingRequests,
       fill: "#FF5733", // Red
     },
@@ -639,8 +639,8 @@ const Dashboard = () => {
     <HelmetProvider>
       <Helmet>
         <title>
-          Dashboard
-          {requestDetails.length > 0 ? `(${requestDetails.length})` : ""}
+          {requestDetails.length > 0 ? `(${requestDetails.length})` : " "}
+          {" Dashboard"}
         </title>
       </Helmet>
       <div

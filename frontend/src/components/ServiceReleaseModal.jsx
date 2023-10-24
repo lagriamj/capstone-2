@@ -2,9 +2,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
-import { Button, Modal, Form, Input, Row, Col, Select } from "antd";
+import { Button, Modal, Form, Input, Row, Col, Select, Table } from "antd";
 import { message } from "antd";
 import { useAuth } from "../AuthContext";
+import AddARTAReasonModal from "./AddARTAReasonModal";
 
 const ServiceReleaseModal = ({
   isOpen,
@@ -116,6 +117,26 @@ const ServiceReleaseModal = ({
 
   const customFilterOption = (inputValue, option) =>
     option.value?.toLowerCase().includes(inputValue.toLowerCase());
+
+  const ARTAreasonColumn = [
+    {
+      title: "Date",
+      dataIndex: "ARTAdate",
+      key: "ARTAdate",
+      width: "30%",
+    },
+    {
+      title: "Details",
+      dataIndex: "ARTAdetails",
+      key: "ARTAdetails",
+    },
+  ];
+
+  const [addARTAReasonModal, setAddARTAReasonModal] = useState(false);
+
+  const handleARTAModal = () => {
+    setAddARTAReasonModal(!addARTAReasonModal);
+  };
 
   return (
     <Modal
@@ -333,6 +354,16 @@ const ServiceReleaseModal = ({
                 <Form.Item>
                   <Input readOnly className="h-[40px]" hidden />
                 </Form.Item>
+              </Col>
+              <Col xs={24} lg={24}>
+                <Table columns={ARTAreasonColumn} />
+                <Button className="ml-auto bg-main text-white w-16 h-10" onClick={() => {setAddARTAReasonModal(true)}}>
+                  Add
+                </Button>
+                <AddARTAReasonModal
+                  visible={addARTAReasonModal}
+                  onCancel={handleARTAModal}
+                />
               </Col>
               <Col xs={24} lg={12}>
                 <Form.Item

@@ -19,6 +19,12 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
     setServiceByValue(value);
   };
 
+  const [ARTAValue, setARTAValue] = useState(null);
+
+  const handleChangeARTA = (value) => {
+    setARTAValue(value);
+  };
+
   const [form] = Form.useForm();
 
   const currentDate = new Date(); // Create a Date object for the current date and time
@@ -44,6 +50,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
     const modifiedValues = {
       ...values,
       serviceBy: serviceByValue,
+      ARTA: ARTAValue,
     };
 
     setDataForm(values);
@@ -305,6 +312,26 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
                         {`${option.userFirstName} ${option.userLastName}`}
                       </Option>
                     ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold">ARTA</label>
+                  }
+                >
+                  <Select
+                    size="large"
+                    showSearch
+                    className="h-[40px]"
+                    filterOption={customFilterOption}
+                    onChange={handleChangeARTA}
+                    value={ARTAValue}
+                  >
+                    <Option value={"3"}>3</Option>
+                    <Option value={"7"}>7</Option>
+                    <Option value={"30"}>30</Option>
                   </Select>
                 </Form.Item>
               </Col>

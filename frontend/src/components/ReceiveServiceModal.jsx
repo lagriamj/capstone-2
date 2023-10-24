@@ -262,7 +262,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
                 <Form.Item
                   label={
                     <label className="block text-sm font-bold ">
-                      Date Procured
+                      Year Procured
                     </label>
                   }
                   name="yearProcured"

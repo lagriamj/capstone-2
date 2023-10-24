@@ -55,6 +55,7 @@ class RequestsController extends Controller
             'user_id' => 'required',
             'fullName' => 'required',
             'reqOffice' => 'required',
+            'division' => 'required',
             'natureOfRequest' => 'required',
             'modeOfRequest' => 'required',
             'unit' => 'required',
@@ -87,10 +88,12 @@ class RequestsController extends Controller
         $validatedData['dateRequested'] = $now;
         $validatedData['dateUpdated'] = $now;
 
-        // Create the Requests record with timestamps
         $requestRecord = Requests::create($validatedData);
 
-        // Insert data into the receive_service table with the obtained request_id
+        if ($request->input('modeOfRequest') === 'Walk-In') {
+            $requestRecord->update(['approved' => 'yes-signature']);
+        }
+
         DB::table('receive_service')->insert([
             'request_id' => $requestRecord->id,
             'receivedBy' => 'n/a',

@@ -143,7 +143,7 @@ const WalkInEntry = () => {
         const data = response.data;
         console.log(data);
 
-        navigate("/current-requests", {
+        navigate("/service-task", {
           state: {
             successMessage: "Requested successfully.",
           },
@@ -163,11 +163,13 @@ const WalkInEntry = () => {
   useEffect(() => {
     fetchNature();
     form.setFieldsValue({
+      user_id: 1,
       dateRequested: daytime,
       modeOfRequest: "Walk-In",
       status: "Pending",
       assignedTo: "None",
       yearProcured: dateP || "N/A",
+      approved: "yes-signature",
     });
   }, [dateP]);
 

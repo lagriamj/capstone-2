@@ -24,6 +24,8 @@ const AdminSidebar = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
+  // Type: button component
+
   const handleItemClickAccount = (item) => {
     setActiveSub(item);
   };

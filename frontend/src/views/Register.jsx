@@ -159,7 +159,7 @@ const Register = () => {
       userLastName: userLastName,
       userGovernmentID: userGovernmentID,
       office: selectedOffice,
-      division: division,
+      division: division || "N/A",
       userEmail: userEmail,
       userContactNumber: userContactNumber,
       userPassword: selectedOffice + userLastName,
@@ -428,7 +428,6 @@ const Register = () => {
                         id="division"
                         value={division}
                         placeholder="Division"
-                        required
                         onChange={(e) => setDivision(e.target.value)}
                       />
                       <div className="absolute inset-y-0 left-0 flex items-center p-3 bg-main rounded-l-lg">

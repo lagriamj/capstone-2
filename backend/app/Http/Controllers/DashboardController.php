@@ -53,15 +53,15 @@ class DashboardController extends Controller
 
         $resultSatisfied = DB::table('rate_services')
             ->selectRaw('SUM(
-            CASE WHEN q1 = 5 THEN q1 ELSE 0 END +
-            CASE WHEN q2 = 5 THEN q2 ELSE 0 END +
-            CASE WHEN q3 = 5 THEN q3 ELSE 0 END +
-            CASE WHEN q4 = 5 THEN q4 ELSE 0 END +
-            CASE WHEN q5 = 5 THEN q5 ELSE 0 END +
-            CASE WHEN q6 = 5 THEN q6 ELSE 0 END +
-            CASE WHEN q7 = 5 THEN q7 ELSE 0 END +
-            CASE WHEN q8 = 5 THEN q8 ELSE 0 END
-        ) AS Satisfied_Rating')
+                CASE WHEN q1 IN (4, 5) THEN q1 ELSE 0 END +
+                CASE WHEN q2 IN (4, 5) THEN q2 ELSE 0 END +
+                CASE WHEN q3 IN (4, 5) THEN q3 ELSE 0 END +
+                CASE WHEN q4 IN (4, 5) THEN q4 ELSE 0 END +
+                CASE WHEN q5 IN (4, 5) THEN q5 ELSE 0 END +
+                CASE WHEN q6 IN (4, 5) THEN q6 ELSE 0 END +
+                CASE WHEN q7 IN (4, 5) THEN q7 ELSE 0 END +
+                CASE WHEN q8 IN (4, 5) THEN q8 ELSE 0 END
+            ) AS Satisfied_Rating')
             ->first();
 
         $unSatisfiedRating = $resultSatisfied ? (int)$resultSatisfied->Satisfied_Rating : 0;
@@ -73,16 +73,17 @@ class DashboardController extends Controller
 
         $resultUnsatisfied = DB::table('rate_services')
             ->selectRaw('SUM(
-                CASE WHEN q1 = 1 THEN q1 ELSE 0 END +
-                CASE WHEN q2 = 1 THEN q2 ELSE 0 END +
-                CASE WHEN q3 = 1 THEN q3 ELSE 0 END +
-                CASE WHEN q4 = 1 THEN q4 ELSE 0 END +
-                CASE WHEN q5 = 1 THEN q5 ELSE 0 END +
-                CASE WHEN q6 = 1 THEN q6 ELSE 0 END +
-                CASE WHEN q7 = 1 THEN q7 ELSE 0 END +
-                CASE WHEN q8 = 1 THEN q8 ELSE 0 END
+                CASE WHEN q1 IN (1, 2) THEN q1 ELSE 0 END +
+                CASE WHEN q2 IN (1, 2) THEN q2 ELSE 0 END +
+                CASE WHEN q3 IN (1, 2) THEN q3 ELSE 0 END +
+                CASE WHEN q4 IN (1, 2) THEN q4 ELSE 0 END +
+                CASE WHEN q5 IN (1, 2) THEN q5 ELSE 0 END +
+                CASE WHEN q6 IN (1, 2) THEN q6 ELSE 0 END +
+                CASE WHEN q7 IN (1, 2) THEN q7 ELSE 0 END +
+                CASE WHEN q8 IN (1, 2) THEN q8 ELSE 0 END
             ) AS Satisfied_Rating')
             ->first();
+
 
         $satisfiedRating = $resultUnsatisfied ? (int)$resultUnsatisfied->Satisfied_Rating : 0;
         $totalRequestUnsatisfied = DB::table('rate_services')->count();
@@ -139,6 +140,7 @@ class DashboardController extends Controller
         $pendingRequests = DB::table('user_requests')
             ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
             ->where('status', 'Pending')
+            ->where('approved', 'yes-signature')
             ->count();
 
         $receivedRequests = DB::table('user_requests')

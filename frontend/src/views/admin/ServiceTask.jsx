@@ -456,32 +456,46 @@ const ServiceTask = () => {
               Update
             </button>
           )}
-          <Popconfirm
-            placement="left"
-            title="Confirmation"
-            description="Please confirm this action. This action cannot be undone."
-            open={popconfirmVisible[record.id]}
-            icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-            onConfirm={() => handleOk(record.id, record.request_id)}
-            okButtonProps={{
-              loading: confirmLoading,
-              color: "red",
-              className: "text-black border-1 border-gray-300",
-              size: "large",
-            }}
-            cancelButtonProps={{
-              size: "large",
-            }}
-            onCancel={() => handleCancel(record.id)}
-            okText="Yes"
-          >
-            <button
-              onClick={() => handleOpenReasonModalClick(record.id)}
-              className="text-white text-base bg-red-700 py-2 px-4 rounded-lg"
+          {record.status === "Pending" ||
+          record.status === "Received" ||
+          record.status === "On Progress" ? (
+            <Popconfirm
+              placement="left"
+              title="Confirmation"
+              description="Please confirm this action. This action cannot be undone."
+              open={popconfirmVisible[record.id]}
+              icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+              onConfirm={() => handleOk(record.id, record.request_id)}
+              okButtonProps={{
+                loading: confirmLoading,
+                color: "red",
+                className: "text-black border-1 border-gray-300",
+                size: "large",
+              }}
+              cancelButtonProps={{
+                size: "large",
+              }}
+              onCancel={() => handleCancel(record.id)}
+              okText="Yes"
             >
+              <button
+                onClick={() => handleOpenReasonModalClick(record.id)}
+                className={`text-white text-base py-2 px-4 rounded-lg ${
+                  record.status !== "Pending" &&
+                  record.status !== "Received" &&
+                  record.status !== "On Progress"
+                    ? "cursor-not-allowed bg-gray-400" // Apply styles for other statuses
+                    : "bg-red-700" // Styles for the delete button when status is Pending, Received, or On Progress
+                }`}
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </button>
+            </Popconfirm>
+          ) : (
+            <button className="text-white text-base py-2 px-4 rounded-lg cursor-not-allowed bg-gray-400">
               <FontAwesomeIcon icon={faTrash} />
             </button>
-          </Popconfirm>
+          )}
         </div>
       ),
     },
