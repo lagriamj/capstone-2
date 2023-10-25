@@ -47,6 +47,8 @@ const ServiceReleaseModal = ({
     setRemarksValue(remarksText);
   };
 
+  const [reasonList, setReasonList] = useState([]);
+
   // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState("");
   console.log(data.id);
@@ -60,6 +62,11 @@ const ServiceReleaseModal = ({
     try {
       const result = await axios.get("http://127.0.0.1:8000/api/category-list");
 
+      const artaDetailsResult = await axios.get(
+        `http://127.0.0.1:8000/api/show-arta-reason/${data.request_id}`
+      );
+      console.log(artaDetailsResult);
+      setReasonList(artaDetailsResult.data.data);
       setUtility(result.data.results);
     } catch (err) {
       console.log("Something went wrong:", err);
@@ -121,14 +128,14 @@ const ServiceReleaseModal = ({
   const ARTAreasonColumn = [
     {
       title: "Date",
-      dataIndex: "ARTAdate",
-      key: "ARTAdate",
+      dataIndex: "dateReason",
+      key: "dateReason",
       width: "30%",
     },
     {
       title: "Details",
-      dataIndex: "ARTAdetails",
-      key: "ARTAdetails",
+      dataIndex: "reasonDelay",
+      key: "reasonDelay",
     },
   ];
 
@@ -356,13 +363,24 @@ const ServiceReleaseModal = ({
                 </Form.Item>
               </Col>
               <Col xs={24} lg={24}>
-                <Table columns={ARTAreasonColumn} />
-                <Button className="ml-auto bg-main text-white w-16 h-10" onClick={() => {setAddARTAReasonModal(true)}}>
+                <Table
+                  columns={ARTAreasonColumn}
+                  dataSource={reasonList}
+                  pagination={false}
+                />
+                <Button
+                  className="ml-auto bg-main text-white w-16 h-10"
+                  onClick={() => {
+                    setAddARTAReasonModal(true);
+                  }}
+                >
                   Add
                 </Button>
                 <AddARTAReasonModal
                   visible={addARTAReasonModal}
                   onCancel={handleARTAModal}
+                  data={data}
+                  fullName={fullName}
                 />
               </Col>
               <Col xs={24} lg={12}>

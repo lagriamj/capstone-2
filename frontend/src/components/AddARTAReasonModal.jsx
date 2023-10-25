@@ -1,10 +1,41 @@
 import { Modal, Form, Input, Button } from "antd";
 import PropTypes from "prop-types";
+import axios from "axios";
 
 const { TextArea } = Input;
 
-const AddARTAReasonModal = ({ visible, onCancel }) => {
+const AddARTAReasonModal = ({ visible, onCancel, data, updateReasonDelay }) => {
   const [form] = Form.useForm();
+
+  console.log("shesh", data?.request_id);
+
+  const handleSubmit = async () => {
+    try {
+      const values = await form.validateFields();
+      const requestData = {
+        request_id: data?.request_id,
+        reasonDelay: values.ARTAdetails,
+      };
+
+      const response = await axios.post(
+        `http://127.0.0.1:8000/api/add-arta-reason`,
+        requestData
+      );
+
+      if (response.status === 200) {
+        console.log("API request was successful", response.data);
+        updateReasonDelay(requestData.reasonDelay);
+        form.resetFields();
+        onCancel();
+      } else {
+        console.error("API request failed", response.data);
+      }
+    } catch (errorInfo) {
+      console.log("Failed:", errorInfo);
+    }
+
+    onCancel();
+  };
 
   return (
     <Modal
@@ -19,7 +50,12 @@ const AddARTAReasonModal = ({ visible, onCancel }) => {
         >
           Cancel
         </Button>,
-        <Button key="submit" type="primary" className="bg-main text-white">
+        <Button
+          key="submit"
+          type="primary"
+          className="bg-main text-white"
+          onClick={handleSubmit}
+        >
           Submit
         </Button>,
       ]}
@@ -43,6 +79,9 @@ const AddARTAReasonModal = ({ visible, onCancel }) => {
 AddARTAReasonModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   onCancel: PropTypes.func.isRequired,
+  data: PropTypes.object,
+  fullName: PropTypes.string,
+  updateReasonDelay: PropTypes.func.isRequired,
 };
 
 export default AddARTAReasonModal;

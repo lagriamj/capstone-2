@@ -50,7 +50,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
     const modifiedValues = {
       ...values,
       serviceBy: serviceByValue,
-      ARTA: ARTAValue,
+      arta: ARTAValue,
     };
 
     setDataForm(values);
@@ -203,6 +203,8 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
           yearProcured: data.yearProcured,
           dateServiced: daytime,
           serviceBy: serviceByValue,
+          arta: ARTAValue,
+          reasonDelay: "n/a",
           toRecommend: "n/a",
           findings: "n/a",
           rootCause: "n/a",

@@ -183,7 +183,14 @@ const Dashboard = () => {
     receivedRequests: 0,
     onprogressRequests: 0,
     toreleaseRequests: 0,
+    torateRequests: 0,
     closedRequests: 0,
+    officePending: "",
+    officeReceived: "",
+    officeOnProgress: "",
+    officeToRelease: "",
+    officeToRate: "",
+    officeClosed: "",
   });
 
   const [totalAndClosed, setTotalAndClosed] = useState({
@@ -266,34 +273,56 @@ const Dashboard = () => {
     {
       name: "Pending",
       value: percentData?.pendingRequests,
+      message: percentData?.officePending,
       fill: "#FF5733", // Red
     },
     {
       name: "Received",
       value: percentData?.receivedRequests,
+      message: percentData?.officeReceived,
       fill: "#FFA500", // Orange
     },
     {
       name: "On Progress",
       value: percentData?.onprogressRequests,
+      message: percentData?.officeOnProgress,
       fill: "#8B8B00", // Yellow
     },
     {
       name: "To Release",
       value: percentData?.toreleaseRequests,
+      message: percentData?.officeToRelease,
       fill: "#008000", // Green
     },
     {
       name: "To Rate",
       value: percentData?.torateRequests,
+      message: percentData?.officeToRate,
       fill: "#0000FF", // Blue
     },
     {
       name: "Closed ",
       value: percentData?.closedRequests,
+      message: percentData?.officeClosed,
       fill: "#808080", // Gray
     },
   ];
+
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="bg-white border border-gray-300 p-4 rounded shadow-md max-w-xs">
+          <p className="font-bold">{`${data.name}: ${data.value}`}</p>
+          <p className="text-gray-700">
+            {data.message} office has high request volume.
+          </p>
+        </div>
+      );
+    }
+
+    return null;
+  };
 
   const formattedTotalRatings =
     ratingsAndNature.totalRating !== null
@@ -829,7 +858,7 @@ const Dashboard = () => {
                           label={renderCustomizedLabel}
                           onClick={handlePieClick}
                         />
-                        <Tooltip />
+                        <Tooltip content={<CustomTooltip />} />
                         <Legend formatter={formatter} />
                       </PieChart>
                     </ResponsiveContainer>

@@ -133,6 +133,7 @@ Route::middleware('throttle:dashboard-api')->group(function () {
     Route::get('requestsByDate/{startDate?}/{endDate?}', [DashboardController::class, 'getRequestsByDate']);
     Route::get('totalRequests-And-Closed/{startDate?}/{endDate?}', [DashboardController::class, 'getTotalAndClosed']);
     Route::get('status-description/{status}/{startDate?}/{endDate?}', [DashboardController::class, 'getStatusDescription']);
+    Route::get('office-performance/{startDate?}/{endDate?}', [DashboardController::class, 'getOfficePerformance']);
     Route::get('request-description/{status}/{startDate?}/{endDate?}', [DashboardController::class, 'getRequestsDescription']);
 });
 
@@ -163,5 +164,13 @@ Route::get('/reset-cut-off-time', [RequestsController::class, 'resetCutOffTime']
 
 Route::get('/tech-performance', [DashboardController::class, 'technicianTable']);
 Route::get('/summary-list', [DashboardController::class, 'summaryList']);
-
 Route::get('admin-list', [UserController::class, 'showTechnicians']);
+
+Route::get('request-threshold', [RequestsController::class, 'getRequestsThreshold']);
+Route::get('threshold-history', [RequestsController::class, 'getThresholdHistory']);
+
+Route::put('update-reason-delay/{id}/{fullName}', [ReceiveServiceController::class, 'updateReasonDelay']);
+
+
+Route::post('/add-arta-reason', [RequestsController::class, 'addArtaReason']);
+Route::get('/show-arta-reason/{id}', [RequestsController::class, 'showArtaReason']);

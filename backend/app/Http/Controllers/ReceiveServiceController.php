@@ -11,6 +11,7 @@ use App\Models\AuditLog;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Response;
+use Carbon\Carbon;
 
 
 class ReceiveServiceController extends Controller
@@ -18,7 +19,8 @@ class ReceiveServiceController extends Controller
     public function pendingRequest(Request $request, $startDate = null, $endDate = null, $selectedSort = null, $search = null)
     {
         $order = $request->input('order');
-        $query = Requests::where('status', 'Pending');
+        $query = Requests::where('status', 'Pending')
+            ->where('approved', 'yes-signature');
 
 
         if ($startDate && $endDate) {
@@ -74,13 +76,18 @@ class ReceiveServiceController extends Controller
                 ->select('office')
                 ->first();
 
+
+            $userRequest = DB::table('user_requests')
+                ->where('id', $id)
+                ->first();
+
             if ($adminOffice) {
                 // Create an audit log entry for the "Received" action
                 $auditLogData = [
                     'name' => $fullName, // Use the provided fullName
                     'office' => $adminOffice->office, // Use the retrieved office
                     'action' => 'Received',
-                    'reference' => $id, // Use $id as reference
+                    'reference' => $userRequest->request_code,
                     'date' => now(),
                 ];
 
@@ -149,9 +156,56 @@ class ReceiveServiceController extends Controller
         }
         $data = $query->get();
 
-        return response()->json(['results' => $data]);
+        foreach ($data as $record) {
+            $dateServiced = Carbon::parse($record->dateServiced);
+            $artaDueDate = $dateServiced->addDays($record->arta);
+            if (Carbon::now()->gte($artaDueDate) && $record->status === "On Progress") {
+                DB::table('receive_service')
+                    ->where('id', $record->id)
+                    ->update(['artaStatus' => 'Delay']);
+            }
+        }
+        return response()->json([
+            'results' => $data
+        ]);
     }
 
+
+    public function updateReasonDelay(Request $request, $id, $fullName)
+    {
+        $reasonDelay = $request->input('reasonDelay');
+
+        if ($reasonDelay !== null) {
+            DB::table('receive_service')
+                ->where('request_id', $id)
+                ->update([
+                    'reasonDelay' => $reasonDelay,
+                    'dateReason' => now(),
+                ]);
+
+            $adminOffice = User::whereRaw("CONCAT(userFirstname, ' ', userLastName) = ?", [$fullName])
+                ->select('office')
+                ->first();
+
+            $userRequest = DB::table('user_requests')
+                ->where('id', $id)
+                ->first();
+
+            if ($adminOffice) {
+                $auditLogData = [
+                    'name' => $fullName,
+                    'office' => $adminOffice->office,
+                    'action' => 'Reason Delay',
+                    'reference' => $userRequest->request_code,
+                    'date' => now(),
+                ];
+                AuditLog::create($auditLogData);
+            }
+            return response()->json(['message' => 'ReceiveService updated successfully']);
+        } else {
+            return response()->json(['message' => 'reasonDelay cannot be null'], 400);
+        }
+    }
 
     public function onprogressRequest(Request $request, $id, $fullName)
     {
@@ -160,6 +214,8 @@ class ReceiveServiceController extends Controller
                 ->where('request_id', $id)
                 ->update([
                     'serviceBy' => $request->input('serviceBy'),
+                    'arta' => $request->input('arta'),
+                    'artaStatus' => 'Not Delay',
                     'dateServiced' => now(),
                 ]);
 
@@ -176,13 +232,17 @@ class ReceiveServiceController extends Controller
                 ->select('office')
                 ->first();
 
+            $userRequest = DB::table('user_requests')
+                ->where('id', $id)
+                ->first();
+
             if ($adminOffice) {
                 // Create an audit log entry for the "On Progress" action
                 $auditLogData = [
                     'name' => $fullName, // Use the provided fullName
                     'office' => $adminOffice->office, // Use the retrieved office
                     'action' => 'On Progress',
-                    'reference' => $id, // Use $id as reference
+                    'reference' => $userRequest->request_code,
                     'date' => now(),
                 ];
 
@@ -221,13 +281,17 @@ class ReceiveServiceController extends Controller
                 ->select('office')
                 ->first();
 
+            $userRequest = DB::table('user_requests')
+                ->where('id', $id)
+                ->first();
+
             if ($adminOffice) {
                 // Create an audit log entry for the "To Release" action
                 $auditLogData = [
                     'name' => $fullName, // Use the provided fullName
                     'office' => $adminOffice->office, // Use the retrieved office
                     'action' => 'To Release',
-                    'reference' => $id, // Use $id as reference
+                    'reference' => $userRequest->request_code,
                     'date' => now(),
                 ];
 
@@ -271,13 +335,17 @@ class ReceiveServiceController extends Controller
                 ->select('office')
                 ->first();
 
+            $userRequest = DB::table('user_requests')
+                ->where('id', $id)
+                ->first();
+
             if ($adminOffice) {
                 // Create an audit log entry for the "To Rate" action
                 $auditLogData = [
                     'name' => $fullName, // Use the provided fullName
                     'office' => $adminOffice->office, // Use the retrieved office
                     'action' => 'To Rate',
-                    'reference' => $id, // Use $id as reference
+                    'reference' => $userRequest->request_code,
                     'date' => now(),
                 ];
 

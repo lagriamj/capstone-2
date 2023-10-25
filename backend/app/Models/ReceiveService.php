@@ -16,6 +16,7 @@ class ReceiveService extends Model
         'dateReceived',
         'assignedTo',
         'serviceBy',
+        'arta',
         'dateServiced',
         'toRecommend',
         'findings',

@@ -42,6 +42,8 @@ const RateModal = ({
 
   const daytime = new Date().toLocaleString(undefined, options);
 
+  console.log("- - -", user_id, id, office);
+
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [selectedRatings, setSelectedRatings] = useState({
     user_id: user_id,
@@ -81,8 +83,8 @@ const RateModal = ({
       );
       const data = response.data;
       console.log(data);
-      navigate("/transanctions");
-      setActive("transanctions");
+      navigate("/transactions");
+      setActive("transactions");
     } catch (err) {
       if (err.response && err.response.status === 422) {
         // The server returned validation errors

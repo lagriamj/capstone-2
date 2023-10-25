@@ -121,6 +121,9 @@ const CurrentRequests = () => {
     fetchData();
   }, [startDate, endDate]);
 
+  let notificationDisplayed = false;
+  let loopCount = 0; // Initialize the loop count
+
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -129,29 +132,36 @@ const CurrentRequests = () => {
       setData(result.data.results);
       setLoading(false);
 
-      const statusCounts = {
-        Received: 0,
-        "On Progress": 0,
-        "To Release": 0,
-        "To Rate": 0,
-      };
+      if (loopCount === 1 && !notificationDisplayed) {
+        const uniqueRequests = new Set();
+        result.data.results.forEach((item) => {
+          if (
+            item.status !== "Cancelled" &&
+            item.status !== "Closed" &&
+            item.status !== "Purge"
+          ) {
+            uniqueRequests.add({
+              requestCode: item.request_code,
+              status: item.status,
+              arta: item.arta,
+              reasonDelay: item.reasonDelay,
+              artaStatus: item.artaStatus,
+            });
+          }
+        });
 
-      result.data.results.forEach((item) => {
-        if (item.status in statusCounts) {
-          statusCounts[item.status]++;
-        }
-      });
-
-      for (const status in statusCounts) {
-        console.log(`Status: ${status}, Count: ${statusCounts[status]}`);
-        if (statusCounts[status] > 0) {
-          const requestIds = result.data.results
-            .filter((item) => item.status === status)
-            .map((item) => item.id);
-          console.log(`${status} Request IDs: `, requestIds);
-          showStatusNotification(status, statusCounts[status], requestIds);
-        }
+        uniqueRequests.forEach((request) => {
+          showStatusNotification(
+            request.requestCode,
+            request.status,
+            request.arta,
+            request.artaStatus,
+            request.reasonDelay
+          );
+        });
+        notificationDisplayed = true;
       }
+      loopCount++;
     } catch (err) {
       console.log("Something went wrong:", err);
       setLoading(false);
@@ -208,7 +218,13 @@ const CurrentRequests = () => {
     };
   }, []);
 
-  const showStatusNotification = (status, count, requestIds) => {
+  const showStatusNotification = (
+    requestCode,
+    status,
+    artaDays,
+    artaStatus,
+    reasonDelay
+  ) => {
     let messageText = "";
     let descriptionText = "";
     let notificationStyle = {};
@@ -216,11 +232,11 @@ const CurrentRequests = () => {
     switch (status) {
       case "Received":
         messageText = (
-          <span className="text-white">{`E-${requestIds} Request is Received`}</span>
+          <span className="text-white">{`${requestCode} Request is Received`}</span>
         );
         descriptionText = (
           <p className="text-white">
-            Your {requestIds.join(", ")} request is being processed.
+            It will be completed within {artaDays} days.
           </p>
         );
         notificationStyle = {
@@ -229,12 +245,18 @@ const CurrentRequests = () => {
         break;
       case "On Progress":
         messageText = (
-          <span className="text-white">{`E-${requestIds} Request is On Progress`}</span>
+          <span className="text-white">{`${requestCode} Request is On Progress`}</span>
         );
         descriptionText = (
-          <p className="text-white">
-            Your {requestIds.join(", ")} request is currently in progress.
-          </p>
+          <div>
+            <p className="text-white">Completion Duration: {artaDays} days</p>
+            {artaStatus == "Delay" && (
+              <p className="text-white">Processing Status: {artaStatus}</p>
+            )}
+            {reasonDelay !== "n/a" && (
+              <p className="text-white">Cause of Delay: {reasonDelay}</p>
+            )}
+          </div>
         );
         notificationStyle = {
           backgroundColor: "#343467",
@@ -242,11 +264,11 @@ const CurrentRequests = () => {
         break;
       case "To Release":
         messageText = (
-          <span className="text-white">{`E-${requestIds} Request is To Release`}</span>
+          <span className="text-white">{`${requestCode} Request is To Release`}</span>
         );
         descriptionText = (
           <p className="text-white">
-            Your {requestIds.join(", ")} request is ready for release.
+            It will be completed within {artaDays} days.
           </p>
         );
         notificationStyle = {
@@ -255,11 +277,11 @@ const CurrentRequests = () => {
         break;
       case "To Rate":
         messageText = (
-          <span className="text-white">{`E-${requestIds} Request is To Rate`}</span>
+          <span className="text-white">{`${requestCode} Request is To Rate`}</span>
         );
         descriptionText = (
           <p className="text-white">
-            Your {requestIds.join(", ")} request is ready for rating.
+            It will be completed within {artaDays} days.
           </p>
         );
         notificationStyle = {
@@ -271,15 +293,12 @@ const CurrentRequests = () => {
     }
 
     if (messageText) {
-      if (!uniqueStatusesRef.current.has(status)) {
-        notification.success({
-          message: messageText,
-          description: descriptionText,
-          duration: 4,
-          style: notificationStyle,
-        });
-        uniqueStatusesRef.current.add(status);
-      }
+      notification.success({
+        message: messageText,
+        description: descriptionText,
+        duration: 5,
+        style: notificationStyle,
+      });
     }
   };
 
@@ -503,7 +522,11 @@ const CurrentRequests = () => {
                 isScreenWidth1366 ? "text-xs" : " text-base"
               } font-medium bg-gray-800 py-2 px-4 rounded-lg`}
               onClick={() =>
-                handleStarIconClick(record.id, record.user_id, record.reqOffice)
+                handleStarIconClick(
+                  record.request_id,
+                  record.user_id,
+                  record.reqOffice
+                )
               }
             >
               Rate

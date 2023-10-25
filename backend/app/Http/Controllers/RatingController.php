@@ -107,56 +107,52 @@ class RatingController extends Controller
 
     public function rateTransaction(Request $request)
     {
-        try {
-            $validatedData = $request->validate([
-                'user_id' => 'required',
-                'request_id' => 'required',
-                'department' => 'required',
-                'q1' => 'required',
-                'q2' => 'required',
-                'q3' => 'required',
-                'q4' => 'required',
-                'q5' => 'required',
-                'q6' => 'required',
-                'q7' => 'required',
-                'q8' => 'required',
-                'commendation' => 'required',
-                'suggestion' => 'required',
-                'request' => 'required',
-                'complaint' => 'required',
+        $validatedData = $request->validate([
+            'user_id' => 'required',
+            'request_id' => 'required',
+            'department' => 'required',
+            'q1' => 'required',
+            'q2' => 'required',
+            'q3' => 'required',
+            'q4' => 'required',
+            'q5' => 'required',
+            'q6' => 'required',
+            'q7' => 'required',
+            'q8' => 'required',
+            'commendation' => 'required',
+            'suggestion' => 'required',
+            'request' => 'required',
+            'complaint' => 'required',
+        ]);
+
+        $validatedData['dateRate'] = now();
+        $users = RateServices::create($validatedData);
+
+        // Retrieve data from the Requests table where id matches request_id
+        $requestData = Requests::find($request->input('request_id'));
+
+        if (!$requestData) {
+            return response()->json(['message' => 'Request not found'], 404);
+        }
+
+        DB::table('user_requests')
+            ->where('id', $request->input('request_id'))
+            ->update([
+                'dateUpdated' => now(),
+                'status' => 'Closed',
             ]);
 
-            $validatedData['dateRate'] = now();
-            $users = RateServices::create($validatedData);
+        $auditLogData = [
+            'name' => $requestData->fullName, // Use the retrieved name from Requests
+            'office' => $requestData->reqOffice, // Use the retrieved office from Requests
+            'action' => 'Rate',
+            'reference' => $request->input('request_id'), // Use the provided user_id
+            'date' => now(),
+        ];
 
-            // Retrieve data from the Requests table where id matches request_id
-            $requestData = Requests::find($request->input('request_id'));
+        AuditLog::create($auditLogData);
 
-            if (!$requestData) {
-                return response()->json(['message' => 'Request not found'], 404);
-            }
-
-            DB::table('user_requests')
-                ->where('id', $request->input('request_id'))
-                ->update([
-                    'dateUpdated' => now(),
-                    'status' => 'Closed',
-                ]);
-
-            $auditLogData = [
-                'name' => $requestData->fullName, // Use the retrieved name from Requests
-                'office' => $requestData->reqOffice, // Use the retrieved office from Requests
-                'action' => 'Rate',
-                'reference' => $request->input('request_id'), // Use the provided user_id
-                'date' => now(),
-            ];
-
-            AuditLog::create($auditLogData);
-
-            return response()->json($users, 201);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to rate service'], 500);
-        }
+        return response()->json($users, 201);
     }
 
     public function closedNorate($id)

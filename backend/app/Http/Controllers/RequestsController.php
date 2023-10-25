@@ -8,15 +8,15 @@ use App\Models\AuditLog;
 use App\Models\Requests;
 use App\Models\CutOffTime;
 use App\Models\User;
+use App\Models\ArtaReason;
 use Carbon\Carbon;
 
 class RequestsController extends Controller
 {
     public function showRequest(Request $request, $userID, $startDate = null, $endDate = null)
     {
-        $query = Requests::where('status', '!=', 'Cancelled')
-            ->where('status', '!=', 'Closed')
-            ->where('status', '!=', 'Purge');
+        $query = DB::table('user_requests')
+            ->whereNotIn('status', ['Cancelled', 'Closed', 'Purge']);
 
         $startDateTime = Carbon::now();
         $startDateTime->setTime(1, 5, 0);
@@ -42,7 +42,12 @@ class RequestsController extends Controller
                 ->where('dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
         }
 
-        $requests = $query->get();
+        $requests = $query
+            ->leftJoin('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
+            ->select('user_requests.*', 'receive_service.*')
+            ->get();
+
+
         return response()->json([
             'results' => $requests
         ], 200);
@@ -100,7 +105,9 @@ class RequestsController extends Controller
             'dateReceived' => $now,
             'assignedTo' => 'n/a',
             'serviceBy' => 'n/a',
+            'arta' => 'n/a',
             'dateServiced' => $now,
+            'artaStatus' => 'n/a',
             'toRecommend' => 'n/a',
             'findings' => 'n/a',
             'rootCause' => 'n/a',
@@ -228,5 +235,91 @@ class RequestsController extends Controller
         if ($cutOffTimeToDelete->count() > 0) {
             CutOffTime::query()->delete();
         }
+    }
+
+    public function getRequestsThreshold(Request $request)
+    {
+        $userRequests = DB::table('user_requests')
+            ->select('propertyNo', 'serialNo', 'unit', DB::raw('COUNT(*) as count'))
+            ->where('status', 'Closed')
+            ->groupBy('propertyNo', 'serialNo', 'unit')
+            ->having('count', '>=', 5)
+            ->get();
+
+        $result = [];
+        $totalCount = 0;
+
+        foreach ($userRequests as $request) {
+            $message = ($request->count >= 10) ? 'for waste' : 'for replacement';
+            $totalCount += $request->count;
+
+            $allThresholdRequest = DB::table('user_requests')
+                ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
+                ->join('release_requests', 'receive_service.id', '=', 'release_requests.receivedReq_id')
+                ->where('propertyNo', $request->propertyNo)
+                ->orWhere('serialNo', $request->serialNo)
+                ->select('user_requests.*', 'receive_service.*', 'release_requests.*')
+                ->get();
+
+            $result[] = [
+                'propertyNo' => $request->propertyNo,
+                'serialNo' => $request->serialNo,
+                'unit' => $request->unit,
+                'message' => $message,
+                'total_count' => $totalCount,
+                'allThresholdRequest' => $allThresholdRequest,
+            ];
+        }
+        return response()->json($result);
+    }
+
+    public function getThresholdHistory(Request $request)
+    {
+        $userRequests = DB::table('user_requests')
+            ->select('propertyNo', 'serialNo', 'unit', DB::raw('COUNT(*) as count'))
+            ->where('status', 'Closed')
+            ->groupBy('propertyNo', 'serialNo', 'unit')
+            ->having('count', '>=', 5)
+            ->get();
+
+        $result = [];
+        $totalCount = 0;
+
+        foreach ($userRequests as $request) {
+            $message = ($request->count >= 10) ? 'for waste' : 'for replacement';
+            $totalCount += $request->count;
+
+            $allThresholdRequest = DB::table('user_requests')
+                ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
+                ->join('release_requests', 'receive_service.id', '=', 'release_requests.receivedReq_id')
+                ->where('propertyNo', $request->propertyNo)
+                ->orWhere('serialNo', $request->serialNo)
+                ->select('user_requests.dateRequested', 'receive_service.serviceBy', 'receive_service.rootCause', 'receive_service.remarks')
+                ->get();
+
+            $result[] = [
+                'allThresholdRequest' => $allThresholdRequest,
+            ];
+        }
+        return response()->json($result);
+    }
+
+    public function addArtaReason(Request $request)
+    {
+        $data = $request->all();
+
+        $artaCauseDelay = new ArtaReason();
+        $artaCauseDelay->request_id = $data['request_id'];
+        $artaCauseDelay->reasonDelay = $data['reasonDelay'];
+        $artaCauseDelay->dateReason = now();
+        $artaCauseDelay->save();
+
+        return response()->json(['message' => 'Data added successfully']);
+    }
+
+    public function showArtaReason($id)
+    {
+        $artaCauseDelayData = ArtaReason::where('request_id', $id)->get();
+        return response()->json(['data' => $artaCauseDelayData]);
     }
 }

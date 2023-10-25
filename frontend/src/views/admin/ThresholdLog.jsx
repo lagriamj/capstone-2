@@ -1,20 +1,37 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { Input, Table } from "antd";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import AdminSidebar from "../../components/AdminSidebar";
 import AdminDrawer from "../../components/AdminDrawer";
 import { useEffect, useState } from "react";
-import { SearchOutlined } from "@ant-design/icons";
+import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
+import axios from "axios";
 
 const thresholdColumns = [
   {
-    title: "Ticket No",
-    dataIndex: "ticketNo",
-    key: "ticketNo",
+    title: "Property No",
+    dataIndex: "propertyNo",
+    key: "propertyNo",
   },
   {
-    title: "Category",
-    dataIndex: "category",
-    key: "category",
+    title: "Serial No",
+    dataIndex: "serialNo",
+    key: "serialNo",
+  },
+  {
+    title: "Unit",
+    dataIndex: "unit",
+    key: "unit",
+  },
+  {
+    title: "Recommendation",
+    dataIndex: "message",
+    key: "message",
+  },
+  {
+    title: "Total Count",
+    dataIndex: "total_count",
+    key: "total_count",
   },
   {
     title: "Action",
@@ -37,6 +54,140 @@ const ThresholdLog = () => {
     };
   }, []);
   const isLargeScreen = windowWidth >= 1024;
+
+  const [loading, setLoading] = useState(false);
+  const [thresholdData, setThresholdData] = useState([]);
+
+  const [searchText, setSearchText] = useState("");
+  const [pagination, setPagination] = useState({
+    position: ["bottomLeft"],
+    showQuickJumper: true,
+    current: 1,
+    pageSize: 10,
+    showLessItems: true,
+  });
+
+  const filteredRequests = thresholdData?.filter((request) => {
+    const searchTextLower = searchText.toLowerCase();
+
+    const shouldIncludeRow = Object.values(request).some((value) => {
+      if (typeof value === "string") {
+        return value.toLowerCase().includes(searchTextLower);
+      } else if (typeof value === "number") {
+        return value.toString().toLowerCase().includes(searchTextLower);
+      }
+      return false;
+    });
+
+    return shouldIncludeRow;
+  });
+
+  const handleSearchBar = (value) => {
+    setSearchText(value);
+    setPagination({ ...pagination, current: 1 });
+  };
+
+  useEffect(() => {
+    fetchThresholdLog();
+  }, []);
+
+  const fetchThresholdLog = () => {
+    setLoading(true);
+    axios
+      .get("http://127.0.0.1:8000/api/request-threshold")
+      .then((response) => {
+        console.log(response);
+        setThresholdData(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+    setLoading(false);
+  };
+
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+  const [repairRequests, setRepairRequests] = useState({});
+
+  useEffect(() => {
+    const fetchRepairRequests = async (record) => {
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/threshold-history`
+        );
+        if (response.status === 200) {
+          const requests = response.data[0];
+          console.log(requests);
+          setRepairRequests({ ...repairRequests, [record.key]: requests });
+        }
+      } catch (error) {
+        console.error("Error fetching repair requests:", error);
+      }
+    };
+
+    expandedRowKeys.forEach((key) => {
+      const record = thresholdData.find((item) => item.key === key);
+      if (record && !repairRequests[key]) {
+        fetchRepairRequests(record);
+      }
+    });
+  }, [expandedRowKeys, thresholdData, repairRequests]);
+
+  const handleRowClick = (record) => {
+    const expandedRows = [...expandedRowKeys];
+    const index = expandedRows.indexOf(record.key);
+
+    if (index > -1) {
+      expandedRows.splice(index, 1);
+    } else {
+      expandedRows.push(record.key);
+    }
+
+    setExpandedRowKeys(expandedRows);
+  };
+
+  const expandedRowRender = (record) => {
+    const requests = repairRequests[record.key];
+    if (requests) {
+      return (
+        <Table
+          columns={historyColumn}
+          dataSource={requests.allThresholdRequest}
+          pagination={false}
+        />
+      );
+    } else {
+      return <div>Loading repair requests...</div>;
+    }
+  };
+
+  const historyColumn = [
+    {
+      title: "Date Requested",
+      dataIndex: "dateRequested",
+      key: "dateRequested",
+    },
+    {
+      title: "Service By",
+      dataIndex: "serviceBy",
+      key: "serviceBy",
+    },
+
+    {
+      /*{
+      title: "Action",
+      dataIndex: "",
+      key: "x",
+      render: (index, record) => (
+        <button className="py-2 px-4 bg-blue-600 rounded-lg text-white">
+          View
+        </button>
+      ),
+    },
+*/
+    },
+  ];
 
   return (
     <HelmetProvider>
@@ -64,39 +215,31 @@ const ThresholdLog = () => {
                 <Input
                   placeholder="Search..."
                   prefix={<SearchOutlined />}
-                  //value={searchText}
-                  //onChange={(e) => handleSearchBar(e.target.value)}
+                  value={searchText}
+                  onChange={(e) => handleSearchBar(e.target.value)}
                   className="my-4 h-12"
                 />
-              </div>
-
-              <div className="flex items-center justify-center gap-4 mr-4 mb-4 lg:mb-0">
-                <div className="flex lg:flex-row flex-col items-center text-black gap-2">
-                  <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">
-                    <span className="font-semibold">From:</span>
-                    <input
-                      type="date"
-                      className="p-2 w-36 outline-none border-none bg-transparent"
-                      //value={startDate}
-                      //onChange={(e) => setStartDate(e.target.value)}
-                    />
-                  </div>
-                  <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">
-                    <span className="font-semibold">To:</span>
-                    <input
-                      type="date"
-                      className="p-2 w-36 outline-none border-none bg-transparent"
-                      //value={endDate}
-                      //onChange={(e) => setEndDate(e.target.value)}
-                    />
-                  </div>
-                </div>
               </div>
             </div>
             <div
               className={`overflow-auto h-auto shadow-xl  pb-5  rounded-lg w-full`}
             >
-              <Table columns={thresholdColumns} />
+              <Table
+                columns={thresholdColumns}
+                dataSource={filteredRequests}
+                loading={{
+                  indicator: <LoadingOutlined style={{ fontSize: 50 }} />,
+                  spinning: loading,
+                }}
+                pagination={pagination}
+                onChange={(newPagination) => setPagination(newPagination)}
+                rowClassName={"p-0"}
+                expandable={{
+                  onExpand: handleRowClick,
+                  expandedRowRender,
+                  expandedRowKeys,
+                }}
+              />
             </div>
           </div>
         </div>

@@ -15,9 +15,20 @@ class DashboardController extends Controller
 {
     public function countUserRequests()
     {
-        $countPending = DB::table('user_requests')->where('status', 'Pending')->count();
-        $countReceived = DB::table('user_requests')->where('status', 'Received')->count();
-        $countClosed = DB::table('user_requests')->where('status', 'Closed')->count();
+        $countPending = DB::table('user_requests')
+            ->where('status', 'Pending')
+            ->where('approved', 'yes-signature')
+            ->count();
+
+        $countReceived = DB::table('user_requests')
+            ->where('status', 'Received')
+            ->where('approved', 'yes-signature')
+            ->count();
+
+        $countClosed = DB::table('user_requests')
+            ->where('status', 'Closed')
+            ->where('approved', 'yes-signature')
+            ->count();
 
         return response()->json([
             'countPending' => $countPending,
@@ -126,6 +137,31 @@ class DashboardController extends Controller
         return response()->json(['Technician' => $performanceData,]);
     }
 
+    public function getOfficePerformance($startDate = null, $endDate = null)
+    {
+        if ($startDate === null) {
+            $startDate = date('Y-m-d', strtotime('-11 days')); // Default to 10 days ago
+        }
+
+        if ($endDate === null) {
+            $endDate = date('Y-m-d'); // Default to today
+        }
+
+        $performanceData = DB::table('user_requests')
+            ->select(
+                'reqOffice',
+                DB::raw('COUNT(*) as techreq'),
+                DB::raw('SUM(CASE WHEN status = "Closed" THEN 1 ELSE 0 END) as closed'),
+                DB::raw('SUM(CASE WHEN status != "Closed" THEN 1 ELSE 0 END) as unclosed')
+            )
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->groupBy('reqOffice')
+            ->where('reqOffice', '<>', 'None')
+            ->get();
+
+        return response()->json(['Technician' => $performanceData,]);
+    }
+
 
     public function getPercentAccomplished($startDate = null, $endDate = null)
     {
@@ -145,7 +181,7 @@ class DashboardController extends Controller
 
         $receivedRequests = DB::table('user_requests')
             ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
-            ->where('status', 'received')
+            ->where('status', 'Received')
             ->count();
 
         $onprogressRequests = DB::table('user_requests')
@@ -168,6 +204,65 @@ class DashboardController extends Controller
             ->where('status', 'Closed')
             ->count();
 
+        $officePending = DB::table('user_requests')
+            ->select('reqOffice', DB::raw('COUNT(*) as request_count'))
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->where('status', 'Pending')
+            ->groupBy('reqOffice')
+            ->orderByDesc('request_count')
+            ->limit(1)
+            ->pluck('reqOffice')
+            ->first();
+
+        $officeReceived = DB::table('user_requests')
+            ->select('reqOffice', DB::raw('COUNT(*) as request_count'))
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->where('status', 'Received')
+            ->groupBy('reqOffice')
+            ->orderByDesc('request_count')
+            ->limit(1)
+            ->pluck('reqOffice')
+            ->first();
+
+        $officeOnProgress = DB::table('user_requests')
+            ->select('reqOffice', DB::raw('COUNT(*) as request_count'))
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->where('status', 'On Progress')
+            ->groupBy('reqOffice')
+            ->orderByDesc('request_count')
+            ->limit(1)
+            ->pluck('reqOffice')
+            ->first();
+
+        $officeToRelease = DB::table('user_requests')
+            ->select('reqOffice', DB::raw('COUNT(*) as request_count'))
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->where('status', 'To Release')
+            ->groupBy('reqOffice')
+            ->orderByDesc('request_count')
+            ->limit(1)
+            ->pluck('reqOffice')
+            ->first();
+
+        $officeToRate = DB::table('user_requests')
+            ->select('reqOffice', DB::raw('COUNT(*) as request_count'))
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->where('status', 'To Rate')
+            ->groupBy('reqOffice')
+            ->orderByDesc('request_count')
+            ->limit(1)
+            ->pluck('reqOffice')
+            ->first();
+
+        $officeClosed = DB::table('user_requests')
+            ->select('reqOffice', DB::raw('COUNT(*) as request_count'))
+            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->where('status', 'Closed')
+            ->groupBy('reqOffice')
+            ->orderByDesc('request_count')
+            ->limit(1)
+            ->pluck('reqOffice')
+            ->first();
 
         return response()->json([
             'pendingRequests' => $pendingRequests,
@@ -176,6 +271,12 @@ class DashboardController extends Controller
             'toreleaseRequests' => $toreleaseRequests,
             'torateRequests' => $torateRequests,
             'closedRequests' => $closedRequests,
+            'officePending' => $officePending,
+            'officeReceived' => $officeReceived,
+            'officeOnProgress' => $officeOnProgress,
+            'officeToRelease' => $officeToRelease,
+            'officeToRate' => $officeToRate,
+            'officeClosed' => $officeClosed,
         ]);
     }
 
