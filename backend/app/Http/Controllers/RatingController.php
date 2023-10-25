@@ -146,7 +146,7 @@ class RatingController extends Controller
             'name' => $requestData->fullName, // Use the retrieved name from Requests
             'office' => $requestData->reqOffice, // Use the retrieved office from Requests
             'action' => 'Rate',
-            'reference' => $request->input('request_id'), // Use the provided user_id
+            'reference' => $requestData->request_code, // Use the provided user_id
             'date' => now(),
         ];
 
