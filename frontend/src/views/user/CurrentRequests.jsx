@@ -403,6 +403,7 @@ const CurrentRequests = () => {
       title: "Date Requested",
       dataIndex: "dateRequested",
       key: "dateRequested",
+      defaultSortOrder: "desc",
       sorter: (a, b) => {
         const dateA = new Date(a.dateRequested);
         const dateB = new Date(b.dateRequested);

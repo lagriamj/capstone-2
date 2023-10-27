@@ -165,6 +165,7 @@ Route::get('/reset-cut-off-time', [RequestsController::class, 'resetCutOffTime']
 Route::get('/tech-performance', [DashboardController::class, 'technicianTable']);
 Route::get('/summary-list', [DashboardController::class, 'summaryList']);
 Route::get('admin-list', [UserController::class, 'showTechnicians']);
+Route::get('head-list', [UserController::class, 'showHeads']);
 
 Route::get('request-threshold', [RequestsController::class, 'getRequestsThreshold']);
 Route::get('threshold-history', [RequestsController::class, 'getThresholdHistory']);

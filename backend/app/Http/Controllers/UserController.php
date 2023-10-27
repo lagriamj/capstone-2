@@ -439,4 +439,10 @@ class UserController extends Controller
         $technicians = User::where('role', 'admin')->get();
         return response()->json(['result' => $technicians], 200);
     }
+
+    public function showHeads()
+    {
+        $heads = User::where('role', 'head')->get();
+        return response()->json(['result' => $heads], 200);
+    }
 }

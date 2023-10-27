@@ -3,7 +3,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Box, Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useState, useEffect } from "react";
-import { Button, Input, Modal, Form, Popconfirm, message, Table } from "antd";
+import {
+  Button,
+  Input,
+  Modal,
+  Form,
+  Popconfirm,
+  message,
+  Table,
+  Select,
+} from "antd";
 import axios from "axios";
 import {
   LoadingOutlined,
@@ -19,12 +28,15 @@ const OfficeDepartment = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
   const [departments, setDepartments] = useState([]);
+  const [heads, setHeads] = useState([]);
   const [isUpdating, setIsUpdating] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [loading, setLoading] = useState(true);
+  const { Option } = Select;
   // start fetch office or deparment
   useEffect(() => {
     fetchDepartments();
+    fetchHeads();
   }, []);
 
   const fetchDepartments = () => {
@@ -41,6 +53,20 @@ const OfficeDepartment = () => {
       });
   };
 
+  const fetchHeads = () => {
+    axios
+      .get("http://127.0.0.1:8000/api/head-list")
+      .then((response) => {
+        console.log(response);
+        setHeads(response.data.result);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const customFilterOption = (inputValue, option) =>
+    option.value?.toLowerCase().includes(inputValue.toLowerCase());
   // start add office or deparment
   const showAddNewModal = () => {
     form.resetFields();
@@ -384,10 +410,20 @@ const OfficeDepartment = () => {
                       },
                     ]}
                   >
-                    <Input
-                      className="h-12 text-base"
-                      placeholder="Head of the Office"
-                    />
+                    <Select
+                      size="large"
+                      showSearch
+                      filterOption={customFilterOption}
+                    >
+                      {heads.map((option) => (
+                        <Option
+                          key={option.userID}
+                          value={`${option.userFirstName} ${option.userLastName}`}
+                        >
+                          {`${option.userFirstName} ${option.userLastName}`}
+                        </Option>
+                      ))}
+                    </Select>
                   </Form.Item>
                   <div className="flex justify-end">
                     <Button
@@ -424,6 +460,7 @@ const OfficeDepartment = () => {
                     departmentData={selectedDepartmentForUpdate}
                     refreshData={() => fetchDepartments()}
                     isScreenWidth1366={isScreenWidth1366}
+                    headList={heads}
                   />
                 )}
             </div>

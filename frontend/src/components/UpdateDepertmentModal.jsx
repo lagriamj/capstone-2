@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, message } from "antd";
+import { Button, Form, Input, Modal, message, Select } from "antd";
 import axios from "axios";
 import PropTypes from "prop-types";
 import { useState } from "react";
@@ -10,9 +10,11 @@ const UpdateDepertmentModal = ({
   departmentData,
   refreshData,
   isScreenWidth1366,
+  headList,
 }) => {
   const [form] = Form.useForm();
   const [isUpdating, setIsUpdating] = useState(false);
+  const { Option } = Select;
 
   const handleUpdate = async () => {
     setIsUpdating(true);
@@ -34,6 +36,9 @@ const UpdateDepertmentModal = ({
       setIsUpdating(false);
     }
   };
+
+  const customFilterOption = (inputValue, option) =>
+    option.value?.toLowerCase().includes(inputValue.toLowerCase());
 
   return (
     <Modal
@@ -77,8 +82,6 @@ const UpdateDepertmentModal = ({
           />
         </Form.Item>
         <Form.Item
-          labelAlign="top"
-          labelCol={{ span: 24 }}
           name="head"
           label={
             <label
@@ -91,6 +94,8 @@ const UpdateDepertmentModal = ({
               Head of the Office
             </label>
           }
+          labelAlign="top"
+          labelCol={{ span: 24 }}
           rules={[
             {
               required: true,
@@ -98,7 +103,16 @@ const UpdateDepertmentModal = ({
             },
           ]}
         >
-          <Input placeholder="Head of the Office" className="h-12 text-base" />
+          <Select size="large" showSearch filterOption={customFilterOption}>
+            {headList.map((option) => (
+              <Option
+                key={option.userID}
+                value={`${option.userFirstName} ${option.userLastName}`}
+              >
+                {`${option.userFirstName} ${option.userLastName}`}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
         <Form.Item name="id" hidden>
           <Input size="large" />
@@ -138,6 +152,7 @@ UpdateDepertmentModal.propTypes = {
   departmentData: PropTypes.object,
   refreshData: PropTypes.func.isRequired,
   isScreenWidth1366: PropTypes.bool.isRequired,
+  headList: PropTypes.any,
 };
 
 export default UpdateDepertmentModal;
