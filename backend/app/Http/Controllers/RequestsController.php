@@ -252,7 +252,7 @@ class RequestsController extends Controller
             ->select('propertyNo', 'serialNo', 'unit', DB::raw('COUNT(*) as count'))
             ->where('status', 'Closed')
             ->groupBy('propertyNo', 'serialNo', 'unit')
-            ->having('count', '>=', 5)
+            ->having('count', '>=', 3)
             ->get();
 
         $result = [];
@@ -266,7 +266,7 @@ class RequestsController extends Controller
                 ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
                 ->join('release_requests', 'receive_service.id', '=', 'release_requests.receivedReq_id')
                 ->where('propertyNo', $request->propertyNo)
-                ->orWhere('serialNo', $request->serialNo)
+                ->where('serialNo', $request->serialNo)
                 ->select('user_requests.*', 'receive_service.*', 'release_requests.*')
                 ->get();
 
@@ -288,7 +288,7 @@ class RequestsController extends Controller
             ->select('propertyNo', 'serialNo', 'unit', DB::raw('COUNT(*) as count'))
             ->where('status', 'Closed')
             ->groupBy('propertyNo', 'serialNo', 'unit')
-            ->having('count', '>=', 5)
+            ->having('count', '>=', 3)
             ->get();
 
         $result = [];
@@ -302,7 +302,8 @@ class RequestsController extends Controller
                 ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
                 ->join('release_requests', 'receive_service.id', '=', 'release_requests.receivedReq_id')
                 ->where('propertyNo', $request->propertyNo)
-                ->orWhere('serialNo', $request->serialNo)
+                ->where('serialNo', $request->serialNo)
+                ->where('unit', $request->unit)
                 ->select('user_requests.dateRequested', 'receive_service.serviceBy', 'receive_service.rootCause', 'receive_service.remarks')
                 ->get();
 

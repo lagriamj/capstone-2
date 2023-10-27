@@ -227,6 +227,7 @@ const ThresholdLog = () => {
               <Table
                 columns={thresholdColumns}
                 dataSource={filteredRequests}
+                rowKey={(record, index) => index}
                 loading={{
                   indicator: <LoadingOutlined style={{ fontSize: 50 }} />,
                   spinning: loading,

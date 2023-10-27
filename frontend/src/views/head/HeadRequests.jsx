@@ -179,6 +179,8 @@ const HeadRequests = () => {
   };
 
   const onSubmitChange = async () => {
+    form.setFieldsValue({ yearProcured: dateP || "n/a" });
+
     const values = await form.validateFields();
 
     setLoading(true);
@@ -299,7 +301,12 @@ const HeadRequests = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">Office</label>
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="text-lg font-bold"
+                      >
+                        Office
+                      </label>
                     }
                     name={"reqOffice"}
                   >
@@ -309,7 +316,10 @@ const HeadRequests = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="text-lg font-bold"
+                      >
                         Division
                       </label>
                     }
@@ -321,7 +331,12 @@ const HeadRequests = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">Date</label>
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="text-lg font-bold"
+                      >
+                        Date
+                      </label>
                     }
                     name="dateRequested"
                   >
@@ -331,7 +346,12 @@ const HeadRequests = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">Nature</label>
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="text-lg font-bold"
+                      >
+                        Nature
+                      </label>
                     }
                     name="natureOfRequest"
                     rules={[
@@ -360,7 +380,12 @@ const HeadRequests = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">Unit</label>
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="text-lg font-bold"
+                      >
+                        Unit
+                      </label>
                     }
                     name="unit"
                     rules={[
@@ -389,7 +414,10 @@ const HeadRequests = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="text-lg font-bold"
+                      >
                         Property No.
                       </label>
                     }
@@ -401,7 +429,10 @@ const HeadRequests = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="text-lg font-bold"
+                      >
                         Serial No.
                       </label>
                     }
@@ -421,7 +452,10 @@ const HeadRequests = () => {
                   lg={6}
                   className="flex flex-col items-center justify-center pb-[30px] pt-[2px]"
                 >
-                  <label className="block text-sm font-bold mb-2 mr-auto text-black">
+                  <label
+                    style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                    className="block  font-bold mb-2 mr-auto text-black"
+                  >
                     Year Procured
                   </label>
                   <DatePicker
@@ -434,7 +468,10 @@ const HeadRequests = () => {
                 <Col xs={24} lg={24}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="text-lg font-bold"
+                      >
                         Special Instructions
                       </label>
                     }
@@ -452,7 +489,10 @@ const HeadRequests = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="text-lg font-bold"
+                      >
                         Authorized By
                       </label>
                     }

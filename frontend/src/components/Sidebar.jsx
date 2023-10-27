@@ -75,7 +75,7 @@ const Sidebar = () => {
       className={`sidebar flex flex-col bg-main h-screen w-[17%] font-sans text-white text-lg  fixed top-0 left-0`}
     >
       <Modal
-        title="Confirm Logout"
+        title="Logout Confirmation"
         onCancel={handleCancelLogout}
         open={logoutModal}
         footer={[
@@ -92,7 +92,7 @@ const Sidebar = () => {
           </Button>,
         ]}
       >
-        <p className="flex items-center justify-center gap-4">
+        <p className="flex text-xl items-center justify-center gap-4">
           Are you sure you want to logout?
         </p>
       </Modal>

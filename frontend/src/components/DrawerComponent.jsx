@@ -71,7 +71,8 @@ const DrawerComponent = () => {
         className="flex absolute right-0 mr-10 h-7 w-7 cursor-pointer"
       />
       <Modal
-        title="Confirm Logout"
+        title="Logout Confirmation"
+        onCancel={handleCancelLogout}
         open={logoutModal}
         footer={[
           <Button key="cancel" onClick={handleCancelLogout}>
@@ -87,7 +88,7 @@ const DrawerComponent = () => {
           </Button>,
         ]}
       >
-        <p className="flex items-center justify-center gap-4">
+        <p className="flex text-xl items-center justify-center gap-4">
           Are you sure you want to logout?
         </p>
       </Modal>

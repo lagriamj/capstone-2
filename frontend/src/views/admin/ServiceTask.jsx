@@ -654,6 +654,7 @@ const ServiceTask = () => {
                 <ToRateModal
                   isOpen={isModalOpen}
                   onClose={closeModal}
+                  role={userRole}
                   datas={selectedData}
                   refreshData={fetchData}
                 />
@@ -662,6 +663,7 @@ const ServiceTask = () => {
                 <ToRateModal
                   isOpen={isModalOpen}
                   onClose={closeModal}
+                  role={userRole}
                   datas={selectedData}
                   refreshData={fetchData}
                 />

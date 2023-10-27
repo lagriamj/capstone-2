@@ -5,13 +5,13 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import RateModal from "../../components/RateModal";
 import axios from "axios";
 import { Input, Table, Tag } from "antd";
-import ClosedModal from "../../components/ClosedModal";
 import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
 import { useAuth } from "../../AuthContext";
 import ViewCancel from "../../components/ViewCancel";
 import DoneRateModal from "../../components/DoneRateModal";
 import HeadSidebar from "../../components/HeadSidebar";
 import HeadDrawer from "../../components/HeadDrawer";
+import ToRateModal from "../../components/ToRateModal";
 
 const HeadTransactions = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -25,6 +25,7 @@ const HeadTransactions = () => {
   const { userID } = useAuth();
   const [view, setView] = useState(false);
   const [viewRequest, setViewRequest] = useState(false);
+  const [purgedReq, setPurgedReq] = useState(false);
 
   const [viewRating, setViewRating] = useState(false);
   const [viewRatingModal, setViewRatingModal] = useState(false);
@@ -37,11 +38,19 @@ const HeadTransactions = () => {
   const handleCancelRequest = (data) => {
     setViewCancel(data);
     setCancel(true);
+    setPurgedReq(false);
   };
 
   const handleViewRequest = (data) => {
     setViewRequest(data);
     setView(true);
+    setPurgedReq(false);
+  };
+
+  const handlePurgeRequest = (data) => {
+    setPurgedReq(data);
+    setView(true);
+    setPurgedReq(true);
   };
 
   const handleViewRating = (id) => {
@@ -225,6 +234,7 @@ const HeadTransactions = () => {
       title: "Date Requested",
       dataIndex: "dateRequested",
       key: "dateRequested",
+      defaultSortOrder: "desc",
       sorter: (a, b) => {
         const dateA = new Date(a.dateRequested);
         const dateB = new Date(b.dateRequested);
@@ -346,6 +356,13 @@ const HeadTransactions = () => {
               onClick={() => handleCancelRequest(record)}
             >
               View
+            </button>
+          ) : record.status === "Purge" ? (
+            <button
+              className="text-white bg-red-500 font-medium px-3 py-2 rounded-lg"
+              onClick={() => handlePurgeRequest(record)}
+            >
+              Purge
             </button>
           ) : (
             <button
@@ -491,10 +508,12 @@ const HeadTransactions = () => {
               )}
 
               {view && (
-                <ClosedModal
+                <ToRateModal
                   isOpen={view}
                   onClose={() => setView(false)}
-                  datas={viewRequest} // Pass the selectedItemId as a prop
+                  role={userRole}
+                  datas={viewRequest}
+                  purged={purgedReq}
                 />
               )}
               {cancel && (

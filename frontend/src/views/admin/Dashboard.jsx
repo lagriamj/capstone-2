@@ -294,7 +294,7 @@ const Dashboard = () => {
       fill: "#8884d8",
     },
     {
-      name: "Unclosed",
+      name: "Closed",
       value: totalAndClosed?.closedRequests,
       fill: "#82ca9d",
     },
@@ -355,9 +355,9 @@ const Dashboard = () => {
       let message = "";
 
       if (data.name === "Total") {
-        message = `Successfully resolved ${data.value} requests`;
-      } else if (data.name === "Unclosed") {
-        message = `Managing ${data.value} outgoing requests`;
+        message = `Total number of request is ${data.value}`;
+      } else if (data.name === "Closed") {
+        message = `Successfully managed ${data.value} requests`;
       }
       return (
         <div className="bg-white border border-gray-300 p-4 rounded shadow-md max-w-xs">
@@ -1121,6 +1121,45 @@ const Dashboard = () => {
                     windowsHeight768={isWindowsHeightBelow768}
                   />
                 </div>
+                <div className="lg:grid lg:col-start-6 lg:col-span-2 lg:row-start-6 mt-2 lg:row-span-2">
+                  <div className="bg-white  w-full rounded-lg shadow-md font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
+                    <h1 className="p-3 text-center font-semibold border-b-2 border-gray-400 ">
+                      Top 3 Nature of Requests
+                    </h1>
+                    <ul className="flex flex-col gap-4 gap-y-10 pt-4 gotoLarge:gap-y-12 gotoLarge:pt-14 font-medium   mediumLg:gap-y-4 mediumLg:pt-6 large:gap-y-14 large:pt-10 p-4 ">
+                      {ratingsAndNature.topNature.map(
+                        (natureOfRequest, index) => (
+                          <li className="flex  gap-4" key={index}>
+                            <span key={index}>
+                              {index === 0 ? (
+                                <Filter1Icon
+                                  style={{
+                                    fontSize: 18,
+                                  }}
+                                />
+                              ) : index === 1 ? (
+                                <Filter2Icon
+                                  style={{
+                                    fontSize: 18,
+                                  }}
+                                />
+                              ) : index === 2 ? (
+                                <Filter3Icon
+                                  style={{
+                                    fontSize: 18,
+                                  }}
+                                />
+                              ) : (
+                                ""
+                              )}
+                            </span>{" "}
+                            {natureOfRequest.natureOfRequest}
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  </div>
+                </div>
                 <div className="text-black font-sans overflow-auto lg:mt-0 mt-3  bg-white shadow-md rounded-lg lg:col-start-6 lg:col-span-2  lg:row-start-1 lg:row-span-5 ">
                   <div className="flex flex-col">
                     <div className="flex items-center border-b-2 gap-2 border-gray-400 py-1 pl-4">
@@ -1222,45 +1261,6 @@ const Dashboard = () => {
                             </div>
                           </div>
                         ))}
-                  </div>
-                </div>
-                <div className="lg:grid lg:col-start-6 lg:col-span-2 lg:row-start-6 mt-2 lg:row-span-2">
-                  <div className="bg-white  w-full rounded-lg shadow-md font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
-                    <h1 className="p-3 text-center font-semibold border-b-2 border-gray-400 ">
-                      Top 3 Nature of Requests
-                    </h1>
-                    <ul className="flex flex-col gap-4 gap-y-10 pt-4 gotoLarge:gap-y-12 gotoLarge:pt-14 font-medium   mediumLg:gap-y-4 mediumLg:pt-6 large:gap-y-14 large:pt-10 p-4 ">
-                      {ratingsAndNature.topNature.map(
-                        (natureOfRequest, index) => (
-                          <li className="flex  gap-4" key={index}>
-                            <span key={index}>
-                              {index === 0 ? (
-                                <Filter1Icon
-                                  style={{
-                                    fontSize: 18,
-                                  }}
-                                />
-                              ) : index === 1 ? (
-                                <Filter2Icon
-                                  style={{
-                                    fontSize: 18,
-                                  }}
-                                />
-                              ) : index === 2 ? (
-                                <Filter3Icon
-                                  style={{
-                                    fontSize: 18,
-                                  }}
-                                />
-                              ) : (
-                                ""
-                              )}
-                            </span>{" "}
-                            {natureOfRequest.natureOfRequest}
-                          </li>
-                        )
-                      )}
-                    </ul>
                   </div>
                 </div>
               </div>

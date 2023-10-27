@@ -285,7 +285,7 @@ const RegisterConfirmation = () => {
                 </p>
               )}
               <InputBox
-                type={"number"}
+                type={"text"}
                 id={"otpCode"}
                 placeholder={"OTP CODE"}
                 value={otpCode}

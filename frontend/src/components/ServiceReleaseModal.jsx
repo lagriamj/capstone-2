@@ -248,6 +248,8 @@ const ServiceReleaseModal = ({
           assignedTo: data.assignedTo,
           serviceBy: data.serviceBy,
           dateServiced: data.dateServiced,
+          arta: data.arta,
+          artaStatus: data.artaStatus,
           toRecommend: "",
           findings: findingsValue,
           rootCause: rootCauseValue,
@@ -353,13 +355,29 @@ const ServiceReleaseModal = ({
                 </Form.Item>
               </Col>
               <Col xs={24} lg={6}>
-                <Form.Item>
-                  <Input readOnly className="h-[40px]" hidden />
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold">ARTA</label>
+                  }
+                  name="arta"
+                >
+                  <Input readOnly value={data.arta} className="h-[40px]" />
                 </Form.Item>
               </Col>
               <Col xs={24} lg={6}>
-                <Form.Item>
-                  <Input readOnly className="h-[40px]" hidden />
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold">
+                      ARTA Status
+                    </label>
+                  }
+                  name="artaStatus"
+                >
+                  <Input
+                    readOnly
+                    value={data.artaStatus}
+                    className="h-[40px]"
+                  />
                 </Form.Item>
               </Col>
               <Col xs={24} lg={24}>

@@ -6,7 +6,7 @@ import { Modal, Input, Row, Col } from "antd";
 import { Skeleton } from "antd";
 import PrintPreviewModal from "./PrintPreviewModal";
 
-const ToRateModal = ({ isOpen, onClose, datas }) => {
+const ToRateModal = ({ isOpen, onClose, datas, role, purged }) => {
   if (!isOpen) return null;
 
   const [loading, setLoading] = useState(true);
@@ -27,9 +27,18 @@ const ToRateModal = ({ isOpen, onClose, datas }) => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/closed-view/${datas.request_id}`
-      );
+      let apiUrl = "";
+
+      if (role === "admin") {
+        apiUrl = `http://127.0.0.1:8000/api/closed-view/${datas.request_id}`;
+      } else if (role === "head") {
+        apiUrl = `http://127.0.0.1:8000/api/closed-view/${datas.id}`;
+      } else {
+        apiUrl = `http://127.0.0.1:8000/api/closed-view/${datas.id}`;
+      }
+
+      const response = await axios.get(apiUrl);
+
       if (response.status === 200) {
         setLoading(false);
         setData(response.data.results);
@@ -485,7 +494,7 @@ const ToRateModal = ({ isOpen, onClose, datas }) => {
       title={
         <div className="flex justify-between items-center">
           <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
-          <span>REQUEST ID: {data.request_code}</span>
+          <span>REQUEST ID: {datas.request_code}</span>
         </div>
       }
       centered
@@ -503,15 +512,17 @@ const ToRateModal = ({ isOpen, onClose, datas }) => {
       <div className="relative p-6 text-lg">{ReleasedDetails()}</div>
 
       <div className="flex ml-auto w-full  gap-2 justify-end border-t-2 pt-5 pr-6">
-        <button
-          className="bg-gray-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
-          type="submit"
-          onClick={() => {
-            setPrintModalOpen(true);
-          }}
-        >
-          Print
-        </button>
+        {!purged && (
+          <button
+            className="bg-gray-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
+            type="submit"
+            onClick={() => {
+              setPrintModalOpen(true);
+            }}
+          >
+            Print
+          </button>
+        )}
         <button
           className="bg-red-800 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
           type="submit"
@@ -529,7 +540,9 @@ const ToRateModal = ({ isOpen, onClose, datas }) => {
 ToRateModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  role: PropTypes.string.isRequired,
   datas: PropTypes.object,
+  purged: PropTypes.bool,
 };
 
 export default ToRateModal;

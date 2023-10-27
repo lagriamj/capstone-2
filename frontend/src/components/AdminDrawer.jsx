@@ -93,8 +93,8 @@ const AdminDrawer = () => {
         className="flex absolute right-0 mr-10 h-7 w-7 cursor-pointer"
       />
       <Modal
-        title="Confirm Logout"
-        className="z-50"
+        title="Logout Confirmation"
+        onCancel={handleCancelLogout}
         open={logoutModal}
         footer={[
           <Button key="cancel" onClick={handleCancelLogout}>
@@ -110,7 +110,7 @@ const AdminDrawer = () => {
           </Button>,
         ]}
       >
-        <p className="flex items-center justify-center gap-4">
+        <p className="flex text-xl items-center justify-center gap-4">
           Are you sure you want to logout?
         </p>
       </Modal>

@@ -79,7 +79,7 @@ const HeadSidebar = () => {
       } fixed top-0 left-0`}
     >
       <Modal
-        title="Confirm Logout"
+        title="Logout Confirmation"
         onCancel={handleCancelLogout}
         open={logoutModal}
         footer={[
@@ -96,7 +96,7 @@ const HeadSidebar = () => {
           </Button>,
         ]}
       >
-        <p className="flex items-center justify-center gap-4">
+        <p className="flex text-xl items-center justify-center gap-4">
           Are you sure you want to logout?
         </p>
       </Modal>
