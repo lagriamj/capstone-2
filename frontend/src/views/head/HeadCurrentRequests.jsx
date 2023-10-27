@@ -500,7 +500,11 @@ const HeadCurrentRequests = () => {
                 isScreenWidth1366 ? "text-xs" : " text-base"
               } font-medium bg-gray-800 py-2 px-4 rounded-lg`}
               onClick={() =>
-                handleStarIconClick(record.id, record.user_id, record.reqOffice)
+                handleStarIconClick(
+                  record.request_id,
+                  record.user_id,
+                  record.reqOffice
+                )
               }
             >
               Rate

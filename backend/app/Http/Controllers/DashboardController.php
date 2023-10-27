@@ -159,7 +159,7 @@ class DashboardController extends Controller
             ->where('reqOffice', '<>', 'None')
             ->get();
 
-        return response()->json(['Technician' => $performanceData,]);
+        return response()->json(['office' => $performanceData,]);
     }
 
 
@@ -282,6 +282,14 @@ class DashboardController extends Controller
 
     public function getRequestsByDate($startDate = null, $endDate = null)
     {
+        if ($startDate === null) {
+            $startDate = date('Y-m-d', strtotime('-11 days')); // Default to 10 days ago
+        }
+
+        if ($endDate === null) {
+            $endDate = date('Y-m-d'); // Default to today
+        }
+
         $unclosedRequestsData = DB::table('user_requests')
             ->selectRaw('DATE(dateRequested) as date, COUNT(*) as total')
             ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
@@ -482,6 +490,15 @@ class DashboardController extends Controller
 
             $data[] = $adminData;
         }
+
+        usort($data, function ($a, $b) {
+            return $b['performance'] <=> $a['performance'];
+        });
+
+        usort($data, function ($a, $b) {
+            return $b['rating'] <=> $a['rating'];
+        });
+
         return response()->json(['data' => $data]);
     }
 
@@ -583,5 +600,16 @@ class DashboardController extends Controller
         $diff = $updatedAt->diff($dateReceived);
 
         return ($diff->days * 24) + $diff->h;
+    }
+
+    public function artaDelay()
+    {
+        $delayData = DB::table('user_requests')
+            ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
+            ->where('receive_service.artaStatus', 'Delay')
+            ->select('user_requests.*', 'receive_service.*')
+            ->get();
+
+        return response()->json(['results' => $delayData]);
     }
 }

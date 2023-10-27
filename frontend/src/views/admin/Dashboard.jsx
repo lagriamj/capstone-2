@@ -120,6 +120,31 @@ const Dashboard = () => {
     }
   }, []);
 
+  const [delayedRequests, setDelayedRequests] = useState([]);
+  const [recentOrDelayed, setRecentOrDelayed] = useState("recent");
+
+  const showRecentReq = () => {
+    setRecentOrDelayed("recent");
+  };
+  const showDelayedReq = () => {
+    setRecentOrDelayed("delayed");
+  };
+
+  useEffect(() => {
+    fetchDelayedRequests();
+    async function fetchDelayedRequests() {
+      try {
+        const delayedRequestsResult = await axios.get(
+          "http://127.0.0.1:8000/api/delay-request"
+        );
+        console.log(delayedRequestsResult);
+        setDelayedRequests(delayedRequestsResult.data?.results);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, []);
+
   const openModal = (data) => {
     setSelectedData(data);
     setIsModalVisible(true);
@@ -174,7 +199,7 @@ const Dashboard = () => {
     }
 
     fetchData();
-  }, []); // The empty array [] ensures the effect runs only once
+  }, []);
 
   const [startDate, setStartDate] = useState("");
   const [technicianData, setTechnicianData] = useState(null);
@@ -199,6 +224,7 @@ const Dashboard = () => {
   });
 
   const [requestsByDate, setRequestsByDate] = useState(null);
+  const [requestsByOffice, setRequestsByOffice] = useState(null);
   const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
@@ -229,6 +255,11 @@ const Dashboard = () => {
         `http://127.0.0.1:8000/api/requestsByDate/${startDate}/${endDate}`
       );
       setRequestsByDate(requestsResponse.data);
+
+      const officeResponse = await axios.get(
+        `http://127.0.0.1:8000/api/office-performance/${startDate}/${endDate}`
+      );
+      setRequestsByOffice(officeResponse.data.office);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -263,7 +294,7 @@ const Dashboard = () => {
       fill: "#8884d8",
     },
     {
-      name: "Closed",
+      name: "Unclosed",
       value: totalAndClosed?.closedRequests,
       fill: "#82ca9d",
     },
@@ -300,12 +331,6 @@ const Dashboard = () => {
       message: percentData?.officeToRate,
       fill: "#0000FF", // Blue
     },
-    {
-      name: "Closed ",
-      value: percentData?.closedRequests,
-      message: percentData?.officeClosed,
-      fill: "#808080", // Gray
-    },
   ];
 
   const CustomTooltip = ({ active, payload }) => {
@@ -317,6 +342,27 @@ const Dashboard = () => {
           <p className="text-gray-700">
             {data.message} office has high request volume.
           </p>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  const CustomTooltips = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      let message = "";
+
+      if (data.name === "Total") {
+        message = `Successfully resolved ${data.value} requests`;
+      } else if (data.name === "Unclosed") {
+        message = `Managing ${data.value} outgoing requests`;
+      }
+      return (
+        <div className="bg-white border border-gray-300 p-4 rounded shadow-md max-w-xs">
+          <p className="font-bold">{data.name}</p>
+          <p className="text-gray-700">{message}</p>
         </div>
       );
     }
@@ -408,7 +454,7 @@ const Dashboard = () => {
   };
 
   const formatter = (value) => {
-    return <span className="text-[16px] text-black">{value}</span>;
+    return <span className="text-lg text-black">{value}</span>;
   };
 
   const [pieLoading, setPieLoading] = useState(false);
@@ -664,13 +710,19 @@ const Dashboard = () => {
     },
   ];
 
+  const title =
+    requestDetails.length && delayedRequests.length > 0
+      ? `(${requestDetails.length + delayedRequests.length}) Dashboard`
+      : "Dashboard";
+
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
+
   return (
     <HelmetProvider>
       <Helmet>
-        <title>
-          {requestDetails.length > 0 ? `(${requestDetails.length})` : " "}
-          {" Dashboard"}
-        </title>
+        <title>{title}</title>
       </Helmet>
       <div
         className={`className="flex flex-grow flex-col overflow-auto gotoLarge:px-6 bg-gray-200 large:ml-20 lg:flex-row white pt-2  h-screen`}
@@ -685,10 +737,17 @@ const Dashboard = () => {
             ) : (
               <div
                 ref={elementRef}
-                className="w-full lg:h-screen h-auto flex flex-col  lg:grid lg:grid-cols-7 lg:grid-rows-5 gap-x-3 "
+                className="w-full lg:h-screen h-auto flex flex-col large:mt-4 lg:grid lg:grid-cols-7 lg:grid-rows-11 gap-x-3 "
               >
-                <div className="lg:grid lg:col-span-5 lg:row-span-1 lg:h-[90%] lg:py-2 pt-10  rounded-lg bg-white text-black font-sans">
-                  <div className="grid w-full lg:grid-rows-2 lg:grid-cols-1 grid-cols-2 grid-rows-1  px-4  lg:mb-0 mb-20  lg:pl-20 lg:pr-10">
+                <div className="lg:grid lg:col-span-5 relative lg:row-span-2 lg:h-full lg:py-2 pt-8  rounded-lg bg-white text-black font-sans">
+                  <h1 className="absolute font-semibold top-2 left-5 text-xl">
+                    Summary
+                  </h1>
+                  <div
+                    className={`${
+                      windowsHeight768 ? "text-base" : "text-lg"
+                    } grid mt-2 lg:ml-14 w-full lg:grid-rows-2 lg:grid-cols-1 grid-cols-2 grid-rows-1  px-4  lg:mb-0 mb-20  lg:pl-20 lg:pr-10`}
+                  >
                     <div className="lg:grid lg:grid-cols-3 ">
                       <div
                         className=" flex w-full gap-2 lg:mt-0 mt-2 items-center text-left cursor-pointer"
@@ -812,11 +871,45 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-                <div className="lg:col-span-5 flex lg:flex-row flex-col   row-span-2  rounded-lg row-start-2 ">
+                <div className="lg:col-span-5 flex items-center justify-end my-3 row-span-1 rounded-t-lg lg:row-start-3">
+                  <div className="flex gap-1 items-center lg:justify-center justify-end lg:mr-0 mr-2">
+                    <label
+                      htmlFor="startDate"
+                      className="large:text-lg mediumLg:text-sm lg:text-base"
+                    >
+                      From
+                    </label>
+                    <input
+                      type="date"
+                      id="startDate"
+                      name="startDate"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="border-2 border-gray-700  rounded-lg px-1 large:text-lg mediumLg:text-sm w-36 lg:text-base "
+                    />
+                  </div>
+                  <div className="flex gap-1 items-center lg:justify-center justify-end lg:mb-0 mb-auto lg:mr-0 mr-2">
+                    <label
+                      htmlFor="endDate"
+                      className="large:text-lg mediumLg:text-sm lg:text-base"
+                    >
+                      To
+                    </label>
+                    <input
+                      type="date"
+                      id="endDate"
+                      name="endDate"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="border-2 border-gray-700  rounded-lg px-1 large:text-lg mediumLg:text-sm w-36 lg:text-base "
+                    />
+                  </div>
+                </div>
+                <div className="lg:col-span-5 relative flex lg:flex-row flex-col   row-span-2  rounded-lg row-start-4 ">
                   <div className=" bg-white lg:w-[49%] mr-2 w-full rounded-lg shadow-md">
                     <div className="flex gap-2 w-full">
                       <label className="text-lg font-medium pl-4 pt-2 flex ">
-                        Closed and Unclosed Requests
+                        Total and Unclosed Requests
                       </label>
                     </div>
                     <ResponsiveContainer
@@ -835,13 +928,13 @@ const Dashboard = () => {
                           labelLine={false}
                           onClick={handlePieRequestsClick}
                         />
-                        <Tooltip />
+                        <Tooltip content={<CustomTooltips />} />
                         <Legend formatter={formatter} />
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
-                  <div className=" bg-white lg:w-[50%] w-full rounded-lg shadow-md">
-                    <label className="text-lg font-medium pl-4 pt-2 flex ">
+                  <div className=" flex flex-col bg-white lg:w-[50%] w-full rounded-lg shadow-md">
+                    <label className="text-lg font-medium text-left  ml-5  pt-2  flex ">
                       Request Status Overview
                     </label>
                     <ResponsiveContainer
@@ -968,40 +1061,23 @@ const Dashboard = () => {
                             />
                             By Date
                           </label>
+                          <label className="block px-4 py-2">
+                            <input
+                              type="checkbox"
+                              name="dataSource"
+                              value="requestsByOffice"
+                              checked={selectedDataSources.includes(
+                                "requestsByOffice"
+                              )}
+                              onChange={() =>
+                                toggleDataSource("requestsByOffice")
+                              }
+                              className="mr-2"
+                            />
+                            By Office
+                          </label>
                         </div>
                       )}
-                    </div>
-                    <div className="flex gap-1 items-center lg:justify-center justify-end lg:mr-0 mr-2">
-                      <label
-                        htmlFor="startDate"
-                        className="large:text-lg mediumLg:text-sm lg:text-base"
-                      >
-                        From
-                      </label>
-                      <input
-                        type="date"
-                        id="startDate"
-                        name="startDate"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="border-2 border-gray-700  rounded-lg px-1 large:text-lg mediumLg:text-sm w-36 lg:text-base "
-                      />
-                    </div>
-                    <div className="flex gap-1 items-center lg:justify-center justify-end lg:mb-0 mb-auto lg:mr-0 mr-2">
-                      <label
-                        htmlFor="endDate"
-                        className="large:text-lg mediumLg:text-sm lg:text-base"
-                      >
-                        To
-                      </label>
-                      <input
-                        type="date"
-                        id="endDate"
-                        name="endDate"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className="border-2 border-gray-700  rounded-lg px-1 large:text-lg mediumLg:text-sm w-36 lg:text-base "
-                      />
                     </div>
                   </div>
 
@@ -1011,6 +1087,8 @@ const Dashboard = () => {
                         ? technicianData
                         : selectedDataSources.includes("requestsByDate")
                         ? requestsByDate
+                        : selectedDataSources.includes("requestsByOffice")
+                        ? requestsByOffice
                         : technicianData
                     }
                     values1={
@@ -1018,6 +1096,8 @@ const Dashboard = () => {
                         ? "closed"
                         : selectedDataSources.includes("requestsByDate")
                         ? "closedBydate"
+                        : selectedDataSources.includes("requestsByOffice")
+                        ? "closed"
                         : "closed"
                     }
                     values2={
@@ -1025,6 +1105,8 @@ const Dashboard = () => {
                         ? "unclosed"
                         : selectedDataSources.includes("requestsByDate")
                         ? "unclosedBydate"
+                        : selectedDataSources.includes("requestsByOffice")
+                        ? "unclosed"
                         : "unclosed"
                     }
                     xValue={
@@ -1032,52 +1114,117 @@ const Dashboard = () => {
                         ? "assignedTo"
                         : selectedDataSources.includes("requestsByDate")
                         ? "date"
+                        : selectedDataSources.includes("requestsByOffice")
+                        ? "reqOffice"
                         : "assignedTo"
                     }
                     windowsHeight768={isWindowsHeightBelow768}
                   />
                 </div>
-                <div className="text-black font-sans overflow-auto lg:mt-0 mt-3  bg-white shadow-md rounded-lg lg:col-start-6 lg:col-span-2  lg:row-start-1 lg:row-span-3 ">
+                <div className="text-black font-sans overflow-auto lg:mt-0 mt-3  bg-white shadow-md rounded-lg lg:col-start-6 lg:col-span-2  lg:row-start-1 lg:row-span-5 ">
                   <div className="flex flex-col">
-                    <div className="flex items-center border-b-2 gap-2 border-gray-400 py-3 pl-4">
-                      <Badge count={requestDetails.length} size="small">
-                        <NotificationOutlined
-                          style={{
-                            fontSize: 16,
-                          }}
-                        />
-                      </Badge>
-                      <Badge className="lg:text-lg text-base font-sans">
-                        Recent Requests
-                      </Badge>
-                    </div>
-                    {requestDetails.map((request) => (
-                      <div
-                        key={request.id}
-                        className="mb-5 pb-2 large:text-lg border-b-2 border-gray-400"
-                      >
-                        <div className="grid grid-cols-2 px-2">
-                          <p className="whitespace-nowrap">
-                            {" "}
-                            {request.fullName}
-                          </p>
-                          <p className="text-right"> {request.dateRequested}</p>
-                        </div>
-                        <div className="grid grid-cols-2 mt-2 px-2">
-                          <p className="">{request.natureOfRequest}</p>
-
-                          <button
-                            className="text-blue-400 text-right"
-                            onClick={() => openModal(request)}
+                    <div className="flex items-center border-b-2 gap-2 border-gray-400 py-1 pl-4">
+                      <div className="flex items-center w-full">
+                        <div
+                          className={`${
+                            recentOrDelayed === "recent" &&
+                            "border-b-2 border-gray-600"
+                          } w-[45%] flex items-center justify-center cursor-pointer gap-2 py-2`}
+                        >
+                          <Badge count={requestDetails.length} size="small">
+                            <NotificationOutlined
+                              style={{
+                                fontSize: 16,
+                              }}
+                            />
+                          </Badge>
+                          <Badge
+                            className="lg:text-lg text-base font-sans"
+                            onClick={showRecentReq}
                           >
-                            View Details
-                          </button>
+                            Recent
+                          </Badge>
+                        </div>
+                        <div
+                          className={`${
+                            recentOrDelayed === "delayed" &&
+                            "border-b-2 border-gray-600"
+                          } w-[45%] flex items-center justify-center gap-2 py-2`}
+                        >
+                          <Badge count={delayedRequests?.length} size="small">
+                            <NotificationOutlined
+                              style={{
+                                fontSize: 16,
+                              }}
+                            />
+                          </Badge>
+                          <Badge
+                            className="lg:text-lg text-base font-sans cursor-pointer"
+                            onClick={showDelayedReq}
+                          >
+                            Delayed
+                          </Badge>
                         </div>
                       </div>
-                    ))}
+                    </div>
+                    {recentOrDelayed === "recent"
+                      ? requestDetails.map((request) => (
+                          <div
+                            key={request.id}
+                            className="mb-5 pb-2 large:text-lg border-b-2 border-gray-400"
+                          >
+                            <div className="grid grid-cols-2 px-2">
+                              <p className="whitespace-nowrap">
+                                {" "}
+                                {request.fullName}
+                              </p>
+                              <p className="text-right">
+                                {" "}
+                                {request.dateRequested}
+                              </p>
+                            </div>
+                            <div className="grid grid-cols-2 mt-2 px-2">
+                              <p className="">{request.natureOfRequest}</p>
+
+                              <button
+                                className="text-blue-400 text-right"
+                                onClick={() => openModal(request)}
+                              >
+                                View Details
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                      : delayedRequests?.map((request) => (
+                          <div
+                            key={request.id}
+                            className="mb-5 pb-2 large:text-lg border-b-2 border-gray-400"
+                          >
+                            <div className="grid grid-cols-2 px-2">
+                              <p className="whitespace-nowrap">
+                                {" "}
+                                {request.fullName}
+                              </p>
+                              <p className="text-right">
+                                {" "}
+                                {request.dateRequested}
+                              </p>
+                            </div>
+                            <div className="grid grid-cols-2 mt-2 px-2">
+                              <p className="">{request.natureOfRequest}</p>
+
+                              <button
+                                className="text-blue-400 text-right"
+                                onClick={() => openModal(request)}
+                              >
+                                View Details
+                              </button>
+                            </div>
+                          </div>
+                        ))}
                   </div>
                 </div>
-                <div className="lg:grid lg:col-start-6 lg:col-span-2 lg:row-start-4 mt-2 lg:row-span-2">
+                <div className="lg:grid lg:col-start-6 lg:col-span-2 lg:row-start-6 mt-2 lg:row-span-2">
                   <div className="bg-white  w-full rounded-lg shadow-md font-sans large:text-xl gotoLarge:text-lg mediumLg:text-sm lg:text-base">
                     <h1 className="p-3 text-center font-semibold border-b-2 border-gray-400 ">
                       Top 3 Nature of Requests
@@ -1196,8 +1343,8 @@ const Dashboard = () => {
             </div>
 
             <div className="grid grid-cols-2">
-              <label className="font-semibold">Date Procured: </label>
-              <label>{selectedData.dateProcured}</label>
+              <label className="font-semibold">Year Procured: </label>
+              <label>{selectedData.yearProcured}</label>
             </div>
             <div className="col-span-2 mt-5">
               <label className="font-semibold">Special Instruction: </label>

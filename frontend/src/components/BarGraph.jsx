@@ -1,4 +1,3 @@
-import { Tooltip } from "antd";
 import {
   Bar,
   BarChart,
@@ -7,8 +6,46 @@ import {
   ResponsiveContainer,
   XAxis,
   YAxis,
+  Tooltip,
 } from "recharts";
 import PropTypes from "prop-types";
+
+const COLORS = ["#8884d8", "#82ca9d"];
+
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload) {
+    const closedValue = payload[0].value;
+    const unclosedValue = payload[1].value;
+    let performanceMessage = "";
+
+    if (closedValue > unclosedValue) {
+      performanceMessage = (
+        <span className="text-green-500">Excellent Performance</span>
+      );
+    } else if (closedValue === unclosedValue) {
+      performanceMessage = (
+        <span className="text-yellow-500">Good Performance</span>
+      );
+    } else if (closedValue >= 1 && unclosedValue > closedValue) {
+      performanceMessage = (
+        <span className="text-orange-500">Average Action</span>
+      );
+    } else {
+      performanceMessage = <span className="text-red-500">Take Action</span>;
+    }
+
+    return (
+      <div className="bg-white border border-gray-300 p-3 rounded shadow-lg">
+        <p className="font-bold mb-2">{`${label}`}</p>
+        <p className="">{`Closed: ${closedValue}`}</p>
+        <p className="mb-2">{`Unclosed: ${unclosedValue}`}</p>
+        <p className="font-bold">{performanceMessage}</p>
+      </div>
+    );
+  }
+
+  return null;
+};
 
 const BarGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
   const formatDate = (dateString) => {
@@ -25,12 +62,16 @@ const BarGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
     return lastName;
   };
 
+  const formatter = (value) => {
+    return <span className="text-lg text-black">{value}</span>;
+  };
+
   return (
-    <ResponsiveContainer width={"100%"} height={windowsHeight768 ? 200 : 300}>
+    <ResponsiveContainer width={"100%"} height={windowsHeight768 ? 200 : 325}>
       <BarChart data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
-          tick={{ fontSize: "14px" }}
+          tick={{ fontSize: "1.125rem", lineHeight: "1.75rem" }}
           interval={0}
           height={40}
           dataKey={xValue}
@@ -39,10 +80,14 @@ const BarGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
             : { tickFormatter: nameFormat })}
         />
         <YAxis />
-        <Tooltip />
-        <Legend align="right" />
-        <Bar dataKey={values1} name="Closed" fill="#8884d8" barSize={30} />
-        <Bar dataKey={values2} name="Unclosed" fill="#82ca9d" barSize={30} />
+        <Tooltip content={<CustomTooltip />} />
+        <Legend
+          align="right"
+          formatter={formatter}
+          wrapperStyle={{ fontSize: "1.225rem" }}
+        />
+        <Bar dataKey={values1} name="Closed" fill={COLORS[0]} barSize={30} />
+        <Bar dataKey={values2} name="Unclosed" fill={COLORS[1]} barSize={30} />
       </BarChart>
     </ResponsiveContainer>
   );
@@ -54,6 +99,12 @@ BarGraph.propTypes = {
   values2: PropTypes.any.isRequired,
   xValue: PropTypes.any.isRequired,
   windowsHeight768: PropTypes.bool.isRequired,
+};
+
+CustomTooltip.propTypes = {
+  active: PropTypes.bool,
+  payload: PropTypes.array,
+  label: PropTypes.string,
 };
 
 export default BarGraph;

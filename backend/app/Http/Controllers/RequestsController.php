@@ -99,6 +99,17 @@ class RequestsController extends Controller
             $requestRecord->update(['approved' => 'yes-signature']);
         }
 
+        $user = DB::table('users')
+            ->where('userID', $validatedData['user_id'])
+            ->first();
+
+        if ($user && $user->role === 'admin') {
+            $requestRecord->update(['approved' => 'yes-signature']);
+        }
+
+
+        $requestRecord->save();
+
         DB::table('receive_service')->insert([
             'request_id' => $requestRecord->id,
             'receivedBy' => 'n/a',
@@ -113,14 +124,12 @@ class RequestsController extends Controller
             'rootCause' => 'n/a',
             'actionTaken' => 'n/a',
             'remarks' => 'n/a',
-            'created_at' => $now, // Add created_at timestamp
-            'updated_at' => $now, // Add updated_at timestamp
+            'created_at' => $now,
+            'updated_at' => $now,
         ]);
 
         return response()->json($requestRecord, 201);
     }
-
-
 
     public function update(Request $request, $id)
     {
@@ -267,7 +276,7 @@ class RequestsController extends Controller
                 'unit' => $request->unit,
                 'message' => $message,
                 'total_count' => $totalCount,
-                'allThresholdRequest' => $allThresholdRequest,
+
             ];
         }
         return response()->json($result);

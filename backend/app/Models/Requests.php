@@ -28,5 +28,6 @@ class Requests extends Model
         'status',
         'assignedTo',
         'dateUpdated',
+        'approved',
     ];
 }

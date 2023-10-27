@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
+import "../assets/Stepper.css";
 
 export default function CurrentRequestModal({
   display,
@@ -21,7 +22,7 @@ export default function CurrentRequestModal({
       {" "}
       {/* Reduced margin-bottom */}
       <div className="text-lg font-semibold">{label}:</div>
-      <div className="mt-1">{value}</div>
+      <div className="mt-1 text-lg">{value}</div>
     </div>
   );
 
@@ -33,7 +34,7 @@ export default function CurrentRequestModal({
     "Serial No",
     "Unit",
     "Nature of Request",
-    "Date Procured",
+    "Year Procured",
     "Special Instruction",
     "Authorized By",
   ];
@@ -73,7 +74,7 @@ export default function CurrentRequestModal({
     return (
       <div>
         {isTruncated ? (
-          <div>
+          <div className="text-base">
             {text.length > maxLength ? (
               <>
                 {text.slice(0, maxLength)}
@@ -136,7 +137,9 @@ export default function CurrentRequestModal({
         >
           {steps.map((status, index) => (
             <Step key={index} completed={index < activeIndex}>
-              <StepLabel icon={index}>{status}</StepLabel>
+              <StepLabel sx={{ fontSize: "24px" }} icon={index}>
+                <span className="text-lg">{status}</span>
+              </StepLabel>
             </Step>
           ))}
         </Stepper>
@@ -193,7 +196,7 @@ export default function CurrentRequestModal({
           </div>
           <div className=" w-full">
             <div className="w-full">
-              {renderDataRow(label[7], itemData.dateProcured)}
+              {renderDataRow(label[7], itemData.yearProcured)}
             </div>
           </div>
           <div className=" w-full">

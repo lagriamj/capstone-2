@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('assignedTo');
             $table->string('serviceBy');
             $table->datetime('dateServiced');
-            $table->date('dateReason');
+            $table->string('arta');
+            $table->string('artaStatus');
             $table->string('toRecommend');
             $table->string('findings');
             $table->string('rootCause');

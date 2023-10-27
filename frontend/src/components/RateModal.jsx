@@ -83,7 +83,7 @@ const RateModal = ({
       );
       const data = response.data;
       console.log(data);
-      navigate("/transactions");
+      navigate("/head/transactions");
       setActive("transactions");
     } catch (err) {
       if (err.response && err.response.status === 422) {

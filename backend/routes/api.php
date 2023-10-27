@@ -174,3 +174,4 @@ Route::put('update-reason-delay/{id}/{fullName}', [ReceiveServiceController::cla
 
 Route::post('/add-arta-reason', [RequestsController::class, 'addArtaReason']);
 Route::get('/show-arta-reason/{id}', [RequestsController::class, 'showArtaReason']);
+Route::get('/delay-request', [DashboardController::class, 'artaDelay']);
