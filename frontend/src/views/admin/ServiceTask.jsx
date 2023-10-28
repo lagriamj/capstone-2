@@ -11,9 +11,10 @@ import ReceiveServiceModal from "../../components/ReceiveServiceModal";
 import ReasonModal from "../../components/ReasonModal";
 import ViewCancel from "../../components/ViewCancel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faStar } from "@fortawesome/free-solid-svg-icons";
 import { Input, Table, Tag, message } from "antd";
 import { Popconfirm } from "antd";
+import RateModal from "../../components/RateModal";
 import {
   LoadingOutlined,
   QuestionCircleOutlined,
@@ -36,7 +37,9 @@ const ServiceTask = () => {
 
   const openModal = (data) => {
     setSelectedData(data);
-    if (data.status === "Pending") {
+    if (data.status === "To Rate" && data.modeOfRequest === "Walk-In") {
+      setModalType("ToRateWalkin");
+    } else if (data.status === "Pending") {
       setModalType("ServicePending");
     } else if (data.status === "Received") {
       setModalType("ServiceReceived");
@@ -50,6 +53,26 @@ const ServiceTask = () => {
       setModalType("ServiceClosed");
     }
     setModalOpen(true);
+  };
+
+  const [rateModalVisible, setRateModalVisible] = useState(false);
+  const [selectedID, setSelectedID] = useState(null);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedOffice, setSelectedOffice] = useState(null);
+
+  const handleRatings = async (id) => {
+    console.log(id);
+    const response = await axios.get(
+      `http://127.0.0.1:8000/api/closed-view/${id}`
+    );
+    setRatings(response.data.results);
+  };
+
+  const handleStarIconClick = (id, user_id, office) => {
+    setSelectedID(id);
+    setSelectedUserId(user_id);
+    setSelectedOffice(office);
+    setRateModalVisible(true);
   };
 
   const closeModal = () => {
@@ -313,7 +336,6 @@ const ServiceTask = () => {
       title: "Date Requested",
       dataIndex: "dateRequested",
       key: "dateRequested",
-      defaultSortOrder: "desc",
       sorter: (a, b) => {
         const dateA = new Date(a.dateRequested);
         const dateB = new Date(b.dateRequested);
@@ -433,7 +455,7 @@ const ServiceTask = () => {
             <button
               className={`text-white ${
                 isScreenWidth1366 ? "text-xs" : " text-base"
-              } bg-blue-500 font-medium px-5 py-2 rounded-lg`}
+              } bg-blue-500 font-medium px-6 py-2 rounded-lg`}
               onClick={() => openModal(record)}
             >
               View
@@ -492,6 +514,20 @@ const ServiceTask = () => {
                 <FontAwesomeIcon icon={faTrash} />
               </button>
             </Popconfirm>
+          ) : record.status === "To Rate" &&
+            record.modeOfRequest === "Walk-In" ? (
+            <button
+              onClick={() =>
+                handleStarIconClick(
+                  record.request_id,
+                  record.user_id,
+                  record.reqOffice
+                )
+              }
+              className="text-white text-base py-2 px-4 rounded-lg bg-yellow-500"
+            >
+              <FontAwesomeIcon icon={faStar} />
+            </button>
           ) : (
             <button className="text-white text-base py-2 px-4 rounded-lg cursor-not-allowed bg-gray-400">
               <FontAwesomeIcon icon={faTrash} />
@@ -666,6 +702,16 @@ const ServiceTask = () => {
                   role={userRole}
                   datas={selectedData}
                   refreshData={fetchData}
+                />
+              )}
+              {rateModalVisible && (
+                <RateModal
+                  isOpen={rateModalVisible}
+                  onClose={() => setRateModalVisible(false)}
+                  id={selectedID}
+                  user_id={selectedUserId}
+                  office={selectedOffice}
+                  isScreenWidth1366={isScreenWidth1366}
                 />
               )}
             </div>

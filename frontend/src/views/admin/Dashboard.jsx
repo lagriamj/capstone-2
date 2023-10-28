@@ -23,6 +23,7 @@ import { FaceFrownIcon } from "@heroicons/react/24/solid";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/solid";
 import { PresentationChartLineIcon } from "@heroicons/react/24/solid";
 import { ClipboardDocumentIcon } from "@heroicons/react/24/solid";
+import { CalendarDaysIcon } from "@heroicons/react/24/solid";
 import TechnicianPerformance from "../../components/TechnicianPerformance";
 import { useActiveTab } from "../../ActiveTabContext";
 import SummaryListModal from "../../components/SummaryListModal";
@@ -688,8 +689,10 @@ const Dashboard = () => {
           }}
           className="flex gap-2 items-center justify-start cursor-pointer w-full"
         >
-          <PresentationChartLineIcon className="h-4 w-4 text-main" />
-          <label className="cursor-pointer">Technician Performance</label>
+          <PresentationChartLineIcon className="h-7 w-7 text-main" />
+          <label className="cursor-pointer text-lg font-sans">
+            Technician Performance
+          </label>
         </div>
       ),
       key: "1",
@@ -702,11 +705,29 @@ const Dashboard = () => {
           }}
           className="flex gap-2 items-center justify-start cursor-pointer w-full"
         >
-          <ClipboardDocumentIcon className="h-4 w-4 text-main" />
-          <label className="cursor-pointer">Summary List</label>
+          <ClipboardDocumentIcon className="h-7 w-7 text-main" />
+          <label className="cursor-pointer text-lg font-sans">
+            Summary List
+          </label>
         </div>
       ),
       key: "2",
+    },
+    {
+      label: (
+        <div
+          onClick={() => {
+            //setSummaryListModal(true);
+          }}
+          className="flex gap-2 items-center justify-start cursor-pointer w-full"
+        >
+          <CalendarDaysIcon className="h-7 w-7 text-main" />
+          <label className="cursor-pointer text-lg font-sans">
+            Delay Report
+          </label>
+        </div>
+      ),
+      key: "3",
     },
   ];
 

@@ -25,7 +25,6 @@ const Transactions = () => {
   const { userID } = useAuth();
   const [view, setView] = useState(false);
   const [viewRequest, setViewRequest] = useState(false);
-  const [purgedReq, setPurgedReq] = useState(false);
 
   const [viewRating, setViewRating] = useState(false);
   const [viewRatingModal, setViewRatingModal] = useState(false);
@@ -38,19 +37,11 @@ const Transactions = () => {
   const handleCancelRequest = (data) => {
     setViewCancel(data);
     setCancel(true);
-    setPurgedReq(false);
   };
 
   const handleViewRequest = (data) => {
     setViewRequest(data);
     setView(true);
-    setPurgedReq(false);
-  };
-
-  const handlePurgeRequest = (data) => {
-    setPurgedReq(data);
-    setView(true);
-    setPurgedReq(true);
   };
 
   const handleViewRating = (id) => {
@@ -79,6 +70,22 @@ const Transactions = () => {
   }, []);
 
   const isLargeScreen = windowWidth >= 1024;
+
+  const [windowWidth1366, setWindowWidth1366] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth1366(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const isScreenWidth1366 = windowWidth1366 === 1366;
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -203,7 +210,6 @@ const Transactions = () => {
       title: "Date Requested",
       dataIndex: "dateRequested",
       key: "dateRequested",
-      defaultSortOrder: "desc",
       sorter: (a, b) => {
         const dateA = new Date(a.dateRequested);
         const dateB = new Date(b.dateRequested);
@@ -312,13 +318,6 @@ const Transactions = () => {
             >
               View
             </button>
-          ) : record.status === "Purge" ? (
-            <button
-              className="text-white bg-red-500 font-medium px-3 py-2 rounded-lg"
-              onClick={() => handlePurgeRequest(record)}
-            >
-              Purge
-            </button>
           ) : (
             <button
               onClick={() => handleViewRequest(record)}
@@ -358,12 +357,7 @@ const Transactions = () => {
               </button>
             )
           ) : (
-            <button
-              onClick={() =>
-                handleStarIconClick(record.id, record.user_id, record.reqOffice)
-              }
-              className="text-white text-base bg-yellow-500 py-2 px-3 rounded-lg"
-            >
+            <button className="text-white text-base bg-gray-400 cursor-not-allowed py-2 px-3 rounded-lg">
               <FontAwesomeIcon icon={faStar} />
             </button>
           )}
@@ -456,19 +450,18 @@ const Transactions = () => {
                 <RateModal
                   isOpen={rate}
                   onClose={() => setRate(false)}
-                  id={selectedID} // Pass the selectedItemId as a prop
+                  id={selectedID}
                   user_id={selectedUserId} // Pass the selectedUserId as a prop
                   office={selectedOffice}
+                  isScreenWidth1366={isScreenWidth1366}
                 />
               )}
-
               {view && (
                 <ToRateModal
                   isOpen={view}
                   onClose={() => setView(false)}
                   role={userRole}
-                  datas={viewRequest}
-                  purged={purgedReq}
+                  datas={viewRequest} // Pass the selectedItemId as a prop
                 />
               )}
               {cancel && (

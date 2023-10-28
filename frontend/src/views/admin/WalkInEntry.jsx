@@ -163,7 +163,7 @@ const WalkInEntry = () => {
   useEffect(() => {
     fetchNature();
     form.setFieldsValue({
-      user_id: 1,
+      user_id: 999,
       dateRequested: daytime,
       modeOfRequest: "Walk-In",
       status: "Pending",
@@ -241,10 +241,7 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label
-                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
-                        className="text-lg font-bold"
-                      >
+                      <label className="block text-sm font-bold">
                         Government ID
                       </label>
                     }
@@ -256,10 +253,7 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label
-                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
-                        className="text-lg font-bold"
-                      >
+                      <label className="block text-sm font-bold">
                         Full Name
                       </label>
                     }
@@ -271,12 +265,7 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label
-                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
-                        className="text-lg font-bold"
-                      >
-                        Office
-                      </label>
+                      <label className="block text-sm font-bold">Office</label>
                     }
                     name={"reqOffice"}
                   >
@@ -286,10 +275,7 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label
-                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
-                        className="text-lg font-bold"
-                      >
+                      <label className="block text-sm font-bold">
                         Division
                       </label>
                     }
@@ -301,12 +287,7 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label
-                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
-                        className="text-lg font-bold"
-                      >
-                        Date
-                      </label>
+                      <label className="block text-sm font-bold">Date</label>
                     }
                     name="dateRequested"
                   >
@@ -316,12 +297,7 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label
-                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
-                        className="text-lg font-bold"
-                      >
-                        Nature
-                      </label>
+                      <label className="block text-sm font-bold">Nature</label>
                     }
                     name="natureOfRequest"
                     rules={[
@@ -350,12 +326,7 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label
-                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
-                        className="text-lg font-bold"
-                      >
-                        Unit
-                      </label>
+                      <label className="block text-sm font-bold">Unit</label>
                     }
                     name="unit"
                     rules={[
@@ -384,10 +355,7 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label
-                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
-                        className="text-lg font-bold"
-                      >
+                      <label className="block text-sm font-bold">
                         Property No.
                       </label>
                     }
@@ -399,10 +367,7 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label
-                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
-                        className="text-lg font-bold"
-                      >
+                      <label className="block text-sm font-bold">
                         Serial No.
                       </label>
                     }
@@ -422,10 +387,7 @@ const WalkInEntry = () => {
                   lg={6}
                   className="flex flex-col items-center justify-center pb-[30px] pt-[2px]"
                 >
-                  <label
-                    style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
-                    className="block text-sm font-bold mb-2 mr-auto text-black"
-                  >
+                  <label className="block text-sm font-bold mb-2 mr-auto text-black">
                     Year Procured
                   </label>
                   <DatePicker
@@ -438,10 +400,7 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label
-                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
-                        className="text-lg font-bold"
-                      >
+                      <label className="block text-sm font-bold">
                         Authorized By
                       </label>
                     }
@@ -453,10 +412,7 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={24}>
                   <Form.Item
                     label={
-                      <label
-                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
-                        className="text-lg font-bold"
-                      >
+                      <label className="block text-sm font-bold">
                         Special Instructions
                       </label>
                     }

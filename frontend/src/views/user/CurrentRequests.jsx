@@ -561,7 +561,7 @@ const CurrentRequests = () => {
               description="Please confirm this action. This action cannot be undone."
               open={popconfirmVisible[record.id]}
               icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-              onConfirm={() => handleClosed(record.id)}
+              onConfirm={() => handleClosed(record.request_id)}
               okButtonProps={{
                 color: "red",
                 className: "text-black border-1 border-gray-300",
