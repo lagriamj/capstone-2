@@ -674,6 +674,7 @@ const HeadCurrentRequests = () => {
                   id={selectedID} // Pass the selectedItemId as a prop
                   user_id={selectedUserId} // Pass the selectedUserId as a prop
                   office={selectedOffice}
+                  role={userRole}
                   isScreenWidth1366={isScreenWidth1366}
                 />
               )}

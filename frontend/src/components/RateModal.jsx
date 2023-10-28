@@ -19,6 +19,7 @@ const RateModal = ({
   id,
   user_id,
   office,
+  role,
   isLargeScreen,
   isScreenWidth1366,
 }) => {
@@ -82,9 +83,17 @@ const RateModal = ({
         selectedRatings
       );
       const data = response.data;
-      console.log(data);
-      navigate("/head/transactions");
-      setActive("transactions");
+
+      if (role === "user") {
+        navigate("transactions");
+        setActive("transactions");
+      } else if (role === "head") {
+        navigate("/head/transactions");
+        setActive("transactions");
+      } else if (role === "admin") {
+        navigate("service-task");
+        setActive("service-task");
+      }
     } catch (err) {
       if (err.response && err.response.status === 422) {
         // The server returned validation errors
@@ -426,6 +435,7 @@ RateModal.propTypes = {
   user_id: PropTypes.number.isRequired,
   isLargeScreen: PropTypes.bool,
   office: PropTypes.string.isRequired,
+  role: PropTypes.string.isRequired,
   isScreenWidth1366: PropTypes.bool.isRequired,
 };
 

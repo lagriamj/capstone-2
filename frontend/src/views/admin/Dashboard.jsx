@@ -29,6 +29,8 @@ import { useActiveTab } from "../../ActiveTabContext";
 import SummaryListModal from "../../components/SummaryListModal";
 import PieChartModal from "../../components/PieChartModal";
 import PieChartRequestModal from "../../components/PieChartRequestModal";
+import DelayedReport from "../../components/DelayedReport";
+import RingLoader from "react-spinners/RingLoader";
 
 const Dashboard = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -48,16 +50,6 @@ const Dashboard = () => {
     navigate("/service-task");
     setActive("service-task");
   };
-
-  const elementRef = useRef(null);
-
-  useEffect(() => {
-    // Access the DOM element and measure its height
-    if (elementRef.current) {
-      const heightInPixels = elementRef.current.offsetHeight;
-      console.log("Element height:", heightInPixels, "pixels");
-    }
-  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -680,6 +672,12 @@ const Dashboard = () => {
     setSummaryListModal(!summaryListModal);
   };
 
+  const [delayedReportModal, setDelayedReportModal] = useState(false);
+
+  const closeDelayedModal = () => {
+    setDelayedReportModal(false);
+  };
+
   const items = [
     {
       label: (
@@ -717,7 +715,7 @@ const Dashboard = () => {
       label: (
         <div
           onClick={() => {
-            //setSummaryListModal(true);
+            setDelayedReportModal(true);
           }}
           className="flex gap-2 items-center justify-start cursor-pointer w-full"
         >
@@ -754,12 +752,11 @@ const Dashboard = () => {
             className={` w-[90%] lg:w-[80%] large:w-[85%] large:h-[95vh] h-auto lg:ml-auto lg:mx-4 mt-20  lg:mt-0   justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
             {isLoading ? (
-              <p>Loading...</p>
+              <div className="flex items-center justify-center h-[100%] w-full">
+                <RingLoader color="#343467" size={80} />
+              </div>
             ) : (
-              <div
-                ref={elementRef}
-                className="w-full lg:h-screen h-auto flex flex-col large:mt-4 lg:grid lg:grid-cols-7 lg:grid-rows-11 gap-x-3 "
-              >
+              <div className="w-full lg:h-screen h-auto flex flex-col large:mt-4 lg:grid lg:grid-cols-7 lg:grid-rows-11 gap-x-3 ">
                 <div className="lg:grid lg:col-span-5 relative lg:row-span-2 lg:h-full lg:py-2 pt-8  rounded-lg bg-white text-black font-sans">
                   <h1 className="absolute font-semibold top-2 left-5 text-xl">
                     Summary
@@ -1015,12 +1012,22 @@ const Dashboard = () => {
                   >
                     <a onClick={(e) => e.preventDefault()}>
                       <Space>
-                        <EllipsisVerticalIcon
+                        <div
+                          className="flex items-center mt-1 justify-center cursor-pointer"
                           onClick={() => {
                             setOpen(!open);
                           }}
-                          className="h-6 w-6 mt-2 absolute top-0 right-0"
-                        />
+                        >
+                          <span className="font-medium text-lg">
+                            Generate Report
+                          </span>
+                          <EllipsisVerticalIcon
+                            onClick={() => {
+                              setOpen(!open);
+                            }}
+                            className="h-6 w-6"
+                          />
+                        </div>
                       </Space>
                     </a>
                   </Dropdown>
@@ -1038,7 +1045,12 @@ const Dashboard = () => {
                     startDate={startDate}
                     endDate={endDate}
                   />
-                  <div className="w-full  flex lg:flex-row flex-col gap-2 px-2 py-3 mediumLg:pt-1 justify-end">
+                  <DelayedReport
+                    isOpen={delayedReportModal}
+                    onClose={closeDelayedModal}
+                    isLargeScreen={isLargeScreen}
+                  />
+                  <div className="w-full  flex lg:flex-row flex-col gap-2 px-2 py-1 mediumLg:pt-1 justify-end">
                     {" "}
                     <div className="px-3 gotoLarge:py-3 py-1 relative whitespace-nowrap flex items-center gap-2 pb-2 font-sans font-semibold text-lg mr-auto">
                       <h1>Requests Statistics </h1>

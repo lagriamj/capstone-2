@@ -80,6 +80,22 @@ const HeadTransactions = () => {
 
   const isLargeScreen = windowWidth >= 1024;
 
+  const [windowWidth1366, setWindowWidth1366] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth1366(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const isScreenWidth1366 = windowWidth1366 === 1366;
+
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
@@ -504,6 +520,8 @@ const HeadTransactions = () => {
                   id={selectedID} // Pass the selectedItemId as a prop
                   user_id={selectedUserId} // Pass the selectedUserId as a prop
                   office={selectedOffice}
+                  role={userRole}
+                  isScreenWidth1366={isScreenWidth1366}
                 />
               )}
 

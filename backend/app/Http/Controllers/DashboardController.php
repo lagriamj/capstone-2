@@ -612,4 +612,28 @@ class DashboardController extends Controller
 
         return response()->json(['results' => $delayData]);
     }
+
+
+    public function delayReport(Request $request)
+    {
+        $query = DB::table('user_requests')
+            ->select('user_requests.id', 'user_requests.request_code', 'user_requests.dateRequested', 'user_requests.natureOfRequest', 'receive_service.serviceBy', 'receive_service.arta', 'arta_cause_delay.reasonDelay', 'arta_cause_delay.reasonDelay as causeOfDelay', 'arta_cause_delay.dateReason as dateOfDelay')
+            ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
+            ->join('arta_cause_delay', 'user_requests.id', '=', 'arta_cause_delay.request_id')
+            ->where('receive_service.artaStatus', '=', 'Delay');
+
+        if ($request->has('fromDate')) {
+            $fromDate = $request->input('fromDate');
+            $query->whereDate('user_requests.dateRequested', '>=', $fromDate);
+        }
+
+        if ($request->has('toDate')) {
+            $toDate = $request->input('toDate');
+            $query->whereDate('user_requests.dateRequested', '<=', $toDate);
+        }
+
+        $requests = $query->get();
+
+        return $requests;
+    }
 }

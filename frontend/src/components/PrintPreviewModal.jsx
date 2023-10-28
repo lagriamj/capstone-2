@@ -501,47 +501,66 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
             </div>
           </div>
           {/* Unit, Propert No, Serial No  */}
-          <div className="flex  border-black text-base font-semibold">
+          <div className="flex border-black text-base font-semibold">
             <div className="flex gap-3 px-2 w-1/3 border-2 py-2 border-black">
               <label htmlFor="">Unit:</label>
-              <label htmlFor="">{itemData?.unit}</label>
+              <label htmlFor="">
+                {itemData?.unit === null || itemData?.unit === "n/a"
+                  ? " "
+                  : itemData?.unit}
+              </label>
             </div>
             <div className="flex gap-3 px-2 w-1/3 border-2 py-2 border-black">
               <label htmlFor="">Property No.:</label>
-              <label htmlFor="">{itemData?.propertyNo}</label>
+              <label htmlFor="">
+                {itemData?.propertyNo === null || itemData?.propertyNo === "n/a"
+                  ? " "
+                  : itemData?.propertyNo}
+              </label>
             </div>
             <div className="flex gap-3 px-2 w-1/3 border-2 py-2 border-black">
               <label htmlFor="">Serial No.:</label>
-              <label htmlFor="">{itemData?.serialNo}</label>
+              <label htmlFor="">
+                {itemData?.serialNo === null || itemData?.serialNo === "n/a"
+                  ? " "
+                  : itemData?.serialNo}
+              </label>
             </div>
           </div>
+
           {/* Received by, assigned to, serviced by  */}
           <div className="flex border-y-2 border-black">
             <div className="w-[37%] border-2 border-black">
               <div className="flex">
-                <div className="text-base w-[35%]  font-medium p-2 border-r-2 border-black flex items-center justify-center">
+                <div className="text-base w-[35%] font-medium p-2 border-r-2 border-black flex items-center justify-center">
                   <label htmlFor="">RECEIVED BY:</label>
                 </div>
                 <div className="w-[37.5%] flex flex-col border-x-2 border-black">
-                  <div className="text-center border-b-2  border-black text-black w-full">
-                    <label htmlFor="" className=" w-full">
-                      {itemData?.receivedBy || "---"}
+                  <div className="text-center border-b-2 border-black text-black w-full">
+                    <label htmlFor="" className="w-full">
+                      {itemData?.receivedBy === null ||
+                      itemData?.receivedBy === "n/a"
+                        ? " "
+                        : itemData?.receivedBy}
                     </label>
                   </div>
-                  <div className="text-center ">
-                    <label htmlFor="" className="text-xs  border-black">
+                  <div className="text-center">
+                    <label htmlFor="" className="text-xs border-black">
                       CITC Staff
                     </label>
                   </div>
                 </div>
                 <div className="w-[37.5%] flex flex-col border-x-2 border-black">
-                  <div className="text-center border-b-2  border-black text-black w-full">
-                    <label htmlFor="" className=" w-full">
-                      {itemData?.dateReceived?.split(" ")[0] || "---"}
+                  <div className="text-center border-b-2 border-black text-black w-full">
+                    <label htmlFor="" className="w-full">
+                      {itemData?.dateReceived?.split(" ")[0] === null ||
+                      itemData?.dateReceived?.split(" ")[0] === "n/a"
+                        ? " "
+                        : itemData?.dateReceived?.split(" ")[0]}
                     </label>
                   </div>
-                  <div className="text-center ">
-                    <label htmlFor="" className="text-xs  border-black">
+                  <div className="text-center">
+                    <label htmlFor="" className="text-xs border-black">
                       DATE
                     </label>
                   </div>
@@ -556,9 +575,11 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
               </div>
               <div className="w-1/2 flex flex-col border-x-2 border-black">
                 <div className="text-center border-b-2  border-black text-black w-full">
-                  <label htmlFor="" className=" w-full">
-                    {itemData?.assignedTo === "None"
-                      ? "---"
+                  <label htmlFor="" className="w-full">
+                    {itemData?.assignedTo === null ||
+                    itemData?.assignedTo === "n/a" ||
+                    itemData?.assignedTo === "None"
+                      ? " "
                       : itemData?.assignedTo}
                   </label>
                 </div>
@@ -571,29 +592,35 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
             </div>
             <div className="w-[39%] border-y-2 border-black">
               <div className="flex">
-                <div className="text-base w-[35%]  font-medium p-2 border-x-2 border-black flex items-center justify-center">
+                <div className="text-base w-[35%] font-medium p-2 border-x-2 border-black flex items-center justify-center">
                   <label htmlFor="">SERVICED BY:</label>
                 </div>
                 <div className="w-[37.5%] flex flex-col border-x-2 border-black">
-                  <div className="text-center border-b-2  border-black text-black w-full">
-                    <label htmlFor="" className=" w-full">
-                      {itemData?.serviceBy || "---"}
+                  <div className="text-center border-b-2 border-black text-black w-full">
+                    <label htmlFor="" className="w-full">
+                      {itemData?.serviceBy === null ||
+                      itemData?.serviceBy === "n/a"
+                        ? " "
+                        : itemData?.serviceBy}
                     </label>
                   </div>
-                  <div className="text-center ">
-                    <label htmlFor="" className="text-xs   border-black">
+                  <div className="text-center">
+                    <label htmlFor="" className="text-xs border-black">
                       CITC Staff
                     </label>
                   </div>
                 </div>
                 <div className="w-[37.5%] flex flex-col border-x-2 border-black">
-                  <div className="text-center border-b-2  border-black text-black w-full">
-                    <label htmlFor="" className=" w-full">
-                      {itemData?.dateServiced?.split(" ")[0] || "---"}
+                  <div className="text-center border-b-2 border-black text-black w-full">
+                    <label htmlFor="" className="w-full">
+                      {itemData?.dateServiced?.split(" ")[0] === null ||
+                      itemData?.dateServiced?.split(" ")[0] === "n/a"
+                        ? " "
+                        : itemData?.dateServiced?.split(" ")[0]}
                     </label>
                   </div>
-                  <div className="text-center ">
-                    <label htmlFor="" className="text-xs  border-black">
+                  <div className="text-center">
+                    <label htmlFor="" className="text-xs border-black">
                       DATE
                     </label>
                   </div>
@@ -608,7 +635,13 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
                 FINDINGS / PARTICULARS:
               </label>
               <p className="ml-2 font-medium text-base">
-                {itemData?.findings || "---"}; {itemData?.rootCause || "---"}
+                {itemData?.findings === null || itemData?.findings === "n/a"
+                  ? " "
+                  : itemData?.findings}
+                ;{" "}
+                {itemData?.rootCause === null || itemData?.rootCause === "n/a"
+                  ? " "
+                  : itemData?.rootCause}
               </p>
             </div>
             <div className="w-1/2 border-x-2 border-black flex flex-col">
@@ -616,7 +649,14 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
                 ACTION TAKEN:
               </label>
               <p className="ml-2 font-medium text-base">
-                {itemData?.actionTaken || "---"}; {itemData?.remarks || "---"}
+                {itemData?.actionTaken === null ||
+                itemData?.actionTaken === "n/a"
+                  ? " "
+                  : itemData?.actionTaken}
+                ;{" "}
+                {itemData?.remarks === null || itemData?.remarks === "n/a"
+                  ? " "
+                  : itemData?.remarks}
               </p>
             </div>
           </div>
@@ -629,7 +669,10 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
             </div>
             <div className="w-[80%] font-medium text-base py-2 border-x-2 border-black">
               <label htmlFor="" className="ml-2 ">
-                {itemData?.toRecommend || "---"}
+                {itemData?.toRecommend === null ||
+                itemData?.toRecommend === "n/a"
+                  ? " "
+                  : itemData?.toRecommend}
               </label>
             </div>
           </div>
@@ -645,7 +688,10 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
                 <div className="w-[45%] flex flex-col border-2 border-black">
                   <div className="text-center border-b-2  border-black text-black w-full">
                     <label htmlFor="" className=" w-full">
-                      {itemData?.approvedBy || "---"}
+                      {itemData?.approvedBy === null ||
+                      itemData?.approvedBy === "n/a"
+                        ? " "
+                        : itemData?.approvedBy}
                     </label>
                   </div>
                   <div className="text-center ">
@@ -656,8 +702,11 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
                 </div>
                 <div className="w-[25%] flex flex-col border-2 border-black">
                   <div className="text-center border-b-2  border-black text-black w-full">
-                    <label htmlFor="" className=" w-full">
-                      {itemData?.dateApproved?.split(" ")[0] || "---"}
+                    <label htmlFor="" className="w-full">
+                      {itemData?.dateApproved?.split(" ")[0] === null ||
+                      itemData?.dateApproved?.split(" ")[0] === "n/a"
+                        ? " "
+                        : itemData?.dateApproved?.split(" ")[0]}
                     </label>
                   </div>
                   <div className="text-center ">
@@ -676,7 +725,9 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
                 <div className="w-[45%] flex flex-col border-2 border-black">
                   <div className="text-center border-b-2  border-black text-black w-full">
                     <label htmlFor="" className=" w-full">
-                      {itemData?.noteBy || "---"}
+                      {itemData?.noteBy === null || itemData?.noteBy === "n/a"
+                        ? " "
+                        : itemData?.noteBy}
                     </label>
                   </div>
                   <div className="text-center ">
@@ -688,7 +739,10 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
                 <div className="w-[25%] flex flex-col border-2 border-black">
                   <div className="text-center border-b-2  border-black text-black w-full">
                     <label htmlFor="" className=" w-full">
-                      {itemData?.dateNoted?.split(" ")[0] || "---"}
+                      {itemData?.dateNote?.split(" ")[0] === null ||
+                      itemData?.dateNote?.split(" ")[0] === "n/a"
+                        ? " "
+                        : itemData?.dateNote?.split(" ")[0]}
                     </label>
                   </div>
                   <div className="text-center ">
@@ -709,7 +763,10 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
                 <div className="w-[45%] flex flex-col border-2 border-black">
                   <div className="text-center border-b-2  border-black text-black w-full">
                     <label htmlFor="" className=" w-full">
-                      {itemData?.releasedBy || "---"}
+                      {itemData?.releasedBy === null ||
+                      itemData?.releasedBy === "n/a"
+                        ? " "
+                        : itemData?.releasedBy}
                     </label>
                   </div>
                   <div className="text-center ">
@@ -721,7 +778,10 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
                 <div className="w-[25%] flex flex-col border-2 border-black">
                   <div className="text-center border-b-2  border-black text-black w-full">
                     <label htmlFor="" className=" w-full">
-                      {itemData?.dateReleased?.split(" ")[0] || "---"}
+                      {itemData?.dateReleased?.split(" ")[0] === null ||
+                      itemData?.dateReleased?.split(" ")[0] === "n/a"
+                        ? " "
+                        : itemData?.dateReleased?.split(" ")[0]}
                     </label>
                   </div>
                   <div className="text-center ">
@@ -740,7 +800,10 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
                 <div className="w-[45%] flex flex-col border-2 border-black">
                   <div className="text-center border-b-2  border-black text-black w-full">
                     <label htmlFor="" className=" w-full">
-                      {itemData?.received_By || "---"}
+                      {itemData?.received_By === null ||
+                      itemData?.received_By === "n/a"
+                        ? " "
+                        : itemData?.received_By}
                     </label>
                   </div>
                   <div className="text-center ">
@@ -752,7 +815,10 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
                 <div className="w-[25%] flex flex-col border-2 border-black">
                   <div className="text-center border-b-2  border-black text-black w-full">
                     <label htmlFor="" className=" w-full">
-                      {itemData?.date_Received?.split(" ")[0] || "---"}
+                      {itemData?.date_Received?.split(" ")[0] === null ||
+                      itemData?.date_Received?.split(" ")[0] === "n/a"
+                        ? " "
+                        : itemData?.date_Received?.split(" ")[0]}
                     </label>
                   </div>
                   <div className="text-center ">

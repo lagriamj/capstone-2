@@ -11,51 +11,6 @@ import { message } from "antd";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const RegisterConfirmation = () => {
-  const InputBox = ({
-    value,
-    type,
-    id,
-    name,
-    placeholder,
-    onChange,
-    labelText,
-    htmlFor,
-    icon,
-    iconColor,
-    min,
-    max,
-  }) => {
-    return (
-      <div className="flex items-start justify-center text-lg flex-col w-3/4">
-        <label className="font-semibold" htmlFor={htmlFor}>
-          {labelText}
-        </label>
-        <div className="relative w-full">
-          <input
-            type={type}
-            id={id}
-            name={name}
-            min={min}
-            max={max}
-            placeholder={placeholder}
-            onChange={onChange}
-            value={value}
-            className="w-full h-14 border-2 rounded-lg pl-14 pr-4 text-lg border-slate-400 focus:outline-none"
-          />
-          <div className="absolute inset-y-0 left-0 flex items-center p-3 bg-main rounded-l-lg">
-            <svg
-              className="w-6 h-7 text-white"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <FontAwesomeIcon icon={icon} style={{ color: iconColor }} />
-            </svg>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   const [otpCode, setOtpCode] = useState("");
   const [verificationMessage, setVerificationMessage] = useState("");
   const [messageColor, setMessageColor] = useState("");
@@ -226,6 +181,21 @@ const RegisterConfirmation = () => {
     }
   };
 
+  const [windowsHeight768, setWindowsHeight768] = useState(window.innerHeight);
+  const isWindowsHeightBelow768 = windowsHeight768 <= 768;
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowsHeight768(window.innerHeight);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -239,7 +209,7 @@ const RegisterConfirmation = () => {
         )}
         <div className="flex">
           {/* Left side */}
-          <div className="lg:w-[40%] h-screen box-border bg-main hidden lg:flex md:w-1/6 justify-center items-start ">
+          <div className="lg:w-[40%] fixed h-screen box-border bg-main hidden lg:flex md:w-1/6 justify-center items-start ">
             <div className=" w-full  h-[100%] flex flex-col items-center justify-center text-center gap-3">
               <div className="mb-4">
                 <p className=" text-white text-xl">
@@ -256,7 +226,7 @@ const RegisterConfirmation = () => {
             </div>
           </div>
           {/* right side */}
-          <div className="w-full lg:w-[60%] h-screen relative lg:absolute lg:right-0 z-10 overflow-auto  flex flex-col items-center justify-center">
+          <div className="w-full lg:w-[60%] h-auto relative lg:absolute lg:right-0 z-10 overflow-auto  flex flex-col items-center justify-center">
             <a
               href="/register"
               className="bg-main text-white text-xl absolute right-10 top-10 py-3 px-6 rounded-lg  flex gap-2 items-center"
@@ -268,7 +238,11 @@ const RegisterConfirmation = () => {
                 fade
               />
             </a>
-            <div className="bg-white w-[80%] shadow-xl h-auto flex flex-col items-center justify-center text-5xl rounded-xl pb-16 lg:pt-16 px-4 gap-y-6">
+            <div
+              className={`bg-white w-[80%] shadow-xl ${
+                isWindowsHeightBelow768 ? "h-auto" : "h-screen"
+              } flex flex-col items-center justify-center text-5xl rounded-xl pb-16 lg:pt-16 px-4 gap-y-6`}
+            >
               <div className="lg:hidden flex ml-10 my-8 gap-4 w-full justify-center">
                 <img className="w-28 h-28" src="/cityhalllogo.png" alt="" />
                 <img className="w-28 h-28" src="/citc1.png" alt="" />
@@ -284,14 +258,30 @@ const RegisterConfirmation = () => {
                   {verificationMessage}
                 </p>
               )}
-              <InputBox
-                type={"text"}
-                id={"otpCode"}
-                placeholder={"OTP CODE"}
-                value={otpCode}
-                onChange={(e) => setOtpCode(e.target.value)}
-                icon={faKey}
-              />
+              <div className="flex items-start justify-center text-lg flex-col w-3/4">
+                <label className="font-semibold" htmlFor={otpCode}>
+                  OTP CODE
+                </label>
+                <div className="relative w-full">
+                  <input
+                    type={"text"}
+                    id={"otpCode"}
+                    placeholder={"OTP CODE"}
+                    onChange={(e) => setOtpCode(e.target.value)}
+                    value={otpCode}
+                    className="w-full h-14 border-2 rounded-lg pl-14 pr-4 text-lg border-slate-400 focus:outline-none"
+                  />
+                  <div className="absolute inset-y-0 left-0 flex items-center p-3 bg-main rounded-l-lg">
+                    <svg
+                      className="w-6 h-7 text-white"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <FontAwesomeIcon icon={faKey} />
+                    </svg>
+                  </div>
+                </div>
+              </div>
               <div className="flex flex-col gap-y-2 w-full items-center justify-center">
                 <button
                   onClick={confirmOTP}

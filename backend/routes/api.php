@@ -165,7 +165,6 @@ Route::get('/reset-cut-off-time', [RequestsController::class, 'resetCutOffTime']
 Route::get('/tech-performance', [DashboardController::class, 'technicianTable']);
 Route::get('/summary-list', [DashboardController::class, 'summaryList']);
 Route::get('admin-list', [UserController::class, 'showTechnicians']);
-Route::get('head-list', [UserController::class, 'showHeads']);
 
 Route::get('request-threshold', [RequestsController::class, 'getRequestsThreshold']);
 Route::get('threshold-history', [RequestsController::class, 'getThresholdHistory']);
@@ -176,3 +175,5 @@ Route::put('update-reason-delay/{id}/{fullName}', [ReceiveServiceController::cla
 Route::post('/add-arta-reason', [RequestsController::class, 'addArtaReason']);
 Route::get('/show-arta-reason/{id}', [RequestsController::class, 'showArtaReason']);
 Route::get('/delay-request', [DashboardController::class, 'artaDelay']);
+
+Route::get('/delay-report', [DashboardController::class, 'delayReport']);

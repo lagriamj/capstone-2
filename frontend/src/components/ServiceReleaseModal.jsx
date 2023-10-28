@@ -25,14 +25,18 @@ const ServiceReleaseModal = ({
   console.log(findingsValue);
 
   const handleChangeFindings = (value) => {
-    setFindingsValue(value);
+    const filteredFindingsValue = value.filter(Boolean);
+    const finalValue = filteredFindingsValue.join(", ");
+    setFindingsValue(finalValue);
   };
 
   const [actionTakenValue, setActionTakenValue] = useState("");
   console.log(actionTakenValue);
 
   const handleChangeActionTaken = (value) => {
-    setActionTakenValue(value);
+    const filteredActionValue = value.filter(Boolean);
+    const finalValue = filteredActionValue.join(", ");
+    setActionTakenValue(finalValue);
   };
 
   const [rootCauseValue, setRootCauseValue] = useState("");
@@ -425,6 +429,7 @@ const ServiceReleaseModal = ({
                     filterOption={customFilterOption}
                     onChange={handleChangeFindings}
                     value={findingsValue} // Set the value of the Select component
+                    mode="multiple"
                   >
                     {utility.map((option, index) => (
                       <Option key={index} value={option.utilityCategory}>
@@ -463,6 +468,7 @@ const ServiceReleaseModal = ({
                     filterOption={customFilterOption}
                     onChange={handleChangeActionTaken}
                     value={actionTakenValue} // Set the value of the Select component
+                    mode="multiple"
                   >
                     {utility.map((option, index) => (
                       <Option key={index} value={option.utilityCategory}>

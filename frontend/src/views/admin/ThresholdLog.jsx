@@ -33,11 +33,6 @@ const thresholdColumns = [
     dataIndex: "total_count",
     key: "total_count",
   },
-  {
-    title: "Action",
-    dataIndex: "action",
-    key: "action",
-  },
 ];
 
 const ThresholdLog = () => {
@@ -201,7 +196,7 @@ const ThresholdLog = () => {
 
         <div className="flex flex-col lg:flex-grow items-center justify-center lg:items-stretch lg:justify-start lg:pb-10 bg-white gap-2 w-full">
           <div
-            className={`overflow-x-auto w-[90%] lg:w-[80%] large:w-[85%]  h-auto lg:ml-auto lg:mx-4   lg:mt-0 mt-20  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
+            className={`overflow-x-auto w-[90%] lg:w-[81%] large:w-[85%]  h-auto lg:ml-auto lg:mr-4   lg:mt-0 mt-20  justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
             <div className="flex lg:flex-row text-center flex-col w-full lg:pl-4 items-center justify-center shadow-xl bg-white  text-white rounded-t-lg lg:gap-4 gap-2">
               <div className="flex lg:flex-col flex-row lg:gap-0 gap-2">
@@ -227,7 +222,7 @@ const ThresholdLog = () => {
               <Table
                 columns={thresholdColumns}
                 dataSource={filteredRequests}
-                rowKey={(record, index) => index}
+                rowKey={(record) => record.request_id}
                 loading={{
                   indicator: <LoadingOutlined style={{ fontSize: 50 }} />,
                   spinning: loading,

@@ -7,6 +7,7 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import RateModal from "../../components/RateModal";
 import axios from "axios";
 import { Input, Table, Tag } from "antd";
+//import ClosedModal from "../../components/ClosedModal";
 import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
 import { useAuth } from "../../AuthContext";
 import ViewCancel from "../../components/ViewCancel";
@@ -453,6 +454,7 @@ const Transactions = () => {
                   id={selectedID}
                   user_id={selectedUserId} // Pass the selectedUserId as a prop
                   office={selectedOffice}
+                  role={userRole}
                   isScreenWidth1366={isScreenWidth1366}
                 />
               )}

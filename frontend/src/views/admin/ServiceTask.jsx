@@ -60,14 +60,6 @@ const ServiceTask = () => {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedOffice, setSelectedOffice] = useState(null);
 
-  const handleRatings = async (id) => {
-    console.log(id);
-    const response = await axios.get(
-      `http://127.0.0.1:8000/api/closed-view/${id}`
-    );
-    setRatings(response.data.results);
-  };
-
   const handleStarIconClick = (id, user_id, office) => {
     setSelectedID(id);
     setSelectedUserId(user_id);
@@ -711,6 +703,7 @@ const ServiceTask = () => {
                   id={selectedID}
                   user_id={selectedUserId}
                   office={selectedOffice}
+                  role={userRole}
                   isScreenWidth1366={isScreenWidth1366}
                 />
               )}
