@@ -161,7 +161,7 @@ class UserController extends Controller
     {
 
         $otpMessage = $otpCode ? "Your verification code is: <strong style='color: red;'>" . $otpCode . "</strong><br><br>" : "";
-        $messageContent = $otpMessage . "Note: <strong>Your password will be your office name + last name. Ex. (CITCPadilla) </strong>";
+        $messageContent = $otpMessage . "Note: <strong>Your password will be your office name + last name. E.g. (CITCPadilla) </strong>";
 
         Mail::html($messageContent . $otpCode, function ($message) use ($user) {
             $message->subject('OTP Verification');
