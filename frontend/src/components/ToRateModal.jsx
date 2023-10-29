@@ -310,7 +310,27 @@ const ToRateModal = ({ isOpen, onClose, datas, role, purged }) => {
             />
           </Col>
           <Col xs={24} lg={6}>
-            <Input hidden />
+            <label
+              htmlFor="arta"
+              className="block text-sm font-bold mb-2 text-black"
+            >
+              ARTA
+            </label>
+            <Input readOnly id="arta" value={data.arta} className="h-[40px]" />
+          </Col>
+          <Col xs={24} lg={6}>
+            <label
+              htmlFor="artaStatus"
+              className="block text-sm font-bold mb-2 text-black"
+            >
+              ARTA Status
+            </label>
+            <Input
+              readOnly
+              id="artStatus"
+              value={data.artaStatus}
+              className="h-[40px]"
+            />
           </Col>
           <Col xs={24} lg={12}>
             <label

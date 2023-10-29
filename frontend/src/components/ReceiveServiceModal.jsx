@@ -202,7 +202,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
         }}
         layout="vertical"
       >
-        <div className="relative p-6 text-lg text-lg">
+        <div className="relative p-6 text-lg">
           {/* ADMIN SIDE */}
           {data && (
             <Row gutter={[16, 16]}>

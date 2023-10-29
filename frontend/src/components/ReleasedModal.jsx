@@ -178,6 +178,24 @@ const ReleasedModal = ({ isOpen, onClose, data, refreshData }) => {
               </label>
               <Input value={data.dateServiced} readOnly className="h-[40px]" />
             </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2 text-black">
+                ARTA
+              </label>
+              <Input readOnly value={data.arta} className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2 text-black">
+                ARTA Status
+              </label>
+              <Input readOnly value={data.artaStatus} className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={6}>
+              <Input hidden readOnly className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={6}>
+              <Input hidden readOnly className="h-[40px]" />
+            </Col>
             <Col xs={24} lg={12}>
               <label className="block text-sm font-bold mb-2 text-black">
                 Findings/Particulars

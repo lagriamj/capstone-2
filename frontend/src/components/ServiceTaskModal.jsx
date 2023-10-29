@@ -333,7 +333,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
                   >
                     <Option value={"3"}>3</Option>
                     <Option value={"7"}>7</Option>
-                    <Option value={"30"}>30</Option>
+                    <Option value={"20"}>20</Option>
                   </Select>
                 </Form.Item>
               </Col>

@@ -385,11 +385,13 @@ const ServiceReleaseModal = ({
                 </Form.Item>
               </Col>
               <Col xs={24} lg={24}>
-                <Table
-                  columns={ARTAreasonColumn}
-                  dataSource={reasonList}
-                  pagination={false}
-                />
+                {reasonList.length !== 0 && (
+                  <Table
+                    columns={ARTAreasonColumn}
+                    dataSource={reasonList}
+                    pagination={false}
+                  />
+                )}
                 <Button
                   className="ml-auto bg-main text-white w-16 h-10"
                   onClick={() => {
@@ -403,6 +405,7 @@ const ServiceReleaseModal = ({
                   onCancel={handleARTAModal}
                   data={data}
                   fullName={fullName}
+                  refreshData={fetchData}
                 />
               </Col>
               <Col xs={24} lg={12}>

@@ -4,10 +4,14 @@ import axios from "axios";
 
 const { TextArea } = Input;
 
-const AddARTAReasonModal = ({ visible, onCancel, data, updateReasonDelay }) => {
+const AddARTAReasonModal = ({
+  visible,
+  onCancel,
+  data,
+  updateReasonDelay,
+  refreshData,
+}) => {
   const [form] = Form.useForm();
-
-  console.log("shesh", data?.request_id);
 
   const handleSubmit = async () => {
     try {
@@ -26,7 +30,9 @@ const AddARTAReasonModal = ({ visible, onCancel, data, updateReasonDelay }) => {
         console.log("API request was successful", response.data);
         updateReasonDelay(requestData.reasonDelay);
         form.resetFields();
+        refreshData();
         onCancel();
+        refreshData();
       } else {
         console.error("API request failed", response.data);
       }
@@ -82,6 +88,7 @@ AddARTAReasonModal.propTypes = {
   data: PropTypes.object,
   fullName: PropTypes.string,
   updateReasonDelay: PropTypes.func.isRequired,
+  refreshData: PropTypes.any,
 };
 
 export default AddARTAReasonModal;
