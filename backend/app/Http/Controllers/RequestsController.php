@@ -259,7 +259,7 @@ class RequestsController extends Controller
         $totalCount = 0;
 
         foreach ($userRequests as $request) {
-            $message = ($request->count >= 10) ? 'for waste' : 'for replacement';
+            $message = ($request->count >= 5) ? 'for waste' : '';
             $totalCount += $request->count;
 
             $allThresholdRequest = DB::table('user_requests')

@@ -158,6 +158,22 @@ const WalkInEntry = () => {
     }
   };
 
+  const [officeOptions, setOfficeOptions] = useState([]);
+  useEffect(() => {
+    fetchOfficeList();
+  }, []);
+
+  const fetchOfficeList = async () => {
+    try {
+      const result = await axios.get("http://127.0.0.1:8000/api/office-list");
+      console.log(result.data.results);
+      setOfficeOptions(result.data.results);
+      console.log(officeOptions);
+    } catch (err) {
+      console.log("Something went wrong:", err);
+    }
+  };
+
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -241,7 +257,10 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="block font-bold"
+                      >
                         Government ID
                       </label>
                     }
@@ -253,7 +272,10 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="block font-bold"
+                      >
                         Full Name
                       </label>
                     }
@@ -264,18 +286,39 @@ const WalkInEntry = () => {
                 </Col>
                 <Col xs={24} lg={6}>
                   <Form.Item
+                    name="reqOffice"
                     label={
-                      <label className="block text-sm font-bold">Office</label>
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="block font-bold"
+                      >
+                        Office
+                      </label>
                     }
-                    name={"reqOffice"}
+                    rules={[
+                      { required: true, message: "Please select the office" },
+                    ]}
                   >
-                    <Input className="h-[40px]" />
+                    <Select
+                      size="large"
+                      showSearch
+                      filterOption={customFilterOption}
+                    >
+                      {officeOptions.map((option) => (
+                        <Option key={option.id} value={option.office}>
+                          {option.office}
+                        </Option>
+                      ))}
+                    </Select>
                   </Form.Item>
                 </Col>
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="block font-bold"
+                      >
                         Division
                       </label>
                     }
@@ -287,7 +330,12 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">Date</label>
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="block font-bold"
+                      >
+                        Date
+                      </label>
                     }
                     name="dateRequested"
                   >
@@ -297,7 +345,12 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">Nature</label>
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="block font-bold"
+                      >
+                        Nature
+                      </label>
                     }
                     name="natureOfRequest"
                     rules={[
@@ -326,7 +379,12 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">Unit</label>
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="block font-bold"
+                      >
+                        Unit
+                      </label>
                     }
                     name="unit"
                     rules={[
@@ -355,7 +413,10 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="block font-bold"
+                      >
                         Property No.
                       </label>
                     }
@@ -367,7 +428,10 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="block font-bold"
+                      >
                         Serial No.
                       </label>
                     }
@@ -387,7 +451,10 @@ const WalkInEntry = () => {
                   lg={6}
                   className="flex flex-col items-center justify-center pb-[30px] pt-[2px]"
                 >
-                  <label className="block text-sm font-bold mb-2 mr-auto text-black">
+                  <label
+                    style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                    className="block font-bold mb-2 mr-auto text-black"
+                  >
                     Year Procured
                   </label>
                   <DatePicker
@@ -400,7 +467,10 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={6}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="block font-bold"
+                      >
                         Authorized By
                       </label>
                     }
@@ -412,7 +482,10 @@ const WalkInEntry = () => {
                 <Col xs={24} lg={24}>
                   <Form.Item
                     label={
-                      <label className="block text-sm font-bold">
+                      <label
+                        style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
+                        className="block font-bold"
+                      >
                         Special Instructions
                       </label>
                     }

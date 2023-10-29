@@ -27,7 +27,7 @@ class UserController extends Controller
             'userGovernmentID' => 'required|unique:users',
             'userEmail' => 'required|email|unique:users',
             'userContactNumber' => 'required|min:11',
-            'userPassword' => 'required|min:6',
+            'userPassword' => 'required|min:5',
         ]);
 
         $otpCode = mt_rand(100000, 999999);
@@ -57,11 +57,11 @@ class UserController extends Controller
             $user->role = 'user';
         }
 
-        /* $sendOTP = $this->sendVerificationCode($user, $otpCode);
+        $sendOTP = $this->sendVerificationCode($user, $otpCode);
 
         if (!$sendOTP) {
             return response()->json(['message' => 'Verification sending failed'], 500);
-        } */
+        }
 
         $user->dateRegistered = now();
         $user->otpCode = $otpCode;
@@ -160,7 +160,10 @@ class UserController extends Controller
     private function sendVerificationCode(User $user, $otpCode)
     {
 
-        Mail::raw('Your verification code is: ' . $otpCode, function ($message) use ($user) {
+        $otpMessage = $otpCode ? "Your verification code is: <strong style='color: red;'>" . $otpCode . "</strong><br><br>" : "";
+        $messageContent = $otpMessage . "Note: <strong>Your password will be your office name + last name. Ex. (CITCPadilla) </strong>";
+
+        Mail::html($messageContent . $otpCode, function ($message) use ($user) {
             $message->subject('OTP Verification');
             $message->to($user->userEmail);
         });

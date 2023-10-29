@@ -214,8 +214,8 @@ const UpdateUserModal = ({
               label="New Password"
               rules={[
                 {
-                  min: 6,
-                  message: "Password must be at least 6 characters long",
+                  min: 5,
+                  message: "Password must be at least 5 characters long",
                 }, // Add this rule
               ]}
             >

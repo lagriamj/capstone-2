@@ -300,6 +300,9 @@ const Register = () => {
                   >
                     Register
                   </h1>
+                  <p className="text-base text-center mt-4 text-red-800 font-medium">
+                    Your password will be your office name + last name.
+                  </p>
                 </div>
                 {errorMessage && (
                   <p className="text-lg text-center text-red-900 font-semibold">

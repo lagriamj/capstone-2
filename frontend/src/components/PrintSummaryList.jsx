@@ -1,6 +1,6 @@
 import { Table, Modal } from "antd";
 import PropTypes from "prop-types";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import ReactToPrint from "react-to-print";
 import { useAuth } from "../AuthContext";
 
@@ -45,6 +45,14 @@ const PrintSummaryList = ({
   };
 
   console.log("last page: " + isLastPage);
+
+  const [approvedBy, setApprovedBy] = useState("IVAN V. LIZARONDO");
+  const [approvedByRole, setApprovedByRole] = useState(
+    "Computer Maint. Technologist III"
+  );
+  const [head, setHead] = useState("Acting Division Head");
+  const [notedBy, setNotedBy] = useState("NEPTHALY C. TALAVERA");
+  const [notedByRole, setNotedByRole] = useState("Officer In-Charge, CITC");
 
   return (
     <Modal
@@ -123,16 +131,22 @@ const PrintSummaryList = ({
                   type="text"
                   className="text-black outline-none h-[20px]  text-base  font-bold"
                   placeholder="Approved by name here"
+                  value={approvedBy}
+                  onChange={(e) => setApprovedBy(e.target.value)}
                 />
                 <input
                   type="text"
                   className="text-black outline-none h-[20px] "
                   placeholder="ex. Computer Main. Technologist..."
+                  value={approvedByRole}
+                  onChange={(e) => setApprovedByRole(e.target.value)}
                 />
                 <input
                   type="text"
                   className="text-black outline-none h-[20px] "
                   placeholder="head here"
+                  value={head}
+                  onChange={(e) => setHead(e.target.value)}
                 />
               </div>
               <div className="flex flex-col">
@@ -141,11 +155,15 @@ const PrintSummaryList = ({
                   type="text"
                   className="text-black outline-none h-[20px]  text-base font-bold"
                   placeholder="Noted by name here"
+                  value={notedBy}
+                  onChange={(e) => setNotedBy(e.target.value)}
                 />
                 <input
                   type="text"
                   className="text-black outline-none h-[20px]"
                   placeholder="officer in-charge here"
+                  value={notedByRole}
+                  onChange={(e) => setNotedByRole(e.target.value)}
                 />
               </div>
             </div>

@@ -57,6 +57,9 @@ const ReleasedModal = ({ isOpen, onClose, data, refreshData }) => {
 
   console.log(data);
 
+  const [approvedBy, setApprovedBy] = useState("IVAN V. LIZARONDO");
+  const [notedBy, setNotedBy] = useState("NEPTHALY C. TALAVERA");
+
   return (
     <Modal
       open={isOpen}
@@ -225,8 +228,8 @@ const ReleasedModal = ({ isOpen, onClose, data, refreshData }) => {
             dateReleased: daytime,
             dateNoted: daytime,
             date_Received: daytime,
-            approvedBy: "",
-            noteBy: "",
+            approvedBy: approvedBy,
+            noteBy: notedBy,
             releasedBy: "",
             received_By: "",
           }}
@@ -247,7 +250,11 @@ const ReleasedModal = ({ isOpen, onClose, data, refreshData }) => {
                 ]}
                 name="approvedBy"
               >
-                <Input value={data.approvedBy} className="h-[40px]" />
+                <Input
+                  value={approvedBy}
+                  onChange={(e) => setApprovedBy(e.target.value)}
+                  className="h-[40px]"
+                />
               </Form.Item>
             </Col>
             <Col xs={24} lg={6}>
@@ -303,7 +310,11 @@ const ReleasedModal = ({ isOpen, onClose, data, refreshData }) => {
                 ]}
                 name="noteBy"
               >
-                <Input value={data.noteBy} className="h-[40px]" />
+                <Input
+                  value={notedBy}
+                  onChange={(e) => setNotedBy(e.target.value)}
+                  className="h-[40px]"
+                />
               </Form.Item>
             </Col>
             <Col xs={24} lg={6}>

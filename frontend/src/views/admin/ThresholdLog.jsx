@@ -146,11 +146,17 @@ const ThresholdLog = () => {
     const requests = repairRequests[record.key];
     if (requests) {
       return (
-        <Table
-          columns={historyColumn}
-          dataSource={requests.allThresholdRequest}
-          pagination={false}
-        />
+        <div className="ml-9 flex flex-col w-full">
+          <span className="text-lg  w-full font-semibold font-sans ">
+            Service History Log
+          </span>
+          <Table
+            columns={historyColumn}
+            dataSource={requests.allThresholdRequest}
+            pagination={false}
+            className="mt-2"
+          />
+        </div>
       );
     } else {
       return <div>Loading repair requests...</div>;
