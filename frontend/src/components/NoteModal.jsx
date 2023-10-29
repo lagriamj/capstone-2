@@ -8,7 +8,7 @@ export default function NoteModal(display) {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/api/getCutOffTime")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/getCutOffTime`)
       .then((response) => {
         if (response.data.cutOffTime) {
           const cutOffTimeDate = new Date(response.data.cutOffTime);

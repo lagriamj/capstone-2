@@ -25,7 +25,7 @@ const ForgotPassword = () => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/forgot-password",
+        `${import.meta.env.VITE_API_BASE_URL}/api/forgot-password`,
         {
           email: email,
         }

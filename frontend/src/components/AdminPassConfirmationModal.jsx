@@ -16,7 +16,7 @@ const AdminPassConfirmationModal = ({ visible, onCancel, handleUpdate }) => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/check-password",
+        `${import.meta.env.VITE_API_BASE_URL}/api/check-password`,
         {
           password: adminPasswordChecker,
           userID: userID,

@@ -89,7 +89,7 @@ const ThresholdLog = () => {
   const fetchThresholdLog = () => {
     setLoading(true);
     axios
-      .get("http://127.0.0.1:8000/api/request-threshold")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/request-threshold`)
       .then((response) => {
         console.log(response);
         setThresholdData(response.data);
@@ -109,7 +109,7 @@ const ThresholdLog = () => {
     const fetchRepairRequests = async (record) => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/threshold-history`
+          `${import.meta.env.VITE_API_BASE_URL}/api/threshold-history`
         );
         if (response.status === 200) {
           const requests = response.data[0];

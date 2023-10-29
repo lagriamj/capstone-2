@@ -105,7 +105,11 @@ const ServiceRequest = () => {
 
   useEffect(() => {
     axios
-      .get(`http://127.0.0.1:8000/api/getOfficeAndDivision/${userID}`)
+      .get(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/getOfficeAndDivision/${userID}`
+      )
       .then((response) => {
         setOffice(response.data.office);
         setDivision(response.data.division);
@@ -128,7 +132,7 @@ const ServiceRequest = () => {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/api/office-list")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/office-list`)
       .then((response) => {
         const officeList = response.data.results;
         const matchingNature = officeList.find(
@@ -153,7 +157,7 @@ const ServiceRequest = () => {
   const checkCutOffTime = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/getCutOffTime"
+        `${import.meta.env.VITE_API_BASE_URL}/api/getCutOffTime`
       );
       const cutOffTime = new Date(response.data.cutOffTime);
       const currentDate = new Date();
@@ -185,7 +189,7 @@ const ServiceRequest = () => {
 
       if (isCutOffTimeValid) {
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/add-request",
+          `${import.meta.env.VITE_API_BASE_URL}/api/add-request`,
           values
         );
         const data = response.data;
@@ -214,7 +218,9 @@ const ServiceRequest = () => {
 
   const fetchNature = async () => {
     try {
-      const result = await axios.get("http://127.0.0.1:8000/api/nature-list");
+      const result = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/nature-list`
+      );
       setData(result.data.results);
     } catch (err) {
       console.log("Something went wrong:", err);
@@ -229,7 +235,9 @@ const ServiceRequest = () => {
 
   const fetchUnit = async () => {
     try {
-      const result = await axios.get("http://127.0.0.1:8000/api/category-list");
+      const result = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/category-list`
+      );
       setUnit(result.data.results);
     } catch (err) {
       console.log("Something went wrong:", err);
@@ -239,7 +247,9 @@ const ServiceRequest = () => {
   useEffect(() => {
     const resetCutOffTime = async () => {
       try {
-        await axios.get("http://127.0.0.1:8000/api/reset-cut-off-time");
+        await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/api/reset-cut-off-time`
+        );
       } catch (error) {
         console.error("Error resetting cut-off time:", error);
       }

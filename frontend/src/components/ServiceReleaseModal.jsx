@@ -64,10 +64,14 @@ const ServiceReleaseModal = ({
 
   const fetchData = async () => {
     try {
-      const result = await axios.get("http://127.0.0.1:8000/api/category-list");
+      const result = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/category-list`
+      );
 
       const artaDetailsResult = await axios.get(
-        `http://127.0.0.1:8000/api/show-arta-reason/${data.request_id}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/show-arta-reason/${
+          data.request_id
+        }`
       );
       console.log(artaDetailsResult);
       setReasonList(artaDetailsResult.data.data);
@@ -94,7 +98,9 @@ const ServiceReleaseModal = ({
 
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/torelease-request/${data.request_id}/${fullName}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/torelease-request/${
+          data.request_id
+        }/${fullName}`,
         modifiedValues
       );
 

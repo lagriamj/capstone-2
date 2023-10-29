@@ -61,7 +61,7 @@ const AuditLog = () => {
 
   useEffect(() => {
     // Fetch audit log data from your Laravel API
-    fetch("http://127.0.0.1:8000/api/audit-logs")
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/audit-logs`)
       .then((response) => response.json())
       .then((data) => {
         // Set the fetched data to the auditLogs state variable

@@ -42,7 +42,9 @@ const UsersList = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/users-list");
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/users-list`
+      );
 
       if (response.status === 200) {
         console.log(response.data.result);
@@ -88,7 +90,7 @@ const UsersList = () => {
     console.log(id);
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-user/${id}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/delete-user/${id}`
       );
 
       console.log(id);
@@ -117,7 +119,7 @@ const UsersList = () => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/delete-selected-users",
+        `${import.meta.env.VITE_API_BASE_URL}/api/delete-selected-users`,
         {
           selectedUserIDs: selectedRowKeys,
         }
@@ -184,7 +186,9 @@ const UsersList = () => {
 
   const fetchOfficeList = async () => {
     try {
-      const result = await axios.get("http://127.0.0.1:8000/api/office-list");
+      const result = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/office-list`
+      );
       console.log(result.data.results);
       setOfficeOptions(result.data.results);
     } catch (err) {

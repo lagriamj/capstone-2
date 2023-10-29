@@ -7,7 +7,9 @@ const CutOffModal = ({ isOpen, onClose }) => {
   const [cutOff, setCutOff] = useState("");
   const handleSetCutOff = async () => {
     try {
-      await axios.post("http://127.0.0.1:8000/api/cut-off", { cutOff });
+      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/cut-off`, {
+        cutOff,
+      });
       message.success("Cut-off time set successfully!");
       onClose();
     } catch (error) {

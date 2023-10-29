@@ -57,7 +57,9 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
     setServiceByValue(values.serviceBy);
     try {
       const response = await axios.put(
-        `http://127.0.0.1:8000/api/onprogress-request/${data.request_id}/${fullName}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/onprogress-request/${
+          data.request_id
+        }/${fullName}`,
         modifiedValues
       );
 
@@ -92,7 +94,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
 
   const fetchTechnicians = async () => {
     const response = await axios.get(
-      "http://127.0.0.1:8000/api/technician-list"
+      `${import.meta.env.VITE_API_BASE_URL}/api/technician-list`
     );
     setTechnicians(response.data.results);
   };

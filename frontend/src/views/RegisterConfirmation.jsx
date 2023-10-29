@@ -90,7 +90,7 @@ const RegisterConfirmation = () => {
   const confirmOTP = async () => {
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/verify-otp`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/verify-otp`,
         {
           action: "confirm",
           otpCode,
@@ -136,11 +136,14 @@ const RegisterConfirmation = () => {
 
   const resendOTP = async () => {
     try {
-      const response = await axios.put(`http://127.0.0.1:8000/api/verify-otp`, {
-        action: "resend",
-        otpCode,
-        userId: !userId ? location.state.userID : userId,
-      });
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/verify-otp`,
+        {
+          action: "resend",
+          otpCode,
+          userId: !userId ? location.state.userID : userId,
+        }
+      );
 
       console.log(response);
 

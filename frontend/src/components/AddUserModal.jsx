@@ -21,7 +21,7 @@ const AddUserModal = ({
     try {
       const formData = await form.validateFields();
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/admin/register",
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/register`,
         formData
       );
 
@@ -48,7 +48,9 @@ const AddUserModal = ({
 
   const fetchOfficeList = async () => {
     try {
-      const result = await axios.get("http://127.0.0.1:8000/api/office-list");
+      const result = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/office-list`
+      );
       console.log(result.data.results);
       setOfficeOptions(result.data.results);
       console.log(officeOptions);

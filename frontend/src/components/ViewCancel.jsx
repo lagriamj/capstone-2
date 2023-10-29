@@ -20,9 +20,13 @@ const ViewCancel = ({ isOpen, onClose, datas, role }) => {
   const getApiEndpoint = () => {
     // Determine the API endpoint based on the user's role
     if (role === "admin") {
-      return `http://127.0.0.1:8000/api/view-cancelled/${datas.request_id}`;
+      return `${import.meta.env.VITE_API_BASE_URL}/api/view-cancelled/${
+        datas.request_id
+      }`;
     } else if (role === "user") {
-      return `http://127.0.0.1:8000/api/view-cancelled/${datas.id}`;
+      return `${import.meta.env.VITE_API_BASE_URL}/api/view-cancelled/${
+        datas.id
+      }`;
     }
     // Handle other roles or scenarios as needed
   };

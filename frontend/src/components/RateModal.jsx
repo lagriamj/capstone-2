@@ -79,7 +79,7 @@ const RateModal = ({
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/transanction-rate",
+        `${import.meta.env.VITE_API_BASE_URL}/api/transanction-rate`,
         selectedRatings
       );
       const data = response.data;

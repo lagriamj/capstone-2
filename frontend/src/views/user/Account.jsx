@@ -34,7 +34,7 @@ const Account = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/account?userID=${userID}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/account?userID=${userID}`
       );
 
       console.log("API Response:", response.data.results);
@@ -68,7 +68,7 @@ const Account = () => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/change-password",
+        `${import.meta.env.VITE_API_BASE_URL}/api/change-password`,
         newFormData
       );
 
@@ -112,7 +112,7 @@ const Account = () => {
     setIsSavingChange(true);
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/check-password",
+        `${import.meta.env.VITE_API_BASE_URL}/api/check-password`,
         {
           password: userPasswordChecker,
           userID: userID,
@@ -150,7 +150,9 @@ const Account = () => {
 
   const fetchOfficeList = async () => {
     try {
-      const result = await axios.get("http://127.0.0.1:8000/api/office-list");
+      const result = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/office-list`
+      );
       console.log(result.data.results);
       setOfficeOptions(result.data.results);
       console.log(officeOptions);
@@ -171,7 +173,9 @@ const Account = () => {
     try {
       const timestamp = Date.now();
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/user-signatureInAccount/?userID=${userID}&timestamp=${timestamp}`,
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/user-signatureInAccount/?userID=${userID}&timestamp=${timestamp}`,
         {
           responseType: "arraybuffer",
         }

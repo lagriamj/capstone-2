@@ -41,7 +41,7 @@ const Categories = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/category-list"
+        `${import.meta.env.VITE_API_BASE_URL}/api/category-list`
       );
       if (response.status === 200) {
         setCategories(response.data.results);
@@ -69,7 +69,7 @@ const Categories = () => {
   const handleDeleteCategory = async (id) => {
     try {
       const response = await axios.delete(
-        `http://127.0.0.1:8000/api/delete-category/${id}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/delete-category/${id}`
       );
       if (response.status === 200) {
         fetchCategory();
@@ -88,7 +88,7 @@ const Categories = () => {
       .validateFields()
       .then((values) => {
         axios
-          .post("http://127.0.0.1:8000/api/add-category", values)
+          .post(`${import.meta.env.VITE_API_BASE_URL}/api/add-category`, values)
           .then((response) => {
             console.log(response.data);
             setIsModalVisible(false);

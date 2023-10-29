@@ -109,7 +109,9 @@ const Register = () => {
 
   const fetchOfficeList = async () => {
     try {
-      const result = await axios.get("http://127.0.0.1:8000/api/office-list");
+      const result = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/office-list`
+      );
       console.log(result.data.results);
       setOfficeOptions(result.data.results);
       console.log(officeOptions);
@@ -169,7 +171,7 @@ const Register = () => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/register",
+        `${import.meta.env.VITE_API_BASE_URL}/api/register`,
         userData
       );
 
@@ -185,7 +187,7 @@ const Register = () => {
 
         try {
           const imageResponse = await axios.post(
-            "http://127.0.0.1:8000/api/user-signature/store",
+            `${import.meta.env.VITE_API_BASE_URL}/api/user-signature/store`,
             formData,
             {
               headers: {

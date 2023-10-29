@@ -25,7 +25,7 @@ const DoneRateModal = ({ isOpen, onClose, id }) => {
   useEffect(() => {
     if (isOpen) {
       axios
-        .get(`http://127.0.0.1:8000/api/view-rate/${id}`)
+        .get(`${import.meta.env.VITE_API_BASE_URL}/api/view-rate/${id}`)
         .then((response) => {
           setData(response.data.results);
           setLoading(false);

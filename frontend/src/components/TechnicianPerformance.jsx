@@ -37,7 +37,9 @@ const TechnicianPerformance = ({
     }
 
     axios
-      .get("http://127.0.0.1:8000/api/tech-performance", { params })
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/tech-performance`, {
+        params,
+      })
       .then((response) => {
         setData(response.data.data);
       })

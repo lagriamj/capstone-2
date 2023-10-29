@@ -43,7 +43,7 @@ const ApprovedList = () => {
 
   const fetchNature = () => {
     axios
-      .get("http://127.0.0.1:8000/api/nature-list")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/nature-list`)
       .then((response) => {
         setNatureRequests(response.data.results);
       })
@@ -83,7 +83,9 @@ const ApprovedList = () => {
       try {
         // Make a GET request to fetch data from the API
         const response = await axios.get(
-          `http://127.0.0.1:8000/api/pending-approved-signature/${userID}`
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/pending-approved-signature/${userID}`
         );
 
         // Set the fetched data to the 'data' state

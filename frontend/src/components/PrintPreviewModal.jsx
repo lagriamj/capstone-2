@@ -21,7 +21,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
   useEffect(() => {
     // Make an HTTP GET request to fetch authorized persons and their images from your Laravel API.
     axios
-      .get(`http://127.0.0.1:8000/api/all-signature/${userID}`) // Replace with your API URL.
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/all-signature/${userID}`) // Replace with your API URL.
       .then((response) => {
         setAuthorizedSignatures(response.data);
       })
@@ -36,7 +36,11 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
 
   useEffect(() => {
     axios
-      .get(`http://127.0.0.1:8000/api/show-approved-request/${reqID}`)
+      .get(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/show-approved-request/${reqID}`
+      )
       .then((response) => {
         if (response.data.message) {
           setMessage(response.data.message);

@@ -27,7 +27,7 @@ const ClosedModal = ({ isOpen, onClose, datas }) => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/api/closed-view/${datas.id}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/closed-view/${datas.id}`
       );
       if (response.status === 200) {
         setLoading(false);

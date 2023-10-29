@@ -27,7 +27,9 @@ const ReleasedModal = ({ isOpen, onClose, data, refreshData }) => {
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/torate-request/${data.request_id}/${fullName}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/torate-request/${
+          data.request_id
+        }/${fullName}`,
         values
       );
 

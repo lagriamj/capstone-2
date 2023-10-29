@@ -117,7 +117,9 @@ const HeadTransactions = () => {
     try {
       setLoading(true);
       const result = await axios.get(
-        `http://127.0.0.1:8000/api/transaction-list/${userID}/${startDate}/${endDate}`
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/transaction-list/${userID}/${startDate}/${endDate}`
       );
       setData(result.data.results);
       console.log(result);
@@ -134,7 +136,7 @@ const HeadTransactions = () => {
   const handleRatings = async (id) => {
     console.log(id);
     const response = await axios.get(
-      `http://127.0.0.1:8000/api/closed-view/${id}`
+      `${import.meta.env.VITE_API_BASE_URL}/api/closed-view/${id}`
     );
     setRatings(response.data.results);
   };
@@ -153,7 +155,7 @@ const HeadTransactions = () => {
   const [doneRating, setDoneRating] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/done-rate")
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/done-rate`)
       .then((response) => response.json())
       .then((data) => {
         setDoneRating(data.results);
@@ -175,7 +177,7 @@ const HeadTransactions = () => {
   const fetchNature = () => {
     setLoading(true);
     axios
-      .get("http://127.0.0.1:8000/api/nature-list")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/nature-list`)
       .then((response) => {
         setNatureRequests(response.data.results);
         setLoading(false);

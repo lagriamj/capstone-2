@@ -68,7 +68,7 @@ const Dashboard = () => {
       try {
         // Make an asynchronous GET request to your Laravel route
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/count-requests"
+          `${import.meta.env.VITE_API_BASE_URL}/api/count-requests`
         );
         setCounts(response.data);
         setIsLoading(false);
@@ -98,7 +98,7 @@ const Dashboard = () => {
     async function fetchRequestDetails() {
       try {
         const requestDetailsResponse = await fetch(
-          "http://127.0.0.1:8000/api/pending-request"
+          `${import.meta.env.VITE_API_BASE_URL}/api/pending-request`
         );
 
         if (requestDetailsResponse.ok) {
@@ -128,7 +128,7 @@ const Dashboard = () => {
     async function fetchDelayedRequests() {
       try {
         const delayedRequestsResult = await axios.get(
-          "http://127.0.0.1:8000/api/delay-request"
+          `${import.meta.env.VITE_API_BASE_URL}/api/delay-request`
         );
         console.log(delayedRequestsResult);
         setDelayedRequests(delayedRequestsResult.data?.results);
@@ -183,7 +183,7 @@ const Dashboard = () => {
     async function fetchData() {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/calculate-rating"
+          `${import.meta.env.VITE_API_BASE_URL}/api/calculate-rating`
         );
         setRatingsAndNature(response.data);
       } catch (error) {
@@ -240,17 +240,23 @@ const Dashboard = () => {
   const fetchDataRequest = async () => {
     try {
       const techResponse = await axios.get(
-        `http://127.0.0.1:8000/api/technician-performance/${startDate}/${endDate}`
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/technician-performance/${startDate}/${endDate}`
       );
       setTechnicianData(techResponse.data.Technician);
 
       const requestsResponse = await axios.get(
-        `http://127.0.0.1:8000/api/requestsByDate/${startDate}/${endDate}`
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/requestsByDate/${startDate}/${endDate}`
       );
       setRequestsByDate(requestsResponse.data);
 
       const officeResponse = await axios.get(
-        `http://127.0.0.1:8000/api/office-performance/${startDate}/${endDate}`
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/office-performance/${startDate}/${endDate}`
       );
       setRequestsByOffice(officeResponse.data.office);
     } catch (error) {
@@ -261,7 +267,9 @@ const Dashboard = () => {
   const fetchPiegraphDetails = async () => {
     try {
       const percentResponse = await axios.get(
-        `http://127.0.0.1:8000/api/percent-accomplished/${startDate}/${endDate}`
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/percent-accomplished/${startDate}/${endDate}`
       );
       setPercentData(percentResponse.data);
     } catch (error) {
@@ -272,7 +280,9 @@ const Dashboard = () => {
   const fetchTotalAndClosed = async () => {
     try {
       const totalAndClosedRes = await axios.get(
-        `http://127.0.0.1:8000/api/totalRequests-And-Closed/${startDate}/${endDate}`
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/totalRequests-And-Closed/${startDate}/${endDate}`
       );
       setTotalAndClosed(totalAndClosedRes.data);
     } catch (error) {
@@ -462,7 +472,9 @@ const Dashboard = () => {
     setPieLoading(true);
     axios
       .get(
-        `http://127.0.0.1:8000/api/status-description/${entry.name}/${startDate}/${endDate}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/status-description/${
+          entry.name
+        }/${startDate}/${endDate}`
       )
       .then((response) => {
         const formattedData = response.data.requestData.map((item, index) => ({
@@ -511,7 +523,9 @@ const Dashboard = () => {
     setPieLoading(true);
     axios
       .get(
-        `http://127.0.0.1:8000/api/request-description/${entry.name}/${startDate}/${endDate}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/request-description/${
+          entry.name
+        }/${startDate}/${endDate}`
       )
       .then((response) => {
         console.log(response);

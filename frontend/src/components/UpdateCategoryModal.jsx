@@ -21,7 +21,7 @@ const UpdateCategoryModal = ({
     try {
       const newFormData = await form.validateFields();
       const response = await axios.put(
-        "http://127.0.0.1:8000/api/update-category",
+        `${import.meta.env.VITE_API_BASE_URL}/api/update-category`,
         newFormData
       );
 

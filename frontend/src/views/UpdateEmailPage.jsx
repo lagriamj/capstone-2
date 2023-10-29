@@ -46,10 +46,13 @@ const UpdateEmailPage = () => {
   const handleUpdateEmail = async (e) => {
     e.preventDefault();
 
-    const response = await axios.put(`http://127.0.0.1:8000/api/update-email`, {
-      userID: !userId ? location.state.userID : userId,
-      newUserEmail: newEmail,
-    });
+    const response = await axios.put(
+      `${import.meta.env.VITE_API_BASE_URL}/api/update-email`,
+      {
+        userID: !userId ? location.state.userID : userId,
+        newUserEmail: newEmail,
+      }
+    );
     console.log(response);
     setLoading(true);
     if (response.status === 200) {

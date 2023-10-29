@@ -39,7 +39,7 @@ const UpdateSignature = ({
 
     try {
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/update-signature/${userID}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/update-signature/${userID}`,
         formData,
         {
           headers: {
@@ -66,7 +66,7 @@ const UpdateSignature = ({
   const fetchFileName = async () => {
     try {
       const fileNameRes = await axios.get(
-        `http://127.0.0.1:8000/api/get-signatureFileName/`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/get-signatureFileName/`,
         {
           params: {
             userID: userID,
@@ -105,7 +105,9 @@ const UpdateSignature = ({
     setFileList(newFileList);
   };
   const props = {
-    action: `http://127.0.0.1:8000/api/update-signature/${userID}`,
+    action: `${
+      import.meta.env.VITE_API_BASE_URL
+    }/api/update-signature/${userID}`,
     onChange: handleChange,
     multiple: false,
   };

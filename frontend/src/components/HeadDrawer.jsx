@@ -31,7 +31,9 @@ const HeadDrawer = () => {
   const handleLogout = async () => {
     setIsLogout(true);
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/logout");
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/logout`
+      );
 
       if (response.status === 200) {
         message.success("Logout Successfull");

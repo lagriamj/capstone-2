@@ -86,7 +86,9 @@ const ReceiveService = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.put(`http://127.0.0.1:8000/api/delete-receive/${id}`);
+      await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/delete-receive/${id}`
+      );
       const newUserData = data.filter((item) => item.id !== id);
       setData(newUserData);
     } catch (error) {
@@ -115,7 +117,9 @@ const ReceiveService = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const urlSegments = ["http://127.0.0.1:8000/api/pending-request"];
+      const urlSegments = [
+        `${import.meta.env.VITE_API_BASE_URL}/api/pending-request`,
+      ];
 
       if (startDate) {
         urlSegments.push(startDate);

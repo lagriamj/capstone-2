@@ -48,7 +48,10 @@ const Technicians = () => {
       .validateFields()
       .then((values) => {
         axios
-          .post("http://127.0.0.1:8000/api/add-technician", values)
+          .post(
+            `${import.meta.env.VITE_API_BASE_URL}/api/add-technician`,
+            values
+          )
           .then((response) => {
             console.log(response.data);
             setIsModalVisible(false);
@@ -73,7 +76,7 @@ const Technicians = () => {
   const fetchTechnicians = () => {
     setLoading(true);
     axios
-      .get("http://127.0.0.1:8000/api/technician-list")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/technician-list`)
       .then((response) => {
         setTechnicians(response.data.results);
         setIsSingleTechnician(response.data.results.length === 1);
@@ -87,7 +90,11 @@ const Technicians = () => {
 
   const handleDeleteTechnician = (technicianId) => {
     axios
-      .delete(`http://127.0.0.1:8000/api/delete-technician/${technicianId}`)
+      .delete(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/delete-technician/${technicianId}`
+      )
       // eslint-disable-next-line no-unused-vars
       .then((response) => {
         const updatedTechnicians = technicians.filter(

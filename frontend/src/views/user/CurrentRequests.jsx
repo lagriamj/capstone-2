@@ -127,7 +127,9 @@ const CurrentRequests = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const url = `http://127.0.0.1:8000/api/request-list/${userID}/${startDate}/${endDate}`;
+      const url = `${
+        import.meta.env.VITE_API_BASE_URL
+      }/api/request-list/${userID}/${startDate}/${endDate}`;
       const result = await axios.get(url);
       setData(result.data.results);
       setLoading(false);
@@ -195,7 +197,9 @@ const CurrentRequests = () => {
 
   const closedRequest = async (id) => {
     console.log(id);
-    await axios.put(`http://127.0.0.1:8000/api/closedNorate/${id}`);
+    await axios.put(
+      `${import.meta.env.VITE_API_BASE_URL}/api/closedNorate/${id}`
+    );
     const newUserData = data.filter((item) => item.id !== id);
     setData(newUserData);
   };
@@ -328,7 +332,7 @@ const CurrentRequests = () => {
   const fetchNature = () => {
     setLoading(true);
     axios
-      .get("http://127.0.0.1:8000/api/nature-list")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/nature-list`)
       .then((response) => {
         setNatureRequests(response.data.results);
         setLoading(false);

@@ -42,7 +42,7 @@ const OfficeDepartment = () => {
   const fetchDepartments = () => {
     setLoading(true);
     axios
-      .get("http://127.0.0.1:8000/api/office-list")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/office-list`)
       .then((response) => {
         setDepartments(response.data.results);
         setLoading(false);
@@ -55,7 +55,7 @@ const OfficeDepartment = () => {
 
   const fetchHeads = () => {
     axios
-      .get("http://127.0.0.1:8000/api/head-list")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/head-list`)
       .then((response) => {
         console.log(response);
         setHeads(response.data.result);
@@ -79,7 +79,7 @@ const OfficeDepartment = () => {
       .validateFields()
       .then((values) => {
         axios
-          .post("http://127.0.0.1:8000/api/add-office", values)
+          .post(`${import.meta.env.VITE_API_BASE_URL}/api/add-office`, values)
           .then((response) => {
             console.log(response.data);
             setIsModalVisible(false);
@@ -106,7 +106,7 @@ const OfficeDepartment = () => {
   // start delete office or deparment
   const handleDelete = (id) => {
     axios
-      .delete(`http://127.0.0.1:8000/api/delete-office/${id}`)
+      .delete(`${import.meta.env.VITE_API_BASE_URL}/api/delete-office/${id}`)
       .then((response) => {
         console.log(response.data);
         fetchDepartments();

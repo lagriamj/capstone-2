@@ -26,8 +26,12 @@ export default function ReasonModal({
       // Construct the API URL based on the user's role
       const apiEndpoint =
         role === "admin"
-          ? `http://127.0.0.1:8000/api/cancel-reason/${itemData.request_id}/${name}`
-          : `http://127.0.0.1:8000/api/cancel-reason/${itemData.id}/${name}`;
+          ? `${import.meta.env.VITE_API_BASE_URL}/api/cancel-reason/${
+              itemData.request_id
+            }/${name}`
+          : `${import.meta.env.VITE_API_BASE_URL}/api/cancel-reason/${
+              itemData.id
+            }/${name}`;
 
       await axios.post(apiEndpoint, {
         reason: reason,

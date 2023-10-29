@@ -47,7 +47,7 @@ const DelayedReport = ({ isOpen, onClose, isLargeScreen }) => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get("http://127.0.0.1:8000/api/delay-report")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/delay-report`)
       .then((response) => {
         setData(response.data);
         setLoading(false);

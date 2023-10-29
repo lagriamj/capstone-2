@@ -16,7 +16,9 @@ const ViewToApproveModal = ({
 
   const handleApprove = async () => {
     try {
-      await axios.put(`http://127.0.0.1:8000/api/approve-request/${data.id}`);
+      await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/approve-request/${data.id}`
+      );
       // Update data after approval (you might need to refresh the data from the parent component)
       refreshData();
       message.success("Request successfully approved");

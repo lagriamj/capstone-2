@@ -30,11 +30,17 @@ const ToRateModal = ({ isOpen, onClose, datas, role, purged }) => {
       let apiUrl = "";
 
       if (role === "admin") {
-        apiUrl = `http://127.0.0.1:8000/api/closed-view/${datas.request_id}`;
+        apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/closed-view/${
+          datas.request_id
+        }`;
       } else if (role === "head") {
-        apiUrl = `http://127.0.0.1:8000/api/closed-view/${datas.id}`;
+        apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/closed-view/${
+          datas.id
+        }`;
       } else {
-        apiUrl = `http://127.0.0.1:8000/api/closed-view/${datas.id}`;
+        apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/closed-view/${
+          datas.id
+        }`;
       }
 
       const response = await axios.get(apiUrl);

@@ -29,7 +29,7 @@ const NatureOfRequest = () => {
       .validateFields()
       .then((values) => {
         axios
-          .post("http://127.0.0.1:8000/api/add-nature", values)
+          .post(`${import.meta.env.VITE_API_BASE_URL}/api/add-nature`, values)
           .then((response) => {
             console.log(response.data);
             setIsModalVisible(false);
@@ -54,7 +54,7 @@ const NatureOfRequest = () => {
   const fetchNature = () => {
     setLoading(true);
     axios
-      .get("http://127.0.0.1:8000/api/nature-list")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/nature-list`)
       .then((response) => {
         setNatureRequests(response.data.results);
         setLoading(false);
@@ -67,7 +67,9 @@ const NatureOfRequest = () => {
 
   const handleDeleteNature = (natureId) => {
     axios
-      .delete(`http://127.0.0.1:8000/api/delete-nature/${natureId}`)
+      .delete(
+        `${import.meta.env.VITE_API_BASE_URL}/api/delete-nature/${natureId}`
+      )
       // eslint-disable-next-line no-unused-vars
       .then((response) => {
         const updatedNatureRequests = natureRequests.filter(

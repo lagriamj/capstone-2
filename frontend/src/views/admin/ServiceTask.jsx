@@ -108,7 +108,9 @@ const ServiceTask = () => {
   const handleDelete = async (id, reqID) => {
     try {
       await axios.put(
-        `http://127.0.0.1:8000/api/delete-serviced/${id}/${reqID}`
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/delete-serviced/${id}/${reqID}`
       );
       const newUserData = data.filter((item) => item.id !== id);
       setData(newUserData);
@@ -142,7 +144,9 @@ const ServiceTask = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const url = `http://127.0.0.1:8000/api/service-task-list/${startDate}/${endDate}`;
+      const url = `${
+        import.meta.env.VITE_API_BASE_URL
+      }/api/service-task-list/${startDate}/${endDate}`;
       const result = await axios.get(url);
       setData(result.data.results);
       setLoading(false);
@@ -221,7 +225,7 @@ const ServiceTask = () => {
   const fetchNature = () => {
     setLoading(true);
     axios
-      .get("http://127.0.0.1:8000/api/nature-list")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/nature-list`)
       .then((response) => {
         setNatureRequests(response.data.results);
         setLoading(false);

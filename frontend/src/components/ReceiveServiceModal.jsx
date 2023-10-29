@@ -47,7 +47,9 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
       };
 
       const response = await axios.post(
-        `http://127.0.0.1:8000/api/received-request/${data.request_id}/${fullName}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/received-request/${
+          data.request_id
+        }/${fullName}`,
         modifiedValues
       );
 
@@ -77,7 +79,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
 
   const fetchTechnicians = async () => {
     const response = await axios.get(
-      "http://127.0.0.1:8000/api/technician-list"
+      `${import.meta.env.VITE_API_BASE_URL}/api/technician-list`
     );
     setTechnicians(response.data.results);
   };
