@@ -81,7 +81,7 @@ class RequestsController extends Controller
         $sequenceNumber = 1;
 
         if ($latestRequest) {
-            $latestSequenceNumber = intval(substr($latestRequest->request_code, -3));
+            $latestSequenceNumber = intval(substr($latestRequest->request_code, -4));
             $sequenceNumber = $latestSequenceNumber + 1;
         }
 
