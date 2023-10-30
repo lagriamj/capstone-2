@@ -23,9 +23,9 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => ['https://api.citc-erequest.online/'],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => ['*'],
 
     'allowed_headers' => ['*'],
 
