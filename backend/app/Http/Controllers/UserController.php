@@ -34,7 +34,6 @@ class UserController extends Controller
         $otpExpiration = now()->addMinutes(10);
         $maxPasswordLength = 50;
 
-
         $user = new User();
         $user->userFirstName = $request->userFirstName;
         $user->userLastName = $request->userLastName;

@@ -306,7 +306,7 @@ const ApproveRequests = () => {
             <div className="flex lg:flex-row text-center flex-col w-full lg:pl-4 items-center justify-center shadow-xl bg-white  text-white rounded-t-lg lg:gap-4 gap-2">
               <div className="flex lg:flex-col flex-row lg:gap-0 gap-2">
                 <h1 className="flex text-black items-center lg:text-3xl font-semibold ">
-                  Reqeuests List
+                  Approve List
                 </h1>
                 <span className="text-black mr-auto">
                   Total Requests: {data.length}

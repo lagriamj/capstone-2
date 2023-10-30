@@ -1,9 +1,9 @@
-const { createProxyMiddleware } = require("http-proxy-middleware");
-module.exports = function (app) {
+const { createProxyMiddleware } = require('http-proxy-middleware');
+module.exports = function(app) {
   app.use(
-    "/api",
+    '/api',
     createProxyMiddleware({
-      target: `${import.meta.env.VITE_API_BASE_URL}`, // Change this to match your Laravel backend's URL
+      target: 'http://127.0.0.1:8000/', // Change this to match your Laravel backend's URL
       changeOrigin: true,
     })
   );

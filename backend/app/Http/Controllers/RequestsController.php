@@ -107,6 +107,10 @@ class RequestsController extends Controller
             $requestRecord->update(['approved' => 'yes-signature']);
         }
 
+        if ($user && $user->role === 'head') {
+            $requestRecord->update(['approved' => 'yes-signature']);
+        }
+
 
         $requestRecord->save();
 

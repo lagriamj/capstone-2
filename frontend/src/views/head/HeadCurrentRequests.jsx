@@ -32,6 +32,7 @@ const HeadCurrentRequests = () => {
   const [loading, setLoading] = useState(true);
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
   const { setActive } = useActiveTab();
+
   const [selectedID, setSelectedID] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedOffice, setSelectedOffice] = useState(null);
@@ -65,7 +66,7 @@ const HeadCurrentRequests = () => {
 
     if (locationState && locationState.successMessage) {
       setDisplaySuccessMessage(true);
-      navigate("/head/current-requests");
+      navigate("/current-requests");
       setActive("current-requests");
     }
   }, []);
@@ -119,6 +120,9 @@ const HeadCurrentRequests = () => {
     fetchData();
   }, [startDate, endDate]);
 
+  let notificationDisplayed = false;
+  let loopCount = 0; // Initialize the loop count
+
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -129,28 +133,36 @@ const HeadCurrentRequests = () => {
       setData(result.data.results);
       setLoading(false);
 
-      const statusCounts = {
-        Received: 0,
-        "On Progress": 0,
-        "To Release": 0,
-      };
+      if (loopCount === 1 && !notificationDisplayed) {
+        const uniqueRequests = new Set();
+        result.data.results.forEach((item) => {
+          if (
+            item.status !== "Cancelled" &&
+            item.status !== "Closed" &&
+            item.status !== "Purge"
+          ) {
+            uniqueRequests.add({
+              requestCode: item.request_code,
+              status: item.status,
+              arta: item.arta,
+              reasonDelay: item.reasonDelay,
+              artaStatus: item.artaStatus,
+            });
+          }
+        });
 
-      result.data.results.forEach((item) => {
-        if (item.status in statusCounts) {
-          statusCounts[item.status]++;
-        }
-      });
-
-      for (const status in statusCounts) {
-        console.log(`Status: ${status}, Count: ${statusCounts[status]}`);
-        if (statusCounts[status] > 0) {
-          const requestIds = result.data.results
-            .filter((item) => item.status === status)
-            .map((item) => item.id); // Use request_id instead of id
-          console.log(`${status} Request IDs: `, requestIds);
-          showStatusNotification(status, statusCounts[status], requestIds); // Pass requestIds to the notification
-        }
+        uniqueRequests.forEach((request) => {
+          showStatusNotification(
+            request.requestCode,
+            request.status,
+            request.arta,
+            request.artaStatus,
+            request.reasonDelay
+          );
+        });
+        notificationDisplayed = true;
       }
+      loopCount++;
     } catch (err) {
       console.log("Something went wrong:", err);
       setLoading(false);
@@ -209,7 +221,13 @@ const HeadCurrentRequests = () => {
     };
   }, []);
 
-  const showStatusNotification = (status, count, requestIds) => {
+  const showStatusNotification = (
+    requestCode,
+    status,
+    artaDays,
+    artaStatus,
+    reasonDelay
+  ) => {
     let messageText = "";
     let descriptionText = "";
     let notificationStyle = {};
@@ -217,11 +235,11 @@ const HeadCurrentRequests = () => {
     switch (status) {
       case "Received":
         messageText = (
-          <span className="text-white">{`E-${requestIds} Request is Received`}</span>
+          <span className="text-white">{`${requestCode} Request is Received`}</span>
         );
         descriptionText = (
           <p className="text-white">
-            Your {requestIds.join(", ")} request is being processed.
+            It will be completed within {artaDays} days.
           </p>
         );
         notificationStyle = {
@@ -230,12 +248,18 @@ const HeadCurrentRequests = () => {
         break;
       case "On Progress":
         messageText = (
-          <span className="text-white">{`E-${requestIds} Request is On Progress`}</span>
+          <span className="text-white">{`${requestCode} Request is On Progress`}</span>
         );
         descriptionText = (
-          <p className="text-white">
-            Your {requestIds.join(", ")} request is currently in progress.
-          </p>
+          <div>
+            <p className="text-white">Completion Duration: {artaDays} days</p>
+            {artaStatus == "Delay" && (
+              <p className="text-white">Processing Status: {artaStatus}</p>
+            )}
+            {reasonDelay !== "n/a" && (
+              <p className="text-white">Cause of Delay: {reasonDelay}</p>
+            )}
+          </div>
         );
         notificationStyle = {
           backgroundColor: "#343467",
@@ -243,11 +267,11 @@ const HeadCurrentRequests = () => {
         break;
       case "To Release":
         messageText = (
-          <span className="text-white">{`E-${requestIds} Request is To Release`}</span>
+          <span className="text-white">{`${requestCode} Request is To Release`}</span>
         );
         descriptionText = (
           <p className="text-white">
-            Your {requestIds.join(", ")} request is ready for release.
+            It will be completed within {artaDays} days.
           </p>
         );
         notificationStyle = {
@@ -256,11 +280,11 @@ const HeadCurrentRequests = () => {
         break;
       case "To Rate":
         messageText = (
-          <span className="text-white">{`E-${requestIds} Request is To Rate`}</span>
+          <span className="text-white">{`${requestCode} Request is To Rate`}</span>
         );
         descriptionText = (
           <p className="text-white">
-            Your {requestIds.join(", ")} request is ready for rating.
+            It will be completed within {artaDays} days.
           </p>
         );
         notificationStyle = {
@@ -272,15 +296,12 @@ const HeadCurrentRequests = () => {
     }
 
     if (messageText) {
-      if (!uniqueStatusesRef.current.has(status)) {
-        notification.success({
-          message: messageText,
-          description: descriptionText,
-          duration: 4,
-          style: notificationStyle,
-        });
-        uniqueStatusesRef.current.add(status);
-      }
+      notification.success({
+        message: messageText,
+        description: descriptionText,
+        duration: 5,
+        style: notificationStyle,
+      });
     }
   };
 
@@ -299,6 +320,37 @@ const HeadCurrentRequests = () => {
   }, []);
 
   const isScreenWidth1366 = windowWidth1366 === 1366;
+
+  const [natureRequests, setNatureRequests] = useState("");
+  const [natureReqOption, setNatureReqOption] = useState([]);
+
+  useEffect(() => {
+    fetchNature();
+  }, []);
+
+  const fetchNature = () => {
+    setLoading(true);
+    axios
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/nature-list`)
+      .then((response) => {
+        setNatureRequests(response.data.results);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    if (Array.isArray(natureRequests)) {
+      const dynamicFilters = natureRequests.map((natureRequest) => ({
+        text: natureRequest.natureRequest,
+        value: natureRequest.natureRequest,
+      }));
+      setNatureReqOption(dynamicFilters);
+    }
+  }, [natureRequests]);
 
   const [searchText, setSearchText] = useState("");
   const [pagination, setPagination] = useState({
@@ -332,37 +384,6 @@ const HeadCurrentRequests = () => {
     setSearchText(value);
     setPagination({ ...pagination, current: 1 });
   };
-
-  const [natureRequests, setNatureRequests] = useState("");
-  const [natureReqOption, setNatureReqOption] = useState([]);
-
-  useEffect(() => {
-    fetchNature();
-  }, []);
-
-  const fetchNature = () => {
-    setLoading(true);
-    axios
-      .get(`${import.meta.env.VITE_API_BASE_URL}/api/nature-list`)
-      .then((response) => {
-        setNatureRequests(response.data.results);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    if (Array.isArray(natureRequests)) {
-      const dynamicFilters = natureRequests.map((natureRequest) => ({
-        text: natureRequest.natureRequest,
-        value: natureRequest.natureRequest,
-      }));
-      setNatureReqOption(dynamicFilters);
-    }
-  }, [natureRequests]);
 
   const currentRequestsCol = [
     {
@@ -543,7 +564,7 @@ const HeadCurrentRequests = () => {
               description="Please confirm this action. This action cannot be undone."
               open={popconfirmVisible[record.id]}
               icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-              onConfirm={() => handleClosed(record.id)}
+              onConfirm={() => handleClosed(record.request_id)}
               okButtonProps={{
                 color: "red",
                 className: "text-black border-1 border-gray-300",

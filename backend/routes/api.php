@@ -17,10 +17,6 @@ use App\Http\Controllers\UserSignatureController;
 use App\Http\Controllers\HeadApprovedController;
 use App\Http\Controllers\AuditLogController;
 
-header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, Authorization, Accept,charset,boundary,Content-Length');
-header('Access-Control-Allow-Origin: *');
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -169,6 +165,7 @@ Route::get('/reset-cut-off-time', [RequestsController::class, 'resetCutOffTime']
 Route::get('/tech-performance', [DashboardController::class, 'technicianTable']);
 Route::get('/summary-list', [DashboardController::class, 'summaryList']);
 Route::get('admin-list', [UserController::class, 'showTechnicians']);
+Route::Get('head-list', [UserController::class, 'showHeads']);
 
 Route::get('request-threshold', [RequestsController::class, 'getRequestsThreshold']);
 Route::get('threshold-history', [RequestsController::class, 'getThresholdHistory']);
