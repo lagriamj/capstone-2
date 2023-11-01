@@ -131,7 +131,7 @@ class DashboardController extends Controller
     public function getTechnicianPerformance($startDate = null, $endDate = null)
     {
         if ($startDate === null) {
-            $startDate = date('Y-m-d', strtotime('-11 days')); // Default to 10 days ago
+            $startDate = date('Y-m-d', strtotime('-30 days'));
         }
 
         if ($endDate === null) {
@@ -156,7 +156,7 @@ class DashboardController extends Controller
     public function getOfficePerformance($startDate = null, $endDate = null)
     {
         if ($startDate === null) {
-            $startDate = date('Y-m-d', strtotime('-11 days')); // Default to 10 days ago
+            $startDate = date('Y-m-d', strtotime('-30 days')); // Default to 10 days ago
         }
 
         if ($endDate === null) {
@@ -182,7 +182,7 @@ class DashboardController extends Controller
     public function getPercentAccomplished($startDate = null, $endDate = null)
     {
         if ($startDate === null) {
-            $startDate = date('Y-m-d', strtotime('-11 days')); // Default to 10 days ago
+            $startDate = date('Y-m-d', strtotime('-30 days')); // Default to 10 days ago
         }
 
         if ($endDate === null) {
@@ -299,7 +299,7 @@ class DashboardController extends Controller
     public function getRequestsByDate($startDate = null, $endDate = null)
     {
         if ($startDate === null) {
-            $startDate = date('Y-m-d', strtotime('-11 days')); // Default to 10 days ago
+            $startDate = date('Y-m-d', strtotime('-30 days')); // Default to 10 days ago
         }
 
         if ($endDate === null) {
@@ -369,7 +369,7 @@ class DashboardController extends Controller
     public function getTotalAndClosed($startDate = null, $endDate = null)
     {
         if ($startDate === null) {
-            $startDate = date('Y-m-d', strtotime('-3 days')); // Default to 2 days ago
+            $startDate = date('Y-m-d', strtotime('-30 days')); // Default to 2 days ago
         }
 
         if ($endDate === null) {
@@ -397,7 +397,7 @@ class DashboardController extends Controller
     {
 
         if ($startDate === null) {
-            $startDate = date('Y-m-d', strtotime('-10 days'));
+            $startDate = date('Y-m-d', strtotime('-30 days'));
         }
 
         if ($endDate === null) {

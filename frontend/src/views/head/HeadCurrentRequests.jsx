@@ -66,7 +66,7 @@ const HeadCurrentRequests = () => {
 
     if (locationState && locationState.successMessage) {
       setDisplaySuccessMessage(true);
-      navigate("/current-requests");
+      navigate("/head/current-requests");
       setActive("current-requests");
     }
   }, []);
@@ -107,7 +107,7 @@ const HeadCurrentRequests = () => {
 
   useEffect(() => {
     const defaultStartDate = new Date();
-    defaultStartDate.setDate(defaultStartDate.getDate() - 10);
+    defaultStartDate.setDate(defaultStartDate.getDate() - 30);
     const defaultEndDate = new Date();
     const defaultStartDateString = defaultStartDate.toISOString().split("T")[0];
     const defaultEndDateString = defaultEndDate.toISOString().split("T")[0];

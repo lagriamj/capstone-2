@@ -144,16 +144,21 @@ class ReceiveServiceController extends Controller
 
     public function showServiceTask(Request $request, $startDate = null, $endDate = null)
     {
+        if ($startDate === null) {
+            $startDate = date('Y-m-d', strtotime('-30 days'));
+        }
+
+        if ($endDate === null) {
+            $endDate = date('Y-m-d');
+        }
+
         $query = DB::table('user_requests')
             ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
             ->select('user_requests.*', 'receive_service.*')
             ->whereNotIn('user_requests.status', ['Purge'])
-            ->where('user_requests.approved', '=', 'yes-signature');
+            ->where('user_requests.approved', '=', 'yes-signature')
+            ->whereBetween('user_requests.dateRequested', [$startDate, date('Y-m-d', strtotime($endDate . ' + 1 day'))]);
 
-        if ($startDate && $endDate) {
-            $query->where('user_requests.dateRequested', '>=', $startDate)
-                ->where('user_requests.dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
-        }
         $data = $query->get();
 
         foreach ($data as $record) {
@@ -165,11 +170,11 @@ class ReceiveServiceController extends Controller
                     ->update(['artaStatus' => 'Delay']);
             }
         }
+
         return response()->json([
             'results' => $data
         ]);
     }
-
 
     public function updateReasonDelay(Request $request, $id, $fullName)
     {
