@@ -442,7 +442,9 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
                         <li key={signature.id}>
                           <div className="relative">
                             <img
-                              src={`http://127.0.0.1:8000/api/user-signature/${signature.signatureImage}`}
+                              src={`${
+                                import.meta.env.VITE_API_BASE_URL
+                              }/api/user-signature/${signature.signatureImage}`}
                               alt={`${signature.authorized}'s Signature`}
                               className="absolute z-0 -top-10 left-1/2 transform -translate-x-1/2 mb-6 w-25 h-20" // Adjust width and height here
                             />
@@ -473,7 +475,11 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
                         <li key={signature.id}>
                           <div className="relative">
                             <img
-                              src={`http://127.0.0.1:8000/api/user-approved-signature/${signature.signatureImage}`}
+                              src={`${
+                                import.meta.env.VITE_API_BASE_URL
+                              }/api/user-approved-signature/${
+                                signature.signatureImage
+                              }`}
                               alt={`${signature.authorized}'s Signature`}
                               className="absolute z-0 -top-10 left-1/2 transform -translate-x-1/2 mb-6 w-25 h-20" // Adjust width and height here
                             />

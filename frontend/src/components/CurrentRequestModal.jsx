@@ -129,7 +129,7 @@ export default function CurrentRequestModal({
           visible={isPrintPreviewModalVisible}
           onClose={() => setIsPrintPreviewModalVisible(false)}
           itemData={itemData}
-          reqID={itemData.id}
+          reqID={itemData.request_id}
         />
         <Stepper
           alternativeLabel

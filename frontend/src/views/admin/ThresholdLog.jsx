@@ -153,6 +153,7 @@ const ThresholdLog = () => {
           <Table
             columns={historyColumn}
             dataSource={requests.allThresholdRequest}
+            rowKey={(record) => record.request_id}
             pagination={false}
             className="mt-2"
           />
@@ -170,7 +171,7 @@ const ThresholdLog = () => {
       key: "dateRequested",
     },
     {
-      title: "Service By",
+      title: "Serviced By",
       dataIndex: "serviceBy",
       key: "serviceBy",
     },
