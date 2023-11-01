@@ -60,7 +60,12 @@ class DashboardController extends Controller
 
         $totalRequest = DB::table('rate_services')->count();
         $request = $totalRequest * 40;
-        $totalRating = ($totalAllRatings / $request) * 100;
+
+        if ($request == 0) {
+            $totalRating = 0;
+        } else {
+            $totalRating = ($totalAllRatings / $request) * 100;
+        }
 
         $resultSatisfied = DB::table('rate_services')
             ->selectRaw('SUM(
@@ -79,7 +84,15 @@ class DashboardController extends Controller
 
         $totalRequestSatisfied = DB::table('rate_services')->count();
         $requestSatisfied = $totalRequestSatisfied * 40;
-        $SatisfiedRating = ($unSatisfiedRating / $requestSatisfied) * 100;
+
+        $totalRequestSatisfied = DB::table('rate_services')->count();
+        $requestSatisfied = $totalRequestSatisfied * 40;
+
+        if ($requestSatisfied == 0) {
+            $SatisfiedRating = 0;
+        } else {
+            $SatisfiedRating = ($unSatisfiedRating / $requestSatisfied) * 100;
+        }
 
 
         $resultUnsatisfied = DB::table('rate_services')
@@ -99,8 +112,12 @@ class DashboardController extends Controller
         $satisfiedRating = $resultUnsatisfied ? (int)$resultUnsatisfied->Satisfied_Rating : 0;
         $totalRequestUnsatisfied = DB::table('rate_services')->count();
         $requestUnsatisfied = $totalRequestUnsatisfied * 40;
-        $UnsatisfiedRating = ($satisfiedRating / $requestUnsatisfied) * 100;
 
+        if ($requestUnsatisfied == 0) {
+            $UnsatisfiedRating = 0;
+        } else {
+            $UnsatisfiedRating = ($satisfiedRating / $requestUnsatisfied) * 100;
+        }
 
         return response()->json([
             'topNature' => $topNatures,
@@ -110,7 +127,6 @@ class DashboardController extends Controller
 
         ]);
     }
-
 
     public function getTechnicianPerformance($startDate = null, $endDate = null)
     {
