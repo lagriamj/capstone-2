@@ -15,6 +15,14 @@ class RequestsController extends Controller
 {
     public function showRequest(Request $request, $userID, $startDate = null, $endDate = null)
     {
+        if ($startDate === null) {
+            $startDate = date('Y-m-d', strtotime('-30 days'));
+        }
+
+        if ($endDate === null) {
+            $endDate = date('Y-m-d');
+        }
+
         $query = DB::table('user_requests')
             ->whereNotIn('status', ['Cancelled', 'Closed', 'Purge']);
 
@@ -24,7 +32,7 @@ class RequestsController extends Controller
         $endDateTime = Carbon::now();
         $endDateTime->setTime(23, 59, 0);
 
-        $recordsToPurge  = Requests::where('status', 'Pending')
+        $recordsToPurge = Requests::where('status', 'Pending')
             ->where('dateRequested', '<', $startDateTime)
             ->where('dateRequested', '<', $endDateTime)
             ->get();
@@ -37,22 +45,18 @@ class RequestsController extends Controller
             $query->where('user_id', $userID);
         }
 
-        if ($startDate && $endDate) {
-            $query->where('dateRequested', '>=', $startDate)
-                ->where('dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
-        }
+        $query->where('dateRequested', '>=', $startDate)
+            ->where('dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
 
         $requests = $query
             ->leftJoin('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
             ->select('user_requests.*', 'receive_service.*')
             ->get();
 
-
         return response()->json([
             'results' => $requests
         ], 200);
     }
-
 
     public function addRequest(Request $request)
     {
