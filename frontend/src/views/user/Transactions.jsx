@@ -88,10 +88,10 @@ const Transactions = () => {
 
   const isScreenWidth1366 = windowWidth1366 === 1366;
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
-  useEffect(() => {
+  /* useEffect(() => {
     const defaultStartDate = new Date(endDate);
     defaultStartDate.setDate(defaultStartDate.getDate() - 30);
     const defaultEndDate = new Date();
@@ -102,7 +102,9 @@ const Transactions = () => {
 
     setStartDate(defaultStartDateString);
     setEndDate(defaultEndDateString);
-  }, []);
+  }, []); 
+
+  */
   useEffect(() => {
     fetchData();
   }, [startDate, endDate]);

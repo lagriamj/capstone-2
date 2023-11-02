@@ -85,7 +85,7 @@ const RateModal = ({
       const data = response.data;
 
       if (role === "user") {
-        navigate("transactions");
+        navigate("/transactions");
         setActive("transactions");
       } else if (role === "head") {
         navigate("/head/transactions");
