@@ -194,7 +194,7 @@ const ThresholdLog = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>Service Task</title>
+        <title>Threshold Log</title>
       </Helmet>
       <div
         className={`className="flex flex-grow flex-col large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}

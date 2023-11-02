@@ -96,11 +96,11 @@ const HeadTransactions = () => {
 
   const isScreenWidth1366 = windowWidth1366 === 1366;
 
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
   useEffect(() => {
-    const defaultStartDate = new Date();
+    const defaultStartDate = new Date(endDate);
     defaultStartDate.setDate(defaultStartDate.getDate() - 30);
     const defaultEndDate = new Date();
     const defaultStartDateString = defaultStartDate.toISOString().split("T")[0];
@@ -109,6 +109,7 @@ const HeadTransactions = () => {
     setStartDate(defaultStartDateString);
     setEndDate(defaultEndDateString);
   }, []);
+
   useEffect(() => {
     fetchData();
   }, [startDate, endDate]);
