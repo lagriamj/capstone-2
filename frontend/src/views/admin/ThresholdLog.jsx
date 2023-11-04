@@ -6,34 +6,7 @@ import AdminDrawer from "../../components/AdminDrawer";
 import { useEffect, useState } from "react";
 import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
-
-const thresholdColumns = [
-  {
-    title: "Property No",
-    dataIndex: "propertyNo",
-    key: "propertyNo",
-  },
-  {
-    title: "Serial No",
-    dataIndex: "serialNo",
-    key: "serialNo",
-  },
-  {
-    title: "Unit",
-    dataIndex: "unit",
-    key: "unit",
-  },
-  {
-    title: "Recommendation",
-    dataIndex: "message",
-    key: "message",
-  },
-  {
-    title: "Total Count",
-    dataIndex: "total_count",
-    key: "total_count",
-  },
-];
+import ThresholdModal from "../../components/thresholdModal";
 
 const ThresholdLog = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -102,92 +75,84 @@ const ThresholdLog = () => {
     setLoading(false);
   };
 
-  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
-  const [repairRequests, setRepairRequests] = useState({});
+  const [selectedData, setSelectedData] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
 
-  useEffect(() => {
-    const fetchRepairRequests = async (record) => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/api/threshold-history`
-        );
-        if (response.status === 200) {
-          const requests = response.data[0];
-          console.log(requests);
-          setRepairRequests({ ...repairRequests, [record.key]: requests });
-        }
-      } catch (error) {
-        console.error("Error fetching repair requests:", error);
-      }
-    };
-
-    expandedRowKeys.forEach((key) => {
-      const record = thresholdData.find((item) => item.key === key);
-      if (record && !repairRequests[key]) {
-        fetchRepairRequests(record);
-      }
-    });
-  }, [expandedRowKeys, thresholdData, repairRequests]);
-
-  const handleRowClick = (record) => {
-    const expandedRows = [...expandedRowKeys];
-    const index = expandedRows.indexOf(record.key);
-
-    if (index > -1) {
-      expandedRows.splice(index, 1);
-    } else {
-      expandedRows.push(record.key);
+  const openThresholdModal = async (data) => {
+    console.log(
+      "propert no: " +
+        data.propertyNo +
+        "Serial no: " +
+        data.serialNo +
+        "Unit: " +
+        data.unit +
+        " id: " +
+        data.id
+    );
+    if (openModal) {
+      return;
     }
 
-    setExpandedRowKeys(expandedRows);
+    setOpenModal(true);
+    await axios
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/threshold-history`, {
+        params: {
+          propertyNo: data.propertyNo,
+          serialNo: data.serialNo,
+          unit: data.unit,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        setSelectedData(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
-  const expandedRowRender = (record) => {
-    const requests = repairRequests[record.key];
-    if (requests) {
-      return (
-        <div className="ml-9 flex flex-col w-full">
-          <span className="text-lg  w-full font-semibold font-sans ">
-            Service History Log
-          </span>
-          <Table
-            columns={historyColumn}
-            dataSource={requests.allThresholdRequest}
-            rowKey={(record) => record.request_id}
-            pagination={false}
-            className="mt-2"
-          />
-        </div>
-      );
-    } else {
-      return <div>Loading repair requests...</div>;
-    }
+  const closeThresholdModal = () => {
+    setOpenModal(false);
   };
 
-  const historyColumn = [
+  const thresholdColumns = [
     {
-      title: "Date Requested",
-      dataIndex: "dateRequested",
-      key: "dateRequested",
+      title: "Property No",
+      dataIndex: "propertyNo",
+      key: "propertyNo",
     },
     {
-      title: "Serviced By",
-      dataIndex: "serviceBy",
-      key: "serviceBy",
+      title: "Serial No",
+      dataIndex: "serialNo",
+      key: "serialNo",
     },
-
     {
-      /*{
+      title: "Unit",
+      dataIndex: "unit",
+      key: "unit",
+    },
+    {
+      title: "Recommendation",
+      dataIndex: "message",
+      key: "message",
+    },
+    {
+      title: "Total Count",
+      dataIndex: "total_count",
+      key: "total_count",
+    },
+    {
       title: "Action",
       dataIndex: "",
-      key: "x",
-      render: (index, record) => (
-        <button className="py-2 px-4 bg-blue-600 rounded-lg text-white">
+      key: "",
+      render: (record) => (
+        <button
+          className="bg-blue-500 py-[0.30rem] px-4 text-white rounded-md hover:opacity-90"
+          onClick={() => openThresholdModal(record)}
+        >
           View
         </button>
       ),
-    },
-*/
     },
   ];
 
@@ -229,7 +194,9 @@ const ThresholdLog = () => {
               <Table
                 columns={thresholdColumns}
                 dataSource={filteredRequests}
-                rowKey={(record) => record.request_id}
+                rowKey={(record) =>
+                  `${record.propertyNo}-${record.serialNo}-${record.unit}`
+                }
                 loading={{
                   indicator: <LoadingOutlined style={{ fontSize: 50 }} />,
                   spinning: loading,
@@ -237,11 +204,12 @@ const ThresholdLog = () => {
                 pagination={pagination}
                 onChange={(newPagination) => setPagination(newPagination)}
                 rowClassName={"p-0"}
-                expandable={{
-                  onExpand: handleRowClick,
-                  expandedRowRender,
-                  expandedRowKeys,
-                }}
+              />
+
+              <ThresholdModal
+                visible={openModal}
+                handleCancel={closeThresholdModal}
+                data={selectedData}
               />
             </div>
           </div>

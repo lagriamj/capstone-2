@@ -322,7 +322,7 @@ const ToRateModal = ({ isOpen, onClose, datas, role, purged }) => {
             >
               ARTA
             </label>
-            <Input readOnly id="arta" value={data.arta} className="h-[40px]" />
+            <Input readOnly id="arta" value={item.arta} className="h-[40px]" />
           </Col>
           <Col xs={24} lg={6}>
             <label
@@ -334,7 +334,7 @@ const ToRateModal = ({ isOpen, onClose, datas, role, purged }) => {
             <Input
               readOnly
               id="artStatus"
-              value={data.artaStatus}
+              value={item.artaStatus}
               className="h-[40px]"
             />
           </Col>

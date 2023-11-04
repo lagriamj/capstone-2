@@ -79,7 +79,7 @@ const HeadDrawer = () => {
   };
 
   return (
-    <div className=" w-screen bg-main py-4 flex items-center justify-center fixed top-0">
+    <div className=" w-screen z-40 bg-main py-4 flex items-center justify-center fixed top-0">
       <div className="flex">
         <img className="w-10 h-10" src="/cityhalllogo.png" alt="" />
         <img className="w-10 h-10" src="/citclogo.png" alt="" />

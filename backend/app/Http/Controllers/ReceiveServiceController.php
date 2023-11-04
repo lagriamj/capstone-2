@@ -67,9 +67,20 @@ class ReceiveServiceController extends Controller
                 ->where('id', $request->input('request_id'))
                 ->update([
                     'assignedTo' => $request->input('assignedTo'),
-                    'dateUpdated' => now(),
+                    'reqOffice' => $request->input('reqOffice'),
+                    'division' => $request->input('division'),
+                    'modeOfRequest' => $request->input('modeOfRequest'),
+                    'fullName' => $request->input('fullName'),
+                    'natureOfRequest' => $request->input('natureOfRequest'),
+                    'authorizedBy' => $request->input('authorizedBy'),
+                    'specialIns' => $request->input('specialIns'),
+                    'unit' => $request->input('unit'),
+                    'serialNo' => $request->input('serialNo'),
+                    'propertyNo' => $request->input('propertyNo'), // Correct order
+                    'yearProcured' => $request->input('yearProcured'), // Correct order
                     'status' => 'Received',
                 ]);
+
 
             // Retrieve the 'office' based on the provided $fullName from the User table
             $adminOffice = User::whereRaw("CONCAT(userFirstname, ' ', userLastName) = ?", [$fullName])

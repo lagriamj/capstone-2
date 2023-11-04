@@ -80,7 +80,7 @@ const HeadRequests = () => {
       notification.warning({
         message: (
           <span className="text-white font-bold">
-            Date must be under warranty
+            Year must be under warranty
           </span>
         ),
         description: (
@@ -360,7 +360,7 @@ const HeadRequests = () => {
                         style={{ fontSize: "1.225rem", lineHeight: "1.75rem" }}
                         className="text-lg font-bold"
                       >
-                        Nature
+                        Nature of Request
                       </label>
                     }
                     name="natureOfRequest"

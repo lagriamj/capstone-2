@@ -682,6 +682,7 @@ const CurrentRequests = () => {
                   onClose={handleCloseModalClick} // Pass the callback here
                   isLargeScreen={isLargeScreen}
                   isScreenWidth1366={isScreenWidth1366}
+                  fetchData={fetchData}
                 />
               )}
               {selectedReason && (

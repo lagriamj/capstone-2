@@ -31,6 +31,7 @@ const HeadCurrentRequests = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
+  const { fullName } = useAuth();
   const { setActive } = useActiveTab();
 
   const [selectedID, setSelectedID] = useState(null);
@@ -105,20 +106,16 @@ const HeadCurrentRequests = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  /* useEffect(() => {
-    const defaultStartDate = new Date(endDate);
+  useEffect(() => {
+    const defaultStartDate = new Date();
     defaultStartDate.setDate(defaultStartDate.getDate() - 30);
     const defaultEndDate = new Date();
     const defaultStartDateString = defaultStartDate.toISOString().split("T")[0];
     const defaultEndDateString = defaultEndDate.toISOString().split("T")[0];
 
-    
-
     setStartDate(defaultStartDateString);
     setEndDate(defaultEndDateString);
-  }, []); 
-
-  */
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -186,7 +183,6 @@ const HeadCurrentRequests = () => {
     setPopconfirmVisible(popconfirmVisibleCopy);
     setTimeout(() => {
       setOpen(false);
-      fetchData();
       setPopconfirmVisible(false);
     }, 5000);
   };
@@ -684,6 +680,7 @@ const HeadCurrentRequests = () => {
                   onClose={handleCloseModalClick} // Pass the callback here
                   isLargeScreen={isLargeScreen}
                   isScreenWidth1366={isScreenWidth1366}
+                  fetchData={fetchData}
                 />
               )}
               {selectedReason && (

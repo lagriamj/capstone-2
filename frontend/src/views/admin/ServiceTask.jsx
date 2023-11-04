@@ -261,8 +261,8 @@ const ServiceTask = () => {
 
     if (Array.isArray(technicians)) {
       const techFilter = technicians.map((technician) => ({
-        text: technician.userFirstName + technician.userLastName,
-        value: technician.userFirstName + technician.userLastName,
+        text: `${technician.userFirstName} ${technician.userLastName}`,
+        value: `${technician.userFirstName} ${technician.userLastName}`,
       }));
       techFilter.unshift({
         text: "My Tasks",
@@ -451,7 +451,7 @@ const ServiceTask = () => {
           {record.status === "To Rate" || record.status === "Closed" ? (
             <button
               className={`text-white ${
-                isScreenWidth1366 ? "text-xs" : " text-base"
+                isScreenWidth1366 ? "text-xs" : "text-base"
               } bg-blue-500 font-medium px-6 py-2 rounded-lg`}
               onClick={() => openModal(record)}
             >
@@ -460,7 +460,7 @@ const ServiceTask = () => {
           ) : record.status === "Cancelled" ? (
             <button
               className={`text-white ${
-                isScreenWidth1366 ? "text-xs" : " text-base"
+                isScreenWidth1366 ? "text-xs" : "text-base"
               } bg-blue-500 font-medium px-5 py-2 rounded-lg`}
               onClick={() => handleCancelRequest(record)}
             >
@@ -469,28 +469,24 @@ const ServiceTask = () => {
           ) : (
             <button
               className={`text-white ${
-                isScreenWidth1366 ? "text-xs" : " text-base"
+                isScreenWidth1366 ? "text-xs" : "text-base"
               } bg-blue-500 font-medium px-3 py-2 rounded-lg`}
               onClick={() => openModal(record)}
             >
               Update
             </button>
           )}
-          {record.status === "Pending" ||
-          record.status === "Received" ||
-          record.status === "On Progress" ? (
+          {["Pending", "Received", "On Progress"].includes(record.status) ? (
             <Popconfirm
               placement="left"
               title="Confirmation"
               description="Please confirm this action. This action cannot be undone."
-              open={popconfirmVisible[record.id]}
+              visible={popconfirmVisible[record.id]}
               icon={<QuestionCircleOutlined style={{ color: "red" }} />}
               onConfirm={() => handleOk(record.id, record.request_id)}
               okButtonProps={{
                 loading: confirmLoading,
-                color: "red",
-                className: "text-black border-1 border-gray-300",
-                size: "large",
+                style: { color: "red" },
               }}
               cancelButtonProps={{
                 size: "large",
@@ -501,11 +497,9 @@ const ServiceTask = () => {
               <button
                 onClick={() => handleOpenReasonModalClick(record.id)}
                 className={`text-white text-base py-2 px-4 rounded-lg ${
-                  record.status !== "Pending" &&
-                  record.status !== "Received" &&
-                  record.status !== "On Progress"
-                    ? "cursor-not-allowed bg-gray-400" // Apply styles for other statuses
-                    : "bg-red-700" // Styles for the delete button when status is Pending, Received, or On Progress
+                  ["Pending", "Received", "On Progress"].includes(record.status)
+                    ? "bg-red-700"
+                    : "cursor-not-allowed bg-gray-400"
                 }`}
               >
                 <FontAwesomeIcon icon={faTrash} />
@@ -513,6 +507,19 @@ const ServiceTask = () => {
             </Popconfirm>
           ) : record.status === "To Rate" &&
             record.modeOfRequest === "Walk-In" ? (
+            <button
+              onClick={() =>
+                handleStarIconClick(
+                  record.request_id,
+                  record.user_id,
+                  record.reqOffice
+                )
+              }
+              className="text-white text-base py-2 px-4 rounded-lg bg-yellow-500"
+            >
+              <FontAwesomeIcon icon={faStar} />
+            </button>
+          ) : record.status === "To Rate" && record.fullName === fullName ? (
             <button
               onClick={() =>
                 handleStarIconClick(
@@ -701,6 +708,15 @@ const ServiceTask = () => {
                   refreshData={fetchData}
                 />
               )}
+              {modalType === "ToRateWalkin" && (
+                <ToRateModal
+                  isOpen={isModalOpen}
+                  onClose={closeModal}
+                  role={userRole}
+                  datas={selectedData}
+                  refreshData={fetchData}
+                />
+              )}
               {rateModalVisible && (
                 <RateModal
                   isOpen={rateModalVisible}
@@ -710,6 +726,7 @@ const ServiceTask = () => {
                   office={selectedOffice}
                   role={userRole}
                   isScreenWidth1366={isScreenWidth1366}
+                  updateServiceTaskData={fetchData}
                 />
               )}
             </div>

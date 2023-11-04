@@ -61,7 +61,7 @@ const DrawerComponent = () => {
   };
 
   return (
-    <div className=" w-screen bg-main py-4 flex items-center justify-center fixed top-0">
+    <div className=" w-screen bg-main z-40 py-4 flex items-center justify-center fixed top-0">
       <div className="flex">
         <img className="w-10 h-10" src="/cityhalllogo.png" alt="" />
         <img className="w-10 h-10" src="/citclogo.png" alt="" />
@@ -101,7 +101,7 @@ const DrawerComponent = () => {
           style: { width: "80%", backgroundColor: "#1E2772", color: "white" },
         }}
       >
-        <div className="sidebar flex flex-col bg-main h-screen w-full font-sans text-white text-lg">
+        <div className="sidebar flex flex-col bg-main h-screen w-full font-sans text-white text-lg z-50">
           <div className="w-full flex gap-4 items-center justify-center py-4 px-3 mb-5">
             <img className="w-1/3 h-[95%]" src="/cityhalllogo.png" alt="" />
             <img className="w-1/3 h-[95%]" src="/citclogo.png" alt="" />

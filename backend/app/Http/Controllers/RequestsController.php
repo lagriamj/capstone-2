@@ -139,31 +139,24 @@ class RequestsController extends Controller
         return response()->json($requestRecord, 201);
     }
 
-    public function update(Request $request, $id)
+    public function updateRequest(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'user_id' => 'required',
-            'fullName' => 'required',
-            'reqOffice' => 'required',
-            'division' => 'required',
             'natureOfRequest' => 'required',
-            'dateRequested' => 'required',
-            'modeOfRequest' => 'required',
             'unit' => 'required',
             'propertyNo' => 'required',
             'serialNo' => 'required',
-            'authorizedBy' => 'required',
             'yearProcured' => 'required',
             'specialIns' => 'nullable',
-            'status' => 'required',
-            'assignedTo' => 'required',
-            'dateUpdated' => 'required',
         ]);
 
-        $users = Requests::findOrFail($id);
-        $users->update($validatedData);
+        $validatedData['dateUpdated'] = now();
 
-        return response()->json($users, 200);
+        $updated = Requests::where('id', $id)->update($validatedData);
+
+        if ($updated) {
+            return response()->json(['message' => 'Request updated successfully']);
+        }
     }
 
     public function destroyRequest($id)
@@ -260,21 +253,20 @@ class RequestsController extends Controller
             ->select('propertyNo', 'serialNo', 'unit', DB::raw('COUNT(*) as count'))
             ->where('status', 'Closed')
             ->groupBy('propertyNo', 'serialNo', 'unit')
-            ->having('count', '>=', 3)
+            ->having('count', '>=', 5)
             ->get();
 
         $result = [];
-        $totalCount = 0;
 
         foreach ($userRequests as $request) {
             $message = ($request->count >= 5) ? 'for waste' : '';
-            $totalCount += $request->count;
 
             $allThresholdRequest = DB::table('user_requests')
                 ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
                 ->join('release_requests', 'receive_service.id', '=', 'release_requests.receivedReq_id')
                 ->where('propertyNo', $request->propertyNo)
                 ->where('serialNo', $request->serialNo)
+                ->where('unit', $request->unit)
                 ->select('user_requests.*', 'receive_service.*', 'release_requests.*')
                 ->get();
 
@@ -283,43 +275,27 @@ class RequestsController extends Controller
                 'serialNo' => $request->serialNo,
                 'unit' => $request->unit,
                 'message' => $message,
-                'total_count' => $totalCount,
-
+                'total_count' => $request->count,
             ];
         }
         return response()->json($result);
     }
 
+
     public function getThresholdHistory(Request $request)
     {
+        $propertyNo = $request->input('propertyNo');
+        $serialNo = $request->input('serialNo');
+        $unit = $request->input('unit');
+
         $userRequests = DB::table('user_requests')
-            ->select('propertyNo', 'serialNo', 'unit', DB::raw('COUNT(*) as count'))
-            ->where('status', 'Closed')
-            ->groupBy('propertyNo', 'serialNo', 'unit')
-            ->having('count', '>=', 3)
+            ->select('id', 'request_code', 'dateRequested', 'assignedTo')
+            ->where('propertyNo', $propertyNo)
+            ->where('serialNo', $serialNo)
+            ->where('unit', $unit)
             ->get();
 
-        $result = [];
-        $totalCount = 0;
-
-        foreach ($userRequests as $request) {
-            $message = ($request->count >= 10) ? 'for waste' : 'for replacement';
-            $totalCount += $request->count;
-
-            $allThresholdRequest = DB::table('user_requests')
-                ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
-                ->join('release_requests', 'receive_service.id', '=', 'release_requests.receivedReq_id')
-                ->where('propertyNo', $request->propertyNo)
-                ->where('serialNo', $request->serialNo)
-                ->where('unit', $request->unit)
-                ->select('user_requests.dateRequested', 'receive_service.serviceBy', 'receive_service.rootCause', 'receive_service.remarks')
-                ->get();
-
-            $result[] = [
-                'allThresholdRequest' => $allThresholdRequest,
-            ];
-        }
-        return response()->json($result);
+        return response()->json($userRequests);
     }
 
     public function addArtaReason(Request $request)

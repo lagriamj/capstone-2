@@ -22,6 +22,7 @@ const RateModal = ({
   role,
   isLargeScreen,
   isScreenWidth1366,
+  updateServiceTaskData,
 }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -91,8 +92,8 @@ const RateModal = ({
         navigate("/head/transactions");
         setActive("transactions");
       } else if (role === "admin") {
-        navigate("service-task");
-        setActive("service-task");
+        onClose(); // Close the modal
+        updateServiceTaskData();
       }
     } catch (err) {
       if (err.response && err.response.status === 422) {

@@ -119,7 +119,7 @@ const SummaryListModal = ({
     position: ["bottomLeft"],
     showQuickJumper: true,
     current: 1,
-    pageSize: 10,
+    pageSize: data.requests ? data.requests.length : 10,
     showLessItems: true,
   });
 
@@ -188,7 +188,7 @@ const SummaryListModal = ({
           onClose={closeGenerateReport}
           tableColumn={summaryListColumn}
           techData={data.requests}
-          pageSize={pagination.pageSize}
+          pageSize={data.requests ? data.requests.length : 10}
           currentPage={currentPage}
           isLargeScreen={isLargeScreen}
           fromDate={fromDate}

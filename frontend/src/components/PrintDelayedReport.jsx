@@ -23,13 +23,24 @@ const PrintDelayedReport = ({
 
   return (
     <Modal
-      title="Delayed Report Print Preview"
+      title={
+        <div className="flex items-center gap-2 font-sans">
+          {" "}
+          <span>Delayed Report Print Preview</span>{" "}
+          <button
+            className="text-white px-5 py-2 ml-auto mr-5 rounded-md border-1 border-gray-300 bg-main hover:opacity-90"
+            onClick={handlePrint}
+          >
+            Print
+          </button>
+        </div>
+      }
       open={isOpen}
       onCancel={onClose}
       onOk={handlePrint}
       okButtonProps={{
         color: "red",
-        className: "text-white bg-main border-1 border-gray-300",
+        className: "text-white bg-main border-1 border-gray-300 hidden",
         size: "large",
       }}
       okText="Print"

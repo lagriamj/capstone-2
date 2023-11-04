@@ -91,6 +91,8 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
   const customFilterOption = (inputValue, option) =>
     option.value?.toLowerCase().includes(inputValue.toLowerCase());
 
+  const isWalkIn = data.modeOfRequest === "Walk-In";
+
   return (
     <Modal
       open={isOpen}
@@ -106,92 +108,6 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
       footer={null}
       closable={false}
     >
-      <div className="relative p-6 text-lg">
-        {/* Display your data in a 4x5 grid */}
-        {data && (
-          <Row gutter={[16, 16]}>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2 text-black">
-                Requesting Office
-              </label>
-              <Input value={data.reqOffice} readOnly className="h-[40px] " />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">Division</label>
-              <Input value={data.division} readOnly className="h-[40px] " />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">
-                Date Request
-              </label>
-              <Input
-                value={data.dateRequested}
-                readOnly
-                className="h-[40px] "
-              />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">
-                Mode Request
-              </label>
-              <Input
-                value={data.modeOfRequest}
-                readOnly
-                className="h-[40px] "
-              />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">
-                Nature of Request
-              </label>
-              <Input
-                value={data.natureOfRequest}
-                readOnly
-                className="h-[40px] "
-              />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">
-                Requested By
-              </label>
-              <Input value={data.fullName} readOnly className="h-[40px] " />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">
-                Authorized By
-              </label>
-              <Input value={data.authorizedBy} readOnly className="h-[40px] " />
-            </Col>
-            <Col xs={24} lg={24}>
-              <label className="block text-sm font-bold mb-2">
-                Special Instructions
-              </label>
-              <TextArea
-                rows={5}
-                value={data.specialIns}
-                readOnly
-                className="h-[40px] "
-              />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">Unit</label>
-              <Input value={data.unit} readOnly className="h-[40px] " />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">
-                Property No
-              </label>
-              <Input value={data.propertyNo} readOnly className="h-[40px] " />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">Serial No</label>
-              <Input value={data.serialNo} readOnly className="h-[40px] " />
-            </Col>
-
-            {/* Add more columns as needed */}
-          </Row>
-        )}
-      </div>
       <Form
         form={form}
         onFinish={handleSubmit}
@@ -201,6 +117,17 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
           assignedTo: selectedTechnician,
           yearProcured: data.yearProcured,
           dateReceived: daytime,
+          fullName: data.fullName,
+
+          reqOffice: data.reqOffice,
+          division: data.division,
+          modeOfRequest: data.modeOfRequest,
+          natureOfRequest: data.natureOfRequest,
+          authorizedBy: data.authorizedBy,
+          specialIns: data.specialIns,
+          unit: data.unit,
+          serialNo: data.serialNo,
+          propertyNo: data.propertyNo,
         }}
         layout="vertical"
       >
@@ -208,6 +135,157 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
           {/* ADMIN SIDE */}
           {data && (
             <Row gutter={[16, 16]}>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold mb-2">
+                      Requesting Office
+                    </label>
+                  }
+                  name="reqOffice"
+                >
+                  <Input
+                    readOnly={!isWalkIn}
+                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold mb-2">
+                      Division
+                    </label>
+                  }
+                  name="division"
+                >
+                  <Input
+                    readOnly={!isWalkIn}
+                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold mb-2">
+                      Mode of Request
+                    </label>
+                  }
+                  name="modeOfRequest"
+                >
+                  <Input readOnly={!isWalkIn} className={`h-[40px]`} />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold mb-2">
+                      Nature of Request
+                    </label>
+                  }
+                  name="natureOfRequest"
+                >
+                  <Input
+                    readOnly={!isWalkIn}
+                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold mb-2">
+                      Requested By
+                    </label>
+                  }
+                  name="fullName"
+                >
+                  <Input
+                    readOnly={!isWalkIn}
+                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold mb-2">
+                      Authorized By
+                    </label>
+                  }
+                  name="authorizedBy"
+                >
+                  <Input
+                    readOnly={!isWalkIn}
+                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={24}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold mb-2">
+                      Special Instructions
+                    </label>
+                  }
+                  name="specialIns"
+                >
+                  <TextArea
+                    rows={5}
+                    readOnly={!isWalkIn}
+                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold mb-2">Unit</label>
+                  }
+                  name="unit"
+                >
+                  <Input
+                    readOnly={!isWalkIn}
+                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold mb-2">
+                      Serial No
+                    </label>
+                  }
+                  name="serialNo"
+                >
+                  <Input
+                    readOnly={!isWalkIn}
+                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold mb-2">
+                      Property No
+                    </label>
+                  }
+                  name="propertyNo"
+                >
+                  <Input
+                    readOnly={!isWalkIn}
+                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
+                  />
+                </Form.Item>
+              </Col>
+              <Col>
+                <Form.Item>
+                  <Input readOnly hidden />
+                </Form.Item>
+              </Col>
               <Col xs={24} lg={6}>
                 <Form.Item
                   label={
@@ -270,9 +348,9 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
                   name="yearProcured"
                 >
                   <Input
-                    readOnly
+                    readOnly={!isWalkIn}
                     value={data.yearProcured}
-                    className="h-[40px] "
+                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
                   />
                 </Form.Item>
               </Col>

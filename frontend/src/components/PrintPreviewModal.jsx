@@ -67,7 +67,18 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
 
   return (
     <Modal
-      title="Print Preview"
+      title={
+        <div className="flex items-center gap-2 font-sans">
+          {" "}
+          <span>Print Preview</span>{" "}
+          <button
+            className="text-white px-5 py-2 ml-auto mr-5 rounded-md border-1 border-gray-300 bg-main hover:opacity-90"
+            onClick={handlePrint}
+          >
+            Print
+          </button>
+        </div>
+      }
       open={visible}
       onCancel={onClose}
       onOk={handlePrint}
@@ -76,7 +87,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
       className="ant-modal-content-custom "
       okButtonProps={{
         color: "red",
-        className: "text-black border-1 border-gray-300",
+        className: "text-black border-1 border-gray-300 hidden",
         size: "large",
       }}
       okText="Print"
