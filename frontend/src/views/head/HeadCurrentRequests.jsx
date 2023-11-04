@@ -31,7 +31,6 @@ const HeadCurrentRequests = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
-  const { fullName } = useAuth();
   const { setActive } = useActiveTab();
 
   const [selectedID, setSelectedID] = useState(null);
@@ -222,13 +221,7 @@ const HeadCurrentRequests = () => {
     };
   }, []);
 
-  const showStatusNotification = (
-    requestCode,
-    status,
-    artaDays,
-    artaStatus,
-    reasonDelay
-  ) => {
+  const showStatusNotification = (requestCode, status, artaDays) => {
     let messageText = "";
     let descriptionText = "";
     let notificationStyle = {};
@@ -238,11 +231,11 @@ const HeadCurrentRequests = () => {
         messageText = (
           <span className="text-white">{`${requestCode} Request is Received`}</span>
         );
-        descriptionText = (
+        descriptionText = artaDays ? (
           <p className="text-white">
             It will be completed within {artaDays} days.
           </p>
-        );
+        ) : null; // If artaDays is null, descriptionText is set to null
         notificationStyle = {
           backgroundColor: "#343467",
         };
@@ -252,15 +245,9 @@ const HeadCurrentRequests = () => {
           <span className="text-white">{`${requestCode} Request is On Progress`}</span>
         );
         descriptionText = (
-          <div>
-            <p className="text-white">Completion Duration: {artaDays} days</p>
-            {artaStatus == "Delay" && (
-              <p className="text-white">Processing Status: {artaStatus}</p>
-            )}
-            {reasonDelay !== "n/a" && (
-              <p className="text-white">Cause of Delay: {reasonDelay}</p>
-            )}
-          </div>
+          <p className="text-white">
+            It will be completed within {artaDays} days.
+          </p>
         );
         notificationStyle = {
           backgroundColor: "#343467",
