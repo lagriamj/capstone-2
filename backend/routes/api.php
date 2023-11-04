@@ -51,7 +51,7 @@ Route::middleware('api')->group(function () {
     Route::post('add-request', [RequestsController::class, 'addRequest']);
 
     //Current Requests (user side)
-    Route::get('request-list/{userID}/{startDate?}/{endDate?}', [RequestsController::class, 'showRequest']);
+    Route::get('request-list', [RequestsController::class, 'showRequest']);
     Route::put('closedNorate/{id}', [RatingController::class, 'closedNorate']);
     Route::delete('delete-request/{id}', [RequestsController::class, 'destroyRequest']);
 

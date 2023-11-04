@@ -13,8 +13,12 @@ use Carbon\Carbon;
 
 class RequestsController extends Controller
 {
-    public function showRequest(Request $request, $userID, $startDate = null, $endDate = null)
+    public function showRequest(Request $request)
     {
+        $userID = $request->input('userID');
+        $startDate = $request->input('startDate', null);
+        $endDate = $request->input('endDate', null);
+
         if ($startDate === null) {
             $startDate = date('Y-m-d', strtotime('-30 days'));
         }
@@ -280,7 +284,6 @@ class RequestsController extends Controller
         }
         return response()->json($result);
     }
-
 
     public function getThresholdHistory(Request $request)
     {
