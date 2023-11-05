@@ -600,7 +600,7 @@ class DashboardController extends Controller
         foreach ($requests as $request) {
             if ($request->dateReleased === ' ' && $request->processing_hours >= 168) {
                 $request->processing_hours = ' ';
-                $request->toRecommend = 'Unclaimed ';
+                $request->toRecommend = 'yawa';
             } else {
                 $processingHours = $this->calculateProcessingHours($request->dateReceived, $request->dateReleased);
                 $request->processing_hours = $processingHours . ' hrs';
