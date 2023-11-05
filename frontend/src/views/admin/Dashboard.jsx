@@ -194,6 +194,7 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
+  const [startDate, setStartDate] = useState("");
   const [technicianData, setTechnicianData] = useState(null);
   const [percentData, setPercentData] = useState({
     pendingRequests: 0,
@@ -217,19 +218,26 @@ const Dashboard = () => {
 
   const [requestsByDate, setRequestsByDate] = useState(null);
   const [requestsByOffice, setRequestsByOffice] = useState(null);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
-    const defaultStartDate = new Date(endDate);
-    defaultStartDate.setDate(defaultStartDate.getDate() - 30);
-    const defaultEndDate = new Date();
-    const defaultStartDateString = defaultStartDate.toISOString().split("T")[0];
-    const defaultEndDateString = defaultEndDate.toISOString().split("T")[0];
+    const currentDate = new Date();
+    const defaultStartDate = new Date(currentDate);
+    defaultStartDate.setDate(currentDate.getDate() - 30);
 
-    setStartDate(defaultStartDateString);
-    setEndDate(defaultEndDateString);
+    const startDateString = defaultStartDate.toISOString().split("T")[0];
+    const endDateString = currentDate.toISOString().split("T")[0];
+
+    setStartDate(startDateString);
+    setEndDate(endDateString);
+
+    fetchPiegraphDetails();
+    fetchDataRequest();
+    fetchTotalAndClosed();
   }, []);
+
+  console.log("start date: ", startDate);
+  console.log("end date: ", endDate);
 
   useEffect(() => {
     fetchPiegraphDetails();
@@ -240,23 +248,33 @@ const Dashboard = () => {
   const fetchDataRequest = async () => {
     try {
       const techResponse = await axios.get(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/api/technician-performance/${startDate}/${endDate}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/technician-performance`,
+        {
+          params: {
+            startDate: startDate,
+            endDate: endDate,
+          },
+        }
       );
       setTechnicianData(techResponse.data.Technician);
-
       const requestsResponse = await axios.get(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/api/requestsByDate/${startDate}/${endDate}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/requestsByDate`,
+        {
+          params: {
+            startDate: startDate,
+            endDate: endDate,
+          },
+        }
       );
       setRequestsByDate(requestsResponse.data);
-
       const officeResponse = await axios.get(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/api/office-performance/${startDate}/${endDate}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/office-performance`,
+        {
+          params: {
+            startDate: startDate,
+            endDate: endDate,
+          },
+        }
       );
       setRequestsByOffice(officeResponse.data.office);
     } catch (error) {
@@ -267,9 +285,13 @@ const Dashboard = () => {
   const fetchPiegraphDetails = async () => {
     try {
       const percentResponse = await axios.get(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/api/percent-accomplished/${startDate}/${endDate}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/percent-accomplished`,
+        {
+          params: {
+            startDate: startDate,
+            endDate: endDate,
+          },
+        }
       );
       setPercentData(percentResponse.data);
     } catch (error) {
@@ -280,9 +302,13 @@ const Dashboard = () => {
   const fetchTotalAndClosed = async () => {
     try {
       const totalAndClosedRes = await axios.get(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/api/totalRequests-And-Closed/${startDate}/${endDate}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/totalRequests-And-Closed`,
+        {
+          params: {
+            startDate: startDate,
+            endDate: endDate,
+          },
+        }
       );
       setTotalAndClosed(totalAndClosedRes.data);
     } catch (error) {
@@ -471,11 +497,13 @@ const Dashboard = () => {
   const handlePieClick = (entry) => {
     setPieLoading(true);
     axios
-      .get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/status-description/${
-          entry.name
-        }/${startDate}/${endDate}`
-      )
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/status-description`, {
+        params: {
+          status: entry.name,
+          startDate: startDate,
+          endDate: endDate,
+        },
+      })
       .then((response) => {
         const formattedData = response.data.requestData.map((item, index) => ({
           key: index,
@@ -522,11 +550,13 @@ const Dashboard = () => {
   const handlePieRequestsClick = (entry) => {
     setPieLoading(true);
     axios
-      .get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/request-description/${
-          entry.name
-        }/${startDate}/${endDate}`
-      )
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/request-description`, {
+        params: {
+          status: entry.name,
+          startDate: startDate,
+          endDate: endDate,
+        },
+      })
       .then((response) => {
         console.log(response);
         const formattedData = response.data.requestData.map((item, index) => ({
@@ -766,7 +796,7 @@ const Dashboard = () => {
             className={` w-[90%] lg:w-[80%] large:w-[85%] large:h-[95vh] h-auto lg:ml-auto lg:mx-4 mt-20  lg:mt-0   justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
             {isLoading ? (
-              <div className="flex items-center justify-center h-screen w-full">
+              <div className="flex items-center justify-center h-[100%] w-full">
                 <RingLoader color="#343467" size={80} />
               </div>
             ) : (

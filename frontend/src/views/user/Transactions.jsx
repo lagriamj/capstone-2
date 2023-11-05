@@ -88,18 +88,21 @@ const Transactions = () => {
 
   const isScreenWidth1366 = windowWidth1366 === 1366;
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
-    const defaultStartDate = new Date(endDate);
-    defaultStartDate.setDate(defaultStartDate.getDate() - 30);
-    const defaultEndDate = new Date();
-    const defaultStartDateString = defaultStartDate.toISOString().split("T")[0];
-    const defaultEndDateString = defaultEndDate.toISOString().split("T")[0];
+    const currentDate = new Date();
+    const defaultStartDate = new Date(currentDate);
+    defaultStartDate.setDate(currentDate.getDate() - 30);
 
-    setStartDate(defaultStartDateString);
-    setEndDate(defaultEndDateString);
+    const startDateString = defaultStartDate.toISOString().split("T")[0];
+    const endDateString = currentDate.toISOString().split("T")[0];
+
+    setStartDate(startDateString);
+    setEndDate(endDateString);
+
+    fetchData(); // Fetch data with the default dates
   }, []);
 
   useEffect(() => {
@@ -110,10 +113,16 @@ const Transactions = () => {
     try {
       setLoading(true);
       const result = await axios.get(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/api/transaction-list/${userID}/${startDate}/${endDate}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/transaction-list`,
+        {
+          params: {
+            userID: userID,
+            startDate: startDate,
+            endDate: endDate,
+          },
+        }
       );
+
       setData(result.data.results);
       console.log(result);
       setLoading(false);

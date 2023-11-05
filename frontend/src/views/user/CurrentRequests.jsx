@@ -107,75 +107,51 @@ const CurrentRequests = () => {
   const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
-    const currentDate = new Date();
-    const defaultStartDate = new Date(currentDate);
-    defaultStartDate.setDate(currentDate.getDate() - 30);
+    const defaultStartDate = new Date();
+    defaultStartDate.setDate(defaultStartDate.getDate() - 10);
+    const defaultEndDate = new Date();
+    const defaultStartDateString = defaultStartDate.toISOString().split("T")[0];
+    const defaultEndDateString = defaultEndDate.toISOString().split("T")[0];
 
-    const startDateString = defaultStartDate.toISOString().split("T")[0];
-    const endDateString = currentDate.toISOString().split("T")[0];
-
-    setStartDate(startDateString);
-    setEndDate(endDateString);
-
-    fetchData(); // Fetch data with the default dates
+    setStartDate(defaultStartDateString);
+    setEndDate(defaultEndDateString);
   }, []);
 
   useEffect(() => {
     fetchData();
   }, [startDate, endDate]);
 
-  let notificationDisplayed = false;
-  let loopCount = 0; // Initialize the loop count
-
   const fetchData = async () => {
     try {
       setLoading(true);
-
-      const url = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/api/request-list`,
-        {
-          params: {
-            userID: userID,
-            startDate: startDate,
-            endDate: endDate,
-          },
-        }
-      );
-
-      const result = url;
+      const url = `http://127.0.0.1:8000/api/request-list/${userID}/${startDate}/${endDate}`;
+      const result = await axios.get(url);
       setData(result.data.results);
       setLoading(false);
 
-      if (loopCount === 1 && !notificationDisplayed) {
-        const uniqueRequests = new Set();
-        result.data.results.forEach((item) => {
-          if (
-            item.status !== "Cancelled" &&
-            item.status !== "Closed" &&
-            item.status !== "Purge"
-          ) {
-            uniqueRequests.add({
-              requestCode: item.request_code,
-              status: item.status,
-              arta: item.arta,
-              reasonDelay: item.reasonDelay,
-              artaStatus: item.artaStatus,
-            });
-          }
-        });
+      const statusCounts = {
+        Received: 0,
+        "On Progress": 0,
+        "To Release": 0,
+        "To Rate": 0,
+      };
 
-        uniqueRequests.forEach((request) => {
-          showStatusNotification(
-            request.requestCode,
-            request.status,
-            request.arta,
-            request.artaStatus,
-            request.reasonDelay
-          );
-        });
-        notificationDisplayed = true;
+      result.data.results.forEach((item) => {
+        if (item.status in statusCounts) {
+          statusCounts[item.status]++;
+        }
+      });
+
+      for (const status in statusCounts) {
+        console.log(`Status: ${status}, Count: ${statusCounts[status]}`);
+        if (statusCounts[status] > 0) {
+          const requestIds = result.data.results
+            .filter((item) => item.status === status)
+            .map((item) => item.id); // Use request_id instead of id
+          console.log(`${status} Request IDs: `, requestIds);
+          showStatusNotification(status, statusCounts[status], requestIds); // Pass requestIds to the notification
+        }
       }
-      loopCount++;
     } catch (err) {
       console.log("Something went wrong:", err);
       setLoading(false);
@@ -190,13 +166,11 @@ const CurrentRequests = () => {
 
   const showPopconfirmInRate = (id) => {
     setOpen(true);
-
     const popconfirmVisibleCopy = [...popconfirmVisible];
     popconfirmVisibleCopy[id] = true;
     setPopconfirmVisible(popconfirmVisibleCopy);
     setTimeout(() => {
       setOpen(false);
-      fetchData();
       setPopconfirmVisible(false);
     }, 5000);
   };
@@ -211,9 +185,7 @@ const CurrentRequests = () => {
 
   const closedRequest = async (id) => {
     console.log(id);
-    await axios.put(
-      `${import.meta.env.VITE_API_BASE_URL}/api/closedNorate/${id}`
-    );
+    await axios.put(`http://127.0.0.1:8000/api/closedNorate/${id}`);
     const newUserData = data.filter((item) => item.id !== id);
     setData(newUserData);
   };
@@ -236,7 +208,7 @@ const CurrentRequests = () => {
     };
   }, []);
 
-  const showStatusNotification = (requestCode, status, artaDays) => {
+  const showStatusNotification = (status, count, requestIds) => {
     let messageText = "";
     let descriptionText = "";
     let notificationStyle = {};
@@ -244,24 +216,24 @@ const CurrentRequests = () => {
     switch (status) {
       case "Received":
         messageText = (
-          <span className="text-white">{`${requestCode} Request is Received`}</span>
+          <span className="text-white">{`E-${requestIds} Request is Received`}</span>
         );
-        descriptionText = artaDays ? (
+        descriptionText = (
           <p className="text-white">
-            It will be completed within {artaDays} days.
+            Your {requestIds.join(", ")} request is being processed.
           </p>
-        ) : null; // If artaDays is null, descriptionText is set to null
+        );
         notificationStyle = {
           backgroundColor: "#343467",
         };
         break;
       case "On Progress":
         messageText = (
-          <span className="text-white">{`${requestCode} Request is On Progress`}</span>
+          <span className="text-white">{`E-${requestIds} Request is On Progress`}</span>
         );
         descriptionText = (
           <p className="text-white">
-            It will be completed within {artaDays} days.
+            Your {requestIds.join(", ")} request is currently in progress.
           </p>
         );
         notificationStyle = {
@@ -270,11 +242,11 @@ const CurrentRequests = () => {
         break;
       case "To Release":
         messageText = (
-          <span className="text-white">{`${requestCode} Request is To Release`}</span>
+          <span className="text-white">{`E-${requestIds} Request is To Release`}</span>
         );
         descriptionText = (
           <p className="text-white">
-            It will be completed within {artaDays} days.
+            Your {requestIds.join(", ")} request is ready for release.
           </p>
         );
         notificationStyle = {
@@ -283,11 +255,11 @@ const CurrentRequests = () => {
         break;
       case "To Rate":
         messageText = (
-          <span className="text-white">{`${requestCode} Request is To Rate`}</span>
+          <span className="text-white">{`E-${requestIds} Request is To Rate`}</span>
         );
         descriptionText = (
           <p className="text-white">
-            It will be completed within {artaDays} days.
+            Your {requestIds.join(", ")} request is ready for rating.
           </p>
         );
         notificationStyle = {
@@ -299,12 +271,15 @@ const CurrentRequests = () => {
     }
 
     if (messageText) {
-      notification.success({
-        message: messageText,
-        description: descriptionText,
-        duration: 5,
-        style: notificationStyle,
-      });
+      if (!uniqueStatusesRef.current.has(status)) {
+        notification.success({
+          message: messageText,
+          description: descriptionText,
+          duration: 4,
+          style: notificationStyle,
+        });
+        uniqueStatusesRef.current.add(status);
+      }
     }
   };
 
@@ -323,37 +298,6 @@ const CurrentRequests = () => {
   }, []);
 
   const isScreenWidth1366 = windowWidth1366 === 1366;
-
-  const [natureRequests, setNatureRequests] = useState("");
-  const [natureReqOption, setNatureReqOption] = useState([]);
-
-  useEffect(() => {
-    fetchNature();
-  }, []);
-
-  const fetchNature = () => {
-    setLoading(true);
-    axios
-      .get(`${import.meta.env.VITE_API_BASE_URL}/api/nature-list`)
-      .then((response) => {
-        setNatureRequests(response.data.results);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error(error);
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    if (Array.isArray(natureRequests)) {
-      const dynamicFilters = natureRequests.map((natureRequest) => ({
-        text: natureRequest.natureRequest,
-        value: natureRequest.natureRequest,
-      }));
-      setNatureReqOption(dynamicFilters);
-    }
-  }, [natureRequests]);
 
   const [searchText, setSearchText] = useState("");
   const [pagination, setPagination] = useState({
@@ -402,14 +346,13 @@ const CurrentRequests = () => {
     },
     {
       title: "Request ID",
-      dataIndex: "request_code",
-      key: "request_code",
+      dataIndex: "id",
+      key: "id",
     },
     {
       title: "Date Requested",
       dataIndex: "dateRequested",
       key: "dateRequested",
-      defaultSortOrder: "desc",
       sorter: (a, b) => {
         const dateA = new Date(a.dateRequested);
         const dateB = new Date(b.dateRequested);
@@ -420,25 +363,11 @@ const CurrentRequests = () => {
       title: "Nature of Request",
       dataIndex: "natureOfRequest",
       key: "natureOfRequest",
-      filters: natureReqOption,
-      filterSearch: true,
-      onFilter: (value, record) => record.natureOfRequest?.includes(value),
     },
     {
       title: "Mode",
       dataIndex: "modeOfRequest",
       key: "modeOfRequest",
-      filters: [
-        {
-          text: "Online",
-          value: "Online",
-        },
-        {
-          text: "Walk-In",
-          value: "Walk-In",
-        },
-      ],
-      onFilter: (value, record) => record.modeOfRequest?.includes(value),
     },
     {
       title: "Assigned To",
@@ -529,11 +458,7 @@ const CurrentRequests = () => {
                 isScreenWidth1366 ? "text-xs" : " text-base"
               } font-medium bg-gray-800 py-2 px-4 rounded-lg`}
               onClick={() =>
-                handleStarIconClick(
-                  record.request_id,
-                  record.user_id,
-                  record.reqOffice
-                )
+                handleStarIconClick(record.id, record.user_id, record.reqOffice)
               }
             >
               Rate
@@ -567,7 +492,7 @@ const CurrentRequests = () => {
               description="Please confirm this action. This action cannot be undone."
               open={popconfirmVisible[record.id]}
               icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-              onConfirm={() => handleClosed(record.request_id)}
+              onConfirm={() => handleClosed(record.id)}
               okButtonProps={{
                 color: "red",
                 className: "text-black border-1 border-gray-300",
@@ -682,7 +607,6 @@ const CurrentRequests = () => {
                   onClose={handleCloseModalClick} // Pass the callback here
                   isLargeScreen={isLargeScreen}
                   isScreenWidth1366={isScreenWidth1366}
-                  fetchData={fetchData}
                 />
               )}
               {selectedReason && (
@@ -704,7 +628,6 @@ const CurrentRequests = () => {
                   id={selectedID} // Pass the selectedItemId as a prop
                   user_id={selectedUserId} // Pass the selectedUserId as a prop
                   office={selectedOffice}
-                  role={userRole}
                   isScreenWidth1366={isScreenWidth1366}
                 />
               )}

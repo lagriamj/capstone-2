@@ -128,14 +128,17 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function getTechnicianPerformance($startDate = null, $endDate = null)
+    public function getTechnicianPerformance(Request $request)
     {
+        $startDate = $request->input('startDate', null);
+        $endDate = $request->input('endDate', null);
+
         if ($startDate === null) {
             $startDate = date('Y-m-d', strtotime('-30 days'));
         }
 
         if ($endDate === null) {
-            $endDate = date('Y-m-d'); // Default to today
+            $endDate = date('Y-m-d');
         }
 
         $performanceData = DB::table('user_requests')
@@ -153,8 +156,11 @@ class DashboardController extends Controller
         return response()->json(['Technician' => $performanceData,]);
     }
 
-    public function getOfficePerformance($startDate = null, $endDate = null)
+    public function getOfficePerformance(Request $request)
     {
+        $startDate = $request->input('startDate', null);
+        $endDate = $request->input('endDate', null);
+
         if ($startDate === null) {
             $startDate = date('Y-m-d', strtotime('-30 days')); // Default to 10 days ago
         }
@@ -179,14 +185,17 @@ class DashboardController extends Controller
     }
 
 
-    public function getPercentAccomplished($startDate = null, $endDate = null)
+    public function getPercentAccomplished(Request $request)
     {
+        $startDate = $request->input('startDate', null);
+        $endDate = $request->input('endDate', null);
+
         if ($startDate === null) {
-            $startDate = date('Y-m-d', strtotime('-30 days')); // Default to 10 days ago
+            $startDate = date('Y-m-d', strtotime('-30 days'));
         }
 
         if ($endDate === null) {
-            $endDate = date('Y-m-d'); // Default to today
+            $endDate = date('Y-m-d');
         }
 
         $pendingRequests = DB::table('user_requests')
@@ -296,8 +305,11 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function getRequestsByDate($startDate = null, $endDate = null)
+    public function getRequestsByDate(Request $request)
     {
+        $startDate = $request->input('startDate', null);
+        $endDate = $request->input('endDate', null);
+
         if ($startDate === null) {
             $startDate = date('Y-m-d', strtotime('-30 days')); // Default to 10 days ago
         }
@@ -366,14 +378,17 @@ class DashboardController extends Controller
         return response()->json($chartData);
     }
 
-    public function getTotalAndClosed($startDate = null, $endDate = null)
+    public function getTotalAndClosed(Request $request)
     {
+        $startDate = $request->input('startDate', null);
+        $endDate = $request->input('endDate', null);
+
         if ($startDate === null) {
-            $startDate = date('Y-m-d', strtotime('-30 days')); // Default to 2 days ago
+            $startDate = date('Y-m-d', strtotime('-30 days'));
         }
 
         if ($endDate === null) {
-            $endDate = date('Y-m-d'); // Default to today
+            $endDate = date('Y-m-d');
         }
 
         $totalRequests = DB::table('user_requests')
@@ -393,8 +408,11 @@ class DashboardController extends Controller
         ]);
     }
 
-    public function getStatusDescription($status, $startDate = null, $endDate = null)
+    public function getStatusDescription(Request $request)
     {
+        $status = $request->input('status');
+        $startDate = $request->input('startDate', null);
+        $endDate = $request->input('endDate', null);
 
         if ($startDate === null) {
             $startDate = date('Y-m-d', strtotime('-30 days'));
@@ -413,8 +431,12 @@ class DashboardController extends Controller
         return response()->json(['requestData' => $requestData]);
     }
 
-    public function getRequestsDescription($status, $startDate = null, $endDate = null)
+    public function getRequestsDescription(Request $request)
     {
+        $status = $request->input('status');
+        $startDate = $request->input('startDate', null);
+        $endDate = $request->input('endDate', null);
+
         if ($startDate === null) {
             $startDate = date('Y-m-d', strtotime('-10 days'));
         }
@@ -623,9 +645,10 @@ class DashboardController extends Controller
     public function artaDelay()
     {
         $delayData = DB::table('user_requests')
+            ->select('user_requests.id', 'user_requests.request_code', 'user_requests.dateRequested', 'user_requests.natureOfRequest', 'receive_service.serviceBy', 'receive_service.arta', 'arta_cause_delay.reasonDelay', 'arta_cause_delay.reasonDelay as causeOfDelay', 'arta_cause_delay.dateReason as dateOfDelay')
             ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
-            ->where('receive_service.artaStatus', 'Delay')
-            ->select('user_requests.*', 'receive_service.*')
+            ->join('arta_cause_delay', 'user_requests.id', '=', 'arta_cause_delay.request_id')
+            ->where('receive_service.artaStatus', '=', 'Delay')
             ->get();
 
         return response()->json(['results' => $delayData]);

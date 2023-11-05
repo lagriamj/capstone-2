@@ -127,14 +127,16 @@ const ServiceTask = () => {
   const [endDate, setEndDate] = useState(new Date());
 
   useEffect(() => {
-    const defaultStartDate = new Date(endDate);
-    defaultStartDate.setDate(defaultStartDate.getDate() - 30);
-    const defaultEndDate = new Date();
-    const defaultStartDateString = defaultStartDate.toISOString().split("T")[0];
-    const defaultEndDateString = defaultEndDate.toISOString().split("T")[0];
+    const currentDate = new Date();
+    const defaultStartDate = new Date(currentDate);
+    defaultStartDate.setDate(currentDate.getDate() - 30);
+    const startDateString = defaultStartDate.toISOString().split("T")[0];
+    const endDateString = currentDate.toISOString().split("T")[0];
 
-    setStartDate(defaultStartDateString);
-    setEndDate(defaultEndDateString);
+    setStartDate(startDateString);
+    setEndDate(endDateString);
+
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -144,10 +146,16 @@ const ServiceTask = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const url = `${
-        import.meta.env.VITE_API_BASE_URL
-      }/api/service-task-list/${startDate}/${endDate}`;
-      const result = await axios.get(url);
+      const url = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/api/service-task-list`,
+        {
+          params: {
+            startDate: startDate,
+            endDate: endDate,
+          },
+        }
+      );
+      const result = url;
       setData(result.data.results);
       setLoading(false);
       console.log(data);
@@ -261,8 +269,8 @@ const ServiceTask = () => {
 
     if (Array.isArray(technicians)) {
       const techFilter = technicians.map((technician) => ({
-        text: `${technician.userFirstName} ${technician.userLastName}`,
-        value: `${technician.userFirstName} ${technician.userLastName}`,
+        text: technician.userFirstName + technician.userLastName,
+        value: technician.userFirstName + technician.userLastName,
       }));
       techFilter.unshift({
         text: "My Tasks",

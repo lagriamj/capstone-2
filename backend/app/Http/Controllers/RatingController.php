@@ -13,47 +13,32 @@ use App\Models\AuditLog;
 class RatingController extends Controller
 {
 
-    public function showTransanction(Request $request, $id, $startDate = null, $endDate = null, $selectedStatus = null, $selectedSort = null, $search = null)
+    public function showTransanction(Request $request)
     {
 
-        $order = $request->input('order');
+        $id = $request->input('userID');
+        $startDate = $request->input('startDate', null);
+        $endDate = $request->input('endDate', null);
+
+        if ($startDate === null) {
+            $startDate = date('Y-m-d', strtotime('-30 days'));
+        }
+
+        if ($endDate === null) {
+            $endDate = date('Y-m-d');
+        }
 
         $query = DB::table('user_requests')
             ->select('user_requests.*')
             ->whereNotIn('status', ['Pending', 'Received', 'On Progress', 'To Release', 'To Rate'])
             ->where('user_id', $id);
 
-
-        if ($startDate && $endDate) {
-            // Use '<' for the end date to exclude it from the range
-            $query->where('user_requests.dateRequested', '>=', $startDate)
-                ->where('user_requests.dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
-        }
-
-        if ($order && in_array($order, ['asc', 'desc'])) {
-            $query->orderByRaw("dateUpdated $order");
-        }
-
-        if ($selectedStatus && in_array($selectedStatus, ['Closed', 'Cancelled'])) {
-            $query->where('status', $selectedStatus);
-        }
-
-        if ($search) {
-            $search = preg_replace('/^E-/i', '', $search); // Remove 'E-' or 'e-' prefix
-            $query->where(function ($query) use ($search) {
-                $query->where('id', 'LIKE', "%$search%")
-                    ->orWhere('natureOfRequest', 'LIKE', "%$search%")
-                    ->orWhere('assignedTo', 'LIKE', "%$search%");
-            });
-        }
-
-
+        $query->where('dateRequested', '>=', $startDate)
+            ->where('dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
 
         $data = $query->get();
-
         return response()->json(['results' => $data]);
     }
-
 
     public function showServiceTransanction(Request $request, $startDate = null, $endDate = null, $selectedStatus = null, $selectedSort = null, $search = null)
     {

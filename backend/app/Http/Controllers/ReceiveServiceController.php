@@ -132,29 +132,11 @@ class ReceiveServiceController extends Controller
         ], 200);
     }
 
-    // public function showServiceTask($fullName)
-    // {
-    //     $technicianExists = DB::table('technicians')
-    //         ->where('technician', $fullName)
-    //         ->exists();
-
-    //     $query = DB::table('user_requests')
-    //         ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
-    //         ->select('user_requests.*', 'receive_service.*')
-    //         ->whereNotIn('user_requests.status', ['Pending', 'Closed', 'Cancelled']);
-
-    //     if ($technicianExists) {
-    //         $query->where('user_requests.assignedTo', '=', $fullName);
-    //     }
-
-    //     $query->orderBy('user_requests.dateUpdated', 'desc');
-
-    //     $data = $query->get();
-    //     return response()->json(['results' => $data]);
-    // }
-
-    public function showServiceTask(Request $request, $startDate = null, $endDate = null)
+    public function showServiceTask(Request $request)
     {
+        $startDate = $request->input('startDate', null);
+        $endDate = $request->input('endDate', null);
+
         if ($startDate === null) {
             $startDate = date('Y-m-d', strtotime('-30 days'));
         }
@@ -167,8 +149,10 @@ class ReceiveServiceController extends Controller
             ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
             ->select('user_requests.*', 'receive_service.*')
             ->whereNotIn('user_requests.status', ['Purge'])
-            ->where('user_requests.approved', '=', 'yes-signature')
-            ->whereBetween('user_requests.dateRequested', [$startDate, date('Y-m-d', strtotime($endDate . ' + 1 day'))]);
+            ->where('user_requests.approved', '=', 'yes-signature');
+
+        $query->where('dateRequested', '>=', $startDate)
+            ->where('dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
 
         $data = $query->get();
 

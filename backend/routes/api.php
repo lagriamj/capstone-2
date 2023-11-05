@@ -56,7 +56,7 @@ Route::middleware('api')->group(function () {
     Route::delete('delete-request/{id}', [RequestsController::class, 'destroyRequest']);
 
     //Transaction (user side)
-    Route::get('transaction-list/{id}/{startDate?}/{endDate?}/{selectedStatus?}/{selectedSort?}/{search?}/{order?}', [RatingController::class, 'showTransanction']);
+    Route::get('transaction-list', [RatingController::class, 'showTransanction']);
     Route::get('closed-view/{id}', [RatingController::class, 'closedView']);
     Route::post('transanction-rate', [RatingController::class, 'rateTransaction']);
     Route::get('done-rate', [RatingController::class, 'doneRating']);
@@ -74,7 +74,7 @@ Route::middleware('api')->group(function () {
     Route::post('received-request/{id}/{fullName}', [ReceiveServiceController::class, 'receivedRequest']);
 
     //Service Task (admin side)
-    Route::get('service-task-list/{startDate?}/{endDate?}/{search?}', [ReceiveServiceController::class, 'showServiceTask']);
+    Route::get('/service-task-list', [ReceiveServiceController::class, 'showServiceTask']);
     Route::get('received-details/{startDate?}/{endDate?}', [ReceiveServiceController::class, 'showReceived']);
 
 
@@ -128,13 +128,13 @@ Route::middleware('throttle:dashboard-api')->group(function () {
     Route::get('count-requests', [DashboardController::class, 'countUserRequests']);
     Route::get('calculate-rating', [DashboardController::class, 'calculateRatings']);
 
-    Route::get('technician-performance/{startDate?}/{endDate?}', [DashboardController::class, 'getTechnicianPerformance']);
-    Route::get('percent-accomplished/{startDate?}/{endDate?}', [DashboardController::class, 'getPercentAccomplished']);
-    Route::get('requestsByDate/{startDate?}/{endDate?}', [DashboardController::class, 'getRequestsByDate']);
-    Route::get('totalRequests-And-Closed/{startDate?}/{endDate?}', [DashboardController::class, 'getTotalAndClosed']);
-    Route::get('status-description/{status}/{startDate?}/{endDate?}', [DashboardController::class, 'getStatusDescription']);
-    Route::get('office-performance/{startDate?}/{endDate?}', [DashboardController::class, 'getOfficePerformance']);
-    Route::get('request-description/{status}/{startDate?}/{endDate?}', [DashboardController::class, 'getRequestsDescription']);
+    Route::get('technician-performance', [DashboardController::class, 'getTechnicianPerformance']);
+    Route::get('percent-accomplished', [DashboardController::class, 'getPercentAccomplished']);
+    Route::get('requestsByDate', [DashboardController::class, 'getRequestsByDate']);
+    Route::get('totalRequests-And-Closed', [DashboardController::class, 'getTotalAndClosed']);
+    Route::get('status-description', [DashboardController::class, 'getStatusDescription']);
+    Route::get('office-performance', [DashboardController::class, 'getOfficePerformance']);
+    Route::get('request-description', [DashboardController::class, 'getRequestsDescription']);
 });
 
 //signature
