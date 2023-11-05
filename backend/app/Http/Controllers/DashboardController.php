@@ -589,15 +589,18 @@ class DashboardController extends Controller
 
         $requests = $query->get();
 
+
+        $sevenDaysAgo = now()->subDays(7);
+
         foreach ($requests as $request) {
             $processingHours = $this->calculateProcessingHours($request->dateReceived, $request->dateReleased);
             $request->processing_hours = $processingHours . ' hrs';
         }
 
         foreach ($requests as $request) {
-            if ($request->dateReleased === ' ') {
+            if ($request->dateReleased === ' ' && $request->processing_hours >= 168) {
                 $request->processing_hours = ' ';
-                $request->toRecommend = 'Unclaimed';
+                $request->toRecommend = 'Unclaimed ';
             } else {
                 $processingHours = $this->calculateProcessingHours($request->dateReceived, $request->dateReleased);
                 $request->processing_hours = $processingHours . ' hrs';
@@ -609,7 +612,7 @@ class DashboardController extends Controller
         $totalRequestsCount = $totalRequestsCountQuery->count();
         $totalReleasedMessage = ($totalRequestsCount > 0) ? "{$totalRequestsCount} unit Released" : "0 unit Released";
 
-        $sevenDaysAgo = now()->subDays(7);
+
         $formattedSevenDaysAgo = $sevenDaysAgo->format('Y-m-d H:i:s');
         $unclaimedRequestsCountQuery = clone $query;
         $unclaimedRequestsCountQuery->where('user_requests.status', 'To Release')
