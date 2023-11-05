@@ -21,6 +21,7 @@ export default function ReasonModal({
     setConfirmationVisible(true);
   };
 
+  console.log("yawa man diay ka:", itemData.request_id);
   const handleConfirm = async () => {
     try {
       // Construct the API URL based on the user's role
@@ -30,7 +31,7 @@ export default function ReasonModal({
               itemData.request_id
             }/${name}`
           : `${import.meta.env.VITE_API_BASE_URL}/api/cancel-reason/${
-              itemData.id
+              itemData.request_id
             }/${name}`;
 
       await axios.post(apiEndpoint, {

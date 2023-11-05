@@ -22,7 +22,7 @@ const AuditLog = () => {
   const isLargeScreen = windowWidth >= 1024;
 
   const [searchText, setSearchText] = useState("");
-  const [auditLogs, setAuditLogs] = useState([]); // State variable for audit log data
+  const [auditLogs, setAuditLogs] = useState([]);
   const [pagination, setPagination] = useState({
     position: ["bottomLeft"],
     showQuickJumper: true,
@@ -56,15 +56,19 @@ const AuditLog = () => {
       title: "Date",
       dataIndex: "date",
       key: "date",
+      defaultSortOrder: "desc",
+      sorter: (a, b) => {
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        return dateA - dateB;
+      },
     },
   ];
 
   useEffect(() => {
-    // Fetch audit log data from your Laravel API
     fetch(`${import.meta.env.VITE_API_BASE_URL}/api/audit-logs`)
       .then((response) => response.json())
       .then((data) => {
-        // Set the fetched data to the auditLogs state variable
         setAuditLogs(data.auditLogs);
       })
       .catch((error) => {

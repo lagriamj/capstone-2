@@ -13,13 +13,8 @@ import ViewCancel from "../../components/ViewCancel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faStar } from "@fortawesome/free-solid-svg-icons";
 import { Input, Table, Tag, message } from "antd";
-import { Popconfirm } from "antd";
 import RateModal from "../../components/RateModal";
-import {
-  LoadingOutlined,
-  QuestionCircleOutlined,
-  SearchOutlined,
-} from "@ant-design/icons";
+import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
 import { useAuth } from "../../AuthContext";
 import CutOffModal from "../../components/CutOffModal";
 
@@ -29,8 +24,6 @@ const ServiceTask = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
-  const [popconfirmVisible, setPopconfirmVisible] = useState([]);
-  const [confirmLoading, setConfirmLoading] = useState(false);
   const [modalType, setModalType] = useState(null);
   const { fullName } = useAuth();
   const { userRole } = useAuth();
@@ -86,45 +79,12 @@ const ServiceTask = () => {
 
   const isLargeScreen = windowWidth >= 1024;
 
-  useEffect(() => {
-    setPopconfirmVisible(new Array(data.length).fill(false));
-  }, [data]);
-
-  const handleOk = (id, reqID) => {
-    setConfirmLoading(true);
-    handleDelete(id, reqID);
-    handleCancel(id);
-    setTimeout(() => {
-      setConfirmLoading(false);
-    }, 2000);
-  };
-
-  const handleCancel = (index) => {
-    const popconfirmVisibleCopy = [...popconfirmVisible];
-    popconfirmVisibleCopy[index] = false;
-    setPopconfirmVisible(popconfirmVisibleCopy);
-  };
-
-  const handleDelete = async (id, reqID) => {
-    try {
-      await axios.put(
-        `${
-          import.meta.env.VITE_API_BASE_URL
-        }/api/delete-serviced/${id}/${reqID}`
-      );
-      const newUserData = data.filter((item) => item.id !== id);
-      setData(newUserData);
-    } catch (error) {
-      console.error("Error deleting request:", error);
-    }
-  };
-
   const updateTable = () => {
     fetchData();
   };
 
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
   useEffect(() => {
     const currentDate = new Date();
@@ -158,8 +118,9 @@ const ServiceTask = () => {
       const result = url;
       setData(result.data.results);
       setLoading(false);
+      console.log(data);
     } catch (err) {
-      console.log(err);
+      console.log("Something went wrong:", err);
       setLoading(false);
     } finally {
       setLoading(false);
@@ -484,34 +445,16 @@ const ServiceTask = () => {
             </button>
           )}
           {["Pending", "Received", "On Progress"].includes(record.status) ? (
-            <Popconfirm
-              placement="left"
-              title="Confirmation"
-              description="Please confirm this action. This action cannot be undone."
-              visible={popconfirmVisible[record.id]}
-              icon={<QuestionCircleOutlined style={{ color: "red" }} />}
-              onConfirm={() => handleOk(record.id, record.request_id)}
-              okButtonProps={{
-                loading: confirmLoading,
-                style: { color: "red" },
-              }}
-              cancelButtonProps={{
-                size: "large",
-              }}
-              onCancel={() => handleCancel(record.id)}
-              okText="Yes"
+            <button
+              onClick={() => handleOpenReasonModalClick(record.id)}
+              className={`text-white text-base py-2 px-4 rounded-lg ${
+                ["Pending", "Received", "On Progress"].includes(record.status)
+                  ? "bg-red-700"
+                  : "cursor-not-allowed bg-gray-400"
+              }`}
             >
-              <button
-                onClick={() => handleOpenReasonModalClick(record.id)}
-                className={`text-white text-base py-2 px-4 rounded-lg ${
-                  ["Pending", "Received", "On Progress"].includes(record.status)
-                    ? "bg-red-700"
-                    : "cursor-not-allowed bg-gray-400"
-                }`}
-              >
-                <FontAwesomeIcon icon={faTrash} />
-              </button>
-            </Popconfirm>
+              <FontAwesomeIcon icon={faTrash} />
+            </button>
           ) : record.status === "To Rate" &&
             record.modeOfRequest === "Walk-In" ? (
             <button

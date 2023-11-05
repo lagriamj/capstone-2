@@ -27,6 +27,10 @@ const ViewCancel = ({ isOpen, onClose, datas, role }) => {
       return `${import.meta.env.VITE_API_BASE_URL}/api/view-cancelled/${
         datas.id
       }`;
+    } else if (role === "head") {
+      return `${import.meta.env.VITE_API_BASE_URL}/api/view-cancelled/${
+        datas.id
+      }`;
     }
     // Handle other roles or scenarios as needed
   };

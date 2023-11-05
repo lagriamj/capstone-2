@@ -397,13 +397,17 @@ class ReceiveServiceController extends Controller
                 ->select('office')
                 ->first();
 
+
+            $userRequest = DB::table('user_requests')
+                ->where('id', $requestId)
+                ->first();
+
             if ($adminOffice) {
-                // Create an audit log entry for the "Cancelled" action
                 $auditLogData = [
-                    'name' => $fullName, // Use the provided fullName
-                    'office' => $adminOffice->office, // Use the retrieved office
+                    'name' => $fullName,
+                    'office' => $adminOffice->office,
                     'action' => 'Cancelled',
-                    'reference' => $requestId, // Use $requestId as reference
+                    'reference' => $userRequest->request_code,
                     'date' => now(),
                 ];
 
