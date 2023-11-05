@@ -788,7 +788,7 @@ const Dashboard = () => {
             className={` w-[90%] lg:w-[80%] large:w-[85%] large:h-[95vh] h-auto lg:ml-auto lg:mx-4 mt-20  lg:mt-0   justify-center lg:items-stretch lg:justify-start  border-0 border-gray-400 rounded-lg flex flex-col items-center font-sans`}
           >
             {isLoading ? (
-              <div className="flex items-center justify-center h-[100%] w-full">
+              <div className="flex items-center justify-center h-screen w-full">
                 <RingLoader color="#343467" size={80} />
               </div>
             ) : (
