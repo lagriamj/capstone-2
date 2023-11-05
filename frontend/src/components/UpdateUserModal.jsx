@@ -54,11 +54,9 @@ const UpdateUserModal = ({
       const result = await axios.get(
         `${import.meta.env.VITE_API_BASE_URL}/api/office-list`
       );
-      console.log(result.data.results);
       setOfficeOptions(result.data.results);
-      console.log(officeOptions);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
     }
   };
 

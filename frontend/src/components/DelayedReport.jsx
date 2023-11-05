@@ -51,7 +51,6 @@ const DelayedReport = ({ isOpen, onClose, isLargeScreen }) => {
       .then((response) => {
         setData(response.data);
         setLoading(false);
-        console.log(response);
       })
       .catch((error) => {
         console.log(error);

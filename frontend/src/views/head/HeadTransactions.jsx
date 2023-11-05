@@ -131,10 +131,9 @@ const HeadTransactions = () => {
         }
       );
       setData(result.data.results);
-      console.log(result);
       setLoading(false);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
       setLoading(false);
     } finally {
       setLoading(false);
@@ -143,7 +142,6 @@ const HeadTransactions = () => {
   const [ratings, setRatings] = useState([]);
 
   const handleRatings = async (id) => {
-    console.log(id);
     const response = await axios.get(
       `${import.meta.env.VITE_API_BASE_URL}/api/closed-view/${id}`
     );
@@ -170,11 +168,9 @@ const HeadTransactions = () => {
         setDoneRating(data.results);
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        console.error(error);
       });
   }, []);
-
-  console.log(doneRating);
 
   const [natureRequests, setNatureRequests] = useState("");
   const [natureReqOption, setNatureReqOption] = useState([]);

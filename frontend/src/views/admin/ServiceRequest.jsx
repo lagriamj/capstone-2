@@ -30,7 +30,6 @@ const ServiceRequest = () => {
   const [division, setDivision] = useState("");
   const [author, setAuthor] = useState("");
   const { userID, fullName } = useAuth();
-  console.log("userID:", userID);
 
   useEffect(() => {
     const handleResize = () => {
@@ -67,7 +66,6 @@ const ServiceRequest = () => {
     form.setFieldsValue({
       dateProcured: date.$y,
     });
-    console.log(date.$y);
     setDateP(date.$y);
   };
 
@@ -192,8 +190,8 @@ const ServiceRequest = () => {
           `${import.meta.env.VITE_API_BASE_URL}/api/add-request`,
           values
         );
+        // eslint-disable-next-line no-unused-vars
         const data = response.data;
-        console.log(data);
 
         navigate("/service-task", {
           state: {
@@ -223,7 +221,7 @@ const ServiceRequest = () => {
       );
       setData(result.data.results);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
     }
   };
 
@@ -240,7 +238,7 @@ const ServiceRequest = () => {
       );
       setUnit(result.data.results);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
     }
   };
 

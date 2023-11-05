@@ -31,7 +31,6 @@ const NatureOfRequest = () => {
         axios
           .post(`${import.meta.env.VITE_API_BASE_URL}/api/add-nature`, values)
           .then((response) => {
-            console.log(response.data);
             setIsModalVisible(false);
             fetchNature();
             setIsUpdating(false);
@@ -42,7 +41,7 @@ const NatureOfRequest = () => {
           });
       })
       .catch((errorInfo) => {
-        console.log("Validation failed:", errorInfo);
+        console.log(errorInfo);
         setIsUpdating(false);
       });
   };

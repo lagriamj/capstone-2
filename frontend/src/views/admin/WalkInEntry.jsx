@@ -62,7 +62,6 @@ const WalkInEntry = () => {
     form.setFieldsValue({
       yearProcured: date.$y,
     });
-    console.log(date.$y);
     setDateP(date.$y);
   };
 
@@ -140,8 +139,8 @@ const WalkInEntry = () => {
           `${import.meta.env.VITE_API_BASE_URL}/api/add-request`,
           values
         );
+        // eslint-disable-next-line no-unused-vars
         const data = response.data;
-        console.log(data);
 
         navigate("/service-task", {
           state: {
@@ -168,11 +167,9 @@ const WalkInEntry = () => {
       const result = await axios.get(
         `${import.meta.env.VITE_API_BASE_URL}/api/office-list`
       );
-      console.log(result.data.results);
       setOfficeOptions(result.data.results);
-      console.log(officeOptions);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
     }
   };
 
@@ -198,7 +195,7 @@ const WalkInEntry = () => {
       );
       setData(result.data.results);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
     }
   };
 
@@ -215,7 +212,7 @@ const WalkInEntry = () => {
       );
       setUnit(result.data.results);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
     }
   };
 

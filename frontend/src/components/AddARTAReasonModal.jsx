@@ -27,7 +27,6 @@ const AddARTAReasonModal = ({
       );
 
       if (response.status === 200) {
-        console.log("API request was successful", response.data);
         updateReasonDelay(requestData.reasonDelay);
         form.resetFields();
         refreshData();
@@ -37,7 +36,7 @@ const AddARTAReasonModal = ({
         console.error("API request failed", response.data);
       }
     } catch (errorInfo) {
-      console.log("Failed:", errorInfo);
+      console.log(errorInfo);
     }
 
     onCancel();

@@ -34,10 +34,6 @@ export function AuthProvider({ children }) {
       localStorage.setItem("userFullName", fullName);
     }
   };
-  console.log(userRole);
-  console.log("userID:", userID);
-  console.log(isAuthenticated);
-  console.log(fullName);
   const logout = () => {
     setUserRole("");
     setIsAuthenticated(false);

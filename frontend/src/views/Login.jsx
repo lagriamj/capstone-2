@@ -85,18 +85,15 @@ function Login() {
         credentials
       );
       const data = response.data;
-      console.log(data);
       const fullName = `${data.firstName} ${data.lastName}`;
 
       if (response.status === 200) {
         message.success("Welcome " + fullName);
-        console.log(data.userID);
         login(data.role, data.userID, data.userStatus, fullName);
         //setUserID(data.userID);
         setRole(data.role);
         setUserStatus(data.userStatus);
         const token = response.data.access_token;
-        console.log("token: " + token);
 
         if (data.userStatus === "verified") {
           if (data.role === "admin") {

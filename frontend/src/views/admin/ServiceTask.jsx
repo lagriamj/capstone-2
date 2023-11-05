@@ -158,9 +158,8 @@ const ServiceTask = () => {
       const result = url;
       setData(result.data.results);
       setLoading(false);
-      console.log(data);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
       setLoading(false);
     } finally {
       setLoading(false);

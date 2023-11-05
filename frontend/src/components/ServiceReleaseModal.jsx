@@ -22,7 +22,6 @@ const ServiceReleaseModal = ({
   const { fullName } = useAuth();
 
   const [findingsValue, setFindingsValue] = useState("");
-  console.log(findingsValue);
 
   const handleChangeFindings = (value) => {
     const filteredFindingsValue = value.filter(Boolean);
@@ -31,7 +30,6 @@ const ServiceReleaseModal = ({
   };
 
   const [actionTakenValue, setActionTakenValue] = useState("");
-  console.log(actionTakenValue);
 
   const handleChangeActionTaken = (value) => {
     const filteredActionValue = value.filter(Boolean);
@@ -55,7 +53,6 @@ const ServiceReleaseModal = ({
 
   // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState("");
-  console.log(data.id);
 
   const [utility, setUtility] = useState([]);
   useEffect(() => {
@@ -73,11 +70,10 @@ const ServiceReleaseModal = ({
           data.request_id
         }`
       );
-      console.log(artaDetailsResult);
       setReasonList(artaDetailsResult.data.data);
       setUtility(result.data.results);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
     }
   };
 
@@ -109,26 +105,12 @@ const ServiceReleaseModal = ({
         message.success("Updated Successfully");
         onClose();
         refreshData();
-        console.log(modifiedValues);
       } else {
         setIsSubmitting(false);
         console.error("Received an unexpected response:", response);
-        console.log(modifiedValues);
       }
     } catch (error) {
-      if (error.response) {
-        setIsSubmitting(false);
-        console.error("Request failed with status:", error.response.status);
-        console.log("Response error data:", error.response.data);
-        setError("An error occurred while processing the request.");
-        console.log(modifiedValues);
-      } else {
-        setIsSubmitting(false);
-        console.error("Error updating ReceiveService:", error);
-        setError("An error occurred. Please try again later.");
-        console.log(modifiedValues);
-      }
-      console.log(modifiedValues);
+      console.log(error);
     }
   };
 

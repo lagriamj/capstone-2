@@ -112,17 +112,11 @@ const Register = () => {
       const result = await axios.get(
         `${import.meta.env.VITE_API_BASE_URL}/api/office-list`
       );
-      console.log(result.data.results);
       setOfficeOptions(result.data.results);
-      console.log(officeOptions);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
     }
   };
-
-  useEffect(() => {
-    console.log(`Selected Office: ${selectedOffice}`);
-  });
 
   const customStyles = {
     control: (provided, state) => ({
@@ -177,7 +171,6 @@ const Register = () => {
 
       if (response.status === 201) {
         const registeredUser = response.data;
-        console.log(registeredUser);
         setUser(registeredUser);
         setUserId(registeredUser.userID);
 
@@ -186,6 +179,7 @@ const Register = () => {
         formData.append("signatureImage", file);
 
         try {
+          // eslint-disable-next-line no-unused-vars
           const imageResponse = await axios.post(
             `${import.meta.env.VITE_API_BASE_URL}/api/user-signature/store`,
             formData,
@@ -195,7 +189,6 @@ const Register = () => {
               },
             }
           );
-          console.log(imageResponse.data);
           navigate("/verify-otp", {
             state: {
               user: registeredUser,
@@ -203,7 +196,7 @@ const Register = () => {
             },
           });
         } catch (imageError) {
-          console.error("Error uploading image:", imageError);
+          console.error(imageError);
         }
       } else if (response.status === 422) {
         setErrorMessage("That government ID is not available");

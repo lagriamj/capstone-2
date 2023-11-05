@@ -37,12 +37,10 @@ const HeadAccount = () => {
         `${import.meta.env.VITE_API_BASE_URL}/api/account?userID=${userID}`
       );
 
-      console.log("API Response:", response.data.results);
-
       const user = response.data.results[0];
       setUserData(user);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
     }
   };
 
@@ -72,8 +70,8 @@ const HeadAccount = () => {
         newFormData
       );
 
+      // eslint-disable-next-line no-unused-vars
       const data = response.data;
-      console.log(data);
 
       message.success("Details updated successfully");
       setIsModalVisible(false);
@@ -153,11 +151,9 @@ const HeadAccount = () => {
       const result = await axios.get(
         `${import.meta.env.VITE_API_BASE_URL}/api/office-list`
       );
-      console.log(result.data.results);
       setOfficeOptions(result.data.results);
-      console.log(officeOptions);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
     }
   };
 
@@ -179,7 +175,6 @@ const HeadAccount = () => {
 
       const blob = new Blob([response.data], { type: "image/png/jpg/jpeg" });
       const dataUrl = URL.createObjectURL(blob);
-      console.log("Fetched Signature Data:", dataUrl);
       setUserSignature(dataUrl);
     } catch (err) {
       console.log(err);

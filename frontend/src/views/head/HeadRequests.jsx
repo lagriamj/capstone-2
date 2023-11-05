@@ -30,7 +30,6 @@ const HeadRequests = () => {
   const [division, setDivision] = useState("");
   const [author, setAuthor] = useState("");
   const { userID, fullName } = useAuth();
-  console.log("userID:", userID);
 
   useEffect(() => {
     const handleResize = () => {
@@ -52,14 +51,12 @@ const HeadRequests = () => {
   const { Option } = Select;
 
   const [natureValue, setNatureValue] = useState("");
-  console.log(natureValue);
 
   const handleChangeNature = (value) => {
     setNatureValue(value);
   };
 
   const [unitValue, setUnitValue] = useState("");
-  console.log(unitValue);
 
   const handleChangeUnit = (value) => {
     setUnitValue(value);
@@ -71,7 +68,6 @@ const HeadRequests = () => {
     form.setFieldsValue({
       yearProcured: date.$y,
     });
-    console.log(date.$y);
     setDateP(date.$y);
   };
 
@@ -177,7 +173,7 @@ const HeadRequests = () => {
 
       return true;
     } catch (error) {
-      console.error("Error fetching cut-off time:", error);
+      console.error(error);
       return false;
     }
   };
@@ -197,8 +193,8 @@ const HeadRequests = () => {
           `${import.meta.env.VITE_API_BASE_URL}/api/add-request`,
           values
         );
+        // eslint-disable-next-line no-unused-vars
         const data = response.data;
-        console.log(data);
 
         navigate("/head/current-requests", {
           state: {
@@ -228,7 +224,7 @@ const HeadRequests = () => {
       );
       setData(result.data.results);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
     }
   };
 
@@ -245,7 +241,7 @@ const HeadRequests = () => {
       );
       setUnit(result.data.results);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
     }
   };
 
@@ -256,7 +252,7 @@ const HeadRequests = () => {
           `${import.meta.env.VITE_API_BASE_URL}/api/reset-cut-off-time`
         );
       } catch (error) {
-        console.error("Error resetting cut-off time:", error);
+        console.error(error);
       }
     };
     resetCutOffTime();

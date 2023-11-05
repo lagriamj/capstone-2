@@ -27,7 +27,6 @@ const AdminPassConfirmationModal = ({ visible, onCancel, handleUpdate }) => {
         handleUpdate();
         setIsSavingChange(false);
       } else {
-        console.log(response);
         setIsSavingChange(false);
         message.error("Incorrect Password");
       }

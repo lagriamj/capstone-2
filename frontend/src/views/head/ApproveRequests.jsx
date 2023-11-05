@@ -288,8 +288,6 @@ const ApproveRequests = () => {
     fetchData();
   }, []);
 
-  console.log(selectedRowData);
-
   return (
     <HelmetProvider>
       <Helmet>

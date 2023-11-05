@@ -47,7 +47,6 @@ const UsersList = () => {
       );
 
       if (response.status === 200) {
-        console.log(response.data.result);
         setUsers(response.data.result);
         setLoading(false);
       } else {
@@ -87,13 +86,10 @@ const UsersList = () => {
   };
 
   const deleteUser = async (id) => {
-    console.log(id);
     try {
       const response = await axios.delete(
         `${import.meta.env.VITE_API_BASE_URL}/api/delete-user/${id}`
       );
-
-      console.log(id);
 
       if (response.status === 200) {
         // User deleted successfully, update the user list
@@ -189,14 +185,11 @@ const UsersList = () => {
       const result = await axios.get(
         `${import.meta.env.VITE_API_BASE_URL}/api/office-list`
       );
-      console.log(result.data.results);
       setOfficeOptions(result.data.results);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
     }
   };
-
-  console.log(officeOptions);
 
   useEffect(() => {
     if (Array.isArray(officeOptions)) {
@@ -207,9 +200,6 @@ const UsersList = () => {
       setOfficeFilters(dynamicFilters);
     }
   }, [officeOptions]);
-
-  console.log(officeOptions);
-  console.log(officeFilters);
 
   const columns = [
     {

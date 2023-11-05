@@ -44,8 +44,6 @@ const ClosedModal = ({ isOpen, onClose, datas }) => {
     }
   };
 
-  console.log("aaaaaaaa", requestID);
-
   // Function to render input fields based on data
   const RequestDetails = () => {
     if (loading) {

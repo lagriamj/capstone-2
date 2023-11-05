@@ -14,7 +14,6 @@ const UpdateEmailPage = () => {
   const userId = location.state?.userID;
   const [loading, setLoading] = useState(false);
   const { userRole, isAuthenticated } = useAuth();
-  console.log(userId);
 
   useEffect(() => {
     // If the user is already authenticated, redirect them to the appropriate page
@@ -53,7 +52,6 @@ const UpdateEmailPage = () => {
         newUserEmail: newEmail,
       }
     );
-    console.log(response);
     setLoading(true);
     if (response.status === 200) {
       navigate("/verify-otp", {

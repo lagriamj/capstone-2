@@ -20,8 +20,6 @@ const DoneRateModal = ({ isOpen, onClose, id }) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
-  console.log(id);
-
   useEffect(() => {
     if (isOpen) {
       axios

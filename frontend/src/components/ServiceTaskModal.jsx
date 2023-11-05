@@ -12,7 +12,6 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { TextArea } = Input;
   const [serviceByValue, setServiceByValue] = useState(data.assignedTo);
-  console.log(serviceByValue);
   const { fullName } = useAuth();
 
   const handleChangeServiceBy = (value) => {
@@ -40,9 +39,8 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
 
   // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState("");
-  console.log(data.id);
+  // eslint-disable-next-line no-unused-vars
   const [dataForm, setDataForm] = useState(null);
-  console.log(dataForm);
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -68,8 +66,6 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
         message.success("Updated Successfully");
         onClose();
         refreshData();
-        console.log(dataForm);
-        console.log(modifiedValues);
       } else {
         setIsSubmitting(false);
         console.error("Received an unexpected response:", response);

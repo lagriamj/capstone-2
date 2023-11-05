@@ -44,13 +44,12 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
       .then((response) => {
         if (response.data.message) {
           setMessage(response.data.message);
-          console.log("API Message:", response.data.message);
         } else {
           setAuthorApprovedSignatures(response.data);
         }
       })
       .catch((error) => {
-        console.error("Error fetching data:", error);
+        console.error(error);
       });
   }, [reqID]);
 
@@ -60,10 +59,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
     }
   };
 
-  console.log("--", itemData?.id);
-
   const natureOfRerquest = itemData?.natureOfRequest;
-  console.log(natureOfRerquest);
 
   return (
     <Modal

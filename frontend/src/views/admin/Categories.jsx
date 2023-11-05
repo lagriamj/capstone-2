@@ -90,7 +90,6 @@ const Categories = () => {
         axios
           .post(`${import.meta.env.VITE_API_BASE_URL}/api/add-category`, values)
           .then((response) => {
-            console.log(response.data);
             setIsModalVisible(false);
             fetchCategory();
             setIsUpdating(false);
@@ -101,7 +100,7 @@ const Categories = () => {
           });
       })
       .catch((errorInfo) => {
-        console.log("Validation failed:", errorInfo);
+        console.log(errorInfo);
         setIsUpdating(false);
       });
   };

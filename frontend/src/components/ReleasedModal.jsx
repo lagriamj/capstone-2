@@ -14,11 +14,9 @@ const ReleasedModal = ({ isOpen, onClose, data, refreshData }) => {
   const { fullName } = useAuth();
 
   const daytime = new Date().toLocaleString(undefined);
-  console.log("request_id", data.request_id);
 
   // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState("");
-  console.log(data.id);
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -38,22 +36,12 @@ const ReleasedModal = ({ isOpen, onClose, data, refreshData }) => {
         message.success("Updated Successfully");
         onClose();
         refreshData();
-        console.log(values);
       } else {
         setIsSubmitting(false);
         console.error("Received an unexpected response:", response);
       }
     } catch (error) {
-      if (error.response) {
-        setIsSubmitting(false);
-        console.error("Request failed with status:", error.response.status);
-        console.log("Response error data:", error.response.data);
-        setError("An error occurred while processing the request.");
-      } else {
-        setIsSubmitting(false);
-        console.error("Error updating ReceiveService:", error);
-        setError("An error occurred. Please try again later.");
-      }
+      console.log(error);
     }
   };
 

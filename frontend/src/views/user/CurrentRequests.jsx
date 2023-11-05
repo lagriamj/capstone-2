@@ -177,7 +177,7 @@ const CurrentRequests = () => {
       }
       loopCount++;
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
       setLoading(false);
     } finally {
       setLoading(false);
@@ -210,7 +210,6 @@ const CurrentRequests = () => {
   };
 
   const closedRequest = async (id) => {
-    console.log(id);
     await axios.put(
       `${import.meta.env.VITE_API_BASE_URL}/api/closedNorate/${id}`
     );

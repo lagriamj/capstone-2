@@ -28,9 +28,6 @@ const RateModal = ({
   const navigate = useNavigate();
   const { setActive } = useActiveTab();
 
-  console.log("reqid", id);
-  console.log("userid", user_id);
-
   if (!isOpen) return null;
 
   const options = {
@@ -43,8 +40,6 @@ const RateModal = ({
   };
 
   const daytime = new Date().toLocaleString(undefined, options);
-
-  console.log("- - -", user_id, id, office);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [selectedRatings, setSelectedRatings] = useState({
@@ -99,7 +94,7 @@ const RateModal = ({
       if (err.response && err.response.status === 422) {
         // The server returned validation errors
         const validationErrors = err.response.data.errors;
-        console.log("Validation Errors:", validationErrors);
+        console.log(validationErrors);
 
         // Display validation errors to the user
         // You can update your UI to show these errors to the user

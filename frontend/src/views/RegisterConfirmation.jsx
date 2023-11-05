@@ -99,7 +99,6 @@ const RegisterConfirmation = () => {
       );
 
       if (response.status === 200) {
-        console.log(response.data.message);
         setLoading(false);
         setVerificationMessage(response.data.message);
         setMessageColor("text-green-700");
@@ -110,7 +109,6 @@ const RegisterConfirmation = () => {
           },
         });
       } else {
-        console.log(response);
         console.error(response.data.error);
         // Handle specific OTP error here
         setLoading(false);
@@ -144,11 +142,7 @@ const RegisterConfirmation = () => {
           userId: !userId ? location.state.userID : userId,
         }
       );
-
-      console.log(response);
-
       if (response.status === 200) {
-        console.log(response.data.message);
         setVerificationMessage(response.data.message);
         setMessageColor("text-green-700");
         // Handle successful OTP confirmation here

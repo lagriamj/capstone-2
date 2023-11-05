@@ -130,7 +130,6 @@ const Dashboard = () => {
         const delayedRequestsResult = await axios.get(
           `${import.meta.env.VITE_API_BASE_URL}/api/delay-request`
         );
-        console.log(delayedRequestsResult);
         setDelayedRequests(delayedRequestsResult.data?.results);
       } catch (error) {
         console.log(error);
@@ -176,8 +175,6 @@ const Dashboard = () => {
     satisfiedRating: 0,
     unsatisfiedRating: 0,
   });
-
-  console.log(ratingsAndNature.topNature);
 
   useEffect(() => {
     async function fetchData() {
@@ -235,9 +232,6 @@ const Dashboard = () => {
     fetchDataRequest();
     fetchTotalAndClosed();
   }, []);
-
-  console.log("start date: ", startDate);
-  console.log("end date: ", endDate);
 
   useEffect(() => {
     fetchPiegraphDetails();
@@ -558,7 +552,6 @@ const Dashboard = () => {
         },
       })
       .then((response) => {
-        console.log(response);
         const formattedData = response.data.requestData.map((item, index) => ({
           key: index,
           request_code: item.request_code,
@@ -586,7 +579,6 @@ const Dashboard = () => {
       })
       .catch((error) => {
         console.log(error);
-        console.error("Error fetching data:", error);
       });
     setRequestModalVisible(true);
     setPieLoading(false);

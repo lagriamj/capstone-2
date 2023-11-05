@@ -53,7 +53,6 @@ const Technicians = () => {
             values
           )
           .then((response) => {
-            console.log(response.data);
             setIsModalVisible(false);
             fetchTechnicians();
             setIsUpdating(false);
@@ -64,7 +63,7 @@ const Technicians = () => {
           });
       })
       .catch((errorInfo) => {
-        console.log("Validation failed:", errorInfo);
+        console.log(errorInfo);
         setIsUpdating(false);
       });
   };

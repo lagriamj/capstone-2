@@ -143,8 +143,6 @@ const ReceiveService = () => {
       const regex = new RegExp(`/${selectedSortOrder}$`);
       const cleanedUrl = url.replace(regex, "");
 
-      console.log("URL:", cleanedUrl);
-
       const result = await axios.get(cleanedUrl, {
         params: {
           order: selectedSortOrder,
@@ -154,7 +152,7 @@ const ReceiveService = () => {
       setData(result.data.results);
       setLoading(false);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
       setLoading(false);
     } finally {
       setLoading(false);

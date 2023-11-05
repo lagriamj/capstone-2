@@ -20,7 +20,6 @@ import { useActiveTab } from "../../ActiveTabContext";
 const HeadCurrentRequests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { userID } = useAuth();
-  console.log("userID:", userID);
   const { userRole } = useAuth();
   const [selectedItemId, setSelectedItemId] = useState(null);
   // eslint-disable-next-line no-unused-vars
@@ -174,7 +173,7 @@ const HeadCurrentRequests = () => {
       }
       loopCount++;
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
       setLoading(false);
     } finally {
       setLoading(false);
@@ -205,7 +204,6 @@ const HeadCurrentRequests = () => {
   };
 
   const closedRequest = async (id) => {
-    console.log(id);
     await axios.put(
       `${import.meta.env.VITE_API_BASE_URL}/api/closedNorate/${id}`
     );

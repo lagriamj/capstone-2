@@ -30,7 +30,6 @@ const ForgotPassword = () => {
           email: email,
         }
       );
-      console.log(response);
       if (response.status === 200) {
         setSent(true);
         setError("");
@@ -53,7 +52,6 @@ const ForgotPassword = () => {
         email: email,
         otpCode: otp,
       });
-      console.log(response);
       if (response.status === 200) {
         setSent(true);
         setChangeButton("newPassword");
@@ -81,7 +79,6 @@ const ForgotPassword = () => {
           userPassword: newPassword,
         }
       );
-      console.log(response);
       if (response.status === 200) {
         message.success("Password changed successfully!");
         navigate("/login");
@@ -109,7 +106,6 @@ const ForgotPassword = () => {
       const response = await axios.put("http://127.0.0.1:8000/api/verify-otp", {
         email: email,
       });
-      console.log(response);
       if (response.status === 200) {
         message.success(response.data.message);
       } else if (response.status === 404) {

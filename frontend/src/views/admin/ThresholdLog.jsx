@@ -64,7 +64,6 @@ const ThresholdLog = () => {
     axios
       .get(`${import.meta.env.VITE_API_BASE_URL}/api/request-threshold`)
       .then((response) => {
-        console.log(response);
         setThresholdData(response.data);
         setLoading(false);
       })
@@ -79,16 +78,6 @@ const ThresholdLog = () => {
   const [openModal, setOpenModal] = useState(false);
 
   const openThresholdModal = async (data) => {
-    console.log(
-      "propert no: " +
-        data.propertyNo +
-        "Serial no: " +
-        data.serialNo +
-        "Unit: " +
-        data.unit +
-        " id: " +
-        data.id
-    );
     if (openModal) {
       return;
     }
@@ -103,7 +92,6 @@ const ThresholdLog = () => {
         },
       })
       .then((response) => {
-        console.log(response);
         setSelectedData(response.data);
       })
       .catch((error) => {

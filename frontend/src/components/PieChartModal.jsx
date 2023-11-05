@@ -43,10 +43,6 @@ const PieChartModal = ({
     setOpenGenerateReport(false);
   };
 
-  const totalItems = modalData.requests?.length;
-  const lastPage = Math.ceil(totalItems / pagination.pageSize);
-  const isLastPage = currentPage === lastPage;
-
   return (
     <Modal
       title={
@@ -74,7 +70,6 @@ const PieChartModal = ({
           onClose={closeGenerateReport}
           techData={modalData}
           tableColumn={tableColumns}
-          isLastPage={isLastPage}
           pageSize={pagination.pageSize}
           currentPage={currentPage}
           isLargeScreen={isLargeScreen}

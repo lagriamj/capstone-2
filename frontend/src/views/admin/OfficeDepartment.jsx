@@ -57,7 +57,6 @@ const OfficeDepartment = () => {
     axios
       .get(`${import.meta.env.VITE_API_BASE_URL}/api/head-list`)
       .then((response) => {
-        console.log(response);
         setHeads(response.data.result);
       })
       .catch((error) => {
@@ -81,7 +80,6 @@ const OfficeDepartment = () => {
         axios
           .post(`${import.meta.env.VITE_API_BASE_URL}/api/add-office`, values)
           .then((response) => {
-            console.log(response.data);
             setIsModalVisible(false);
             fetchDepartments();
             setIsUpdating(false);
@@ -92,7 +90,7 @@ const OfficeDepartment = () => {
           });
       })
       .catch((errorInfo) => {
-        console.log("Validation failed:", errorInfo);
+        console.log(errorInfo);
         setIsUpdating(false);
       });
   };
@@ -108,7 +106,6 @@ const OfficeDepartment = () => {
     axios
       .delete(`${import.meta.env.VITE_API_BASE_URL}/api/delete-office/${id}`)
       .then((response) => {
-        console.log(response.data);
         fetchDepartments();
         message.success("Deleted Successfully");
       })
@@ -125,7 +122,6 @@ const OfficeDepartment = () => {
   const openUpdateDepartmentModal = (department) => {
     setSelectedDepartmentForUpdate(department);
     setUpdateDepartmentModalVisible(true);
-    console.log(selectedDepartmentForUpdate);
   };
 
   useEffect(() => {

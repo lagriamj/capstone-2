@@ -30,7 +30,6 @@ const Requests = () => {
   const [division, setDivision] = useState("");
   const [author, setAuthor] = useState("");
   const { userID, fullName } = useAuth();
-  console.log("userID:", userID);
 
   useEffect(() => {
     const handleResize = () => {
@@ -67,7 +66,6 @@ const Requests = () => {
     form.setFieldsValue({
       yearProcured: date.$y,
     });
-    console.log(date.$y);
     setDateP(date.$y);
   };
 
@@ -173,7 +171,7 @@ const Requests = () => {
 
       return true;
     } catch (error) {
-      console.error("Error fetching cut-off time:", error);
+      console.error(error);
       return false;
     }
   };
@@ -191,8 +189,8 @@ const Requests = () => {
           `${import.meta.env.VITE_API_BASE_URL}/api/add-request`,
           values
         );
+        // eslint-disable-next-line no-unused-vars
         const data = response.data;
-        console.log(data);
 
         navigate("/current-requests", {
           state: {
@@ -222,7 +220,7 @@ const Requests = () => {
       );
       setData(result.data.results);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
     }
   };
 
@@ -239,7 +237,7 @@ const Requests = () => {
       );
       setUnit(result.data.results);
     } catch (err) {
-      console.log("Something went wrong:", err);
+      console.log(err);
     }
   };
 

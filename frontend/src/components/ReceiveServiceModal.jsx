@@ -16,7 +16,6 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
   console.log(",", selectedTechnician);
 
   const handleChangeAssignedTo = (value) => {
-    console.log("Selected Technician:", value);
     setSelectedTechnician(value);
   };
 
@@ -54,7 +53,6 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
       );
 
       if (response.status === 201) {
-        console.log("Request received successfully.");
         setIsSubmitting(false);
         message.success("Updated Successfully");
         onClose();
@@ -64,12 +62,7 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
         setIsSubmitting(false);
       }
     } catch (error) {
-      if (error.response) {
-        console.error("Request failed with status:", error.response.status);
-        console.log("Response error data:", error.response.data);
-      } else {
-        console.error("Error creating received request:", error);
-      }
+      console.log(error);
 
       setIsSubmitting(false);
     }

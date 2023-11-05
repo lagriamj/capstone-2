@@ -11,7 +11,6 @@ const PrintPieChartData = ({
   pageSize,
   currentPage,
   isLargeScreen,
-  isLastPage,
   fromDate,
   toDate,
 }) => {
@@ -38,8 +37,6 @@ const PrintPieChartData = ({
     fromDateObj && toDateObj
       ? ` ${formatDate(fromDateObj)} - ${formatDate(toDateObj)}`
       : "";
-
-  console.log("last page: " + isLastPage);
 
   return (
     <Modal
@@ -113,7 +110,6 @@ PrintPieChartData.propTypes = {
   pageSize: PropTypes.any.isRequired,
   currentPage: PropTypes.any.isRequired,
   isLargeScreen: PropTypes.bool.isRequired,
-  isLastPage: PropTypes.bool.isRequired,
   fromDate: PropTypes.any,
   toDate: PropTypes.any,
 };
