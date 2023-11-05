@@ -30,6 +30,8 @@ const SummaryListModal = ({
       queryParams.endDate = toDate;
     }
 
+    console.log(" date: ", queryParams);
+
     const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/summary-list`;
 
     axios
