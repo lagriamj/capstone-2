@@ -16,26 +16,19 @@ const SummaryListModal = ({
   const [toDate, setToDate] = useState(endDate);
   const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
-    setFromDate(startDate);
-    setToDate(endDate);
-  }, [startDate, endDate]);
+  console.log("total", data.totalReleased);
+  console.log("unclaim", data.totalUnclaimed);
+  console.log("defect", data.totalDefect);
 
   useEffect(() => {
-    const queryParams = {};
-    if (fromDate) {
-      queryParams.startDate = fromDate;
-    }
-    if (toDate) {
-      queryParams.endDate = toDate;
-    }
-
-    console.log(" date: ", queryParams);
-
     const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/summary-list`;
-
     axios
-      .get(apiUrl, { params: queryParams })
+      .get(apiUrl, {
+        params: {
+          startDate: fromDate,
+          endDate: toDate,
+        },
+      })
       .then((response) => {
         setData(response.data);
       })
@@ -179,7 +172,7 @@ const SummaryListModal = ({
               setOpenGenerateReport(true);
             }}
           >
-            Generate Report
+            Generate Reports
           </Button>
         </div>
       </div>
@@ -214,8 +207,6 @@ const SummaryListModal = ({
           scroll={isLargeScreen ? "" : { x: 1300 }}
           className="gotoLarge:w-full overflow-auto print"
         />
-
-        {/* Display summary information here */}
       </>
     </Modal>
   );

@@ -756,10 +756,10 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
                 <div className="w-[25%] flex flex-col border-2 border-black">
                   <div className="text-center border-b-2  border-black text-black w-full">
                     <label htmlFor="" className=" w-full">
-                      {itemData?.dateNote?.split(" ")[0] === null ||
-                      itemData?.dateNote?.split(" ")[0] === "n/a"
+                      {itemData?.dateNoted?.split(" ")[0] === null ||
+                      itemData?.dateNoted?.split(" ")[0] === "n/a"
                         ? " "
-                        : itemData?.dateNote?.split(" ")[0]}
+                        : itemData?.dateNoted?.split(" ")[0]}
                     </label>
                   </div>
                   <div className="text-center ">
