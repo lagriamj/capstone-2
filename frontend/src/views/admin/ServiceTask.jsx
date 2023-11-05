@@ -123,8 +123,8 @@ const ServiceTask = () => {
     fetchData();
   };
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
     const currentDate = new Date();
@@ -247,7 +247,7 @@ const ServiceTask = () => {
   const fetchTechnicians = () => {
     setLoading(true);
     axios
-      .get("http://127.0.0.1:8000/api/admin-list")
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/admin-list`)
       .then((response) => {
         setTechnicians(response.data.result);
         setLoading(false);

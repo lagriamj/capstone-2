@@ -5,13 +5,13 @@ import { Helmet, HelmetProvider } from "react-helmet-async";
 import RateModal from "../../components/RateModal";
 import axios from "axios";
 import { Input, Table, Tag } from "antd";
-import ClosedModal from "../../components/ClosedModal";
 import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
 import { useAuth } from "../../AuthContext";
 import ViewCancel from "../../components/ViewCancel";
 import DoneRateModal from "../../components/DoneRateModal";
 import HeadSidebar from "../../components/HeadSidebar";
 import HeadDrawer from "../../components/HeadDrawer";
+import ToRateModal from "../../components/ToRateModal";
 
 const HeadTransactions = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -25,6 +25,7 @@ const HeadTransactions = () => {
   const { userID } = useAuth();
   const [view, setView] = useState(false);
   const [viewRequest, setViewRequest] = useState(false);
+  const [purgedReq, setPurgedReq] = useState(false);
 
   const [viewRating, setViewRating] = useState(false);
   const [viewRatingModal, setViewRatingModal] = useState(false);
@@ -37,11 +38,19 @@ const HeadTransactions = () => {
   const handleCancelRequest = (data) => {
     setViewCancel(data);
     setCancel(true);
+    setPurgedReq(false);
   };
 
   const handleViewRequest = (data) => {
     setViewRequest(data);
     setView(true);
+    setPurgedReq(false);
+  };
+
+  const handlePurgeRequest = (data) => {
+    setPurgedReq(data);
+    setView(true);
+    setPurgedReq(true);
   };
 
   const handleViewRating = (id) => {
@@ -71,19 +80,39 @@ const HeadTransactions = () => {
 
   const isLargeScreen = windowWidth >= 1024;
 
+  const [windowWidth1366, setWindowWidth1366] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth1366(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const isScreenWidth1366 = windowWidth1366 === 1366;
+
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
-    const defaultStartDate = new Date();
-    defaultStartDate.setDate(defaultStartDate.getDate() - 10);
-    const defaultEndDate = new Date();
-    const defaultStartDateString = defaultStartDate.toISOString().split("T")[0];
-    const defaultEndDateString = defaultEndDate.toISOString().split("T")[0];
+    const currentDate = new Date();
+    const defaultStartDate = new Date(currentDate);
+    defaultStartDate.setDate(currentDate.getDate() - 30);
 
-    setStartDate(defaultStartDateString);
-    setEndDate(defaultEndDateString);
+    const startDateString = defaultStartDate.toISOString().split("T")[0];
+    const endDateString = currentDate.toISOString().split("T")[0];
+
+    setStartDate(startDateString);
+    setEndDate(endDateString);
+
+    fetchData();
   }, []);
+
   useEffect(() => {
     fetchData();
   }, [startDate, endDate]);
@@ -92,7 +121,14 @@ const HeadTransactions = () => {
     try {
       setLoading(true);
       const result = await axios.get(
-        `http://127.0.0.1:8000/api/transaction-list/${userID}/${startDate}/${endDate}`
+        `${import.meta.env.VITE_API_BASE_URL}/api/transaction-list`,
+        {
+          params: {
+            userID: userID,
+            startDate: startDate,
+            endDate: endDate,
+          },
+        }
       );
       setData(result.data.results);
       console.log(result);
@@ -109,7 +145,7 @@ const HeadTransactions = () => {
   const handleRatings = async (id) => {
     console.log(id);
     const response = await axios.get(
-      `http://127.0.0.1:8000/api/closed-view/${id}`
+      `${import.meta.env.VITE_API_BASE_URL}/api/closed-view/${id}`
     );
     setRatings(response.data.results);
   };
@@ -128,7 +164,7 @@ const HeadTransactions = () => {
   const [doneRating, setDoneRating] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/done-rate")
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/api/done-rate`)
       .then((response) => response.json())
       .then((data) => {
         setDoneRating(data.results);
@@ -139,6 +175,37 @@ const HeadTransactions = () => {
   }, []);
 
   console.log(doneRating);
+
+  const [natureRequests, setNatureRequests] = useState("");
+  const [natureReqOption, setNatureReqOption] = useState([]);
+
+  useEffect(() => {
+    fetchNature();
+  }, []);
+
+  const fetchNature = () => {
+    setLoading(true);
+    axios
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/nature-list`)
+      .then((response) => {
+        setNatureRequests(response.data.results);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    if (Array.isArray(natureRequests)) {
+      const dynamicFilters = natureRequests.map((natureRequest) => ({
+        text: natureRequest.natureRequest,
+        value: natureRequest.natureRequest,
+      }));
+      setNatureReqOption(dynamicFilters);
+    }
+  }, [natureRequests]);
 
   const [searchText, setSearchText] = useState("");
   const [pagination, setPagination] = useState({
@@ -187,13 +254,14 @@ const HeadTransactions = () => {
     },
     {
       title: "Request ID",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "request_code",
+      key: "request_code",
     },
     {
       title: "Date Requested",
       dataIndex: "dateRequested",
       key: "dateRequested",
+      defaultSortOrder: "desc",
       sorter: (a, b) => {
         const dateA = new Date(a.dateRequested);
         const dateB = new Date(b.dateRequested);
@@ -204,11 +272,25 @@ const HeadTransactions = () => {
       title: "Nature of Request",
       dataIndex: "natureOfRequest",
       key: "natureOfRequest",
+      filters: natureReqOption,
+      filterSearch: true,
+      onFilter: (value, record) => record.natureOfRequest?.includes(value),
     },
     {
       title: "Mode",
       dataIndex: "modeOfRequest",
       key: "modeOfRequest",
+      filters: [
+        {
+          text: "Online",
+          value: "Online",
+        },
+        {
+          text: "Walk-In",
+          value: "Walk-In",
+        },
+      ],
+      onFilter: (value, record) => record.modeOfRequest?.includes(value),
     },
     {
       title: "Assigned To",
@@ -302,6 +384,13 @@ const HeadTransactions = () => {
             >
               View
             </button>
+          ) : record.status === "Purge" ? (
+            <button
+              className="text-white bg-red-500 font-medium px-3 py-2 rounded-lg"
+              onClick={() => handlePurgeRequest(record)}
+            >
+              Purge
+            </button>
           ) : (
             <button
               onClick={() => handleViewRequest(record)}
@@ -371,7 +460,7 @@ const HeadTransactions = () => {
             <div className="flex lg:flex-row text-center flex-col w-full lg:pl-4 items-center justify-center shadow-xl bg-white  text-white rounded-t-lg lg:gap-4 gap-2">
               <div className="flex lg:flex-col flex-row lg:gap-0 gap-2">
                 <h1 className="flex text-black items-center lg:text-2xl font-semibold ">
-                  Current Requests
+                  Transactions
                 </h1>
                 <span className="text-black mr-auto">
                   Total Requests: {data.length}
@@ -442,14 +531,18 @@ const HeadTransactions = () => {
                   id={selectedID} // Pass the selectedItemId as a prop
                   user_id={selectedUserId} // Pass the selectedUserId as a prop
                   office={selectedOffice}
+                  role={userRole}
+                  isScreenWidth1366={isScreenWidth1366}
                 />
               )}
 
               {view && (
-                <ClosedModal
+                <ToRateModal
                   isOpen={view}
                   onClose={() => setView(false)}
-                  datas={viewRequest} // Pass the selectedItemId as a prop
+                  role={userRole}
+                  datas={viewRequest}
+                  purged={purgedReq}
                 />
               )}
               {cancel && (
