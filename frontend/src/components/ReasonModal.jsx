@@ -21,7 +21,6 @@ export default function ReasonModal({
     setConfirmationVisible(true);
   };
 
-  console.log("yawa man diay ka:", itemData.request_id);
   const handleConfirm = async () => {
     try {
       // Construct the API URL based on the user's role

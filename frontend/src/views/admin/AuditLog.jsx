@@ -38,6 +38,14 @@ const AuditLog = () => {
 
   const auditColumns = [
     {
+      title: "#",
+      dataIndex: "rowNumber",
+      key: "rowNumber",
+      render: (text, record, index) => {
+        return (pagination.current - 1) * pagination.pageSize + index + 1;
+      },
+    },
+    {
       title: "Reference",
       dataIndex: "reference",
       key: "reference",
@@ -76,6 +84,17 @@ const AuditLog = () => {
       });
   }, []);
 
+  const filterAuditLogs = () => {
+    return auditLogs.filter((log) => {
+      const search = searchText.toLowerCase();
+      return (
+        log.reference.toLowerCase().includes(search) ||
+        log.name.toLowerCase().includes(search) ||
+        log.action.toLowerCase().includes(search)
+      );
+    });
+  };
+
   return (
     <HelmetProvider>
       <Helmet>
@@ -106,31 +125,13 @@ const AuditLog = () => {
                   onChange={(e) => handleSearchBar(e.target.value)}
                 />
               </div>
-              <div className="flex items-center justify-center gap-4 mr-4 mb-4 lg:mb-0">
-                <div className="flex lg:flex-row flex-col items-center text-black gap-2">
-                  <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">
-                    <span className="font-semibold">From:</span>
-                    <input
-                      type="date"
-                      className="p-2 w-36 outline-none border-none bg-transparent"
-                    />
-                  </div>
-                  <div className="flex items-center px-2 justify-center rounded-md border-2 border-gray-400">
-                    <span className="font-semibold">To:</span>
-                    <input
-                      type="date"
-                      className="p-2 w-36 outline-none border-none bg-transparent"
-                    />
-                  </div>
-                </div>
-              </div>
             </div>
             <div
               className={`overflow-auto h-auto shadow-xl  pb-5  rounded-lg w-full`}
             >
               <Table
                 columns={auditColumns}
-                dataSource={auditLogs}
+                dataSource={filterAuditLogs()}
                 pagination={pagination}
                 onChange={(newPagination) => setPagination(newPagination)}
                 rowKey={(record) => record.id}

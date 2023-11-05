@@ -30,6 +30,7 @@ const HeadCurrentRequests = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
+  const { fullName } = useAuth();
   const { setActive } = useActiveTab();
 
   const [selectedID, setSelectedID] = useState(null);
@@ -173,7 +174,7 @@ const HeadCurrentRequests = () => {
       }
       loopCount++;
     } catch (err) {
-      console.log(err);
+      console.log("Something went wrong:", err);
       setLoading(false);
     } finally {
       setLoading(false);
@@ -685,6 +686,7 @@ const HeadCurrentRequests = () => {
                   onClose={handleCloseReasonModalClick} // Pass the callback here
                   isLargeScreen={isLargeScreen}
                   role={userRole}
+                  name={fullName}
                   onSubmit={handleReasonModalSubmit}
                 />
               )}
