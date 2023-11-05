@@ -24,11 +24,13 @@ const SummaryListModal = ({
   useEffect(() => {
     const queryParams = {};
     if (fromDate) {
-      queryParams.fromDate = fromDate;
+      queryParams.startDate = fromDate;
     }
     if (toDate) {
-      queryParams.toDate = toDate;
+      queryParams.endDate = toDate;
     }
+
+    console.log("yawa ma diay ka na date: ", queryParams);
 
     const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/summary-list`;
 

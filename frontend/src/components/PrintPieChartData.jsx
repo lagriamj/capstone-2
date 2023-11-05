@@ -74,13 +74,13 @@ const PrintPieChartData = ({
         ref={contentRef}
       >
         <div className="flex flex-col gap-2 items-center justify-center">
-          <h4 className="text-xs">City Information Technology Center</h4>
-          <h3 className="text-sm font-bold">
+          <h4 className="text-lg">City Information Technology Center</h4>
+          <h3 className="text-base font-bold">
             Computer Equipment Maintenance and Systems Engineering Division
           </h3>
           <div className="flex items-center justify-center gap-1">
-            <h3 className="text-sm">For the period</h3>
-            <h1 className="font-bold">{formattedDateRange}</h1>
+            <h3 className="text-base">For the period</h3>
+            <h1 className="font-bold text-base">{formattedDateRange}</h1>
           </div>
         </div>
         <Table

@@ -84,7 +84,7 @@ class DashboardController extends Controller
 
         $totalRequestSatisfied = DB::table('rate_services')->count();
         $requestSatisfied = $totalRequestSatisfied * 40;
-        
+
         $totalRequestSatisfied = DB::table('rate_services')->count();
         $requestSatisfied = $totalRequestSatisfied * 40;
 
@@ -112,7 +112,7 @@ class DashboardController extends Controller
         $satisfiedRating = $resultUnsatisfied ? (int)$resultUnsatisfied->Satisfied_Rating : 0;
         $totalRequestUnsatisfied = DB::table('rate_services')->count();
         $requestUnsatisfied = $totalRequestUnsatisfied * 40;
-            
+
         if ($requestUnsatisfied == 0) {
             $UnsatisfiedRating = 0;
         } else {
@@ -160,7 +160,7 @@ class DashboardController extends Controller
     {
         $startDate = $request->input('startDate', null);
         $endDate = $request->input('endDate', null);
-        
+
         if ($startDate === null) {
             $startDate = date('Y-m-d', strtotime('-30 days')); // Default to 10 days ago
         }
@@ -191,7 +191,7 @@ class DashboardController extends Controller
         $endDate = $request->input('endDate', null);
 
         if ($startDate === null) {
-            $startDate = date('Y-m-d', strtotime('-30 days')); 
+            $startDate = date('Y-m-d', strtotime('-30 days'));
         }
 
         if ($endDate === null) {
@@ -309,7 +309,7 @@ class DashboardController extends Controller
     {
         $startDate = $request->input('startDate', null);
         $endDate = $request->input('endDate', null);
-        
+
         if ($startDate === null) {
             $startDate = date('Y-m-d', strtotime('-30 days')); // Default to 10 days ago
         }
@@ -384,7 +384,7 @@ class DashboardController extends Controller
         $endDate = $request->input('endDate', null);
 
         if ($startDate === null) {
-            $startDate = date('Y-m-d', strtotime('-30 days')); 
+            $startDate = date('Y-m-d', strtotime('-30 days'));
         }
 
         if ($endDate === null) {
@@ -436,7 +436,7 @@ class DashboardController extends Controller
         $status = $request->input('status');
         $startDate = $request->input('startDate', null);
         $endDate = $request->input('endDate', null);
-        
+
         if ($startDate === null) {
             $startDate = date('Y-m-d', strtotime('-10 days'));
         }
@@ -586,7 +586,7 @@ class DashboardController extends Controller
         $query->where('user_requests.dateRequested', '>=', $startDate)
             ->where('user_requests.dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
 
-            
+
         $requests = $query->get();
 
         foreach ($requests as $request) {
