@@ -1341,7 +1341,7 @@ const Dashboard = () => {
         title={
           <div className="flex lg:flex-row flex-col items-center">
             <h1 className="text-xl my-4 pb-2 font-bold font-sans">
-              Request ID: E-{selectedData?.id}
+              Request ID: {selectedData?.request_code}
             </h1>
             <div className="flex gap-2 lg:ml-auto">
               <label className="text-lg my-4 pb-2 font-bold font-sans">

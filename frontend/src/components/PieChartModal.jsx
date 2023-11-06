@@ -22,7 +22,7 @@ const PieChartModal = ({
     position: ["bottomLeft"],
     showQuickJumper: true,
     current: 1,
-    pageSize: 10,
+    pageSize: modalData.requests ? modalData.requests.length : 10,
     showLessItems: true,
   });
 
@@ -42,6 +42,10 @@ const PieChartModal = ({
   const closeGenerateReport = () => {
     setOpenGenerateReport(false);
   };
+
+  const totalItems = modalData.requests?.length;
+  const lastPage = Math.ceil(totalItems / pagination.pageSize);
+  const isLastPage = currentPage === lastPage;
 
   return (
     <Modal
@@ -70,7 +74,8 @@ const PieChartModal = ({
           onClose={closeGenerateReport}
           techData={modalData}
           tableColumn={tableColumns}
-          pageSize={pagination.pageSize}
+          isLastPage={isLastPage}
+          pageSize={modalData.requests ? modalData.requests.length : 10}
           currentPage={currentPage}
           isLargeScreen={isLargeScreen}
           fromDate={fromDate}

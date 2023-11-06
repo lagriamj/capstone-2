@@ -8,8 +8,6 @@ const PrintPieChartData = ({
   onClose,
   tableColumn,
   techData,
-  pageSize,
-  currentPage,
   isLargeScreen,
   fromDate,
   toDate,
@@ -57,7 +55,7 @@ const PrintPieChartData = ({
       onOk={handlePrint}
       okButtonProps={{
         color: "red",
-        className: "text-white bg-main border-1 border-gray-300 hidden",
+        className: "text-white bg-main border-1 border-gray-300",
         size: "large",
       }}
       okText="Print"
@@ -74,28 +72,21 @@ const PrintPieChartData = ({
         ref={contentRef}
       >
         <div className="flex flex-col gap-2 items-center justify-center">
-          <h4 className="text-lg">City Information Technology Center</h4>
-          <h3 className="text-base font-bold">
+          <h4 className="text-xs">City Information Technology Center</h4>
+          <h3 className="text-sm font-bold">
             Computer Equipment Maintenance and Systems Engineering Division
           </h3>
           <div className="flex items-center justify-center gap-1">
-            <h3 className="text-base">For the period</h3>
-            <h1 className="font-bold text-base">{formattedDateRange}</h1>
+            <h3 className="text-sm">For the period</h3>
+            <h1 className="font-bold">{formattedDateRange}</h1>
           </div>
         </div>
         <Table
           className="mt-4"
           columns={tableColumn}
-          dataSource={techData.map((item, index) => ({
-            ...item,
-            key: index,
-          }))}
+          dataSource={techData}
           scroll={isLargeScreen ? "" : { x: 1300 }}
-          pageSize={pageSize}
-          pagination={{
-            pageSize: pageSize,
-            current: currentPage,
-          }}
+          pagination={false} // Disable pagination
         />
       </div>
     </Modal>
@@ -106,9 +97,9 @@ PrintPieChartData.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   tableColumn: PropTypes.any.isRequired,
-  techData: PropTypes.any.isRequired,
-  pageSize: PropTypes.any.isRequired,
-  currentPage: PropTypes.any.isRequired,
+  techData: PropTypes.array.isRequired,
+  pageSize: PropTypes.number, // You can remove this prop since you don't need to specify pageSize
+  currentPage: PropTypes.number,
   isLargeScreen: PropTypes.bool.isRequired,
   fromDate: PropTypes.any,
   toDate: PropTypes.any,

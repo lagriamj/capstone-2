@@ -22,7 +22,7 @@ const PieChartRequestModal = ({
     position: ["bottomLeft"],
     showQuickJumper: true,
     current: 1,
-    pageSize: 10,
+    pageSize: modalData.requests ? modalData.requests.length : 10, // Set pageSize to match the total number of items
     showLessItems: true,
   });
 
@@ -75,7 +75,7 @@ const PieChartRequestModal = ({
           techData={modalData}
           tableColumn={tableColumns}
           isLastPage={isLastPage}
-          pageSize={pagination.pageSize}
+          pageSize={modalData.requests ? modalData.requests.length : 10}
           currentPage={currentPage}
           isLargeScreen={isLargeScreen}
           fromDate={fromDate}
