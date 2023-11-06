@@ -12,6 +12,7 @@ import { Button, message } from "antd";
 import { useActiveTab } from "../ActiveTabContext";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { motion, AnimatePresence } from "framer-motion";
+import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 
 function Login() {
   const [role, setRole] = useState("");
@@ -25,6 +26,7 @@ function Login() {
   const location = useLocation();
   const [displaySuccessMessage, setDisplaySuccessMessage] = useState(false);
   const { setActive } = useActiveTab();
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     // If the user is already authenticated, redirect them to the appropriate page
@@ -212,8 +214,8 @@ function Login() {
                     </label>
                     <div className="relative w-full">
                       <input
-                        className="w-full h-14 border-2 rounded-lg pl-14 pr-4 text-lg border-slate-400 focus:outline-none"
-                        type="password"
+                        className="w-full h-14 border-2 rounded-lg pl-14 pr-14 text-lg border-slate-400 focus:outline-none"
+                        type={showPassword ? "text" : "password"}
                         name="password"
                         id="password"
                         placeholder="Password"
@@ -221,14 +223,23 @@ function Login() {
                         onChange={(e) => setUserPassword(e.target.value)}
                       />
                       <div className="absolute inset-y-0 left-0 flex items-center p-3 bg-main rounded-l-lg">
-                        <svg
-                          className="w-7 h-7 text-white"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
-                          {/* Replace with your icon component */}
-                          <FontAwesomeIcon icon={faLock} />
-                        </svg>
+                        <FontAwesomeIcon
+                          icon={faLock}
+                          style={{ color: "white" }}
+                        />
+                      </div>
+                      <div className="absolute inset-y-0 right-0 flex items-center p-3 rounded-r-lg">
+                        {showPassword ? (
+                          <EyeOutlined
+                            onClick={() => setShowPassword(!showPassword)}
+                            style={{ fontSize: "20px", color: "black" }}
+                          />
+                        ) : (
+                          <EyeInvisibleOutlined
+                            onClick={() => setShowPassword(!showPassword)}
+                            style={{ fontSize: "20px", color: "black" }}
+                          />
+                        )}
                       </div>
                     </div>
                   </div>

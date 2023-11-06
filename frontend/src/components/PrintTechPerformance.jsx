@@ -6,7 +6,6 @@ import ReactToPrint from "react-to-print";
 const PrintTechPerformance = ({
   isOpen,
   onClose,
-  tableColumn,
   techData,
   pageSize,
   currentPage,
@@ -37,6 +36,45 @@ const PrintTechPerformance = ({
       printRef.current.handlePrint(); // Trigger the print action
     }
   };
+
+  const techPerformanceColumn = [
+    {
+      title: "#",
+      dataIndex: "index",
+      key: "index",
+      render: (text, record, index) => index + 1,
+    },
+    {
+      title: "Technician",
+      dataIndex: "technician",
+      key: "technician",
+    },
+    {
+      title: "Total Assigned Requests",
+      dataIndex: "all_req",
+      key: "all_req",
+    },
+    {
+      title: "Closed Requests",
+      dataIndex: "closed_req",
+      key: "closed_req",
+    },
+    {
+      title: "Unclosed Requests",
+      dataIndex: "unclosed_req",
+      key: "unclosed_req",
+    },
+    {
+      title: "Performance by Percentage",
+      dataIndex: "performance",
+      key: "performance",
+    },
+    {
+      title: "Ratings",
+      dataIndex: "rating",
+      key: "rating",
+    },
+  ];
 
   return (
     <Modal
@@ -85,7 +123,7 @@ const PrintTechPerformance = ({
           </div>
         </div>
         <Table
-          columns={tableColumn}
+          columns={techPerformanceColumn}
           dataSource={techData.map((item, index) => ({
             ...item,
             key: index,
@@ -105,7 +143,6 @@ const PrintTechPerformance = ({
 PrintTechPerformance.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  tableColumn: PropTypes.any.isRequired,
   techData: PropTypes.any.isRequired,
   pageSize: PropTypes.any.isRequired,
   currentPage: PropTypes.any.isRequired,

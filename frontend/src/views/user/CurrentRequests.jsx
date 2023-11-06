@@ -246,9 +246,7 @@ const CurrentRequests = () => {
           <span className="text-white">{`${requestCode} Request is Received`}</span>
         );
         descriptionText = artaDays ? (
-          <p className="text-white">
-            Your {requestCode} request is being processed.
-          </p>
+          <p className="text-white">Your request is being processed.</p>
         ) : null; // If artaDays is null, descriptionText is set to null
         notificationStyle = {
           backgroundColor: "#343467",
@@ -272,9 +270,7 @@ const CurrentRequests = () => {
           <span className="text-white">{`${requestCode} Request is To Release`}</span>
         );
         descriptionText = (
-          <p className="text-white">
-            It will be completed within {artaDays} days.
-          </p>
+          <p className="text-white">Your request is ready for release.</p>
         );
         notificationStyle = {
           backgroundColor: "#343467",

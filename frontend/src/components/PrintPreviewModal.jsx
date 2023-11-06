@@ -9,26 +9,36 @@ import axios from "axios";
 const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
   const contentRef = useRef();
 
-  const printRef = useRef(); // Ref for ReactToPrint component
+  const printRef = useRef();
 
   const { userID } = useAuth();
-  const { fullName } = useAuth();
-
+  const { userRole } = useAuth();
   const [authorizedSignatures, setAuthorizedSignatures] = useState([]);
 
-  console.log("ywa", itemData?.request_id);
+  let endpointVariable;
+
+  if (userRole === "admin" && itemData?.user_id) {
+    endpointVariable = itemData.user_id;
+  } else {
+    endpointVariable = userID;
+  }
 
   useEffect(() => {
-    // Make an HTTP GET request to fetch authorized persons and their images from your Laravel API.
-    axios
-      .get(`${import.meta.env.VITE_API_BASE_URL}/api/all-signature/${userID}`) // Replace with your API URL.
-      .then((response) => {
-        setAuthorizedSignatures(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
+    if (endpointVariable) {
+      axios
+        .get(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/all-signature/${endpointVariable}`
+        )
+        .then((response) => {
+          setAuthorizedSignatures(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+    }
+  }, [endpointVariable]);
 
   const [authorApprovedSignatures, setAuthorApprovedSignatures] = useState([]);
   // eslint-disable-next-line no-unused-vars
@@ -458,7 +468,7 @@ const PrintPreviewModal = ({ visible, onClose, itemData, reqID }) => {
                           </div>
                         </li>
                       ))}
-                      <p className="relative z-10 mt-2">{fullName}</p>
+                      <p className="relative z-10 mt-2">{itemData?.fullName}</p>
                     </label>
                   </div>
 

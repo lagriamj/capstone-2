@@ -349,7 +349,9 @@ const ServiceReleaseModal = ({
               <Col xs={24} lg={6}>
                 <Form.Item
                   label={
-                    <label className="block text-sm font-bold">ARTA</label>
+                    <label className="block text-sm font-bold">
+                      ARTA (Anti-Red Tape Act)
+                    </label>
                   }
                   name="arta"
                 >

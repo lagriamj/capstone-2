@@ -176,7 +176,7 @@ export default function CurrentRequestModal({
             className={`${isScreenWidth1366 ? "mb-5" : "mb-10"}`}
           >
             {steps.map((status, index) => (
-              <Step key={index} completed={index < activeIndex}>
+              <Step key={index} completed={index <= activeIndex}>
                 <StepLabel sx={{ fontSize: "24px" }} icon={index}>
                   <span className="text-lg">{status}</span>
                 </StepLabel>

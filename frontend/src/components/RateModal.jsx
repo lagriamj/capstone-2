@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
+import { message } from "antd";
 import {
   faSadTear,
   faFrown,
@@ -28,6 +29,9 @@ const RateModal = ({
   const navigate = useNavigate();
   const { setActive } = useActiveTab();
 
+  console.log("reqid", id);
+  console.log("userid", user_id);
+
   if (!isOpen) return null;
 
   const options = {
@@ -40,6 +44,8 @@ const RateModal = ({
   };
 
   const daytime = new Date().toLocaleString(undefined, options);
+
+  console.log("- - -", user_id, id, office);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [selectedRatings, setSelectedRatings] = useState({
@@ -71,6 +77,20 @@ const RateModal = ({
   const onSubmitChange = async (e) => {
     e.preventDefault();
 
+    if (
+      selectedRatings.q1 === "" ||
+      selectedRatings.q2 === "" ||
+      selectedRatings.q3 === "" ||
+      selectedRatings.q4 === "" ||
+      selectedRatings.q5 === "" ||
+      selectedRatings.q6 === "" ||
+      selectedRatings.q7 === "" ||
+      selectedRatings.q8 === ""
+    ) {
+      message.warning("Please rate all the questions before submitting.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -78,6 +98,7 @@ const RateModal = ({
         `${import.meta.env.VITE_API_BASE_URL}/api/transanction-rate`,
         selectedRatings
       );
+      // eslint-disable-next-line no-unused-vars
       const data = response.data;
 
       if (role === "user") {
@@ -94,7 +115,7 @@ const RateModal = ({
       if (err.response && err.response.status === 422) {
         // The server returned validation errors
         const validationErrors = err.response.data.errors;
-        console.log(validationErrors);
+        console.log("Validation Errors:", validationErrors);
 
         // Display validation errors to the user
         // You can update your UI to show these errors to the user
@@ -433,6 +454,7 @@ RateModal.propTypes = {
   office: PropTypes.string.isRequired,
   role: PropTypes.string.isRequired,
   isScreenWidth1366: PropTypes.bool.isRequired,
+  updateServiceTaskData: PropTypes.any,
 };
 
 export default RateModal;

@@ -83,21 +83,14 @@ const ServiceTask = () => {
     fetchData();
   };
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const currentDate = new Date();
+  const defaultStartDate = new Date(currentDate);
+  defaultStartDate.setDate(currentDate.getDate() - 30);
+  const startDateString = defaultStartDate.toISOString().split("T")[0];
+  const endDateString = currentDate.toISOString().split("T")[0];
 
-  useEffect(() => {
-    const currentDate = new Date();
-    const defaultStartDate = new Date(currentDate);
-    defaultStartDate.setDate(currentDate.getDate() - 30);
-    const startDateString = defaultStartDate.toISOString().split("T")[0];
-    const endDateString = currentDate.toISOString().split("T")[0];
-
-    setStartDate(startDateString);
-    setEndDate(endDateString);
-
-    fetchData();
-  }, []);
+  const [startDate, setStartDate] = useState(startDateString);
+  const [endDate, setEndDate] = useState(endDateString);
 
   useEffect(() => {
     fetchData();

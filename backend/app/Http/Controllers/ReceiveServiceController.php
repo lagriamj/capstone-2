@@ -134,25 +134,20 @@ class ReceiveServiceController extends Controller
 
     public function showServiceTask(Request $request)
     {
-        $startDate = $request->input('startDate', null);
-        $endDate = $request->input('endDate', null);
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
 
-        if ($startDate === null) {
-            $startDate = date('Y-m-d', strtotime('-30 days'));
-        }
 
-        if ($endDate === null) {
-            $endDate = date('Y-m-d');
-        }
+
 
         $query = DB::table('user_requests')
             ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
             ->select('user_requests.*', 'receive_service.*')
             ->whereNotIn('user_requests.status', ['Purge'])
-            ->where('user_requests.approved', '=', 'yes-signature');
+            ->where('user_requests.approved', '=', 'yes-signature')
+            ->whereRaw('DATE(user_requests.dateRequested) >= ?', [$startDate])
+            ->whereRaw('DATE(user_requests.dateRequested) <= ?', [$endDate]);
 
-        $query->where('dateRequested', '>=', $startDate)
-            ->where('dateRequested', '<', date('Y-m-d', strtotime($endDate . ' + 1 day')));
 
         $data = $query->get();
 

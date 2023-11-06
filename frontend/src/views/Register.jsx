@@ -18,6 +18,7 @@ import { useAuth } from "../AuthContext";
 import Select from "react-select";
 import TermsAndConditionsModal from "../components/TermsAndConditionsModal";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { notification } from "antd";
 
 const InputBox = ({
   value,
@@ -145,8 +146,27 @@ const Register = () => {
   const [file, setFile] = useState(null);
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const selectedFile = e.target.files[0];
+
+    if (selectedFile) {
+      const allowedFileTypes = ["image/jpeg", "image/png", "image/jpg"];
+      if (allowedFileTypes.includes(selectedFile.type)) {
+        setFile(selectedFile);
+      } else {
+        notification.warning({
+          message: <div className="font-bold text-lg">Invalid File Type</div>,
+          description: (
+            <div className="text-lg">
+              Please select a valid signature image file (jpg, png, or jpeg).
+            </div>
+          ),
+        });
+        e.target.value = null;
+        setFile(null);
+      }
+    }
   };
+
   const registerUser = async (e) => {
     e.preventDefault();
 
@@ -517,25 +537,27 @@ const Register = () => {
                 </div>
                 <div className="flex items-start justify-center text-lg flex-col lg:w-[80%] w-[90%]">
                   <label className="font-semibold" htmlFor="signature">
-                    Signature
+                    Signature{" "}
+                    <span className="text-gray-500 text-sm">
+                      (JPG, JPEG, PNG only)
+                    </span>
                   </label>
                   <div className="relative w-full">
                     <input
                       type="file"
                       onChange={handleFileChange}
-                      accept="image/*"
+                      accept=".jpg, .jpeg, .png"
                       required
                       className="w-full h-11 border-2 rounded-lg pl-12 pt-1 pr-4 text-lg border-slate-400 focus:outline-none"
                     />
                     <div className="absolute inset-y-0 left-0 flex items-center p-3 bg-main rounded-l-lg">
                       <FontAwesomeIcon
-                        icon={faSignature} // Replace with the FontAwesome icon you want to use
+                        icon={faSignature}
                         className="text-white"
                       />
                     </div>
                   </div>
                 </div>
-
                 <div className="flex items-start justify-center flex-col w-3/4">
                   <button
                     className={`w-full h-14 text-lg font-medium border-2 rounded-lg pl-2 transition duration-300 ease-in-out  bg-main text-white`}

@@ -1,8 +1,9 @@
-import { Modal, Table, Button } from "antd";
+import { Modal, Table, Button, message } from "antd";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import PrintTechPerformance from "./PrintTechPerformance";
+import TechnicianRemarks from "./TechnicianRemarks";
 
 const TechnicianPerformance = ({
   isOpen,
@@ -48,6 +49,47 @@ const TechnicianPerformance = ({
       });
   };
 
+  const [selectedRemarksData, setSelectedRemarksData] = useState(null);
+  const [openModalRemarks, setOpenModalRemarks] = useState(false);
+
+  const openRemarksModal = async (data) => {
+    if (openModalRemarks) {
+      return;
+    }
+
+    setOpenModalRemarks(true);
+    await axios
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/view-remarks`, {
+        params: {
+          technician: data.technician,
+          fromDate: startDate,
+          toDate: endDate,
+        },
+      })
+      .then((response) => {
+        const responseData = response.data;
+        console.log(response);
+        if (
+          responseData &&
+          responseData.data &&
+          Array.isArray(responseData.data)
+        ) {
+          const dataArray = responseData.data; // Access the array of data
+          setSelectedRemarksData(dataArray);
+        } else {
+          // Handle the case where the data is not as expected
+          message.error("Something went wrong");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const closeRemarksModal = () => {
+    setOpenModalRemarks(false);
+  };
+
   const techPerformanceColumn = [
     {
       title: "#",
@@ -84,6 +126,19 @@ const TechnicianPerformance = ({
       title: "Ratings",
       dataIndex: "rating",
       key: "rating",
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      key: "",
+      render: (record) => (
+        <button
+          className="bg-blue-500 py-[0.30rem] px-4 text-white rounded-md hover:opacity-90"
+          onClick={() => openRemarksModal(record)}
+        >
+          View
+        </button>
+      ),
     },
   ];
 
@@ -152,13 +207,17 @@ const TechnicianPerformance = ({
       <PrintTechPerformance
         isOpen={openGenerateReport}
         onClose={closeGenerateReport}
-        tableColumn={techPerformanceColumn}
         techData={data}
         pageSize={pagination.pageSize}
         currentPage={currentPage}
         isLargeScreen={isLargeScreen}
         fromDate={fromDate}
         toDate={toDate}
+      />
+      <TechnicianRemarks
+        visible={openModalRemarks}
+        onCancel={closeRemarksModal}
+        data={selectedRemarksData}
       />
       <Table
         columns={techPerformanceColumn}

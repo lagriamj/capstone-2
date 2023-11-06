@@ -473,20 +473,21 @@ class DashboardController extends Controller
 
             $adminName = $admin->userFirstName . ' ' . $admin->userLastName;
 
-            $adminRequestsQuery = Requests::where('assignedTo', $adminName);
+            $adminRequestsQuery = DB::table('user_requests')
+                ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
+                ->where('receive_service.serviceBy', $adminName);
 
             if ($request->has('fromDate')) {
                 $fromDate = $request->input('fromDate');
-                $adminRequestsQuery->whereDate('dateRequested', '>=', $fromDate);
+                $adminRequestsQuery->whereDate('user_requests.dateRequested', '>=', $fromDate);
             }
 
             if ($request->has('toDate')) {
                 $toDate = $request->input('toDate');
-                $adminRequestsQuery->whereDate('dateRequested', '<=', $toDate);
+                $adminRequestsQuery->whereDate('user_requests.dateRequested', '<=', $toDate);
             }
 
             $adminRequests = $adminRequestsQuery->get();
-
             $totalRequests = $adminRequests->count();
 
             if ($totalRequests === 0) {
@@ -495,24 +496,48 @@ class DashboardController extends Controller
                 $performance = 0;
                 $totalRating = 0;
             } else {
-                $closedRequests = Requests::where('assignedTo', $adminName)
-                    ->where('status', 'Closed')
+                $closedRequests = DB::table('user_requests')
+                    ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
+                    ->where('receive_service.serviceBy', $adminName)
+                    ->where('user_requests.status', 'Closed')
+                    ->whereDate('user_requests.dateRequested', '>=', $fromDate)
+                    ->whereDate('user_requests.dateRequested', '<=', $toDate)
                     ->count();
-                $unclosedRequests = Requests::where('assignedTo', $adminName)
-                    ->whereIn('status', ['On Progress', 'To Release', 'To Rate'])
+
+                $unclosedRequests = DB::table('user_requests')
+                    ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
+                    ->where('receive_service.serviceBy', $adminName)
+                    ->whereIn('user_requests.status', ['On Progress', 'To Release', 'To Rate'])
+                    ->whereDate('user_requests.dateRequested', '>=', $fromDate)
+                    ->whereDate('user_requests.dateRequested', '<=', $toDate)
                     ->count();
-                $performance = ($totalRequests > 0) ? ($closedRequests / $totalRequests) * 100 : 0;
 
-                $totalRating = RateServices::whereIn('request_id', $adminRequests->pluck('id')->toArray())
-                    ->selectRaw('SUM(q1 + q2 + q3 + q4 + q5 + q6 + q7 + q8) as total')
-                    ->value('total');
+                $performance = ($totalRequests > 0) ? ($closedRequests / $totalRequests) * 100 : 0.00;
 
-                $overallRating = RateServices::whereIn('request_id', $adminRequests->pluck('id')->toArray())->count();
+                $serviceByAdminName = ReceiveService::select('serviceBy')
+                    ->where('serviceBy', $adminName)
+                    ->get();
 
-                if ($overallRating > 0) {
-                    $totalRating = ($totalRating / ($overallRating * 40)) * 100;
-                } else {
-                    $totalRating = '0';
+                $totalRating = 0;
+                $overallRating = 0;
+
+                foreach ($serviceByAdminName as $service) {
+                    $try1 = Requests::where('assignedTo', $service->serviceBy)
+                        ->whereDate('dateRequested', '>=', $fromDate)
+                        ->whereDate('dateRequested', '<=', $toDate)
+                        ->get();
+
+                    $totalRating += RateServices::whereIn('request_id', $try1->pluck('id')->toArray())
+                        ->selectRaw('SUM(q1 + q2 + q3 + q4 + q5 + q6 + q7 + q8) as total')
+                        ->value('total');
+
+                    $overallRating += RateServices::whereIn('request_id', $try1->pluck('id')->toArray())->count();
+
+                    if ($overallRating > 0) {
+                        $totalRating = ($totalRating / ($overallRating * 40)) * 100;
+                    } else {
+                        $totalRating = '0';
+                    }
                 }
 
                 $performance = number_format($performance, 2) . '%';
@@ -532,13 +557,11 @@ class DashboardController extends Controller
         }
 
         usort($data, function ($a, $b) {
+            if ($a['performance'] === $b['performance']) {
+                return $b['rating'] <=> $a['rating'];
+            }
             return $b['performance'] <=> $a['performance'];
         });
-
-        usort($data, function ($a, $b) {
-            return $b['rating'] <=> $a['rating'];
-        });
-
         return response()->json(['data' => $data]);
     }
 
@@ -565,7 +588,8 @@ class DashboardController extends Controller
             'receive_service.updated_at',
             'receive_service.remarks',
             DB::raw("COALESCE(release_requests.dateReleased, ' ') as dateReleased"), // Handle blank value for dateReleased
-            'receive_service.toRecommend'
+            'receive_service.toRecommend',
+            'user_requests.status',
         ];
 
         $query = DB::table('user_requests')
@@ -685,5 +709,23 @@ class DashboardController extends Controller
         $requests = $query->get();
 
         return $requests;
+    }
+
+    public function viewRemarks(Request $request)
+    {
+        $technician = $request->input('technician');
+        $fromDate = $request->input('fromDate');
+        $toDate = $request->input('toDate');
+
+        $query = DB::table('user_requests')
+            ->select('user_requests.request_code', 'rate_services.commendation', 'rate_services.suggestion', 'rate_services.request', 'rate_services.complaint')
+            ->join('rate_services', 'user_requests.id', '=', 'rate_services.request_id')
+            ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
+            ->where('user_requests.status', '=', 'Closed')
+            ->where('receive_service.serviceBy', '=', $technician)
+            ->whereBetween('user_requests.dateRequested', [$fromDate, $toDate])
+            ->get();
+
+        return response()->json(['data' => $query]);
     }
 }

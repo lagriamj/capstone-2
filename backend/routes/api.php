@@ -177,7 +177,7 @@ Route::get('/show-arta-reason/{id}', [RequestsController::class, 'showArtaReason
 Route::get('/delay-request', [DashboardController::class, 'artaDelay']);
 
 Route::get('/delay-report', [DashboardController::class, 'delayReport']);
-
-
-Route::get('/head-list', [UtilitySettingController::class, 'headList']);
+Route::get('/head-list', [UserController::class, 'showHeads']);
 Route::put('/update-request/{id}', [RequestsController::class, 'updateRequest']);
+
+Route::get('/view-remarks', [DashboardController::class, 'viewRemarks']);

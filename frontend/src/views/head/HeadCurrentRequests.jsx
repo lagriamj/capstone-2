@@ -20,6 +20,7 @@ import { useActiveTab } from "../../ActiveTabContext";
 const HeadCurrentRequests = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { userID } = useAuth();
+  console.log("userID:", userID);
   const { userRole } = useAuth();
   const [selectedItemId, setSelectedItemId] = useState(null);
   // eslint-disable-next-line no-unused-vars
@@ -205,6 +206,7 @@ const HeadCurrentRequests = () => {
   };
 
   const closedRequest = async (id) => {
+    console.log(id);
     await axios.put(
       `${import.meta.env.VITE_API_BASE_URL}/api/closedNorate/${id}`
     );
@@ -241,9 +243,7 @@ const HeadCurrentRequests = () => {
           <span className="text-white">{`${requestCode} Request is Received`}</span>
         );
         descriptionText = artaDays ? (
-          <p className="text-white">
-            Your {requestCode} request is being processed.
-          </p>
+          <p className="text-white">Your request is being processed.</p>
         ) : null; // If artaDays is null, descriptionText is set to null
         notificationStyle = {
           backgroundColor: "#343467",
@@ -267,9 +267,7 @@ const HeadCurrentRequests = () => {
           <span className="text-white">{`${requestCode} Request is To Release`}</span>
         );
         descriptionText = (
-          <p className="text-white">
-            It will be completed within {artaDays} days.
-          </p>
+          <p className="text-white">Your request is ready for release.</p>
         );
         notificationStyle = {
           backgroundColor: "#343467",

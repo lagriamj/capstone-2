@@ -87,23 +87,33 @@ const UpdateSignature = ({
     }
   };
 
+  const allowedFileTypes = ["image/png", "image/jpeg", "image/jpg"];
+
   const handleChange = (info) => {
     let newFileList = [...info.fileList];
 
-    // 1. Limit the number of uploaded files
-    // Only to show two recent uploaded files, and old ones will be replaced by the new
-    newFileList = newFileList.slice(-1);
-
-    // 2. Read from response and show file link
     newFileList = newFileList.map((file) => {
       if (file.response) {
-        // Component will show file.url as link
         file.url = file.response.url;
       }
+
+      if (!allowedFileTypes.includes(file.type)) {
+        message.warning(
+          "Invalid file type. Please select a PNG, JPEG, or JPG file."
+        );
+        // Remove the file from the fileList to prevent it from being uploaded
+        return null;
+      }
+
       return file;
     });
+
+    // Remove any null entries from the fileList
+    newFileList = newFileList.filter((file) => file !== null);
+
     setFileList(newFileList);
   };
+
   const props = {
     action: `${
       import.meta.env.VITE_API_BASE_URL

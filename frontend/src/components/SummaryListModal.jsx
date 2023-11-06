@@ -16,10 +16,6 @@ const SummaryListModal = ({
   const [toDate, setToDate] = useState(endDate);
   const [currentPage, setCurrentPage] = useState(1);
 
-  console.log("total", data.totalReleased);
-  console.log("unclaim", data.totalUnclaimed);
-  console.log("defect", data.totalDefect);
-
   useEffect(() => {
     const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/summary-list`;
     axios
