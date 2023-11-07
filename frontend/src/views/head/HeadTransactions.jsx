@@ -380,13 +380,6 @@ const HeadTransactions = () => {
             >
               View
             </button>
-          ) : record.status === "Purge" ? (
-            <button
-              className="text-white bg-red-500 font-medium px-3 py-2 rounded-lg"
-              onClick={() => handlePurgeRequest(record)}
-            >
-              Purge
-            </button>
           ) : (
             <button
               onClick={() => handleViewRequest(record)}
@@ -396,7 +389,7 @@ const HeadTransactions = () => {
             </button>
           )}
 
-          {record.status === "Cancelled" ? (
+          {record.status === "Cancelled" || record.status === "Purge" ? (
             <button
               className="text-white text-base bg-gray-400 cursor-not-allowed py-2 px-3 rounded-lg"
               disabled
