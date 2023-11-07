@@ -1181,15 +1181,14 @@ const Dashboard = () => {
                     }
                     xValue={
                       selectedDataSources.includes("technicianData")
-                        ? "assignedTo"
+                        ? "serviceBy"
                         : selectedDataSources.includes("requestsByDate")
                         ? "date"
                         : selectedDataSources.includes("requestsByOffice")
                         ? "reqOffice"
-                        : "assignedTo"
+                        : "serviceBy"
                     }
                     windowsHeight768={isWindowsHeightBelow768}
-                    isLargeScreen={isLargeScreen}
                   />
                 </div>
                 <div className="lg:grid lg:col-start-6 lg:col-span-2 lg:row-start-6 mt-2 lg:row-span-2">
@@ -1343,7 +1342,7 @@ const Dashboard = () => {
         title={
           <div className="flex lg:flex-row flex-col items-center">
             <h1 className="text-xl my-4 pb-2 font-bold font-sans">
-              Request ID: E-{selectedData?.request_code}
+              Request ID: {selectedData?.request_code}
             </h1>
             <div className="flex gap-2 lg:ml-auto">
               <label className="text-lg my-4 pb-2 font-bold font-sans">

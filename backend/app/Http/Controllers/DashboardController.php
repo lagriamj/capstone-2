@@ -142,15 +142,16 @@ class DashboardController extends Controller
         }
 
         $performanceData = DB::table('user_requests')
+            ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
             ->select(
-                'assignedTo',
+                'receive_service.serviceBy',
                 DB::raw('COUNT(*) as techreq'),
                 DB::raw('SUM(CASE WHEN status = "Closed" THEN 1 ELSE 0 END) as closed'),
                 DB::raw('SUM(CASE WHEN status != "Closed" THEN 1 ELSE 0 END) as unclosed')
             )
-            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
-            ->groupBy('assignedTo')
-            ->where('assignedTo', '<>', 'None')
+            ->whereBetween(DB::raw('DATE(user_requests.dateRequested)'), [$startDate, $endDate])
+            ->groupBy('receive_service.serviceBy')
+            ->where('receive_service.serviceBy', '<>', 'n/a')
             ->get();
 
         return response()->json(['Technician' => $performanceData,]);
