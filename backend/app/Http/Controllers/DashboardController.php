@@ -394,6 +394,7 @@ class DashboardController extends Controller
         $totalRequests = DB::table('user_requests')
             ->where('approved', 'yes-signature')
             ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->whereNotIn('status', ['Purge', 'Cancelled'])
             ->count();
 
         $closedRequests = DB::table('user_requests')
