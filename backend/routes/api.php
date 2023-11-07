@@ -181,3 +181,5 @@ Route::get('/head-list', [UserController::class, 'showHeads']);
 Route::put('/update-request/{id}', [RequestsController::class, 'updateRequest']);
 
 Route::get('/view-remarks', [DashboardController::class, 'viewRemarks']);
+
+Route::get('/view-reasons', [DashboardController::class, 'viewReason']);

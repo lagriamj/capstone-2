@@ -250,6 +250,7 @@ const Dashboard = () => {
           },
         }
       );
+
       setTechnicianData(techResponse.data.Technician);
       const requestsResponse = await axios.get(
         `${import.meta.env.VITE_API_BASE_URL}/api/requestsByDate`,
@@ -1341,7 +1342,7 @@ const Dashboard = () => {
         title={
           <div className="flex lg:flex-row flex-col items-center">
             <h1 className="text-xl my-4 pb-2 font-bold font-sans">
-              Request ID: {selectedData?.request_code}
+              Request ID: E-{selectedData?.request_code}
             </h1>
             <div className="flex gap-2 lg:ml-auto">
               <label className="text-lg my-4 pb-2 font-bold font-sans">

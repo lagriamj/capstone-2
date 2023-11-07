@@ -5,51 +5,71 @@ import { LoadingOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import { Modal } from "antd";
 import PrintDelayedReport from "./PrintDelayedReport";
-
-const columns = [
-  {
-    title: "Request ID",
-    dataIndex: "request_code",
-    key: "request_code",
-  },
-  {
-    title: "Date Requested",
-    dataIndex: "dateRequested",
-    key: "dateRequested",
-  },
-  {
-    title: "Nature of Request",
-    dataIndex: "natureOfRequest",
-    key: "natureOfRequest",
-  },
-  {
-    title: "Serviced By",
-    dataIndex: "serviceBy",
-    key: "serviceBy",
-  },
-  {
-    title: "ARTA",
-    dataIndex: "arta",
-    key: "arta",
-  },
-  {
-    title: "Delay Reason",
-    dataIndex: "reasonDelay",
-    key: "reasonDelay",
-  },
-];
+import DelayedReasons from "./DelayedReasons";
 
 const DelayedReport = ({ isOpen, onClose, isLargeScreen }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedDelayedData, setSelectedDelayedData] = useState(null);
+  const [openModalDelayed, setOpenModalDelayed] = useState(false);
+
+  const openDelayedModal = (data) => {
+    setSelectedDelayedData(data.id);
+    setOpenModalDelayed(true);
+  };
+
+  const closeDelayedModal = () => {
+    setOpenModalDelayed(false);
+  };
+
+  const columns = [
+    {
+      title: "Request ID",
+      dataIndex: "request_code",
+      key: "request_code",
+    },
+    {
+      title: "Date Requested",
+      dataIndex: "dateRequested",
+      key: "dateRequested",
+    },
+    {
+      title: "Nature of Request",
+      dataIndex: "natureOfRequest",
+      key: "natureOfRequest",
+    },
+    {
+      title: "Serviced By",
+      dataIndex: "serviceBy",
+      key: "serviceBy",
+    },
+    {
+      title: "ARTA",
+      dataIndex: "arta",
+      key: "arta",
+    },
+    {
+      title: "Action",
+      dataIndex: "",
+      key: "",
+      render: (record) => (
+        <button
+          className="bg-blue-500 py-[0.30rem] px-4 text-white rounded-md hover:opacity-90"
+          onClick={() => openDelayedModal(record)}
+        >
+          View
+        </button>
+      ),
+    },
+  ];
 
   useEffect(() => {
     setLoading(true);
     axios
       .get(`${import.meta.env.VITE_API_BASE_URL}/api/delay-report`)
       .then((response) => {
-        setData(response.data);
+        setData(response.data.results);
         setLoading(false);
       })
       .catch((error) => {
@@ -109,6 +129,11 @@ const DelayedReport = ({ isOpen, onClose, isLargeScreen }) => {
         pageSize={pagination.pageSize}
         currentPage={currentPage}
         isLargeScreen={isLargeScreen}
+      />
+      <DelayedReasons
+        visible={openModalDelayed}
+        onCancel={closeDelayedModal}
+        data={selectedDelayedData}
       />
       <Table
         loading={{

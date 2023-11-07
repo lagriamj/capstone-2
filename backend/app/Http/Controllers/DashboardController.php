@@ -678,22 +678,19 @@ class DashboardController extends Controller
     public function artaDelay()
     {
         $delayData = DB::table('user_requests')
-            ->select('user_requests.id', 'user_requests.request_code', 'user_requests.dateRequested', 'user_requests.natureOfRequest', 'receive_service.serviceBy', 'receive_service.arta', 'arta_cause_delay.reasonDelay', 'arta_cause_delay.reasonDelay as causeOfDelay', 'arta_cause_delay.dateReason as dateOfDelay')
+            ->select('user_requests.*', 'receive_service.*')
             ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
-            ->join('arta_cause_delay', 'user_requests.id', '=', 'arta_cause_delay.request_id')
             ->where('receive_service.artaStatus', '=', 'Delay')
             ->get();
 
         return response()->json(['results' => $delayData]);
     }
 
-
     public function delayReport(Request $request)
     {
         $query = DB::table('user_requests')
-            ->select('user_requests.id', 'user_requests.request_code', 'user_requests.dateRequested', 'user_requests.natureOfRequest', 'receive_service.serviceBy', 'receive_service.arta', 'arta_cause_delay.reasonDelay', 'arta_cause_delay.reasonDelay as causeOfDelay', 'arta_cause_delay.dateReason as dateOfDelay')
+            ->select('user_requests.id', 'user_requests.request_code', 'user_requests.dateRequested', 'user_requests.natureOfRequest', 'receive_service.serviceBy', 'receive_service.arta')
             ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
-            ->join('arta_cause_delay', 'user_requests.id', '=', 'arta_cause_delay.request_id')
             ->where('receive_service.artaStatus', '=', 'Delay');
 
         if ($request->has('fromDate')) {
@@ -708,7 +705,22 @@ class DashboardController extends Controller
 
         $requests = $query->get();
 
-        return $requests;
+        return response()->json(['results' => $requests]);
+    }
+
+
+    public function viewReason(Request $request)
+    {
+        $request_id = $request->input('request_id');
+
+        $query = DB::table('user_requests')
+            ->select('user_requests.id', 'arta_cause_delay.reasonDelay',)
+            ->join('arta_cause_delay', 'user_requests.id', '=', 'arta_cause_delay.request_id')
+            ->where('arta_cause_delay.request_id', '=', $request_id);
+
+        $requests = $query->get();
+
+        return response()->json(['results' => $requests]);
     }
 
     public function viewRemarks(Request $request)
