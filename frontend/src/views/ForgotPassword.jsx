@@ -48,10 +48,13 @@ const ForgotPassword = () => {
   const handleOTPValidation = async () => {
     setLoading(true);
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/check-otp", {
-        email: email,
-        otpCode: otp,
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/api/check-otp`,
+        {
+          email: email,
+          otpCode: otp,
+        }
+      );
       if (response.status === 200) {
         setSent(true);
         setChangeButton("newPassword");
@@ -73,7 +76,7 @@ const ForgotPassword = () => {
     setLoading(true);
     try {
       const response = await axios.put(
-        "http://127.0.0.1:8000/api/new-password",
+        `${import.meta.env.VITE_API_BASE_URL}/api/new-password`,
         {
           email: email,
           userPassword: newPassword,
@@ -103,9 +106,12 @@ const ForgotPassword = () => {
     setOtp("");
     setError("");
     try {
-      const response = await axios.put("http://127.0.0.1:8000/api/verify-otp", {
-        email: email,
-      });
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_BASE_URL}/api/verify-otp`,
+        {
+          email: email,
+        }
+      );
       if (response.status === 200) {
         message.success(response.data.message);
       } else if (response.status === 404) {
