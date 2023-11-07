@@ -40,7 +40,7 @@ const TermsAndConditionsModal = ({
         <p className=" text-lg gotoLarge:text-xl text-justify">
           1. Access and use of the Student Advising Program (SAP) is a sacred
           duty of Designated Student Advisers (DSAs) in the service of student
-          development in the University of Mindanao
+          development in the University of Mindanao.
         </p>
         <p className=" text-lg gotoLarge:text-xl text-justify">
           2. All information, data and materials from the personal records of
