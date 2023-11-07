@@ -8,31 +8,31 @@ const TechnicianRemarks = ({ visible, onCancel, data }) => {
       title: "Request Code",
       dataIndex: "request_code",
       key: "request_code",
-      width: "8%",
+      width: "12%",
     },
     {
       title: "Commendation",
       dataIndex: "commendation",
       key: "commendation",
-      width: "23%",
+      width: "22%",
     },
     {
       title: "Suggestion",
       dataIndex: "suggestion",
       key: "suggestion",
-      width: "23%",
+      width: "22%",
     },
     {
       title: "Request",
       dataIndex: "request",
       key: "request",
-      width: "23%",
+      width: "22%",
     },
     {
       title: "Complaint",
       dataIndex: "complaint",
       key: "complaint",
-      width: "23%",
+      width: "22%",
     },
   ];
 
@@ -48,7 +48,7 @@ const TechnicianRemarks = ({ visible, onCancel, data }) => {
       title="Techncian Feedbacks"
       open={visible}
       onCancel={onCancel}
-      width={"75%"}
+      width={"85%"}
       footer={null}
     >
       <Table
