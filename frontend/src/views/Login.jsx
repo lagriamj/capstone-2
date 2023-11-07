@@ -90,14 +90,24 @@ function Login() {
       const fullName = `${data.firstName} ${data.lastName}`;
 
       if (response.status === 200) {
-        message.success("Welcome " + fullName);
-        login(data.role, data.userID, data.userStatus, fullName);
-        //setUserID(data.userID);
-        setRole(data.role);
-        setUserStatus(data.userStatus);
-        const token = response.data.access_token;
-
-        if (data.userStatus === "verified") {
+        if (data.isActive === 0 && data.userStatus === "unverified") {
+          navigate("/verify-otp", {
+            state: { user: data, userEmail: data.userEmail },
+          });
+        } else if (data.userStatus === "unverified") {
+          navigate("/verify-otp", {
+            state: { user: data, userEmail: data.userEmail },
+          });
+        } else if (data.isActive === 0) {
+          navigate("/login");
+          message.error(
+            "Your account is already Inactive. Please contact CEMG for activation"
+          );
+        } else if (data.userStatus === "verified") {
+          message.success("Welcome " + fullName);
+          login(data.role, data.userID, data.userStatus, fullName);
+          setRole(data.role);
+          setUserStatus(data.userStatus);
           if (data.role === "admin") {
             navigate("/dashboard");
             setActive("dashboard");
@@ -108,10 +118,6 @@ function Login() {
             navigate("/approve-requests");
             setActive("approve-requests");
           }
-        } else if (data.userStatus === "unverified") {
-          navigate("/verify-otp", {
-            state: { user: data, userEmail: data.userEmail },
-          });
         }
       } else {
         setError(data.message);

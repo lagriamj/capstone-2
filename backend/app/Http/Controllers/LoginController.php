@@ -36,6 +36,7 @@ class LoginController extends Controller
                         'firstName' => $user->userFirstName,
                         'lastName' => $user->userLastName,
                         'userStatus' => 'verified',
+                        'isActive' => $user->isActive,
                     ]);
                 } else {
                     return response()->json([
@@ -43,6 +44,7 @@ class LoginController extends Controller
                         'userID' => $user->userID,
                         'userEmail' => $user->userEmail,
                         'userStatus' => 'unverified',
+                        'isActive' => $user->isActive,
                     ]);
                 }
             }

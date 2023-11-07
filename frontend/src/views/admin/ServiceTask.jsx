@@ -221,8 +221,8 @@ const ServiceTask = () => {
 
     if (Array.isArray(technicians)) {
       const techFilter = technicians.map((technician) => ({
-        text: technician.userFirstName + technician.userLastName,
-        value: technician.userFirstName + technician.userLastName,
+        text: `${technician.userFirstName} ${technician.userLastName}`,
+        value: `${technician.userFirstName} ${technician.userLastName}`,
       }));
       techFilter.unshift({
         text: "My Tasks",
