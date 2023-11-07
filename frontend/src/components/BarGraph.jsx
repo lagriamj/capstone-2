@@ -47,7 +47,14 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const BarGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
+const BarGraph = ({
+  data,
+  values1,
+  values2,
+  xValue,
+  windowsHeight768,
+  isLargeScreen,
+}) => {
   const formatDate = (dateString) => {
     // Assuming dateString is in the format "YYYY-MM-DD"
     const date = new Date(dateString);
@@ -70,15 +77,36 @@ const BarGraph = ({ data, values1, values2, xValue, windowsHeight768 }) => {
     <ResponsiveContainer width={"100%"} height={windowsHeight768 ? 200 : 330}>
       <BarChart data={data}>
         <CartesianGrid strokeDasharray="3 3" />
-        <XAxis
-          tick={{ fontSize: "1.125rem", lineHeight: "1.75rem" }}
-          interval={0}
-          height={40}
-          dataKey={xValue}
-          {...(xValue === "date"
-            ? { tickFormatter: formatDate }
-            : { tickFormatter: nameFormat })}
-        />
+        {isLargeScreen ? (
+          <XAxis
+            tick={{
+              fontSize: isLargeScreen ? "1.125rem" : "0.95rem",
+              lineHeight: isLargeScreen ? "1.75rem" : "1.45rem",
+            }}
+            interval={0}
+            height={40}
+            dataKey={xValue}
+            {...(xValue === "date"
+              ? { tickFormatter: formatDate }
+              : { tickFormatter: nameFormat })}
+          />
+        ) : (
+          <XAxis
+            tick={{
+              fontSize: isLargeScreen ? "1.125rem" : "0.95rem",
+              lineHeight: isLargeScreen ? "1.75rem" : "1.45rem",
+            }}
+            interval={0}
+            height={40}
+            dataKey={xValue}
+            {...(xValue === "date"
+              ? { tickFormatter: formatDate }
+              : { tickFormatter: nameFormat })}
+            angle={-20}
+            textAnchor="end"
+          />
+        )}
+
         <YAxis />
         <Tooltip content={<CustomTooltip />} />
         <Legend
@@ -99,6 +127,7 @@ BarGraph.propTypes = {
   values2: PropTypes.any.isRequired,
   xValue: PropTypes.any.isRequired,
   windowsHeight768: PropTypes.bool.isRequired,
+  isLargeScreen: PropTypes.bool,
 };
 
 CustomTooltip.propTypes = {

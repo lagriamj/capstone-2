@@ -1189,6 +1189,7 @@ const Dashboard = () => {
                         : "assignedTo"
                     }
                     windowsHeight768={isWindowsHeightBelow768}
+                    isLargeScreen={isLargeScreen}
                   />
                 </div>
                 <div className="lg:grid lg:col-start-6 lg:col-span-2 lg:row-start-6 mt-2 lg:row-span-2">

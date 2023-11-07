@@ -91,7 +91,7 @@ const UpdateSignature = ({
 
   const handleChange = (info) => {
     let newFileList = [...info.fileList];
-
+    newFileList = newFileList.slice(-1);
     newFileList = newFileList.map((file) => {
       if (file.response) {
         file.url = file.response.url;
@@ -101,16 +101,12 @@ const UpdateSignature = ({
         message.warning(
           "Invalid file type. Please select a PNG, JPEG, or JPG file."
         );
-        // Remove the file from the fileList to prevent it from being uploaded
         return null;
       }
 
       return file;
     });
-
-    // Remove any null entries from the fileList
     newFileList = newFileList.filter((file) => file !== null);
-
     setFileList(newFileList);
   };
 
@@ -171,7 +167,7 @@ const UpdateSignature = ({
                 <Upload
                   {...props}
                   fileList={fileList}
-                  beforeUpload={() => false}
+                  beforeUpload={() => fileList.length === 0}
                 >
                   <Button icon={<UploadOutlined />}>Upload</Button>
                 </Upload>

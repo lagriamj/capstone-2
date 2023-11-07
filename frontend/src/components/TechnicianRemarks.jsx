@@ -8,26 +8,31 @@ const TechnicianRemarks = ({ visible, onCancel, data }) => {
       title: "Request Code",
       dataIndex: "request_code",
       key: "request_code",
+      width: "8%",
     },
     {
       title: "Commendation",
       dataIndex: "commendation",
       key: "commendation",
+      width: "23%",
     },
     {
       title: "Suggestion",
       dataIndex: "suggestion",
       key: "suggestion",
+      width: "23%",
     },
     {
       title: "Request",
       dataIndex: "request",
       key: "request",
+      width: "23%",
     },
     {
       title: "Complaint",
       dataIndex: "complaint",
       key: "complaint",
+      width: "23%",
     },
   ];
 

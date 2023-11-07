@@ -82,11 +82,11 @@ const AddARTAReasonModal = ({
 };
 
 AddARTAReasonModal.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  onCancel: PropTypes.func.isRequired,
+  visible: PropTypes.bool,
+  onCancel: PropTypes.func,
   data: PropTypes.object,
   fullName: PropTypes.string,
-  updateReasonDelay: PropTypes.func.isRequired,
+  updateReasonDelay: PropTypes.func,
   refreshData: PropTypes.any,
 };
 
