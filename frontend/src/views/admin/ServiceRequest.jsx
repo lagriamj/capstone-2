@@ -121,7 +121,7 @@ const ServiceRequest = () => {
       division: division,
       dateRequested: daytime,
       authorizedBy: author,
-      yearProcured: dateP,
+      yearProcured: dateP || "N/A",
       approved: "yes-signature",
     });
   }, [userID, office, division, daytime, author, dateP]);

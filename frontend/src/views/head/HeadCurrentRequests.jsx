@@ -543,7 +543,8 @@ const HeadCurrentRequests = () => {
 
           {record.status === "Received" ||
           record.status === "On Progress" ||
-          record.status === "To Release" ? (
+          record.status === "To Release" ||
+          record.status === "To Rate" ? (
             <button
               className={`text-white ${
                 isScreenWidth1366 ? "text-xs" : " text-base"
@@ -552,7 +553,7 @@ const HeadCurrentRequests = () => {
             >
               Cancel
             </button>
-          ) : record.status === "To Rate" ? (
+          ) : record.status === "Closed" ? (
             <Popconfirm
               placement="left"
               title="Confirmation"

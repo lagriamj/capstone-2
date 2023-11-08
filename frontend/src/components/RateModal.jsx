@@ -98,7 +98,6 @@ const RateModal = ({
         `${import.meta.env.VITE_API_BASE_URL}/api/transanction-rate`,
         selectedRatings
       );
-      // eslint-disable-next-line no-unused-vars
       const data = response.data;
 
       if (role === "user") {
@@ -454,7 +453,6 @@ RateModal.propTypes = {
   office: PropTypes.string.isRequired,
   role: PropTypes.string.isRequired,
   isScreenWidth1366: PropTypes.bool.isRequired,
-  updateServiceTaskData: PropTypes.any,
 };
 
 export default RateModal;
