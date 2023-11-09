@@ -147,7 +147,7 @@ class DashboardController extends Controller
                 'receive_service.serviceBy',
                 DB::raw('COUNT(*) as techreq'),
                 DB::raw('SUM(CASE WHEN status = "Closed" THEN 1 ELSE 0 END) as closed'),
-                DB::raw('SUM(CASE WHEN status != "Closed" THEN 1 ELSE 0 END) as unclosed')
+                DB::raw('SUM(CASE WHEN status NOT IN ("Closed", "Cancelled") THEN 1 ELSE 0 END) as unclosed')
             )
             ->whereBetween(DB::raw('DATE(user_requests.dateRequested)'), [$startDate, $endDate])
             ->groupBy('receive_service.serviceBy')

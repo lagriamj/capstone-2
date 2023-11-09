@@ -77,6 +77,60 @@ class UserController extends Controller
         }
     }
 
+    public function registerNoOTP(Request $request)
+    {
+        $request->validate([
+            'userFirstName' => 'required',
+            'userLastName' => 'required',
+            'office' => 'required',
+            'division' => 'required',
+            'userGovernmentID' => 'required|unique:users',
+            'userEmail' => 'required|email|unique:users',
+            'userContactNumber' => 'required|min:11',
+            'userPassword' => 'required|min:5',
+        ]);
+
+        $otpCode = mt_rand(100000, 999999);
+        $otpExpiration = now()->addMinutes(10);
+        $maxPasswordLength = 50;
+
+        $user = new User();
+        $user->userFirstName = $request->userFirstName;
+        $user->userLastName = $request->userLastName;
+        $user->userGovernmentID = $request->userGovernmentID;
+        $user->office = $request->office;
+        $user->division = $request->division;
+        $user->userEmail = $request->userEmail;
+        $user->userContactNumber = $request->userContactNumber;
+
+        $truncatedPassword = Str::limit($request->userPassword, $maxPasswordLength);
+        $user->userPassword = bcrypt($truncatedPassword); // Hash the truncated password
+
+        // Check if the request is coming from an admin
+        if ($request->input('adminUserRole') === 'admin') {
+            // If it's an admin, use the provided role and status
+            $user->userStatus = $request->input('userStatus');
+            $user->role = $request->input('role');
+        } else {
+            // If it's a regular user, set default role and status
+            $user->userStatus = 'unverified';
+            $user->role = 'user';
+        }
+
+        $user->dateRegistered = now();
+        $user->otpCode = $otpCode;
+        $user->otpExpiration = $otpExpiration;
+
+        $user->save();
+        $user->userID = $user->userID;
+
+        if ($user->save()) {
+            return response()->json(['message' => 'User registered successfully', 'userID' => $user->userID, 'userEmail' => $user->userEmail], 201);
+        } else {
+            return response()->json(['message' => 'The government ID is already taken.'], 422);
+        }
+    }
+
     public function checkEmail(Request $request)
     {
         $email = $request->input("email");

@@ -15,7 +15,6 @@ class RatingController extends Controller
 
     public function showTransanction(Request $request)
     {
-
         $id = $request->input('userID');
         $startDate = $request->input('startDate', null);
         $endDate = $request->input('endDate', null);
@@ -104,13 +103,22 @@ class RatingController extends Controller
             'q6' => 'required',
             'q7' => 'required',
             'q8' => 'required',
-            'commendation' => 'required',
-            'suggestion' => 'required',
-            'request' => 'required',
-            'complaint' => 'required',
+            'commendation' => 'nullable',
+            'suggestion' => 'nullable',
+            'request' => 'nullable',
+            'complaint' => 'nullable',
         ]);
 
         $validatedData['dateRate'] = now();
+
+        $fieldsToSetNA = ['commendation', 'suggestion', 'request', 'complaint'];
+
+
+        foreach ($fieldsToSetNA as $field) {
+            if (empty($validatedData[$field])) {
+                $validatedData[$field] = 'n/a';
+            }
+        }
         $users = RateServices::create($validatedData);
 
         // Retrieve data from the Requests table where id matches request_id

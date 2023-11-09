@@ -89,7 +89,7 @@ Route::middleware('api')->group(function () {
 
     //Account List in Account (admin side)
     Route::get('/users-list', [UserController::class, 'showUsersList']);
-    Route::post('/admin/register', [UserController::class, 'register']);
+    Route::post('/admin/register', [UserController::class, 'registerNoOTP']);
     Route::put('/admin/updateUser', [UserController::class, 'update']);
     Route::delete('/delete-user/{id}', [UserController::class, 'deleteUser']);
     Route::post('/delete-selected-users', [UserController::class, 'deleteSelectedUsers']);
