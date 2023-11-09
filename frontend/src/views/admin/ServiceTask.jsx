@@ -351,22 +351,21 @@ const ServiceTask = () => {
         <Tag
           key={index}
           className={`lg:text-base text-sm font-sans w-full text-center py-2 rounded-lg
-            ${
-              text === "Pending"
-                ? "bg-red-500 text-white"
-                : text === "Received"
+            ${text === "Pending"
+              ? "bg-red-500 text-white"
+              : text === "Received"
                 ? "bg-orange-500 text-white"
                 : text === "On Progress"
-                ? "bg-yellow-500 text-white"
-                : text === "To Release"
-                ? "bg-green-500 text-white"
-                : text === "To Rate"
-                ? "bg-blue-500 text-white"
-                : text === "Closed"
-                ? "bg-gray-800 text-white"
-                : text === "Cancelled"
-                ? "bg-red-700 text-white"
-                : "bg-main text-white"
+                  ? "bg-yellow-500 text-white"
+                  : text === "To Release"
+                    ? "bg-green-500 text-white"
+                    : text === "To Rate"
+                      ? "bg-blue-500 text-white"
+                      : text === "Closed"
+                        ? "bg-gray-800 text-white"
+                        : text === "Cancelled"
+                          ? "bg-red-700 text-white"
+                          : "bg-main text-white"
             }`}
         >
           {text}
@@ -413,27 +412,24 @@ const ServiceTask = () => {
         <div className="flex gap-1 py-1" key={index}>
           {record.status === "To Rate" || record.status === "Closed" ? (
             <button
-              className={`text-white ${
-                isScreenWidth1366 ? "text-xs" : "text-base"
-              } bg-blue-500 font-medium px-6 py-2 rounded-lg`}
+              className={`text-white ${isScreenWidth1366 ? "text-xs" : "text-base"
+                } bg-blue-500 font-medium px-6 py-2 rounded-lg`}
               onClick={() => openModal(record)}
             >
               View
             </button>
           ) : record.status === "Cancelled" ? (
             <button
-              className={`text-white ${
-                isScreenWidth1366 ? "text-xs" : "text-base"
-              } bg-blue-500 font-medium px-5 py-2 rounded-lg`}
+              className={`text-white ${isScreenWidth1366 ? "text-xs" : "text-base"
+                } bg-blue-500 font-medium px-5 py-2 rounded-lg`}
               onClick={() => handleCancelRequest(record)}
             >
               View
             </button>
           ) : (
             <button
-              className={`text-white ${
-                isScreenWidth1366 ? "text-xs" : "text-base"
-              } bg-blue-500 font-medium px-3 py-2 rounded-lg`}
+              className={`text-white ${isScreenWidth1366 ? "text-xs" : "text-base"
+                } bg-blue-500 font-medium px-3 py-2 rounded-lg`}
               onClick={() => openModal(record)}
             >
               Update
@@ -442,11 +438,10 @@ const ServiceTask = () => {
           {["Pending", "Received", "On Progress"].includes(record.status) ? (
             <button
               onClick={() => handleOpenReasonModalClick(record.id)}
-              className={`text-white text-base py-2 px-4 rounded-lg ${
-                ["Pending", "Received", "On Progress"].includes(record.status)
-                  ? "bg-red-700"
-                  : "cursor-not-allowed bg-gray-400"
-              }`}
+              className={`text-white text-base py-2 px-4 rounded-lg ${["Pending", "Received", "On Progress"].includes(record.status)
+                ? "bg-red-700"
+                : "cursor-not-allowed bg-gray-400"
+                }`}
             >
               <FontAwesomeIcon icon={faTrash} />
             </button>
