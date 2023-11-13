@@ -10,6 +10,7 @@ use App\Models\UserSignature;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
@@ -420,6 +421,7 @@ class UserController extends Controller
         try {
             // Retrieve the user based on the user ID from the request
             $user = User::findOrFail($request->input('userID'));
+            $userCurrentName = $user->userFirstName . ' ' . $user->userLastName;
 
             // Update user data
             $user->update([
@@ -435,26 +437,39 @@ class UserController extends Controller
                 'role' => $request->input('role'),
             ]);
 
-            $concatenatedName = $request->input('userFirstName') . ' ' . $request->input('userLastName');
 
-            $requestsToUpdate = Requests::where('assignedTo', $concatenatedName)->get();
 
-            foreach ($requestsToUpdate as $requestToUpdate) {
-                $requestToUpdate->update(['assignedTo' => $concatenatedName]);
-                $requestToUpdate->save();
-            }
-            $receiveToUpdate = ReceiveService::where('serviceBy', $concatenatedName)->get();
+            $newUserName = $request->input('userFirstName') . ' ' . $request->input('userLastName');
 
-            foreach ($receiveToUpdate as $requestToUpdate) {
-                $requestToUpdate->update(['serviceBy' => $concatenatedName]);
-                $requestToUpdate->save();
-            }
+            if ($request->input('role') === 'admin') {
+                $requestsToUpdate = Requests::where('assignedTo', $userCurrentName)->get();
 
-            $departmentToUpdate = Department::where('head', $concatenatedName)->get();
+                foreach ($requestsToUpdate as $requestToUpdate) {
+                    $requestToUpdate->update(['assignedTo' => $newUserName]);
+                    $requestToUpdate->save();
+                }
+                $receiveToUpdate = ReceiveService::where('serviceBy', $userCurrentName)->get();
 
-            foreach ($departmentToUpdate as $requestToUpdate) {
-                $requestToUpdate->update(['head' => $concatenatedName]);
-                $requestToUpdate->save();
+                foreach ($receiveToUpdate as $requestToUpdate) {
+                    $requestToUpdate->update(['serviceBy' => $newUserName]);
+                    $requestToUpdate->save();
+                }
+
+                $receiveToReleaseUpdate = ReceiveService::where('assignedTo', $userCurrentName)->get();
+
+                foreach ($receiveToReleaseUpdate as $requestToUpdateAssignedTo) {
+                    $requestToUpdateAssignedTo->update(['assignedTo' => $newUserName]);
+                    $requestToUpdateAssignedTo->save();
+                }
+
+                $departmentToUpdate = Department::where('head', $userCurrentName)->get();
+
+                foreach ($departmentToUpdate as $requestToUpdate) {
+                    $requestToUpdate->update(['head' => $newUserName]);
+                    $requestToUpdate->save();
+                }
+            } else {
+                return;
             }
 
             // Optionally, update the user's password if a new password is provided
