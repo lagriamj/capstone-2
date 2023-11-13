@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
+use App\Models\ReceiveService;
+use App\Models\Requests;
 use App\Models\User;
 use App\Models\UserSignature;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Twilio\Rest\Client;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
@@ -437,6 +435,28 @@ class UserController extends Controller
                 'role' => $request->input('role'),
             ]);
 
+            $concatenatedName = $request->input('userFirstName') . ' ' . $request->input('userLastName');
+
+            $requestsToUpdate = Requests::where('assignedTo', $concatenatedName)->get();
+
+            foreach ($requestsToUpdate as $requestToUpdate) {
+                $requestToUpdate->update(['assignedTo' => $concatenatedName]);
+                $requestToUpdate->save();
+            }
+            $receiveToUpdate = ReceiveService::where('serviceBy', $concatenatedName)->get();
+
+            foreach ($receiveToUpdate as $requestToUpdate) {
+                $requestToUpdate->update(['serviceBy' => $concatenatedName]);
+                $requestToUpdate->save();
+            }
+
+            $departmentToUpdate = Department::where('head', $concatenatedName)->get();
+
+            foreach ($departmentToUpdate as $requestToUpdate) {
+                $requestToUpdate->update(['head' => $concatenatedName]);
+                $requestToUpdate->save();
+            }
+
             // Optionally, update the user's password if a new password is provided
             if ($request->filled('userPassword')) {
                 $user->update(['userPassword' => Hash::make($request->input('userPassword'))]);
@@ -452,7 +472,7 @@ class UserController extends Controller
 
             return response()->json(['message' => 'User data updated successfully'], 201);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Error updating user data'], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 

@@ -53,6 +53,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
 
     setDataForm(values);
     setServiceByValue(values.serviceBy);
+    form.resetFields();
     try {
       const response = await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/onprogress-request/${
@@ -71,6 +72,7 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
         console.error("Received an unexpected response:", response);
       }
     } catch (error) {
+      message.error("Fill-in all necessary informations");
       if (error.response) {
         setIsSubmitting(false);
         console.log(error.response.data);
