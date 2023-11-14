@@ -61,7 +61,7 @@ const PrintDelayedReport = ({
           <h3 className="text-base font-bold">
             Computer Equipment Maintenance and Systems Engineering Division
           </h3>
-          <h1 className="text-base font-bold">Delayed Reprot</h1>
+          <h1 className="text-base font-bold">Delayed Report</h1>
         </div>
         <Table
           columns={tableColumn}

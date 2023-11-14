@@ -17,13 +17,28 @@ const SummaryListModal = ({
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    const apiUrl = `${import.meta.env.VITE_API_BASE_URL}/api/summary-list`;
+    setFromDate(startDate);
+    setToDate(endDate);
+  }, [startDate, endDate]);
+
+  useEffect(() => {
+    fetchTechnicianData();
+  }, [fromDate, toDate]);
+
+  const fetchTechnicianData = () => {
+    const params = {};
+
+    if (fromDate) {
+      params.startDate = fromDate;
+    }
+
+    if (toDate) {
+      params.endDate = toDate;
+    }
+
     axios
-      .get(apiUrl, {
-        params: {
-          startDate: fromDate,
-          endDate: toDate,
-        },
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/summary-list`, {
+        params,
       })
       .then((response) => {
         setData(response.data);
@@ -31,7 +46,7 @@ const SummaryListModal = ({
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, [fromDate, toDate]);
+  };
 
   const summaryListColumn = [
     {
@@ -150,7 +165,7 @@ const SummaryListModal = ({
             <input
               type="date"
               className="p-2 w-36 outline-none border-none bg-transparent"
-              value={fromDate}
+              defaultValue={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
             />
           </div>
@@ -159,7 +174,7 @@ const SummaryListModal = ({
             <input
               type="date"
               className="p-2 w-36 outline-none border-none bg-transparent"
-              value={toDate}
+              defaultValue={toDate}
               onChange={(e) => setToDate(e.target.value)}
             />
           </div>
