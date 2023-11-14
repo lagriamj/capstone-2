@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLog;
 use App\Models\Department;
 use App\Models\ReceiveService;
 use App\Models\Requests;
@@ -341,6 +342,7 @@ class UserController extends Controller
         $newEmail = $request->input('userEmail');
         $userID = $request->input('userID');
         $user = User::find($userID);
+        $userCurrentName = $user->userFirstName . ' ' . $user->userLastName;
 
         if (!empty($currentPassword)) {
             if (!Hash::check($currentPassword, $user->userPassword)) {
@@ -357,6 +359,64 @@ class UserController extends Controller
 
         if (!empty($newPassword)) {
             $user->userPassword = Hash::make($newPassword);
+        }
+
+
+        $newUserName = $request->input('userFirstName') . ' ' . $request->input('userLastName');
+
+        if ($request->input('role') === 'admin') {
+            $requestsToUpdate = Requests::where('assignedTo', $userCurrentName)->get();
+
+            foreach ($requestsToUpdate as $requestToUpdate) {
+                $requestToUpdate->update(['assignedTo' => $newUserName]);
+                $requestToUpdate->save();
+            }
+            $receiveToUpdate = ReceiveService::where('serviceBy', $userCurrentName)->get();
+
+            foreach ($receiveToUpdate as $requestToUpdate) {
+                $requestToUpdate->update(['serviceBy' => $newUserName]);
+                $requestToUpdate->save();
+            }
+
+            $receiveToReleaseUpdate = ReceiveService::where('assignedTo', $userCurrentName)->get();
+
+            foreach ($receiveToReleaseUpdate as $requestToUpdateAssignedTo) {
+                $requestToUpdateAssignedTo->update(['assignedTo' => $newUserName]);
+                $requestToUpdateAssignedTo->save();
+            }
+            $receivedByUpdate = ReceiveService::where('receivedBy', $userCurrentName)->get();
+
+            foreach ($receivedByUpdate as $requestToUpdateAssignedTo) {
+                $requestToUpdateAssignedTo->update(['receivedBy' => $newUserName]);
+                $requestToUpdateAssignedTo->save();
+            }
+
+            $requestsToUpdateLog = AuditLog::where('name', $userCurrentName)->get();
+            foreach ($requestsToUpdateLog as $logToUpdate) {
+                $logToUpdate->update(['name' => $newUserName]);
+                $logToUpdate->save();
+            }
+        } else if ($request->input('role') === 'head') {
+            $departmentToUpdate = Department::where('head', $userCurrentName)->get();
+
+            foreach ($departmentToUpdate as $requestToUpdate) {
+                $requestToUpdate->update(['head' => $newUserName]);
+                $requestToUpdate->save();
+            }
+
+            $requestsToUpdate = Requests::where('authorizedBy', $userCurrentName)->get();
+
+            foreach ($requestsToUpdate as $requestToUpdate) {
+                $requestToUpdate->update(['authorizedBy' => $newUserName]);
+                $requestToUpdate->save();
+            }
+        } else if ($request->input('role') === 'user') {
+            $requestsToUpdate = Requests::where('fullName', $userCurrentName)->get();
+
+            foreach ($requestsToUpdate as $requestToUpdate) {
+                $requestToUpdate->update(['fullName' => $newUserName]);
+                $requestToUpdate->save();
+            }
         }
 
         $user->save();
@@ -461,15 +521,39 @@ class UserController extends Controller
                     $requestToUpdateAssignedTo->update(['assignedTo' => $newUserName]);
                     $requestToUpdateAssignedTo->save();
                 }
+                $receivedByUpdate = ReceiveService::where('receivedBy', $userCurrentName)->get();
 
+                foreach ($receivedByUpdate as $requestToUpdateAssignedTo) {
+                    $requestToUpdateAssignedTo->update(['receivedBy' => $newUserName]);
+                    $requestToUpdateAssignedTo->save();
+                }
+
+                $requestsToUpdateLog = AuditLog::where('name', $userCurrentName)->get();
+                foreach ($requestsToUpdateLog as $logToUpdate) {
+                    $logToUpdate->update(['name' => $newUserName]);
+                    $logToUpdate->save();
+                }
+            } else if ($request->input('role') === 'head') {
                 $departmentToUpdate = Department::where('head', $userCurrentName)->get();
 
                 foreach ($departmentToUpdate as $requestToUpdate) {
                     $requestToUpdate->update(['head' => $newUserName]);
                     $requestToUpdate->save();
                 }
-            } else {
-                return;
+
+                $requestsToUpdate = Requests::where('authorizedBy', $userCurrentName)->get();
+
+                foreach ($requestsToUpdate as $requestToUpdate) {
+                    $requestToUpdate->update(['authorizedBy' => $newUserName]);
+                    $requestToUpdate->save();
+                }
+            } else if ($request->input('role') === 'user') {
+                $requestsToUpdate = Requests::where('fullName', $userCurrentName)->get();
+
+                foreach ($requestsToUpdate as $requestToUpdate) {
+                    $requestToUpdate->update(['fullName' => $newUserName]);
+                    $requestToUpdate->save();
+                }
             }
 
             // Optionally, update the user's password if a new password is provided
@@ -528,7 +612,9 @@ class UserController extends Controller
     public function showTechnicians()
     {
 
-        $technicians = User::where('role', 'admin')->get();
+        $technicians = User::where('role', 'admin')
+            ->where('isActive', 1)
+            ->get();
         return response()->json(['result' => $technicians], 200);
     }
 
