@@ -451,7 +451,7 @@ class DashboardController extends Controller
             ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate]);
 
         if ($status === 'Total') {
-            $requestData = $query->get();
+            $requestData = $query->whereNotIn('status', ['Purge', 'Cancelled'])->get();
         } elseif ($status === 'Closed') {
             $requestData = $query->where('status', 'closed')->get();
         } else {
