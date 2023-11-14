@@ -227,10 +227,6 @@ const ServiceTask = () => {
         text: `${technician.userFirstName} ${technician.userLastName}`,
         value: `${technician.userFirstName} ${technician.userLastName}`,
       }));
-      techFilter.unshift({
-        text: "My Tasks",
-        value: fullName,
-      });
 
       setTechniciansFilter(techFilter);
     }
