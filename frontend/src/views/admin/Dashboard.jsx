@@ -191,7 +191,6 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  const [startDate, setStartDate] = useState("");
   const [technicianData, setTechnicianData] = useState(null);
   const [percentData, setPercentData] = useState({
     pendingRequests: 0,
@@ -215,23 +214,18 @@ const Dashboard = () => {
 
   const [requestsByDate, setRequestsByDate] = useState(null);
   const [requestsByOffice, setRequestsByOffice] = useState(null);
-  const [endDate, setEndDate] = useState("");
 
-  useEffect(() => {
-    const currentDate = new Date();
-    const defaultStartDate = new Date(currentDate);
-    defaultStartDate.setDate(currentDate.getDate() - 30);
-
-    const startDateString = defaultStartDate.toISOString().split("T")[0];
-    const endDateString = currentDate.toISOString().split("T")[0];
-
-    setStartDate(startDateString);
-    setEndDate(endDateString);
-
-    fetchPiegraphDetails();
-    fetchDataRequest();
-    fetchTotalAndClosed();
-  }, []);
+  const currentDate = new Date();
+  const utcCurrentDate = new Date(currentDate.toUTCString());
+  const utcEndDate = new Date(currentDate.toUTCString());
+  const defaultStartDate = new Date(utcCurrentDate);
+  defaultStartDate.setDate(currentDate.getDate() - 30);
+  const startDateString = defaultStartDate.toISOString().split("T")[0];
+  const endDateDate = new Date(utcEndDate);
+  endDateDate.setHours(endDateDate.getHours() + 8);
+  const endDateString = endDateDate.toISOString().split("T")[0];
+  const [startDate, setStartDate] = useState(startDateString);
+  const [endDate, setEndDate] = useState(endDateString);
 
   useEffect(() => {
     fetchPiegraphDetails();

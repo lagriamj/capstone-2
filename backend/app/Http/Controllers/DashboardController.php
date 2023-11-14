@@ -188,51 +188,51 @@ class DashboardController extends Controller
 
     public function getPercentAccomplished(Request $request)
     {
-        $startDate = $request->input('startDate', null);
-        $endDate = $request->input('endDate', null);
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
 
-        if ($startDate === null) {
-            $startDate = date('Y-m-d', strtotime('-30 days'));
-        }
-
-        if ($endDate === null) {
-            $endDate = date('Y-m-d');
-        }
 
         $pendingRequests = DB::table('user_requests')
-            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->whereRaw('DATE(user_requests.dateRequested) >= ?', [$startDate])
+            ->whereRaw('DATE(user_requests.dateRequested) <= ?', [$endDate])
             ->where('status', 'Pending')
             ->where('approved', 'yes-signature')
             ->count();
 
         $receivedRequests = DB::table('user_requests')
-            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->whereRaw('DATE(user_requests.dateRequested) >= ?', [$startDate])
+            ->whereRaw('DATE(user_requests.dateRequested) <= ?', [$endDate])
             ->where('status', 'Received')
             ->count();
 
         $onprogressRequests = DB::table('user_requests')
-            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->whereRaw('DATE(user_requests.dateRequested) >= ?', [$startDate])
+            ->whereRaw('DATE(user_requests.dateRequested) <= ?', [$endDate])
             ->where('status', 'On Progress')
             ->count();
 
         $toreleaseRequests = DB::table('user_requests')
-            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->whereRaw('DATE(user_requests.dateRequested) >= ?', [$startDate])
+            ->whereRaw('DATE(user_requests.dateRequested) <= ?', [$endDate])
             ->where('status', 'To Release')
             ->count();
 
         $torateRequests = DB::table('user_requests')
-            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->whereRaw('DATE(user_requests.dateRequested) >= ?', [$startDate])
+            ->whereRaw('DATE(user_requests.dateRequested) <= ?', [$endDate])
             ->where('status', 'To Rate')
             ->count();
 
         $closedRequests = DB::table('user_requests')
-            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->whereRaw('DATE(user_requests.dateRequested) >= ?', [$startDate])
+            ->whereRaw('DATE(user_requests.dateRequested) <= ?', [$endDate])
             ->where('status', 'Closed')
             ->count();
 
         $officePending = DB::table('user_requests')
             ->select('reqOffice', DB::raw('COUNT(*) as request_count'))
-            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->whereRaw('DATE(user_requests.dateRequested) >= ?', [$startDate])
+            ->whereRaw('DATE(user_requests.dateRequested) <= ?', [$endDate])
             ->where('status', 'Pending')
             ->groupBy('reqOffice')
             ->orderByDesc('request_count')
@@ -242,7 +242,8 @@ class DashboardController extends Controller
 
         $officeReceived = DB::table('user_requests')
             ->select('reqOffice', DB::raw('COUNT(*) as request_count'))
-            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->whereRaw('DATE(user_requests.dateRequested) >= ?', [$startDate])
+            ->whereRaw('DATE(user_requests.dateRequested) <= ?', [$endDate])
             ->where('status', 'Received')
             ->groupBy('reqOffice')
             ->orderByDesc('request_count')
@@ -252,7 +253,8 @@ class DashboardController extends Controller
 
         $officeOnProgress = DB::table('user_requests')
             ->select('reqOffice', DB::raw('COUNT(*) as request_count'))
-            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->whereRaw('DATE(user_requests.dateRequested) >= ?', [$startDate])
+            ->whereRaw('DATE(user_requests.dateRequested) <= ?', [$endDate])
             ->where('status', 'On Progress')
             ->groupBy('reqOffice')
             ->orderByDesc('request_count')
@@ -262,7 +264,8 @@ class DashboardController extends Controller
 
         $officeToRelease = DB::table('user_requests')
             ->select('reqOffice', DB::raw('COUNT(*) as request_count'))
-            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->whereRaw('DATE(user_requests.dateRequested) >= ?', [$startDate])
+            ->whereRaw('DATE(user_requests.dateRequested) <= ?', [$endDate])
             ->where('status', 'To Release')
             ->groupBy('reqOffice')
             ->orderByDesc('request_count')
@@ -272,7 +275,8 @@ class DashboardController extends Controller
 
         $officeToRate = DB::table('user_requests')
             ->select('reqOffice', DB::raw('COUNT(*) as request_count'))
-            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->whereRaw('DATE(user_requests.dateRequested) >= ?', [$startDate])
+            ->whereRaw('DATE(user_requests.dateRequested) <= ?', [$endDate])
             ->where('status', 'To Rate')
             ->groupBy('reqOffice')
             ->orderByDesc('request_count')
@@ -282,7 +286,8 @@ class DashboardController extends Controller
 
         $officeClosed = DB::table('user_requests')
             ->select('reqOffice', DB::raw('COUNT(*) as request_count'))
-            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->whereRaw('DATE(user_requests.dateRequested) >= ?', [$startDate])
+            ->whereRaw('DATE(user_requests.dateRequested) <= ?', [$endDate])
             ->where('status', 'Closed')
             ->groupBy('reqOffice')
             ->orderByDesc('request_count')
@@ -311,17 +316,10 @@ class DashboardController extends Controller
         $startDate = $request->input('startDate', null);
         $endDate = $request->input('endDate', null);
 
-        if ($startDate === null) {
-            $startDate = date('Y-m-d', strtotime('-30 days')); // Default to 10 days ago
-        }
-
-        if ($endDate === null) {
-            $endDate = date('Y-m-d'); // Default to today
-        }
-
         $unclosedRequestsData = DB::table('user_requests')
             ->selectRaw('DATE(dateRequested) as date, COUNT(*) as total')
-            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->whereRaw('DATE(user_requests.dateRequested) >= ?', [$startDate])
+            ->whereRaw('DATE(user_requests.dateRequested) <= ?', [$endDate])
             ->where('status', '!=', 'Closed')
             ->where('status', '!=', 'Cancelled')
             ->groupBy('date')
@@ -329,7 +327,8 @@ class DashboardController extends Controller
 
         $closedRequestsData = DB::table('user_requests')
             ->selectRaw('DATE(dateRequested) as date, COUNT(*) as closed')
-            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
+            ->whereRaw('DATE(user_requests.dateRequested) >= ?', [$startDate])
+            ->whereRaw('DATE(user_requests.dateRequested) <= ?', [$endDate])
             ->where('status', 'Closed')
             ->groupBy('date')
             ->get();
@@ -381,27 +380,21 @@ class DashboardController extends Controller
 
     public function getTotalAndClosed(Request $request)
     {
-        $startDate = $request->input('startDate', null);
-        $endDate = $request->input('endDate', null);
-
-        if ($startDate === null) {
-            $startDate = date('Y-m-d', strtotime('-30 days'));
-        }
-
-        if ($endDate === null) {
-            $endDate = date('Y-m-d');
-        }
+        $startDate = $request->input('startDate');
+        $endDate = $request->input('endDate');
 
         $totalRequests = DB::table('user_requests')
             ->where('approved', 'yes-signature')
-            ->whereBetween(DB::raw('DATE(dateRequested)'), [$startDate, $endDate])
             ->whereNotIn('status', ['Purge', 'Cancelled'])
+            ->whereRaw('DATE(user_requests.dateRequested) >= ?', [$startDate])
+            ->whereRaw('DATE(user_requests.dateRequested) <= ?', [$endDate])
             ->count();
 
         $closedRequests = DB::table('user_requests')
             ->where('approved', 'yes-signature')
-            ->whereBetween(DB::raw('DATE(dateUpdated)'), [$startDate, $endDate])
             ->where('status', 'Closed')
+            ->whereRaw('DATE(user_requests.dateRequested) >= ?', [$startDate])
+            ->whereRaw('DATE(user_requests.dateRequested) <= ?', [$endDate])
             ->count();
 
         return response()->json([
@@ -453,7 +446,7 @@ class DashboardController extends Controller
         if ($status === 'Total') {
             $requestData = $query->whereNotIn('status', ['Purge', 'Cancelled'])->get();
         } elseif ($status === 'Closed') {
-            $requestData = $query->where('status', 'closed')->get();
+            $requestData = $query->where('status', 'Closed')->get();
         } else {
 
             return response()->json(['error' => 'Invalid status']);
