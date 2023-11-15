@@ -83,6 +83,7 @@ class RequestsController extends Controller
 
         $currentYear = date('Y');
         $latestRequest = Requests::where('request_code', 'like', $currentYear . '-%')
+            ->orderByRaw('CAST(SUBSTRING_INDEX(request_code, "-", -1) AS SIGNED) DESC')
             ->orderBy('request_code', 'desc')
             ->first();
 
@@ -90,6 +91,11 @@ class RequestsController extends Controller
 
         if ($latestRequest) {
             $latestSequenceNumber = intval(substr($latestRequest->request_code, -4));
+
+            if (strpos($latestRequest->request_code, '-') !== false) {
+                $latestSequenceNumber = intval(substr($latestRequest->request_code, -5));
+            }
+
             $sequenceNumber = $latestSequenceNumber + 1;
         }
 
