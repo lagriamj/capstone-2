@@ -143,6 +143,7 @@ class DashboardController extends Controller
 
         $performanceData = DB::table('user_requests')
             ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
+            ->join('users', DB::raw('CONCAT(users.userFirstName, " ", users.userLastName)'), '=', 'receive_service.serviceBy')
             ->select(
                 'receive_service.serviceBy',
                 DB::raw('COUNT(*) as techreq'),
@@ -150,12 +151,16 @@ class DashboardController extends Controller
                 DB::raw('SUM(CASE WHEN status NOT IN ("Closed", "Cancelled") THEN 1 ELSE 0 END) as unclosed')
             )
             ->whereBetween(DB::raw('DATE(user_requests.dateRequested)'), [$startDate, $endDate])
+            ->where('users.isActive', 1)
             ->groupBy('receive_service.serviceBy')
             ->where('receive_service.serviceBy', '<>', 'n/a')
             ->get();
 
+
+
         return response()->json(['Technician' => $performanceData,]);
     }
+
 
     public function getOfficePerformance(Request $request)
     {
@@ -460,7 +465,9 @@ class DashboardController extends Controller
 
     public function technicianTable(Request $request)
     {
-        $admins = User::where('role', 'admin')->get();
+        $admins = User::where('role', 'admin')
+              ->where('isActive', 1)
+              ->get();
 
         $data = [];
 
