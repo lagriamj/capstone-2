@@ -110,7 +110,6 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
       title={
         <div className="flex justify-between items-center">
           <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
-          <span>REQUEST ID: {data.request_code}</span>
         </div>
       }
       centered
@@ -120,6 +119,12 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
       <div className="relative p-6 text-lg">
         {data && (
           <Row gutter={[16, 16]}>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2 text-black">
+                Request ID
+              </label>
+              <Input value={data.request_code} readOnly className="h-[40px]" />
+            </Col>
             <Col xs={24} lg={6}>
               <label className="block text-sm font-bold mb-2 text-black">
                 Requesting Office
