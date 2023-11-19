@@ -70,6 +70,12 @@ const ToRateModal = ({ isOpen, onClose, datas, role, purged }) => {
       return data.map((item, index) => (
         <Row gutter={[16, 16]} key={index}>
           <Col xs={24} lg={6}>
+            <label className="block text-sm font-bold mb-2 text-black">
+              Request ID
+            </label>
+            <Input value={datas.request_code} readOnly className="h-[40px]" />
+          </Col>
+          <Col xs={24} lg={6}>
             <label
               htmlFor="reqOffice"
               className="block text-sm font-bold mb-2 text-black"
@@ -520,7 +526,6 @@ const ToRateModal = ({ isOpen, onClose, datas, role, purged }) => {
       title={
         <div className="flex justify-between items-center">
           <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
-          <span>REQUEST ID: {datas.request_code}</span>
         </div>
       }
       centered
