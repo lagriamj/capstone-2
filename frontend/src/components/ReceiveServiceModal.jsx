@@ -13,7 +13,6 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
   const { TextArea } = Input;
 
   const [selectedTechnician, setSelectedTechnician] = useState("");
-  console.log(",", selectedTechnician);
 
   const handleChangeAssignedTo = (value) => {
     setSelectedTechnician(value);
@@ -92,9 +91,8 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
       onCancel={onClose}
       width="75%"
       title={
-        <div className="flex justify-between items-center">
+        <div className="flex gap-20 items-center">
           <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
-          <span>REQUEST ID: {data.request_code}</span>
         </div>
       }
       centered={true}
@@ -106,12 +104,12 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
         onFinish={handleSubmit}
         initialValues={{
           request_id: data.request_id,
+          request_code: data.request_code,
           receivedBy: fullName,
           assignedTo: selectedTechnician,
           yearProcured: data.yearProcured,
           dateReceived: daytime,
           fullName: data.fullName,
-
           reqOffice: data.reqOffice,
           division: data.division,
           modeOfRequest: data.modeOfRequest,
@@ -128,6 +126,22 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
           {/* ADMIN SIDE */}
           {data && (
             <Row gutter={[16, 16]}>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold mb-2">
+                      Request ID
+                    </label>
+                  }
+                  name="request_code"
+                >
+                  <Input
+                    readOnly
+                    value={data.request_code}
+                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
+                  />
+                </Form.Item>
+              </Col>
               <Col xs={24} lg={6}>
                 <Form.Item
                   label={
