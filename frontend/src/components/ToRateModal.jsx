@@ -73,156 +73,91 @@ const ToRateModal = ({ isOpen, onClose, datas, role, purged }) => {
             <label className="block text-sm font-bold mb-2 text-black">
               Request ID
             </label>
-            <Input value={datas.request_code} readOnly className="h-[40px]" />
-          </Col>
-          <Col xs={24} lg={6}>
-            <label
-              htmlFor="reqOffice"
-              className="block text-sm font-bold mb-2 text-black"
-            >
-              Requesting Office
-            </label>
             <Input
-              value={item.reqOffice}
-              id="reqOffice"
+              value={item.request_code}
               readOnly
-              className="h-[40px] "
+              className="h-[40px] border-0 font-bold text-lg"
             />
           </Col>
           <Col xs={24} lg={6}>
-            <label
-              htmlFor="division"
-              className="block text-sm font-bold mb-2 text-black"
-            >
-              Division
-            </label>
-            <Input
-              value={item.division}
-              id="division"
-              readOnly
-              className="h-[40px] "
-            />
-          </Col>
-          <Col xs={24} lg={6}>
-            <label
-              htmlFor="dateRequested"
-              className="block text-sm font-bold mb-2 text-black"
-            >
-              Date Requested
+            <label className="block text-sm font-bold mb-2 text-black">
+              Request Date
             </label>
             <Input
               value={item.dateRequested}
-              id="dateRequested"
               readOnly
-              className="h-[40px] "
+              className="h-[40px] border-0 font-bold text-lg"
             />
           </Col>
           <Col xs={24} lg={6}>
-            <label
-              htmlFor="modeOfRequest"
-              className="block text-sm font-bold mb-2 text-black"
-            >
-              Mode of Request
+            <label className="block text-sm font-bold mb-2 text-black">
+              Status
             </label>
-            <Input
-              value={item.modeOfRequest}
-              id="modeOfRequest"
-              readOnly
-              className="h-[40px] "
-            />
+            <div className="bg-blue-500 text-white w-[50%] font-sans font-medium tracking-wide text-lg rounded-md text-center py-2">
+              {item.status}
+            </div>
           </Col>
           <Col xs={24} lg={6}>
-            <label
-              htmlFor="natureOfRequest"
-              className="block text-sm font-bold mb-2 text-black"
-            >
+            <Input readOnly hidden />
+          </Col>
+          <Col xs={24} lg={6}>
+            <label className="block text-sm font-bold mb-2 text-black">
+              Requesting Office
+            </label>
+            <Input value={item.reqOffice} readOnly className="h-[40px]" />
+          </Col>
+          <Col xs={24} lg={6}>
+            <label className="block text-sm font-bold mb-2">Division</label>
+            <Input value={item.division} readOnly className="h-[40px]" />
+          </Col>
+          <Col xs={24} lg={6}>
+            <label className="block text-sm font-bold mb-2">Mode Request</label>
+            <Input value={item.modeOfRequest} readOnly className="h-[40px]" />
+          </Col>
+          <Col xs={24} lg={6}>
+            <label className="block text-sm font-bold mb-2">
               Nature of Request
             </label>
-            <Input
-              value={item.natureOfRequest}
-              id="natureOfRequest"
-              readOnly
-              className="h-[40px] "
-            />
+            <Input value={item.natureOfRequest} readOnly className="h-[40px]" />
           </Col>
           <Col xs={24} lg={6}>
-            <label
-              htmlFor="requestedBy"
-              className="block text-sm font-bold mb-2 text-black"
-            >
-              Requested By
-            </label>
-            <Input
-              value={item.fullName}
-              id="requestedBy"
-              readOnly
-              className="h-[40px] "
-            />
+            <label className="block text-sm font-bold mb-2">Unit</label>
+            <Input value={item.unit} readOnly className="h-[40px]" />
           </Col>
           <Col xs={24} lg={6}>
-            <label
-              htmlFor="authorizedBy"
-              className="block text-sm font-bold mb-2 text-black"
-            >
-              Authorized By
+            <label className="block text-sm font-bold mb-2">Serial No</label>
+            <Input value={item.serialNo} readOnly className="h-[40px]" />
+          </Col>
+          <Col xs={24} lg={6}>
+            <label className="block text-sm font-bold mb-2">Property No</label>
+            <Input value={item.propertyNo} readOnly className="h-[40px]" />
+          </Col>
+          <Col xs={24} lg={6}>
+            <label className="block text-sm font-bold mb-2">
+              Year Procured
             </label>
-            <Input
-              value={item.authorizedBy}
-              id="authorizedBy"
-              readOnly
-              className="h-[40px] "
-            />
+            <Input value={item.yearProcured} readOnly className="h-[40px]" />
           </Col>
           <Col xs={24} lg={24}>
-            <label
-              htmlFor="specialIns"
-              className="block text-sm font-bold mb-2 text-black"
-            >
+            <label className="block text-sm font-bold mb-2">
               Special Instructions
             </label>
             <TextArea
-              rows={3}
+              rows={4}
               value={item.specialIns}
-              id="specialIns"
               readOnly
+              className="h-[40px]"
             />
           </Col>
           <Col xs={24} lg={6}>
-            <label
-              htmlFor="unit"
-              className="block text-sm font-bold mb-2 text-black"
-            >
-              Unit
-            </label>
-            <Input value={item.unit} id="unit" readOnly className="h-[40px] " />
+            <label className="block text-sm font-bold mb-2">Requested By</label>
+            <Input value={item.fullName} readOnly className="h-[40px]" />
           </Col>
           <Col xs={24} lg={6}>
-            <label
-              htmlFor="propertyNo"
-              className="block text-sm font-bold mb-2 text-black"
-            >
-              Property No.
+            <label className="block text-sm font-bold mb-2">
+              Authorized By
             </label>
-            <Input
-              value={item.propertyNo}
-              id="propertyNo"
-              readOnly
-              className="h-[40px] "
-            />
-          </Col>
-          <Col xs={24} lg={6}>
-            <label
-              htmlFor="serialNo"
-              className="block text-sm font-bold mb-2 text-black"
-            >
-              SerialNo
-            </label>
-            <Input
-              value={item.serialNo}
-              id="serialNo"
-              readOnly
-              className="h-[40px] "
-            />
+            <Input value={item.authorizedBy} readOnly className="h-[40px]" />
           </Col>
         </Row>
       ));
@@ -279,20 +214,7 @@ const ToRateModal = ({ isOpen, onClose, datas, role, purged }) => {
               className="h-[40px] "
             />
           </Col>
-          <Col xs={24} lg={6}>
-            <label
-              htmlFor="yearProcured"
-              className="block text-sm font-bold mb-2 text-black"
-            >
-              Year Procured
-            </label>
-            <Input
-              value={item.yearProcured}
-              id="yearProcured"
-              readOnly
-              className="h-[40px] "
-            />
-          </Col>
+
           <Col xs={24} lg={6}>
             <label
               htmlFor="servicedBy"
