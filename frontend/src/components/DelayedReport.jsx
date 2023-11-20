@@ -7,7 +7,13 @@ import { Modal } from "antd";
 import PrintDelayedReport from "./PrintDelayedReport";
 import DelayedReasons from "./DelayedReasons";
 
-const DelayedReport = ({ isOpen, onClose, isLargeScreen }) => {
+const DelayedReport = ({
+  isOpen,
+  onClose,
+  isLargeScreen,
+  startDate,
+  endDate,
+}) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,6 +30,13 @@ const DelayedReport = ({ isOpen, onClose, isLargeScreen }) => {
   };
 
   const columns = [
+    {
+      title: "#",
+      dataIndex: "rowIndex",
+      key: "rowIndex",
+      align: "center",
+      render: (text, record, index) => index + 1,
+    },
     {
       title: "Request ID",
       dataIndex: "request_code",
@@ -106,7 +119,7 @@ const DelayedReport = ({ isOpen, onClose, isLargeScreen }) => {
 
   return (
     <Modal
-      title="Delayed Report"
+      title="Delayed Request Report"
       open={isOpen}
       onCancel={onClose}
       footer={null}
@@ -124,11 +137,12 @@ const DelayedReport = ({ isOpen, onClose, isLargeScreen }) => {
       <PrintDelayedReport
         isOpen={openGenerateReport}
         onClose={closeGenerateReport}
-        tableColumn={columns}
         techData={data}
         pageSize={pagination.pageSize}
         currentPage={currentPage}
         isLargeScreen={isLargeScreen}
+        startDate={startDate}
+        endDate={endDate}
       />
       <DelayedReasons
         visible={openModalDelayed}
@@ -159,4 +173,6 @@ DelayedReport.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   isLargeScreen: PropTypes.bool.isRequired,
+  startDate: PropTypes.any,
+  endDate: PropTypes.any,
 };
