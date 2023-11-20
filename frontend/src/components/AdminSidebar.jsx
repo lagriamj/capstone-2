@@ -219,11 +219,11 @@ const AdminSidebar = () => {
         </li>
         <li
           className={`flex gap-3 items-center w-full py-3 px-2 rounded-lg transition duration-300 ease-in-out hover:bg-white hover:text-main hover:font-semibold ${
-            activeTab === "threshold-log"
+            activeTab === "recommendation"
               ? "bg-white text-main font-semibold"
               : ""
           }`}
-          onClick={() => handleItemClick("threshold-log")}
+          onClick={() => handleItemClick("recommendation")}
         >
           <DataThresholdingIcon
             style={{
@@ -233,10 +233,10 @@ const AdminSidebar = () => {
           <label
             className="cursor-pointer"
             onClick={() => {
-              navigate("/threshold-log");
+              navigate("/recommendation");
             }}
           >
-            Threshold Log
+            Recommendation
           </label>
         </li>
         <li
