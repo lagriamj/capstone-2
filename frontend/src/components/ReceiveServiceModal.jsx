@@ -104,6 +104,8 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
         onFinish={handleSubmit}
         initialValues={{
           request_id: data.request_id,
+          dateRequested: data.dateRequested,
+          status: data.status,
           request_code: data.request_code,
           receivedBy: fullName,
           assignedTo: selectedTechnician,
@@ -138,8 +140,43 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
                   <Input
                     readOnly
                     value={data.request_code}
-                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
+                    className={`h-[40px] font-bold text-lg border-0 `}
                   />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold mb-2">
+                      Request Date
+                    </label>
+                  }
+                  name="dateRequested"
+                >
+                  <Input
+                    readOnly
+                    value={data.dateRequested}
+                    className={`h-[40px] font-bold text-lg border-0 `}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold mb-2">
+                      Status
+                    </label>
+                  }
+                  name="status"
+                >
+                  <div className="bg-red-500 text-white w-[50%] font-sans font-medium tracking-wide text-lg rounded-md text-center py-2">
+                    {data.status}
+                  </div>
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item name="HIDDEN1">
+                  <Input hidden className={`h-[40px] }`} />
                 </Form.Item>
               </Col>
               <Col xs={24} lg={6}>
@@ -202,52 +239,6 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
               <Col xs={24} lg={6}>
                 <Form.Item
                   label={
-                    <label className="block text-sm font-bold mb-2">
-                      Requested By
-                    </label>
-                  }
-                  name="fullName"
-                >
-                  <Input
-                    readOnly={!isWalkIn}
-                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} lg={6}>
-                <Form.Item
-                  label={
-                    <label className="block text-sm font-bold mb-2">
-                      Authorized By
-                    </label>
-                  }
-                  name="authorizedBy"
-                >
-                  <Input
-                    readOnly={!isWalkIn}
-                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} lg={24}>
-                <Form.Item
-                  label={
-                    <label className="block text-sm font-bold mb-2">
-                      Special Instructions
-                    </label>
-                  }
-                  name="specialIns"
-                >
-                  <TextArea
-                    rows={5}
-                    readOnly={!isWalkIn}
-                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} lg={6}>
-                <Form.Item
-                  label={
                     <label className="block text-sm font-bold mb-2">Unit</label>
                   }
                   name="unit"
@@ -288,7 +279,74 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
                   />
                 </Form.Item>
               </Col>
-              <Col>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold mt-2">
+                      Year Procured
+                    </label>
+                  }
+                  name="yearProcured"
+                >
+                  <Input
+                    readOnly={!isWalkIn}
+                    value={data.yearProcured}
+                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={24}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold mb-2">
+                      Special Instructions
+                    </label>
+                  }
+                  name="specialIns"
+                >
+                  <TextArea
+                    rows={5}
+                    readOnly={!isWalkIn}
+                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold mb-2">
+                      Requested By
+                    </label>
+                  }
+                  name="fullName"
+                >
+                  <Input
+                    readOnly={!isWalkIn}
+                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item
+                  label={
+                    <label className="block text-sm font-bold mb-2">
+                      Authorized By
+                    </label>
+                  }
+                  name="authorizedBy"
+                >
+                  <Input
+                    readOnly={!isWalkIn}
+                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
+                  />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item>
+                  <Input readOnly hidden />
+                </Form.Item>
+              </Col>
+              <Col xs={24} lg={6}>
                 <Form.Item>
                   <Input readOnly hidden />
                 </Form.Item>
@@ -324,6 +382,12 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
                       Assigned To
                     </label>
                   }
+                  rules={[
+                    {
+                      required: true,
+                      message: "This field is required",
+                    },
+                  ]}
                   name={["assignedTo", "technician"]}
                 >
                   <Select
@@ -343,22 +407,6 @@ const ReceiveServiceModal = ({ isOpen, onClose, data, refreshData }) => {
                       </Option>
                     ))}
                   </Select>
-                </Form.Item>
-              </Col>
-              <Col xs={24} lg={6}>
-                <Form.Item
-                  label={
-                    <label className="block text-sm font-bold ">
-                      Year Procured
-                    </label>
-                  }
-                  name="yearProcured"
-                >
-                  <Input
-                    readOnly={!isWalkIn}
-                    value={data.yearProcured}
-                    className={`h-[40px] ${isWalkIn ? "border-red-500" : ""}`}
-                  />
                 </Form.Item>
               </Col>
               <Col>
