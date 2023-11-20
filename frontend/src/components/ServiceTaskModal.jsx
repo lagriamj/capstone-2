@@ -123,7 +123,34 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
               <label className="block text-sm font-bold mb-2 text-black">
                 Request ID
               </label>
-              <Input value={data.request_code} readOnly className="h-[40px]" />
+              <Input
+                value={data.request_code}
+                readOnly
+                className="h-[40px] border-0 font-bold text-lg"
+              />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2 text-black">
+                Request Date
+              </label>
+              <Input
+                value={data.dateRequested}
+                readOnly
+                className="h-[40px] border-0 font-bold text-lg"
+              />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2 text-black">
+                Status
+              </label>
+              <div className="bg-orange-500 text-white w-[50%] font-sans font-medium tracking-wide text-lg rounded-md text-center py-2">
+                {data.status}
+              </div>
+            </Col>
+            <Col xs={24} lg={6}>
+              <Form.Item>
+                <Input readOnly hidden />
+              </Form.Item>
             </Col>
             <Col xs={24} lg={6}>
               <label className="block text-sm font-bold mb-2 text-black">
@@ -134,12 +161,6 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
             <Col xs={24} lg={6}>
               <label className="block text-sm font-bold mb-2">Division</label>
               <Input value={data.division} readOnly className="h-[40px]" />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">
-                Date Request
-              </label>
-              <Input value={data.dateRequested} readOnly className="h-[40px]" />
             </Col>
             <Col xs={24} lg={6}>
               <label className="block text-sm font-bold mb-2">
@@ -158,16 +179,24 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
               />
             </Col>
             <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">
-                Requested By
-              </label>
-              <Input value={data.fullName} readOnly className="h-[40px]" />
+              <label className="block text-sm font-bold mb-2">Unit</label>
+              <Input value={data.unit} readOnly className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">Serial No</label>
+              <Input value={data.serialNo} readOnly className="h-[40px]" />
             </Col>
             <Col xs={24} lg={6}>
               <label className="block text-sm font-bold mb-2">
-                Authorized By
+                Property No
               </label>
-              <Input value={data.authorizedBy} readOnly className="h-[40px]" />
+              <Input value={data.propertyNo} readOnly className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">
+                Year Procured
+              </label>
+              <Input value={data.yearProcured} readOnly className="h-[40px]" />
             </Col>
             <Col xs={24} lg={24}>
               <label className="block text-sm font-bold mb-2">
@@ -181,18 +210,16 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
               />
             </Col>
             <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">Unit</label>
-              <Input value={data.unit} readOnly className="h-[40px]" />
+              <label className="block text-sm font-bold mb-2">
+                Requested By
+              </label>
+              <Input value={data.fullName} readOnly className="h-[40px]" />
             </Col>
             <Col xs={24} lg={6}>
               <label className="block text-sm font-bold mb-2">
-                Property No
+                Authorized By
               </label>
-              <Input value={data.propertyNo} readOnly className="h-[40px]" />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">Serial No</label>
-              <Input value={data.serialNo} readOnly className="h-[40px]" />
+              <Input value={data.authorizedBy} readOnly className="h-[40px]" />
             </Col>
           </Row>
         )}
@@ -276,14 +303,14 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
                 <Form.Item
                   label={
                     <label className="block text-sm font-bold">
-                      Year Procured
+                      Date Received
                     </label>
                   }
-                  name="yearProcured"
+                  name="dateReceived"
                 >
                   <Input
                     readOnly
-                    value={data.yearProcured}
+                    value={data.dateReceived}
                     className="h-[40px]"
                   />
                 </Form.Item>
@@ -342,22 +369,6 @@ const ServiceTaskModal = ({ isOpen, onClose, data, refreshData }) => {
                     <Option value={"7"}>7</Option>
                     <Option value={"20"}>20</Option>
                   </Select>
-                </Form.Item>
-              </Col>
-              <Col xs={24} lg={6}>
-                <Form.Item
-                  label={
-                    <label className="block text-sm font-bold">
-                      Date Received
-                    </label>
-                  }
-                  name="dateReceived"
-                >
-                  <Input
-                    readOnly
-                    value={data.dateReceived}
-                    className="h-[40px]"
-                  />
                 </Form.Item>
               </Col>
               <Col>
