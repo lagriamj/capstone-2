@@ -788,14 +788,14 @@ const Dashboard = () => {
               </div>
             ) : (
               <div className="w-full lg:h-screen h-auto flex flex-col large:mt-4 lg:grid lg:grid-cols-7 lg:grid-rows-11 gap-x-3 ">
-                <div className="lg:grid lg:col-span-5 relative lg:row-span-2 lg:h-full lg:py-2 pt-8  rounded-lg bg-white text-black font-sans">
+                <div className="lg:grid  lg:col-span-5 relative lg:row-span-2 lg:h-full lg:py-2 pt-8  rounded-lg bg-white text-black font-sans">
                   <h1 className="absolute font-semibold top-2 left-5 text-xl">
-                    Summary
+                    Request Summary
                   </h1>
                   <div
                     className={`${
                       windowsHeight768 ? "text-base" : "text-lg"
-                    } grid mt-2 lg:ml-14 w-full lg:grid-rows-2 lg:grid-cols-1 grid-cols-2 grid-rows-1  px-4  lg:mb-0 mb-20  lg:pl-20 lg:pr-10`}
+                    } grid mt-8 lg:ml-14 w-full lg:gap-10 lg:grid-rows-2 lg:grid-cols-1 grid-cols-2 grid-rows-1  px-4  lg:mb-0 mb-20  lg:pl-20 lg:pr-10`}
                   >
                     <div className="lg:grid lg:grid-cols-3 ">
                       <div
@@ -865,7 +865,10 @@ const Dashboard = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="lg:grid lg:grid-cols-3">
+                    <div className="lg:grid lg:grid-cols-3 relative">
+                      <h1 className="absolute font-semibold -top-8 -left-[7.3rem] text-lg">
+                        Performance Rating{" "}
+                      </h1>
                       <div className=" flex w-full lg:mt-0 mt-2 gap-2 items-center text-left cursor-pointer">
                         <div
                           className={`bg-[#fff4de] rounded-xl ${
@@ -920,7 +923,7 @@ const Dashboard = () => {
                     </div>
                   </div>
                 </div>
-                <div className="lg:col-span-5 flex items-center justify-end my-3 row-span-1 rounded-t-lg lg:row-start-3">
+                <div className="lg:col-span-5 flex items-center justify-start my-3 row-span-1 rounded-t-lg lg:row-start-3">
                   <div className="flex gap-1 items-center lg:justify-center justify-end lg:mr-0 mr-2">
                     <label
                       htmlFor="startDate"
@@ -1080,6 +1083,8 @@ const Dashboard = () => {
                     isOpen={delayedReportModal}
                     onClose={closeDelayedModal}
                     isLargeScreen={isLargeScreen}
+                    startDate={startDate}
+                    endDate={endDate}
                   />
                   <div className="w-full  flex lg:flex-row flex-col gap-2 px-2 py-1 mediumLg:pt-1 justify-end">
                     {" "}
@@ -1226,6 +1231,9 @@ const Dashboard = () => {
                 </div>
                 <div className="text-black font-sans overflow-auto lg:mt-0 mt-3  bg-white shadow-md rounded-lg lg:col-start-6 lg:col-span-2  lg:row-start-1 lg:row-span-5 ">
                   <div className="flex flex-col">
+                    <label className="font-semibold text-xl ml-4 mt-2">
+                      Notification
+                    </label>
                     <div className="flex items-center border-b-2 gap-2 border-gray-400 py-1 pl-4">
                       <div className="flex items-center w-full">
                         <div
@@ -1265,7 +1273,7 @@ const Dashboard = () => {
                             className="lg:text-lg text-base font-sans cursor-pointer"
                             onClick={showDelayedReq}
                           >
-                            Delayed
+                            Overall Delayed
                           </Badge>
                         </div>
                       </div>
