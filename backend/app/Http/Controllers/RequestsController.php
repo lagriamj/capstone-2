@@ -246,14 +246,16 @@ class RequestsController extends Controller
         $cutOffstartDateTime->setTime(1, 0, 0);
 
         $cutOffendDateTime = Carbon::now();
-        $cutOffendDateTime->setTime(11, 59, 0);
+        $cutOffendDateTime->setTime(23, 59, 0);
 
         $cutOffTimeToDelete = CutOffTime::where('cut_off', '<', $cutOffstartDateTime)
             ->where('cut_off', '<', $cutOffendDateTime)
             ->get();
 
         if ($cutOffTimeToDelete->count() > 0) {
-            CutOffTime::query()->delete();
+            CutOffTime::where('cut_off', '<', $cutOffstartDateTime)
+                ->where('cut_off', '<', $cutOffendDateTime)
+                ->update(['cut_off' => now()->setTime(17, 0, 0)]);
         }
     }
 
@@ -269,7 +271,7 @@ class RequestsController extends Controller
         $result = [];
 
         foreach ($userRequests as $request) {
-            $message = ($request->count >= 5) ? 'for waste' : '';
+            $message = ($request->count >= 5) ? 'for disposal' : '';
 
             $allThresholdRequest = DB::table('user_requests')
                 ->join('receive_service', 'user_requests.id', '=', 'receive_service.request_id')
