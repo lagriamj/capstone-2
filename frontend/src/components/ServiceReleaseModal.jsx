@@ -27,15 +27,17 @@ const ServiceReleaseModal = ({
     const filteredFindingsValue = value.filter(Boolean);
     const finalValue = filteredFindingsValue.join(", ");
     setFindingsValue(finalValue);
+    setActionTakenValue(finalValue);
   };
 
   const [actionTakenValue, setActionTakenValue] = useState("");
 
-  const handleChangeActionTaken = (value) => {
+  /* const handleChangeActionTaken = (value) => {
     const filteredActionValue = value.filter(Boolean);
     const finalValue = filteredActionValue.join(", ");
     setActionTakenValue(finalValue);
   };
+  */
 
   const [rootCauseValue, setRootCauseValue] = useState("");
   const handleChangeRootCause = (e) => {
@@ -107,11 +109,13 @@ const ServiceReleaseModal = ({
         refreshData();
       } else {
         setIsSubmitting(false);
+        message.error("Something went wrong");
         console.error("Received an unexpected response:", response);
       }
     } catch (error) {
       console.log(error);
     }
+    setIsSubmitting(false);
   };
 
   const customFilterOption = (inputValue, option) =>
@@ -158,7 +162,34 @@ const ServiceReleaseModal = ({
               <label className="block text-sm font-bold mb-2 text-black">
                 Request ID
               </label>
-              <Input value={data.request_code} readOnly className="h-[40px]" />
+              <Input
+                value={data.request_code}
+                readOnly
+                className="h-[40px] border-0 font-bold text-lg"
+              />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2 text-black">
+                Request Date
+              </label>
+              <Input
+                value={data.dateRequested}
+                readOnly
+                className="h-[40px] border-0 font-bold text-lg"
+              />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2 text-black">
+                Status
+              </label>
+              <div className="bg-yellow-500 text-white w-[50%] font-sans font-medium tracking-wide text-lg rounded-md text-center py-2">
+                {data.status}
+              </div>
+            </Col>
+            <Col xs={24} lg={6}>
+              <Form.Item>
+                <Input readOnly hidden />
+              </Form.Item>
             </Col>
             <Col xs={24} lg={6}>
               <label className="block text-sm font-bold mb-2 text-black">
@@ -169,12 +200,6 @@ const ServiceReleaseModal = ({
             <Col xs={24} lg={6}>
               <label className="block text-sm font-bold mb-2">Division</label>
               <Input value={data.division} readOnly className="h-[40px]" />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">
-                Date Request
-              </label>
-              <Input value={data.dateRequested} readOnly className="h-[40px]" />
             </Col>
             <Col xs={24} lg={6}>
               <label className="block text-sm font-bold mb-2">
@@ -193,16 +218,24 @@ const ServiceReleaseModal = ({
               />
             </Col>
             <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">
-                Requested By
-              </label>
-              <Input value={data.fullName} readOnly className="h-[40px]" />
+              <label className="block text-sm font-bold mb-2">Unit</label>
+              <Input value={data.unit} readOnly className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">Serial No</label>
+              <Input value={data.serialNo} readOnly className="h-[40px]" />
             </Col>
             <Col xs={24} lg={6}>
               <label className="block text-sm font-bold mb-2">
-                Authorized By
+                Property No
               </label>
-              <Input value={data.authorizedBy} readOnly className="h-[40px]" />
+              <Input value={data.propertyNo} readOnly className="h-[40px]" />
+            </Col>
+            <Col xs={24} lg={6}>
+              <label className="block text-sm font-bold mb-2">
+                Year Procured
+              </label>
+              <Input value={data.yearProcured} readOnly className="h-[40px]" />
             </Col>
             <Col xs={24} lg={24}>
               <label className="block text-sm font-bold mb-2">
@@ -216,18 +249,16 @@ const ServiceReleaseModal = ({
               />
             </Col>
             <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">Unit</label>
-              <Input value={data.unit} readOnly className="h-[40px]" />
+              <label className="block text-sm font-bold mb-2">
+                Requested By
+              </label>
+              <Input value={data.fullName} readOnly className="h-[40px]" />
             </Col>
             <Col xs={24} lg={6}>
               <label className="block text-sm font-bold mb-2">
-                Property No
+                Authorized By
               </label>
-              <Input value={data.propertyNo} readOnly className="h-[40px]" />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">Serial No</label>
-              <Input value={data.serialNo} readOnly className="h-[40px]" />
+              <Input value={data.authorizedBy} readOnly className="h-[40px]" />
             </Col>
 
             {/* Add more columns as needed */}
@@ -250,7 +281,7 @@ const ServiceReleaseModal = ({
           toRecommend: "",
           findings: findingsValue,
           rootCause: rootCauseValue,
-          actionTaken: actionTakenValue,
+          actionTaken: findingsValue,
           remarks: remarksValue,
         }}
         layout="vertical"
@@ -303,22 +334,6 @@ const ServiceReleaseModal = ({
                   <Input
                     readOnly
                     value={data.assignedTo}
-                    className="h-[40px]"
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} lg={6}>
-                <Form.Item
-                  label={
-                    <label className="block text-sm font-bold">
-                      Year Procured
-                    </label>
-                  }
-                  name="yearProcured"
-                >
-                  <Input
-                    readOnly
-                    value={data.yearProcured}
                     className="h-[40px]"
                   />
                 </Form.Item>
@@ -456,24 +471,6 @@ const ServiceReleaseModal = ({
                     },
                   ]}
                 >
-                  <Select
-                    size="large"
-                    showSearch
-                    style={{
-                      width: isLargeScreen ? "" : "50%",
-                    }}
-                    className="h-[40px]"
-                    filterOption={customFilterOption}
-                    onChange={handleChangeActionTaken}
-                    value={actionTakenValue} // Set the value of the Select component
-                    mode="multiple"
-                  >
-                    {utility.map((option, index) => (
-                      <Option key={index} value={option.utilityCategory}>
-                        {option.utilityCategory}
-                      </Option>
-                    ))}
-                  </Select>
                   <TextArea
                     rows={4}
                     value={remarksValue}
