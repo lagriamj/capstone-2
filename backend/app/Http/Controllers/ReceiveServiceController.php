@@ -157,7 +157,7 @@ class ReceiveServiceController extends Controller
             if (Carbon::now()->gte($artaDueDate) && $record->status === "On Progress") {
                 DB::table('receive_service')
                     ->where('id', $record->id)
-                    ->update(['artaStatus' => 'Delay']);
+                    ->update(['artaStatus' => 'Delayed']);
             }
         }
 
@@ -210,7 +210,7 @@ class ReceiveServiceController extends Controller
                 ->update([
                     'serviceBy' => $request->input('serviceBy'),
                     'arta' => $request->input('arta'),
-                    'artaStatus' => 'Not Delay',
+                    'artaStatus' => 'Not Delayed',
                     'dateServiced' => now(),
                 ]);
 
@@ -295,7 +295,7 @@ class ReceiveServiceController extends Controller
 
             return response()->json(['message' => 'ReceiveService updated successfully']);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to update ReceiveService'], 500);
+            return response()->json(['message' => $e->getMessage()], 500);
         }
     }
 
