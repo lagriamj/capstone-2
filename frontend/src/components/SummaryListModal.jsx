@@ -50,6 +50,13 @@ const SummaryListModal = ({
 
   const summaryListColumn = [
     {
+      title: "#",
+      dataIndex: "rowIndex",
+      key: "rowIndex",
+      align: "center",
+      render: (text, record, index) => index + 1,
+    },
+    {
       title: "Property No.",
       dataIndex: "request_code",
       key: "request_code",
