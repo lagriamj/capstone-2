@@ -6,9 +6,9 @@ import AdminDrawer from "../../components/AdminDrawer";
 import { useEffect, useState } from "react";
 import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
-import ThresholdModal from "../../components/thresholdModal";
+import RecommendationModal from "../../components/RecommendationModal";
 
-const ThresholdLog = () => {
+const Recommendation = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   useEffect(() => {
     const handleResize = () => {
@@ -25,7 +25,6 @@ const ThresholdLog = () => {
 
   const [loading, setLoading] = useState(false);
   const [thresholdData, setThresholdData] = useState([]);
-
   const [searchText, setSearchText] = useState("");
   const [pagination, setPagination] = useState({
     position: ["bottomLeft"],
@@ -105,6 +104,13 @@ const ThresholdLog = () => {
 
   const thresholdColumns = [
     {
+      title: "#",
+      dataIndex: "rowIndex",
+      key: "rowIndex",
+      align: "center",
+      render: (text, record, index) => index + 1,
+    },
+    {
       title: "Property No",
       dataIndex: "propertyNo",
       key: "propertyNo",
@@ -147,7 +153,7 @@ const ThresholdLog = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>Threshold Log</title>
+        <title>Recommendation</title>
       </Helmet>
       <div
         className={`className="flex flex-grow flex-col large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
@@ -161,9 +167,11 @@ const ThresholdLog = () => {
             <div className="flex lg:flex-row text-center flex-col w-full lg:pl-4 items-center justify-center shadow-xl bg-white  text-white rounded-t-lg lg:gap-4 gap-2">
               <div className="flex lg:flex-col flex-row lg:gap-0 gap-2">
                 <h1 className="flex text-black items-center lg:text-2xl font-semibold ">
-                  Threshold List
+                  Items Recommended for Disposal
                 </h1>
-                <span className="text-black mr-auto">Total Threshold:</span>
+                <span className="text-black mr-auto">
+                  Recommendation Items : {thresholdData.length}
+                </span>
               </div>
 
               <div className="relative flex items-center justify-center lg:mr-auto lg:ml-4 ">
@@ -194,7 +202,7 @@ const ThresholdLog = () => {
                 rowClassName={"p-0"}
               />
 
-              <ThresholdModal
+              <RecommendationModal
                 visible={openModal}
                 handleCancel={closeThresholdModal}
                 data={selectedData}
@@ -207,4 +215,4 @@ const ThresholdLog = () => {
   );
 };
 
-export default ThresholdLog;
+export default Recommendation;
