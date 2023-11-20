@@ -32,7 +32,7 @@ import HeadTransactions from "./views/head/HeadTransactions";
 import HeadRequests from "./views/head/HeadRequests";
 import ForgotPassword from "./views/ForgotPassword";
 import WalkInEntry from "./views/admin/WalkInEntry";
-import ThresholdLog from "./views/admin/ThresholdLog";
+import Recommendation from "./views/admin/Recommendation";
 
 function App() {
   function ProtectedRoute({ element, requiredRole }) {
@@ -206,10 +206,10 @@ function App() {
                 }
               />
               <Route
-                path="/threshold-log"
+                path="/recommendation"
                 element={
                   <ProtectedRoute
-                    element={<ThresholdLog />}
+                    element={<Recommendation />}
                     requiredRole={"admin"}
                   />
                 }
