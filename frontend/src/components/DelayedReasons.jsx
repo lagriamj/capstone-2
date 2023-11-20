@@ -50,7 +50,7 @@ const DelayedReasons = ({ visible, onCancel, data }) => {
 
   return (
     <Modal
-      title="Delay Reasons"
+      title="Delay Request Reasons"
       open={visible}
       onCancel={onCancel}
       width={"75%"}
