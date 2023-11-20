@@ -20,7 +20,7 @@ const columns = [
   },
 ];
 
-const ThresholdModal = ({ visible, handleCancel, data }) => {
+const RecommendationModal = ({ visible, handleCancel, data }) => {
   const [pagination, setPagination] = useState({
     position: ["bottomLeft"],
     showQuickJumper: true,
@@ -30,7 +30,7 @@ const ThresholdModal = ({ visible, handleCancel, data }) => {
   });
   return (
     <Modal
-      title="Threshold Log"
+      title="Recommendation Log"
       open={visible}
       onCancel={handleCancel}
       width={"75%"}
@@ -47,10 +47,10 @@ const ThresholdModal = ({ visible, handleCancel, data }) => {
   );
 };
 
-ThresholdModal.propTypes = {
+RecommendationModal.propTypes = {
   visible: PropTypes.any,
   handleCancel: PropTypes.any,
   data: PropTypes.any,
 };
 
-export default ThresholdModal;
+export default RecommendationModal;
