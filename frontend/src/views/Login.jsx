@@ -88,6 +88,8 @@ function Login() {
       );
       const data = response.data;
       const fullName = `${data.firstName} ${data.lastName}`;
+      console.log(data);
+      console.log("password change required: " + data.password_change_required);
 
       if (response.status === 200) {
         if (data.isActive === 0 && data.userStatus === "unverified") {
@@ -105,7 +107,13 @@ function Login() {
           );
         } else if (data.userStatus === "verified") {
           message.success("Welcome " + fullName);
-          login(data.role, data.userID, data.userStatus, fullName);
+          login(
+            data.role,
+            data.userID,
+            data.userStatus,
+            fullName,
+            data.password_change_required
+          );
           setRole(data.role);
           setUserStatus(data.userStatus);
           if (data.role === "admin") {
