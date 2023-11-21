@@ -623,4 +623,28 @@ class UserController extends Controller
         $heads = User::where('role', 'head')->get();
         return response()->json(['result' => $heads], 200);
     }
+
+    public function forceChangePassword(Request $request)
+    {
+        Log::info($request);
+
+        $userID = $request->get('userID');
+        Log::info("user ID: " . $request->input('userID'));
+        $userNewPassword = $request->get('newPassword');
+        $user = User::find($userID);
+        $maxPasswordLength = 50;
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $user->update(['password_change_required' => true]);
+
+        if (!empty($userNewPassword)) {
+            $truncatedPassword = Str::limit($userNewPassword, $maxPasswordLength);
+            $user->update(['userPassword' => bcrypt($truncatedPassword)]);
+        }
+
+        return response()->json(['message' => 'Password change required'], 200);
+    }
 }
