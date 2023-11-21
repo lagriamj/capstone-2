@@ -30,13 +30,14 @@ class LoginController extends Controller
                     }
 
                     return response()->json([
-                        'success' => true,
                         'userID' => $user->userID,
                         'role' => $user->role,
                         'firstName' => $user->userFirstName,
                         'lastName' => $user->userLastName,
                         'userStatus' => 'verified',
                         'isActive' => $user->isActive,
+                        'password_change_required' => $user->password_change_required,
+
                     ]);
                 } else {
                     return response()->json([
@@ -45,6 +46,7 @@ class LoginController extends Controller
                         'userEmail' => $user->userEmail,
                         'userStatus' => 'unverified',
                         'isActive' => $user->isActive,
+                        'password_change_required' => $user->password_change_required,
                     ]);
                 }
             }
