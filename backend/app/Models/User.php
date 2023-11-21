@@ -32,6 +32,7 @@ class User extends Authenticatable
         'role',
         'otpCode',
         'otpExpiration',
+        'password_change_required',
     ];
 
     protected $primaryKey = "userID";
