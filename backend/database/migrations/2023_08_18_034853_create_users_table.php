@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('role', 5);
             $table->string('otpCode', 6);
             $table->timestamp('otpExpiration');
-            $table->boolean('password_change_required');
+            $table->boolean('password_change_required')->default(false);
             $table->timestamps();
         });
     }
