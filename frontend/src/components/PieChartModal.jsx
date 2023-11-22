@@ -47,6 +47,19 @@ const PieChartModal = ({
   const lastPage = Math.ceil(totalItems / pagination.pageSize);
   const isLastPage = currentPage === lastPage;
 
+  // Define a new column for the index
+  const indexColumn = {
+    title: "#",
+    dataIndex: "rowIndex",
+    key: "rowIndex",
+    align: "center",
+    render: (text, record, index) =>
+      (currentPage - 1) * pagination.pageSize + index + 1,
+  };
+
+  // Add the index column to the table columns
+  const columnsWithIndex = [indexColumn, ...tableColumns];
+
   return (
     <Modal
       title={
@@ -87,7 +100,7 @@ const PieChartModal = ({
             spinning: pieLoading,
           }}
           dataSource={modalData}
-          columns={tableColumns}
+          columns={columnsWithIndex} // Use the columns with the added index
           pagination={pagination}
           onChange={(newPagination) => {
             handlePageChange(newPagination);
