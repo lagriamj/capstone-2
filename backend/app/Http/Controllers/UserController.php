@@ -626,10 +626,8 @@ class UserController extends Controller
 
     public function forceChangePassword(Request $request)
     {
-        Log::info($request);
 
         $userID = $request->get('userID');
-        Log::info("user ID: " . $request->input('userID'));
         $userNewPassword = $request->get('newPassword');
         $user = User::find($userID);
         $maxPasswordLength = 50;
