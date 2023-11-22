@@ -22,7 +22,7 @@ const PieChartRequestModal = ({
     position: ["bottomLeft"],
     showQuickJumper: true,
     current: 1,
-    pageSize: modalData.requests ? modalData.requests.length : 10, // Set pageSize to match the total number of items
+    pageSize: modalData.requests ? modalData.requests.length : 10,
     showLessItems: true,
   });
 
@@ -46,6 +46,19 @@ const PieChartRequestModal = ({
   const totalItems = modalData.requests?.length;
   const lastPage = Math.ceil(totalItems / pagination.pageSize);
   const isLastPage = currentPage === lastPage;
+
+  // Define a new column for the index
+  const indexColumn = {
+    title: "#",
+    dataIndex: "rowIndex",
+    key: "rowIndex",
+    align: "center",
+    render: (text, record, index) =>
+      (currentPage - 1) * pagination.pageSize + index + 1,
+  };
+
+  // Add the index column to the table columns
+  const columnsWithIndex = [indexColumn, ...tableColumns];
 
   return (
     <Modal
@@ -87,7 +100,7 @@ const PieChartRequestModal = ({
             spinning: pieLoading,
           }}
           dataSource={modalData}
-          columns={tableColumns}
+          columns={columnsWithIndex} // Use the columns with the added index
           pagination={pagination}
           onChange={(newPagination) => {
             handlePageChange(newPagination);
