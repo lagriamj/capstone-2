@@ -2,6 +2,9 @@ import { Table, Modal } from "antd";
 import PropTypes from "prop-types";
 import { useRef } from "react";
 import ReactToPrint from "react-to-print";
+import { useAuth } from "../AuthContext";
+
+// ... (import statements)
 
 const PrintPieChartData = ({
   isOpen,
@@ -14,27 +17,38 @@ const PrintPieChartData = ({
 }) => {
   const contentRef = useRef();
   const printRef = useRef();
+  const { fullName } = useAuth();
 
   const handlePrint = () => {
     if (printRef.current) {
-      printRef.current.handlePrint(); // Trigger the print action
+      printRef.current.handlePrint();
     }
   };
 
   const fromDateObj = fromDate ? new Date(fromDate) : null;
   const toDateObj = toDate ? new Date(toDate) : null;
 
-  // Helper function to format a Date object as "Month day, year"
   const formatDate = (dateObj) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return dateObj.toLocaleDateString(undefined, options);
   };
 
-  // Format the date range for display
   const formattedDateRange =
     fromDateObj && toDateObj
       ? ` ${formatDate(fromDateObj)} - ${formatDate(toDateObj)}`
       : "";
+
+  // Define a new column for the index
+  const indexColumn = {
+    title: "#",
+    dataIndex: "rowIndex",
+    key: "rowIndex",
+    align: "center",
+    render: (text, record, index) => index + 1,
+  };
+
+  // Add the index column to the table columns
+  const columnsWithIndex = [indexColumn, ...tableColumn];
 
   return (
     <Modal
@@ -83,11 +97,26 @@ const PrintPieChartData = ({
         </div>
         <Table
           className="mt-4"
-          columns={tableColumn}
+          columns={columnsWithIndex} // Use the columns with the added index
           dataSource={techData}
           scroll={isLargeScreen ? "" : { x: 1300 }}
           pagination={false} // Disable pagination
         />
+        <div className="flex relative">
+          <div className="grid grid-cols-3 w-[80%] gap-4 font-sans mt-20">
+            <div className="flex flex-col">
+              <label htmlFor="">Prepared by:</label>
+              <input
+                type="text"
+                className="text-black outline-none h-[20px]  text-base font-bold"
+                placeholder="Prepared by name here"
+                value={fullName}
+                onChange={() => {}}
+              />
+              <p>Date: {formatDate(toDateObj)}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </Modal>
   );
@@ -98,8 +127,6 @@ PrintPieChartData.propTypes = {
   onClose: PropTypes.func.isRequired,
   tableColumn: PropTypes.any.isRequired,
   techData: PropTypes.array.isRequired,
-  pageSize: PropTypes.number, // You can remove this prop since you don't need to specify pageSize
-  currentPage: PropTypes.number,
   isLargeScreen: PropTypes.bool.isRequired,
   fromDate: PropTypes.any,
   toDate: PropTypes.any,
