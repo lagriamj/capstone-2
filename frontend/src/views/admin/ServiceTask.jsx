@@ -52,6 +52,32 @@ const ServiceTask = () => {
   const [selectedID, setSelectedID] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedOffice, setSelectedOffice] = useState(null);
+  const [cutOffTime, setCutOffTime] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_API_BASE_URL}/api/getCutOffTime`)
+      .then((response) => {
+        if (response.data.cutOffTime) {
+          const cutOffTimeDate = new Date(response.data.cutOffTime);
+
+          const hours = cutOffTimeDate.getHours();
+          const minutes = cutOffTimeDate.getMinutes();
+          const formattedHours = hours % 12 || 12;
+          const amPm = hours < 12 ? "AM" : "PM";
+          const formattedTime = `${formattedHours}:${minutes
+            .toString()
+            .padStart(2, "0")} ${amPm}`;
+          setCutOffTime(formattedTime);
+        } else {
+          setCutOffTime("");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching cut-off time:", error);
+        setCutOffTime("Error fetching cut-off time");
+      });
+  }, []);
 
   const handleStarIconClick = (id, user_id, office) => {
     setSelectedID(id);
@@ -522,6 +548,11 @@ const ServiceTask = () => {
                   className="my-4 h-12"
                 />
               </div>
+              {cutOffTime && (
+                <p className="text-black text-lg font-semibold font-sans">
+                  Cut-off Time: {cutOffTime}
+                </p>
+              )}
               <button
                 className="text-white bg-blue-500 font-medium px-3 py-2 rounded-lg"
                 onClick={(e) => {
