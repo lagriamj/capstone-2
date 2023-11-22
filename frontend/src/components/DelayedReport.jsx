@@ -35,7 +35,10 @@ const DelayedReport = ({
       dataIndex: "rowIndex",
       key: "rowIndex",
       align: "center",
-      render: (text, record, index) => index + 1,
+      render: (text, record, index) => {
+        const pageSize = pagination.pageSize || 10;
+        return (currentPage - 1) * pageSize + index + 1;
+      },
     },
     {
       title: "Request ID",
@@ -138,7 +141,7 @@ const DelayedReport = ({
         isOpen={openGenerateReport}
         onClose={closeGenerateReport}
         techData={data}
-        pageSize={pagination.pageSize}
+        pageSize={data ? data.length : 10}
         currentPage={currentPage}
         isLargeScreen={isLargeScreen}
         startDate={startDate}
