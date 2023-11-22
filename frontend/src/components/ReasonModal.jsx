@@ -7,6 +7,7 @@ export default function ReasonModal({
   display,
   itemData,
   onClose,
+  onReloadTable,
   isLargeScreen,
   refreshData,
   role,
@@ -20,6 +21,8 @@ export default function ReasonModal({
     e.preventDefault();
     setConfirmationVisible(true);
   };
+
+  console.log(itemData.request_id);
 
   const handleConfirm = async () => {
     try {
@@ -41,6 +44,7 @@ export default function ReasonModal({
       onSubmit();
       onClose();
       refreshData();
+      onReloadTable();
     } catch (error) {
       console.error("API request failed:", error);
     }
@@ -141,4 +145,5 @@ ReasonModal.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   name: PropTypes.any,
   role: PropTypes.any,
+  onReloadTable: PropTypes.any,
 };
