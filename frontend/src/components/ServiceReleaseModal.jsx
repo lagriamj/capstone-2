@@ -6,6 +6,7 @@ import { Button, Modal, Form, Input, Row, Col, Select, Table } from "antd";
 import { message } from "antd";
 import { useAuth } from "../AuthContext";
 import AddARTAReasonModal from "./AddARTAReasonModal";
+import ReasonModal from "./ReasonModal";
 
 const ServiceReleaseModal = ({
   isOpen,
@@ -19,7 +20,8 @@ const ServiceReleaseModal = ({
   const { TextArea } = Input;
   const [form] = Form.useForm();
   const { Option } = Select;
-  const { fullName } = useAuth();
+  const { fullName, userRole } = useAuth();
+  const [showReasonModal, setShowReasonModal] = useState(false);
 
   const [findingsValue, setFindingsValue] = useState("");
 
@@ -28,6 +30,23 @@ const ServiceReleaseModal = ({
     const finalValue = filteredFindingsValue.join(", ");
     setFindingsValue(finalValue);
     setActionTakenValue(finalValue);
+  };
+
+  const handleCancel = () => {
+    setShowReasonModal(true);
+  };
+
+  const onCloseModal = () => {
+    setShowReasonModal(false);
+    onClose();
+  };
+
+  const onReloadTable = () => {
+    refreshData();
+  };
+
+  const handleReasonModalSubmit = () => {
+    message.success("Request Cancelled Successfully");
   };
 
   const [actionTakenValue, setActionTakenValue] = useState("");
@@ -142,389 +161,421 @@ const ServiceReleaseModal = ({
   };
 
   return (
-    <Modal
-      open={isOpen}
-      onCancel={onClose}
-      width="75%"
-      title={
-        <div className="flex justify-between items-center">
-          <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
-        </div>
-      }
-      centered
-      footer={null}
-      closable={false}
-    >
-      <div className="relative p-6 text-lg">
-        {data && (
-          <Row gutter={[16, 16]}>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2 text-black">
-                Request ID
-              </label>
-              <Input
-                value={data.request_code}
-                readOnly
-                className="h-[40px] border-0 font-bold text-lg"
-              />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2 text-black">
-                Request Date
-              </label>
-              <Input
-                value={data.dateRequested}
-                readOnly
-                className="h-[40px] border-0 font-bold text-lg"
-              />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2 text-black">
-                Status
-              </label>
-              <div className="bg-yellow-500 text-white w-[50%] font-sans font-medium tracking-wide text-lg rounded-md text-center py-2">
-                {data.status}
-              </div>
-            </Col>
-            <Col xs={24} lg={6}>
-              <Form.Item>
-                <Input readOnly hidden />
-              </Form.Item>
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2 text-black">
-                Requesting Office
-              </label>
-              <Input value={data.reqOffice} readOnly className="h-[40px]" />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">Division</label>
-              <Input value={data.division} readOnly className="h-[40px]" />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">
-                Mode Request
-              </label>
-              <Input value={data.modeOfRequest} readOnly className="h-[40px]" />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">
-                Nature of Request
-              </label>
-              <Input
-                value={data.natureOfRequest}
-                readOnly
-                className="h-[40px]"
-              />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">Unit</label>
-              <Input value={data.unit} readOnly className="h-[40px]" />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">Serial No</label>
-              <Input value={data.serialNo} readOnly className="h-[40px]" />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">
-                Property No
-              </label>
-              <Input value={data.propertyNo} readOnly className="h-[40px]" />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">
-                Year Procured
-              </label>
-              <Input value={data.yearProcured} readOnly className="h-[40px]" />
-            </Col>
-            <Col xs={24} lg={24}>
-              <label className="block text-sm font-bold mb-2">
-                Special Instructions
-              </label>
-              <TextArea
-                rows={4}
-                value={data.specialIns}
-                readOnly
-                className="h-[40px]"
-              />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">
-                Requested By
-              </label>
-              <Input value={data.fullName} readOnly className="h-[40px]" />
-            </Col>
-            <Col xs={24} lg={6}>
-              <label className="block text-sm font-bold mb-2">
-                Authorized By
-              </label>
-              <Input value={data.authorizedBy} readOnly className="h-[40px]" />
-            </Col>
-
-            {/* Add more columns as needed */}
-          </Row>
-        )}
-      </div>
-      <Form
-        form={form}
-        onFinish={handleSubmit}
-        initialValues={{
-          request_id: data.request_id,
-          receivedBy: data.receivedBy,
-          dateReceived: data.dateReceived,
-          yearProcured: data.yearProcured,
-          assignedTo: data.assignedTo,
-          serviceBy: data.serviceBy,
-          dateServiced: data.dateServiced,
-          arta: data.arta,
-          artaStatus: data.artaStatus,
-          toRecommend: "",
-          findings: findingsValue,
-          rootCause: rootCauseValue,
-          actionTaken: findingsValue,
-          remarks: remarksValue,
-        }}
-        layout="vertical"
+    <>
+      <Modal
+        open={isOpen}
+        onCancel={onClose}
+        width="75%"
+        title={
+          <div className="flex justify-between items-center">
+            <span>CITC TECHNICAL SERVICE REQUEST SLIP</span>
+          </div>
+        }
+        centered
+        footer={null}
+        closable={false}
       >
         <div className="relative p-6 text-lg">
-          {/* ADMIN SIDE */}
           {data && (
             <Row gutter={[16, 16]}>
               <Col xs={24} lg={6}>
-                <Form.Item
-                  label={
-                    <label className="block text-sm font-bold">
-                      Received By
-                    </label>
-                  }
-                  name="receivedBy"
-                >
-                  <Input
-                    readOnly
-                    value={data.receivedBy}
-                    className="h-[40px]"
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} lg={6}>
-                <Form.Item
-                  label={
-                    <label className="block text-sm font-bold">
-                      Date Received
-                    </label>
-                  }
-                  name="dateReceived"
-                >
-                  <Input
-                    readOnly
-                    value={data.dateReceived}
-                    className="h-[40px]"
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} lg={6}>
-                <Form.Item
-                  label={
-                    <label className="block text-sm font-bold">
-                      Assigned To
-                    </label>
-                  }
-                  name="assignedTo"
-                >
-                  <Input
-                    readOnly
-                    value={data.assignedTo}
-                    className="h-[40px]"
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} lg={6}>
-                <Form.Item
-                  label={
-                    <label className="block text-sm font-bold">
-                      Serviced By
-                    </label>
-                  }
-                  name="serviceBy"
-                >
-                  <Input readOnly value={data.serviceBy} className="h-[40px]" />
-                </Form.Item>
-              </Col>
-              <Col xs={24} lg={6}>
-                <Form.Item
-                  label={
-                    <label className="block text-sm font-bold">
-                      Date Serviced
-                    </label>
-                  }
-                  name="dateServiced"
-                >
-                  <Input
-                    readOnly
-                    value={data.dateServiced}
-                    className="h-[40px]"
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} lg={6}>
-                <Form.Item
-                  label={
-                    <label className="block text-sm font-bold">
-                      ARTA (Anti-Red Tape Act)
-                    </label>
-                  }
-                  name="arta"
-                >
-                  <Input readOnly value={data.arta} className="h-[40px]" />
-                </Form.Item>
-              </Col>
-              <Col xs={24} lg={6}>
-                <Form.Item
-                  label={
-                    <label className="block text-sm font-bold">
-                      ARTA Status
-                    </label>
-                  }
-                  name="artaStatus"
-                >
-                  <Input
-                    readOnly
-                    value={data.artaStatus}
-                    className="h-[40px]"
-                  />
-                </Form.Item>
-              </Col>
-              <Col xs={24} lg={24}>
-                {reasonList.length !== 0 && (
-                  <Table
-                    columns={ARTAreasonColumn}
-                    dataSource={reasonList}
-                    pagination={false}
-                  />
-                )}
-                <Button
-                  className="ml-auto bg-main text-white w-16 h-10"
-                  onClick={() => {
-                    setAddARTAReasonModal(true);
-                  }}
-                >
-                  Add
-                </Button>
-                <AddARTAReasonModal
-                  visible={addARTAReasonModal}
-                  onCancel={handleARTAModal}
-                  data={data}
-                  fullName={fullName}
-                  refreshData={fetchData}
+                <label className="block text-sm font-bold mb-2 text-black">
+                  Request ID
+                </label>
+                <Input
+                  value={data.request_code}
+                  readOnly
+                  className="h-[40px] border-0 font-bold text-lg"
                 />
               </Col>
-              <Col xs={24} lg={12}>
-                <Form.Item
-                  label={
-                    <label className="block text-sm font-bold">
-                      Findings Particulars
-                    </label>
-                  }
-                  rules={[
-                    {
-                      required: true,
-                      message: "This field is required",
-                    },
-                  ]}
-                >
-                  <Select
-                    size="large"
-                    showSearch
-                    style={{
-                      width: isLargeScreen ? "" : "50%",
-                    }}
-                    className="h-[40px]"
-                    filterOption={customFilterOption}
-                    onChange={handleChangeFindings}
-                    value={findingsValue} // Set the value of the Select component
-                    mode="multiple"
-                  >
-                    {utility.map((option, index) => (
-                      <Option key={index} value={option.utilityCategory}>
-                        {option.utilityCategory}
-                      </Option>
-                    ))}
-                  </Select>
-                  <TextArea
-                    rows={4}
-                    onChange={handleChangeRootCause}
-                    className="h-[40px] mt-2"
-                  />
+              <Col xs={24} lg={6}>
+                <label className="block text-sm font-bold mb-2 text-black">
+                  Request Date
+                </label>
+                <Input
+                  value={data.dateRequested}
+                  readOnly
+                  className="h-[40px] border-0 font-bold text-lg"
+                />
+              </Col>
+              <Col xs={24} lg={6}>
+                <label className="block text-sm font-bold mb-2 text-black">
+                  Status
+                </label>
+                <div className="bg-yellow-500 text-white w-[50%] font-sans font-medium tracking-wide text-lg rounded-md text-center py-2">
+                  {data.status}
+                </div>
+              </Col>
+              <Col xs={24} lg={6}>
+                <Form.Item>
+                  <Input readOnly hidden />
                 </Form.Item>
               </Col>
-              <Col xs={24} lg={12}>
-                <Form.Item
-                  label={
-                    <label className="block text-sm font-bold">
-                      Action Taken
-                    </label>
-                  }
-                  rules={[
-                    {
-                      required: true,
-                      message: "This field is required",
-                    },
-                  ]}
-                >
-                  <TextArea
-                    rows={4}
-                    value={remarksValue}
-                    onChange={handleChangeRemarks}
-                    className="h-[40px] mt-2"
-                  />
-                </Form.Item>
+              <Col xs={24} lg={6}>
+                <label className="block text-sm font-bold mb-2 text-black">
+                  Requesting Office
+                </label>
+                <Input value={data.reqOffice} readOnly className="h-[40px]" />
+              </Col>
+              <Col xs={24} lg={6}>
+                <label className="block text-sm font-bold mb-2">Division</label>
+                <Input value={data.division} readOnly className="h-[40px]" />
+              </Col>
+              <Col xs={24} lg={6}>
+                <label className="block text-sm font-bold mb-2">
+                  Mode Request
+                </label>
+                <Input
+                  value={data.modeOfRequest}
+                  readOnly
+                  className="h-[40px]"
+                />
+              </Col>
+              <Col xs={24} lg={6}>
+                <label className="block text-sm font-bold mb-2">
+                  Nature of Request
+                </label>
+                <Input
+                  value={data.natureOfRequest}
+                  readOnly
+                  className="h-[40px]"
+                />
+              </Col>
+              <Col xs={24} lg={6}>
+                <label className="block text-sm font-bold mb-2">Unit</label>
+                <Input value={data.unit} readOnly className="h-[40px]" />
+              </Col>
+              <Col xs={24} lg={6}>
+                <label className="block text-sm font-bold mb-2">
+                  Serial No
+                </label>
+                <Input value={data.serialNo} readOnly className="h-[40px]" />
+              </Col>
+              <Col xs={24} lg={6}>
+                <label className="block text-sm font-bold mb-2">
+                  Property No
+                </label>
+                <Input value={data.propertyNo} readOnly className="h-[40px]" />
+              </Col>
+              <Col xs={24} lg={6}>
+                <label className="block text-sm font-bold mb-2">
+                  Year Procured
+                </label>
+                <Input
+                  value={data.yearProcured}
+                  readOnly
+                  className="h-[40px]"
+                />
               </Col>
               <Col xs={24} lg={24}>
-                <Form.Item
-                  label={
-                    <label className="block text-sm font-bold">
-                      Recommendation
-                    </label>
-                  }
-                  rules={[
-                    {
-                      required: true,
-                      message: "This field is required",
-                    },
-                  ]}
-                  name="toRecommend"
-                >
-                  <TextArea rows={3} className="h-[40px]" />
-                </Form.Item>
+                <label className="block text-sm font-bold mb-2">
+                  Special Instructions
+                </label>
+                <TextArea
+                  rows={4}
+                  value={data.specialIns}
+                  readOnly
+                  className="h-[40px]"
+                />
               </Col>
-              <Col>
-                <Form.Item name="request_id">
-                  <Input readOnly hidden className="h-[40px]" />
-                </Form.Item>
+              <Col xs={24} lg={6}>
+                <label className="block text-sm font-bold mb-2">
+                  Requested By
+                </label>
+                <Input value={data.fullName} readOnly className="h-[40px]" />
               </Col>
+              <Col xs={24} lg={6}>
+                <label className="block text-sm font-bold mb-2">
+                  Authorized By
+                </label>
+                <Input
+                  value={data.authorizedBy}
+                  readOnly
+                  className="h-[40px]"
+                />
+              </Col>
+
+              {/* Add more columns as needed */}
             </Row>
           )}
         </div>
-        <div className="flex ml-auto w-full  gap-2 justify-end border-t-2 pt-5 pr-6">
-          <button
-            className="bg-red-700 text-white font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
-            type="submit"
-            onClick={onClose}
-          >
-            Cancel
-          </button>
-          <Button
-            loading={isSubmitting}
-            type="primary"
-            htmlType="submit"
-            className="bg-gray-800  py-7  font-semibold flex items-center justify-center text-white text-base font-sans w-28 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out "
-          >
-            {isSubmitting ? "Updating" : "Update"}
-          </Button>
-        </div>
-      </Form>
-      {/* Footer */}
-    </Modal>
+        <Form
+          form={form}
+          onFinish={handleSubmit}
+          initialValues={{
+            request_id: data.request_id,
+            receivedBy: data.receivedBy,
+            dateReceived: data.dateReceived,
+            yearProcured: data.yearProcured,
+            assignedTo: data.assignedTo,
+            serviceBy: data.serviceBy,
+            dateServiced: data.dateServiced,
+            arta: data.arta,
+            artaStatus: data.artaStatus,
+            toRecommend: "",
+            findings: findingsValue,
+            rootCause: rootCauseValue,
+            actionTaken: findingsValue,
+            remarks: remarksValue,
+          }}
+          layout="vertical"
+        >
+          <div className="relative p-6 text-lg">
+            {/* ADMIN SIDE */}
+            {data && (
+              <Row gutter={[16, 16]}>
+                <Col xs={24} lg={6}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">
+                        Received By
+                      </label>
+                    }
+                    name="receivedBy"
+                  >
+                    <Input
+                      readOnly
+                      value={data.receivedBy}
+                      className="h-[40px]"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} lg={6}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">
+                        Date Received
+                      </label>
+                    }
+                    name="dateReceived"
+                  >
+                    <Input
+                      readOnly
+                      value={data.dateReceived}
+                      className="h-[40px]"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} lg={6}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">
+                        Assigned To
+                      </label>
+                    }
+                    name="assignedTo"
+                  >
+                    <Input
+                      readOnly
+                      value={data.assignedTo}
+                      className="h-[40px]"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} lg={6}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">
+                        Serviced By
+                      </label>
+                    }
+                    name="serviceBy"
+                  >
+                    <Input
+                      readOnly
+                      value={data.serviceBy}
+                      className="h-[40px]"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} lg={6}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">
+                        Date Serviced
+                      </label>
+                    }
+                    name="dateServiced"
+                  >
+                    <Input
+                      readOnly
+                      value={data.dateServiced}
+                      className="h-[40px]"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} lg={6}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">
+                        ARTA (Anti-Red Tape Act)
+                      </label>
+                    }
+                    name="arta"
+                  >
+                    <Input readOnly value={data.arta} className="h-[40px]" />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} lg={6}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">
+                        ARTA Status
+                      </label>
+                    }
+                    name="artaStatus"
+                  >
+                    <Input
+                      readOnly
+                      value={data.artaStatus}
+                      className="h-[40px]"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} lg={24}>
+                  {reasonList.length !== 0 && (
+                    <Table
+                      columns={ARTAreasonColumn}
+                      dataSource={reasonList}
+                      pagination={false}
+                    />
+                  )}
+                  <Button
+                    className="ml-auto bg-main text-white w-16 h-10"
+                    onClick={() => {
+                      setAddARTAReasonModal(true);
+                    }}
+                  >
+                    Add
+                  </Button>
+                  <AddARTAReasonModal
+                    visible={addARTAReasonModal}
+                    onCancel={handleARTAModal}
+                    data={data}
+                    fullName={fullName}
+                    refreshData={fetchData}
+                  />
+                </Col>
+                <Col xs={24} lg={12}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">
+                        Findings Particulars
+                      </label>
+                    }
+                    rules={[
+                      {
+                        required: true,
+                        message: "This field is required",
+                      },
+                    ]}
+                  >
+                    <Select
+                      size="large"
+                      showSearch
+                      style={{
+                        width: isLargeScreen ? "" : "50%",
+                      }}
+                      className="h-[40px]"
+                      filterOption={customFilterOption}
+                      onChange={handleChangeFindings}
+                      value={findingsValue} // Set the value of the Select component
+                      mode="multiple"
+                    >
+                      {utility.map((option, index) => (
+                        <Option key={index} value={option.utilityCategory}>
+                          {option.utilityCategory}
+                        </Option>
+                      ))}
+                    </Select>
+                    <TextArea
+                      rows={4}
+                      onChange={handleChangeRootCause}
+                      className="h-[40px] mt-2"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} lg={12}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">
+                        Action Taken
+                      </label>
+                    }
+                    rules={[
+                      {
+                        required: true,
+                        message: "This field is required",
+                      },
+                    ]}
+                  >
+                    <TextArea
+                      rows={4}
+                      value={remarksValue}
+                      onChange={handleChangeRemarks}
+                      className="h-[40px] mt-2"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} lg={24}>
+                  <Form.Item
+                    label={
+                      <label className="block text-sm font-bold">
+                        Recommendation
+                      </label>
+                    }
+                    rules={[
+                      {
+                        required: true,
+                        message: "This field is required",
+                      },
+                    ]}
+                    name="toRecommend"
+                  >
+                    <TextArea rows={3} className="h-[40px]" />
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <Form.Item name="request_id">
+                    <Input readOnly hidden className="h-[40px]" />
+                  </Form.Item>
+                </Col>
+              </Row>
+            )}
+          </div>
+          <div className="flex ml-auto w-full  gap-2 justify-end border-t-2 pt-5 pr-6">
+            <Button
+              className="bg-red-700 text-white h-12 font-semibold text-base font-sans w-24 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out"
+              onClick={handleCancel} // Updated onClick to call handleCancel
+            >
+              Cancel
+            </Button>
+            <Button
+              loading={isSubmitting}
+              type="primary"
+              htmlType="submit"
+              className="bg-gray-800  py-7  font-semibold flex items-center justify-center text-white text-base font-sans w-28 p-2 rounded-xl hover:bg-white hover:text-gray-800 hover:border-2 hover:border-gray-800 transition duration-500 ease-in-out "
+            >
+              {isSubmitting ? "Updating" : "Update"}
+            </Button>
+          </div>
+        </Form>
+        {/* Footer */}
+      </Modal>
+      {showReasonModal && (
+        <ReasonModal
+          display={true}
+          onClose={onCloseModal}
+          onReloadTable={onReloadTable}
+          itemData={data}
+          isLargeScreen={true}
+          refreshData={refreshData}
+          role={userRole}
+          name={fullName}
+          onSubmit={handleReasonModalSubmit}
+        />
+      )}
+    </>
   );
 };
 
