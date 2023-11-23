@@ -17,6 +17,7 @@ import RateModal from "../../components/RateModal";
 import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
 import { useAuth } from "../../AuthContext";
 import CutOffModal from "../../components/CutOffModal";
+import { notification } from "antd";
 
 const ServiceTask = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -30,6 +31,24 @@ const ServiceTask = () => {
 
   const openModal = (data) => {
     setSelectedData(data);
+
+    if (data.status === "Received") {
+      notification.warning({
+        message: (
+          <div className="font-semibold">
+            <span className="text-lg">Note</span>
+          </div>
+        ),
+        description: (
+          <p className="text-sm">
+            Please notify or provide permission to the designated technician for
+            changing the service.
+          </p>
+        ),
+        duration: 5,
+      });
+    }
+
     if (data.status === "To Rate" && data.modeOfRequest === "Walk-In") {
       setModalType("ToRateWalkin");
     } else if (data.status === "Pending") {
@@ -45,6 +64,7 @@ const ServiceTask = () => {
     } else if (data.status === "Closed") {
       setModalType("ServiceClosed");
     }
+
     setModalOpen(true);
   };
 
