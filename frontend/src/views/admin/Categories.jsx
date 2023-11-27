@@ -226,7 +226,7 @@ const Categories = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>Technicians</title>
+        <title>Categories</title>
       </Helmet>
       <div
         className={`className="flex flex-grow flex-col gotoLarge:px-6 large:ml-20 lg:flex-row white pt-5 large:h-screen h-auto`}
