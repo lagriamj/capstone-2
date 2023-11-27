@@ -752,7 +752,7 @@ const Dashboard = () => {
         >
           <CalendarDaysIcon className="h-7 w-7 text-main" />
           <label className="cursor-pointer text-lg font-sans">
-            Delay Report
+            Delayed Request Report
           </label>
         </div>
       ),
@@ -1273,7 +1273,7 @@ const Dashboard = () => {
                             className="lg:text-lg text-base font-sans cursor-pointer"
                             onClick={showDelayedReq}
                           >
-                            Overall Delayed
+                            Delayed
                           </Badge>
                         </div>
                       </div>
