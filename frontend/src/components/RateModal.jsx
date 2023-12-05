@@ -45,8 +45,6 @@ const RateModal = ({
 
   const daytime = new Date().toLocaleString(undefined, options);
 
-  console.log("- - -", user_id, id, office);
-
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [selectedRatings, setSelectedRatings] = useState({
     user_id: user_id,
