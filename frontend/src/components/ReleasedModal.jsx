@@ -202,13 +202,13 @@ const ReleasedModal = ({ isOpen, onClose, data, refreshData }) => {
             </Col>
             <Col xs={24} lg={6}>
               <label className="block text-sm font-bold mb-2 text-black">
-                ARTA (Anti-Red Tape Act)
+                Processing Day
               </label>
               <Input readOnly value={data.arta} className="h-[40px]" />
             </Col>
             <Col xs={24} lg={6}>
               <label className="block text-sm font-bold mb-2 text-black">
-                ARTA Status
+                Processing Day Status
               </label>
               <Input readOnly value={data.artaStatus} className="h-[40px]" />
             </Col>
