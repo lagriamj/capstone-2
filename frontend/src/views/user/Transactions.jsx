@@ -29,6 +29,7 @@ const Transactions = () => {
 
   const [viewRating, setViewRating] = useState(false);
   const [viewRatingModal, setViewRatingModal] = useState(false);
+  const [passRequestCode, setPassRequestCode] = useState(false);
 
   const [cancel, setCancel] = useState(false);
   const [viewCancel, setViewCancel] = useState(false);
@@ -45,8 +46,9 @@ const Transactions = () => {
     setView(true);
   };
 
-  const handleViewRating = (id) => {
+  const handleViewRating = (id, request_code) => {
     setViewRatingModal(id);
+    setPassRequestCode(request_code);
     setViewRating(true);
   };
 
@@ -347,7 +349,7 @@ const Transactions = () => {
           ) : record.status === "Closed" ? (
             doneRating.some((rating) => rating.request_id === record.id) ? (
               <button
-                onClick={() => handleViewRating(record.id)}
+                onClick={() => handleViewRating(record.id, record.request_code)}
                 className="text-white text-base bg-gray-400 py-2 px-3 rounded-lg"
               >
                 <FontAwesomeIcon icon={faStar} />
@@ -453,6 +455,7 @@ const Transactions = () => {
                   isOpen={viewRating}
                   onClose={() => setViewRating(false)}
                   id={viewRatingModal}
+                  reqCode={passRequestCode}
                 />
               )}
 
