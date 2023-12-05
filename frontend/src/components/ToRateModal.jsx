@@ -248,7 +248,7 @@ const ToRateModal = ({ isOpen, onClose, datas, role, purged }) => {
               htmlFor="arta"
               className="block text-sm font-bold mb-2 text-black"
             >
-              ARTA
+              Processing Day
             </label>
             <Input readOnly id="arta" value={item.arta} className="h-[40px]" />
           </Col>
@@ -257,7 +257,7 @@ const ToRateModal = ({ isOpen, onClose, datas, role, purged }) => {
               htmlFor="artaStatus"
               className="block text-sm font-bold mb-2 text-black"
             >
-              ARTA Status
+              Processing Day Status
             </label>
             <Input
               readOnly
