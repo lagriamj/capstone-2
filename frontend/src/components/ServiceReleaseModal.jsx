@@ -408,7 +408,7 @@ const ServiceReleaseModal = ({
                   <Form.Item
                     label={
                       <label className="block text-sm font-bold">
-                        ARTA (Anti-Red Tape Act)
+                        Processing Day
                       </label>
                     }
                     name="arta"
@@ -420,7 +420,7 @@ const ServiceReleaseModal = ({
                   <Form.Item
                     label={
                       <label className="block text-sm font-bold">
-                        ARTA Status
+                        Processing Day Status
                       </label>
                     }
                     name="artaStatus"
