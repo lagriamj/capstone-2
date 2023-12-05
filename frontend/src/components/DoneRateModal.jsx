@@ -14,7 +14,7 @@ import {
   faGrinStars,
 } from "@fortawesome/free-solid-svg-icons";
 
-const DoneRateModal = ({ isOpen, onClose, id }) => {
+const DoneRateModal = ({ isOpen, onClose, id, reqCode }) => {
   if (!isOpen) return null;
 
   const [loading, setLoading] = useState(true);
@@ -104,7 +104,7 @@ const DoneRateModal = ({ isOpen, onClose, id }) => {
               className="block text-sm font-bold mb-2 text-black"
               htmlFor={`reqOffice`}
             >
-              Request ID: E-{item.request_id || "No data"}
+              Request ID: E-{reqCode || "No data"}
             </label>
           </div>
           <div className="col-span-1">
