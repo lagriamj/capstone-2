@@ -961,7 +961,7 @@ const Dashboard = () => {
                   <div className=" bg-white lg:w-[49%] mr-2 w-full rounded-lg shadow-md">
                     <div className="flex gap-2 w-full">
                       <label className="text-lg font-medium pl-4 pt-2 flex ">
-                        Total and Unclosed Requests
+                        Total and Closed Requests
                       </label>
                     </div>
                     <ResponsiveContainer
